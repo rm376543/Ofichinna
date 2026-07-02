@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Ofichina.Api/Ofichina.Api.csproj" />
+    <Project Path="src/Ofichina.Application/Ofichina.Application.csproj" />
+    <Project Path="src/Ofichina.Contracts/Ofichina.Contracts.csproj" />
+    <Project Path="src/Ofichina.Domain/Ofichina.Domain.csproj" />
+    <Project Path="src/Ofichina.Infrastructure/Ofichina.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Ofichina.IntegrationTests/Ofichina.IntegrationTests.csproj" />
+    <Project Path="tests/Ofichina.UnitTests/Ofichina.UnitTests.csproj" />
+  </Folder>
+</Solution>
