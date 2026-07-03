@@ -1,0 +1,304 @@
+# Arquitetura Clean Architecture - Ofichina
+
+## Visão Geral
+
+Este projeto implementa uma arquitetura em camadas (Clean Architecture) com .NET 10, seguindo os princípios SOLID e padrões de design estabelecidos.
+
+## Estrutura de Camadas
+
+### 1. **Ofichina.Api** - Camada de Apresentação
+- Controllers
+- Middlewares (futuros)
+- Handlers de exceções
+- Autenticação e Autorização
+- Integração com SwaggerModule
+
+**Referências:**
+- Ofichina.Application
+
+**Configuração:**
+```csharp
+builder.Services.AddApplication(builder.Configuration);
+```
+
+### 2. **Ofichina.Contracts** - Camada de Contratos
+- DTOs de Requisição (CreateRequest, UpdateRequest)
+- DTOs de Resposta (ApiResponse, ApiResponse<T>)
+- Paginação (PaginationDto, PagedResult<T>)
+- DTOs de Entidades (BaseEntityDto)
+
+**Uso:**
+Contratos entre API e Application Layer
+
+### 3. **Ofichina.Application** - Camada de Aplicação
+Coordena e orquestra a lógica de negócio
+
+**Submódulos:**
+- **ValidationModule**: Validadores FluentValidation
+  - Registra validadores do assembly automaticamente
+
+- **HandlersModule**: Handlers CQRS (Commands e Queries)
+  - Abstrações: ICommand<T>, IQuery<T>
+  - Interfaces: ICommandHandler<T>, IQueryHandler<T>
+  - Exemplo: CreateExemploCommandHandler, GetExemploByIdQueryHandler
+
+- **ServicesModule**: Serviços da aplicação
+  - Lógica de orquestração
+  - Exemplo: services.AddApplicationServices()
+
+**Estrutura de Use Cases:**
+```
+Application/
+├── Abstractions/
+│   ├── Contracts.cs (ICommand, IQuery)
+│   └── Handlers.cs (ICommandHandler, IQueryHandler)
+├── Validators/
+│   └── CreateExemploRequestValidator.cs
+├── UseCases/
+│   └── Exemplo/
+│       ├── Commands/
+│       │   └── CreateExemploCommand.cs
+│       ├── Queries/
+│       │   └── GetExemploByIdQuery.cs
+│       └── Handlers/
+│           ├── CreateExemploCommandHandler.cs
+│           └── GetExemploByIdQueryHandler.cs
+└── DependencyInjection/
+	├── ApplicationModule.cs (orquestra tudo)
+	├── ValidationModule.cs
+	├── HandlersModule.cs
+	└── ServicesModule.cs
+```
+
+### 4. **Ofichina.Domain** - Camada de Domínio
+Define as regras de negócio e entidades
+
+**Estrutura:**
+```
+Domain/
+├── Entities/
+│   ├── Entity.cs (classe base)
+│   └── Exemplo.cs (exemplo de entidade)
+├── Interfaces/
+│   ├── IRepository.cs (interface genérica)
+│   ├── IUnitOfWork.cs
+│   └── IExemploRepository.cs (específica)
+├── Specifications/
+│   └── Specification.cs (Specification Pattern)
+└── Shared/
+	├── ValueObject.cs (objetos de valor)
+	└── Result.cs (Result Pattern)
+```
+
+**Características:**
+- Entity base com Id (Guid), CreatedAt, UpdatedAt
+- Repositórios genéricos e específicos
+- Padrão Unit of Work
+- Specification Pattern para queries complexas
+- Result Pattern para resultados de operação
+
+### 5. **Ofichina.Infrastructure** - Camada de Infraestrutura
+Implementação de detalhes técnicos
+
+**Submódulos:**
+- **DatabaseModule**: Configuração EF Core
+  - SQL Server como banco de dados
+  - Conexão via DefaultConnection
+
+- **RepositoryModule**: Implementação de repositórios
+  - Repository<T> genérico
+  - UnitOfWork
+  - ExemploRepository específico
+
+- **InfrastructureServicesModule**: Serviços externos
+  - Email, SMS, Storage (futuros)
+
+**Estrutura:**
+```
+Infrastructure/
+├── Modules/
+│   ├── InfrastructureModule.cs (orquestra)
+│   ├── DatabaseModule.cs
+│   ├── RepositoryModule.cs
+│   └── ServicesModule.cs
+├── Persistence/
+│   └── ApplicationDbContext.cs
+└── Repositories/
+	├── Repository.cs (genérico)
+	├── UnitOfWork.cs
+	└── ExemploRepository.cs (específico)
+```
+
+## Fluxo de Dependência
+
+```
+Program.cs
+	↓
+AddApplication(configuration)
+	↓
+ApplicationModule
+	├── ValidationModule
+	├── HandlersModule
+	├── ServicesModule
+	└── AddInfrastructure(configuration)
+		├── DatabaseModule
+		├── RepositoryModule
+		└── InfrastructureServicesModule
+```
+
+## Padrões Implementados
+
+### 1. **CQRS (Command Query Responsibility Segregation)**
+Separação entre operações de leitura (Queries) e escrita (Commands)
+- Handlers específicos para cada operação
+- Exemplo: CreateExemploCommandHandler, GetExemploByIdQueryHandler
+
+### 2. **Specification Pattern**
+Encapsulamento de critérios de consulta complexos
+- Classe base: Specification<T>
+- Reutilizável em diferentes contextos
+
+### 3. **Repository Pattern**
+Abstração de acesso a dados
+- IRepository<T> genérica
+- Implementações específicas por entidade
+
+### 4. **Unit of Work Pattern**
+Gerenciamento de transações e coordenação de repositórios
+- Confirmação/reversão de operações
+- Isolamento de transações
+
+### 5. **Result Pattern**
+Encapsulamento de resultados de operação com sucesso/erro
+- Tipo: Result<T>
+- Mensagens de erro e validação
+
+### 6. **Value Object Pattern**
+Objetos imutáveis identificados por seu conteúdo
+- Classe base: ValueObject
+- Implementação de Equals e GetHashCode
+
+### 7. **Clean Architecture**
+Independência de frameworks e UI
+- Regras de negócio no Domain
+- Orquestração na Application
+- Detalhes técnicos na Infrastructure
+
+## Dependências de NuGet
+
+- **Microsoft.EntityFrameworkCore**: 10.0.9
+- **Microsoft.EntityFrameworkCore.SqlServer**: 10.0.9
+- **FluentValidation**: 11.9.2
+- **FluentValidation.DependencyInjectionExtensions**: 11.9.2
+- **Microsoft.Extensions.Configuration.Abstractions**: 10.0.9
+- **Microsoft.Extensions.DependencyInjection.Abstractions**: 10.0.9
+
+## Como Usar - Exemplo Prático
+
+### 1. Criar uma Entidade no Domain
+
+```csharp
+public class Cliente : Entity
+{
+	public string Nome { get; set; }
+	public string Email { get; set; }
+
+	public Cliente(string nome, string email)
+	{
+		Nome = nome;
+		Email = email;
+	}
+}
+```
+
+### 2. Criar um Repositório Específico
+
+```csharp
+public interface IClienteRepository : IRepository<Cliente>
+{
+	Task<Cliente?> GetByEmailAsync(string email);
+}
+
+public class ClienteRepository : Repository<Cliente>, IClienteRepository
+{
+	public async Task<Cliente?> GetByEmailAsync(string email)
+	{
+		return await _context.Set<Cliente>()
+			.FirstOrDefaultAsync(c => c.Email == email);
+	}
+}
+```
+
+### 3. Registrar no RepositoryModule
+
+```csharp
+services.AddScoped<IClienteRepository, ClienteRepository>();
+```
+
+### 4. Criar um Validador
+
+```csharp
+public class CreateClienteRequestValidator : AbstractValidator<CreateClienteRequest>
+{
+	public CreateClienteRequestValidator()
+	{
+		RuleFor(x => x.Nome).NotEmpty().MaximumLength(100);
+		RuleFor(x => x.Email).EmailAddress();
+	}
+}
+```
+
+### 5. Criar um Command/Query e Handler
+
+```csharp
+public class CreateClienteCommand : ICommand<Guid>
+{
+	public string Nome { get; set; }
+	public string Email { get; set; }
+}
+
+public class CreateClienteCommandHandler : ICommandHandler<CreateClienteCommand, Guid>
+{
+	public async Task<Guid> HandleAsync(CreateClienteCommand command)
+	{
+		var cliente = new Cliente(command.Nome, command.Email);
+		await _repository.AddAsync(cliente);
+		await _unitOfWork.SaveChangesAsync();
+		return cliente.Id;
+	}
+}
+```
+
+### 6. Criar um Controller
+
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class ClientesController : ControllerBase
+{
+	// Injetar handlers e executar
+}
+```
+
+## Próximos Passos
+
+1. Implementar Controllers para os endpoints
+2. Adicionar Middleware de tratamento de erros
+3. Implementar autenticação e autorização
+4. Criar migrations do Entity Framework
+5. Adicionar testes unitários e de integração
+6. Implementar logging e observabilidade
+7. Configurar versionamento de API
+8. Adicionar cache quando necessário
+
+## Notas Importantes
+
+- **Configuração de Banco de Dados**: Adicionar connection string em `appsettings.json`
+- **Migrations**: Usar `dotnet ef migrations add` para criar migrations
+- **FluentValidation**: Validadores são autodiscovered do assembly
+- **Unit of Work**: Sempre usar SaveChangesAsync() no handler
+- **Lazy Loading**: Usar `AsNoTracking()` para queries de leitura
+
+---
+
+Arquitetura implementada em 2025 seguindo Clean Architecture com .NET 10
