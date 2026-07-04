@@ -24,7 +24,7 @@ Quando houver conflito entre uma resposta e a documentação, siga sempre a docu
 
 Caso exista algum ADR relacionado, utilize-o antes de responder.
 
-Ignore e nunca utilize informações da pasta /Documentacao Inicial do Projeto.
+Ignore e nunca utilize informações da pasta docs/Documentacao Inicial do Projeto.
 
 ---
 
