@@ -20,8 +20,8 @@ docker-compose logs -f sqlserver
 
 - **Server**: `localhost:1433`
 - **Usuario**: `sa`
-- **Senha**: `@Ofichinna2024`
-- **Database**: `ofichina`
+- **Senha**: `P@ssw0rd2024!Ofichina`
+- **Database**: `ofichinna`
 
 ---
 

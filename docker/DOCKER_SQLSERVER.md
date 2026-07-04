@@ -15,8 +15,6 @@ Ofichinna/
 │   ├── docker-compose.yml        # Orquestração de containers
 │   ├── DOCKER_SQLSERVER.md       # Documentação detalhada (este arquivo)
 │   ├── QUICKSTART.md             # Guia rápido de inicialização
-│   ├── .env.example              # Variáveis de ambiente
-│   └── sql-manager.ps1           # Script de gerenciamento
 └── src/Ofichina.Api/
 	├── appsettings.json              # String de conexão para produção
 	└── appsettings.Development.json  # String de conexão para desenvolvimento
@@ -86,7 +84,7 @@ docker rm ofichinna-sqlserver
 | **Server** | `localhost:1433` ou `sqlserver:1433` (docker compose) |
 | **Username** | `sa` |
 | **Password** | `P@ssw0rd2024!Ofichina` |
-| **Database** | `OfichinnaDb` |
+| **Database** | `ofichinna` |
 
 ### ⚠️ Importante
 - **NUNCA** use as credenciais padrão em produção
@@ -99,12 +97,12 @@ docker rm ofichinna-sqlserver
 
 ### Desenvolvimento Local (localhost)
 ```
-Server=localhost,1433;Database=OfichinnaDb;User Id=sa;Password=P@ssw0rd2024!Ofichina;TrustServerCertificate=True;
+Server=localhost,1433;Database=ofichinna;User Id=sa;Password=P@ssw0rd2024!Ofichina;TrustServerCertificate=True;
 ```
 
 ### Com Docker Compose (interno)
 ```
-Server=sqlserver,1433;Database=OfichinnaDb;User Id=sa;Password=P@ssw0rd2024!Ofichina;TrustServerCertificate=True;
+Server=sqlserver,1433;Database=ofichinna;User Id=sa;Password=P@ssw0rd2024!Ofichina;TrustServerCertificate=True;
 ```
 
 ---
@@ -115,7 +113,7 @@ Server=sqlserver,1433;Database=OfichinnaDb;User Id=sa;Password=P@ssw0rd2024!Ofic
 ```json
 {
   "ConnectionStrings": {
-	"DefaultConnection": "Server=localhost,1433;Database=OfichinnaDb;User Id=sa;Password=P@ssw0rd2024!Ofichina;TrustServerCertificate=True;"
+	"DefaultConnection": "Server=localhost,1433;Database=ofichinna;User Id=sa;Password=P@ssw0rd2024!Ofichina;TrustServerCertificate=True;"
   }
 }
 ```
@@ -124,7 +122,7 @@ Server=sqlserver,1433;Database=OfichinnaDb;User Id=sa;Password=P@ssw0rd2024!Ofic
 ```json
 {
   "ConnectionStrings": {
-	"DefaultConnection": "Server=sqlserver,1433;Database=OfichinnaDb;User Id=sa;Password=P@ssw0rd2024!Ofichina;TrustServerCertificate=True;"
+	"DefaultConnection": "Server=sqlserver,1433;Database=ofichinna;User Id=sa;Password=P@ssw0rd2024!Ofichina;TrustServerCertificate=True;"
   }
 }
 ```
@@ -149,7 +147,7 @@ Server=sqlserver,1433;Database=OfichinnaDb;User Id=sa;Password=P@ssw0rd2024!Ofic
 2. Clique em **Create a connection**
 3. Preencha com:
    - **Server**: `localhost,1433`
-   - **Database**: `OfichinnaDb`
+   - **Database**: `ofichinna`
    - **Authentication type**: SQL Login
    - **User name**: `sa`
    - **Password**: `P@ssw0rd2024!Ofichina`
@@ -164,7 +162,6 @@ O Docker Compose cria 2 volumes para persistência de dados:
 | Volume | Função |
 |--------|--------|
 | `sqlserver_data` | Armazena os arquivos de banco de dados |
-| `sqlserver_log` | Armazena logs de transações |
 
 ---
 
@@ -219,8 +216,6 @@ docker-compose -f docker/docker-compose.yml up -d
 - ✅ **docker/docker-compose.yml** - Orquestração completa
 - ✅ **docker/DOCKER_SQLSERVER.md** - Documentação completa (este arquivo)
 - ✅ **docker/QUICKSTART.md** - Guia rápido
-- ✅ **docker/.env.example** - Variáveis de ambiente
-- ✅ **docker/sql-manager.ps1** - Script de gerenciamento
 - ✅ **src/Ofichina.Api/appsettings.json** - String de conexão
 - ✅ **src/Ofichina.Api/appsettings.Development.json** - String de conexão
 
