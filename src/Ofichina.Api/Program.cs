@@ -9,10 +9,8 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddSwaggerModule();
 
-builder.Services.AddApplication();
-
 // Adiciona todos os serviços de infraestrutura e demais
-builder.Services.AddBootstrap(builder.Configuration);
+builder.Services.AddBootstrapMiddleware(builder.Configuration);
 
 var app = builder.Build();
 
