@@ -1,6 +1,4 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Ofichina.Infrastructure.DependencyInjection;
 
 namespace Ofichina.Application.DependencyInjection;
 

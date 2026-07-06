@@ -19,8 +19,55 @@ services:
 
     networks:
       - ofichina-network
+
+  postgres:
+    image: postgres:16
+    container_name: sonarqube-postgres
+
+    environment:
+      POSTGRES_USER: sonarqube
+      POSTGRES_PASSWORD: sonarqube
+      POSTGRES_DB: sonarqube
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    restart: unless-stopped
+
+    networks:
+      - ofichina-network
+
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+
+    depends_on:
+      - postgres
+
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonarqube
+      SONAR_JDBC_USERNAME: sonarqube
+      SONAR_JDBC_PASSWORD: sonarqube
+
+    ports:
+      - "9000:9000"
+
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+
+    restart: unless-stopped
+
+    networks:
+      - ofichina-network
+
 volumes:
   sqlserver_data:
+  postgres_data:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
 
 networks:
   ofichina-network:
