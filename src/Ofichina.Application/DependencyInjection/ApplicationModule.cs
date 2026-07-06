@@ -24,16 +24,12 @@ public static class ApplicationModule
     /// Registra todos os serviços da aplicação e infraestrutura.
     /// </summary>
     public static IServiceCollection AddApplication(
-        this IServiceCollection services,
-        IConfiguration configuration)
+        this IServiceCollection services)
     {
         // Registra módulos da Application Layer
         services.AddValidations();
         services.AddHandlers();
         services.AddApplicationServices();
-
-        // Registra módulos da Infrastructure Layer
-        services.AddInfrastructure(configuration);
 
         return services;
     }

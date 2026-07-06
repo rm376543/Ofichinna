@@ -1,5 +1,6 @@
 using Ofichina.Api.Modules;
 using Ofichina.Application.DependencyInjection;
+using Ofichina.Bootstrap;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,10 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddSwaggerModule();
 
-builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddApplication();
+
+// Adiciona todos os serviços de infraestrutura e demais
+builder.Services.AddBootstrap(builder.Configuration);
 
 var app = builder.Build();
 

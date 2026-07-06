@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Ofichina.Bootstrap\Ofichina.Bootstrap.csproj" />
     <ProjectReference Include="..\Ofichina.Application\Ofichina.Application.csproj" />
     <ProjectReference Include="..\Ofichina.Contracts\Ofichina.Contracts.csproj" />
   </ItemGroup>
