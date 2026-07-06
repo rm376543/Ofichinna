@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="Ofichina.Bootstrap/Ofichina.Bootstrap.csproj" Id="a43a3c90-71ec-40d7-a343-3f67954d4fb4" />
     <Project Path="src/Ofichina.Api/Ofichina.Api.csproj" />
     <Project Path="src/Ofichina.Application/Ofichina.Application.csproj" />
     <Project Path="src/Ofichina.Contracts/Ofichina.Contracts.csproj" />
