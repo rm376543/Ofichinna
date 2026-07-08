@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Ofichina.Authentication.Abstractions;
+using Ofichina.Infrastructure.Services;
 
 namespace Ofichina.Infrastructure.DependencyInjection;
 
@@ -15,10 +17,7 @@ public static class InfrastructureServicesModule
     public static IServiceCollection AddInfrastructureServices(
         this IServiceCollection services)
     {
-        // Registre aqui os serviços de infraestrutura
-        // Exemplo:
-        // services.AddScoped<IEmailService, EmailService>();
-        // services.AddScoped<ISmsService, SmsService>();
+        services.AddScoped<IPerfilAutorizacaoService, PerfilAutorizacaoService>();
 
         return services;
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi;
 
 namespace Ofichina.Api.Modules;
 
@@ -30,6 +31,18 @@ public static class SwaggerModule
                     Url = new Uri("https://example.com/license")
                 }
             });
+
+            var securityScheme = new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Description = "JWT Bearer token. Exemplo: Bearer {seu_token}",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT"
+            };
+
+            options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, securityScheme);
         });
 
         return services;
