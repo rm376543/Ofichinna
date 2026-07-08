@@ -16,6 +16,8 @@
 ```
 Ofichinna/
 ├── src/
+├── Ofichina.Bootstrap/                  [Layer: Composição]
+│   └── DependencyInjection.cs           ← Composição da aplicação
 │   ├── Ofichina.Api/                    [Layer: Apresentação]
 │   │   ├── Program.cs
 │   │   └── Modules/
@@ -79,16 +81,19 @@ Ofichinna/
 ```
 Program.cs
 	↓
-builder.Services.AddApplication(builder.Configuration)
+builder.Services.AddBootstrapMiddleware(builder.Configuration)
 	↓
-	ApplicationModule
-	├── services.AddValidations()           [FluentValidation autodiscovery]
-	├── services.AddHandlers()              [CQRS handlers]
-	├── services.AddApplicationServices()   [App services]
+	BootstrapMiddleware
+├── services.AddAuthenticationServices() [serviços e validadores de autenticação]
+├── services.AddAuthenticationModule(config) [JWT Bearer]
+	├── services.AddApplication()
+	│   ├── services.AddValidations()       [FluentValidation autodiscovery]
+	│   ├── services.AddHandlers()          [CQRS handlers]
+	│   └── services.AddApplicationServices()[App services]
 	└── services.AddInfrastructure(config)
 		├── AddDatabase(config)             [EF Core + SqlServer]
-		├── AddRepositories()               [Generics + Específicos]
-		└── AddInfrastructureServices()     [Email, SMS, etc]
+		├── AddRepositories()               [Generics + Específicos + Auth repo]
+		└── AddInfrastructureServices()     [Serviços de apoio, ex.: perfis]
 ```
 
 ## 📦 Padrões de Design Utilizados
@@ -278,11 +283,13 @@ public class ProdutosController : ControllerBase
 ### Entity Framework Migrations
 ```bash
 # Adicionar migration
-dotnet ef migrations add InitialCreate -p src/Ofichina.Infrastructure
+dotnet ef migrations add InitialAuth -p src/Ofichina.Infrastructure
 
 # Aplicar migration
 dotnet ef database update -p src/Ofichina.Infrastructure
 ```
+
+> A factory de design-time está configurada em `src/Ofichina.Infrastructure/Persistence/ApplicationDbContextFactory.cs` para que o comando funcione sem depender da API.
 
 ## 📚 Referências
 

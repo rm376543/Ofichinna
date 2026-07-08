@@ -2,7 +2,16 @@
 
 ## Visão Geral
 
-Este projeto implementa uma arquitetura em camadas (Clean Architecture) com .NET 10, seguindo os princípios SOLID e padrões de design estabelecidos.
+Este projeto implementa uma arquitetura em camadas (Clean Architecture) com .NET 10, seguindo os princípios SOLID e padrões de design estabelecidos, com uma camada de Bootstrap responsável pela composição da aplicação.
+
+### 0. **Ofichina.Bootstrap** - Camada de Composição
+- Orquestra a inicialização da aplicação
+- Centraliza a composição dos módulos de Authentication, Application e Infrastructure
+
+**Configuração:**
+```csharp
+builder.Services.AddBootstrapMiddleware(configuration);
+```
 
 ## Estrutura de Camadas
 
@@ -15,10 +24,11 @@ Este projeto implementa uma arquitetura em camadas (Clean Architecture) com .NET
 
 **Referências:**
 - Ofichina.Application
+- Ofichina.Authentication
 
 **Configuração:**
 ```csharp
-builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddBootstrapMiddleware(builder.Configuration);
 ```
 
 ### 2. **Ofichina.Contracts** - Camada de Contratos
@@ -30,7 +40,25 @@ builder.Services.AddApplication(builder.Configuration);
 **Uso:**
 Contratos entre API e Application Layer
 
-### 3. **Ofichina.Application** - Camada de Aplicação
+### 3. **Ofichinna.Authentication** - Camada de Autenticação
+Centraliza a configuração e as regras de autenticação da solução.
+
+**Submódulos:**
+- **AuthenticationModule**: configura JWT Bearer no pipeline
+- **AuthenticationServicesModule**: registra serviços, validadores e contratos de autenticação
+- **Services**: geração de token, hash de senha e orquestração do login/cadastro
+
+**Estrutura:**
+```
+Authentication/
+├── Abstractions/
+├── DependencyInjection/
+├── Security/
+├── Services/
+└── Validators/
+```
+
+### 4. **Ofichina.Application** - Camada de Aplicação
 Coordena e orquestra a lógica de negócio
 
 **Submódulos:**
@@ -70,7 +98,7 @@ Application/
 	└── ServicesModule.cs
 ```
 
-### 4. **Ofichina.Domain** - Camada de Domínio
+### 5. **Ofichina.Domain** - Camada de Domínio
 Define as regras de negócio e entidades
 
 **Estrutura:**
@@ -97,7 +125,7 @@ Domain/
 - Specification Pattern para queries complexas
 - Result Pattern para resultados de operação
 
-### 5. **Ofichina.Infrastructure** - Camada de Infraestrutura
+### 6. **Ofichina.Infrastructure** - Camada de Infraestrutura
 Implementação de detalhes técnicos
 
 **Submódulos:**
@@ -109,6 +137,10 @@ Implementação de detalhes técnicos
   - Repository<T> genérico
   - UnitOfWork
   - ExemploRepository específico
+  - Repositório de autenticação para consulta de usuários
+
+- **ServicesModule**: Serviços de apoio à autenticação
+  - PerfilAutorizacaoService
 
 - **InfrastructureServicesModule**: Serviços externos
   - Email, SMS, Storage (futuros)
@@ -134,12 +166,13 @@ Infrastructure/
 ```
 Program.cs
 	↓
-AddApplication(configuration)
+AddBootstrapMiddleware(configuration)
 	↓
-ApplicationModule
-	├── ValidationModule
-	├── HandlersModule
-	├── ServicesModule
+BootstrapMiddleware
+	├── AddApplication()
+	│   ├── ValidationModule
+	│   ├── HandlersModule
+	│   └── ServicesModule
 	└── AddInfrastructure(configuration)
 		├── DatabaseModule
 		├── RepositoryModule

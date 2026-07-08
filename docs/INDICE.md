@@ -194,6 +194,9 @@ DOCUMENTAÇÃO OFICHINNA
 **"Como funciona a arquitetura?"**
 → MAPA_VISUAL.md > "Estrutura Hierárquica Completa"
 
+**"Onde fica a composição da aplicação?"**
+→ ARQUITETURA.md > "Ofichina.Bootstrap - Camada de Composição"
+
 **"Qual é a descrição detalhada de cada camada?"**
 → ARQUITETURA.md > "## Abordagem"
 

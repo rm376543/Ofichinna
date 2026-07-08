@@ -47,7 +47,7 @@ Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, ut
 
 ### 🟡 VALIDAÇÃO E RASTREAMENTO
 5. **[✅ RELATORIO_IMPLEMENTACAO.md](./RELATORIO_IMPLEMENTACAO.md)** - Relatório completo
-   - 31 arquivos criados
+   - 32 arquivos criados
    - Estrutura de pastas
    - Padrões de design
    - Validação
@@ -60,6 +60,8 @@ Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, ut
 
 ```
 Ofichinna/
+│
+├─ Ofichina.Bootstrap/      [Layer: Composição]
 │
 ├─ src/
 │  ├─ Ofichina.Api/              [Layer: Apresentação]
@@ -98,9 +100,11 @@ Ofichinna/
 ### 2. Criar Migrations
 ```bash
 cd src/Ofichina.Infrastructure
-dotnet ef migrations add InitialCreate
+dotnet ef migrations add InitialAuth
 dotnet ef database update
 ```
+
+> O projeto `Ofichina.Infrastructure` já possui `ApplicationDbContextFactory` para suportar o `dotnet ef` em design-time.
 
 ### 3. Executar
 ```bash
@@ -142,10 +146,11 @@ Acesse: `https://localhost:7000/swagger`
 ```
 Program.cs
     ↓
-AddApplication(configuration)
-    ├─ ValidationModule
-    ├─ HandlersModule
-    ├─ ServicesModule
+AddBootstrapMiddleware(configuration)
+    ├─ AddApplication()
+    │   ├─ ValidationModule
+    │   ├─ HandlersModule
+    │   └─ ServicesModule
     └─ AddInfrastructure(configuration)
         ├─ DatabaseModule (EF Core)
         ├─ RepositoryModule (Repository + UnitOfWork)
@@ -178,7 +183,7 @@ Veja exemplo completo em **GUIA_IMPLEMENTACAO.md**
 
 | Métrica | Valor |
 |---------|-------|
-| Projetos | 5 |
+| Projetos | 6 |
 | Arquivos Criados | 31 |
 | Linhas de Código | ~2.500+ |
 | Padrões de Design | 8 |
