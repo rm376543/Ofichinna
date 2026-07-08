@@ -18,14 +18,27 @@ public class ApplicationDbContext : DbContext
     /// <summary>
     /// DbSet para a entidade Exemplo.
     /// </summary>
-    public DbSet<Exemplo> Exemplos { get; set; }
+    public DbSet<Exemplo> Exemplos { get; set; } = null!;
+
+    /// <summary>
+    /// DbSet para usuários autenticáveis.
+    /// </summary>
+    public DbSet<Usuario> Usuarios { get; set; } = null!;
+
+    /// <summary>
+    /// DbSet para perfis de autorização.
+    /// </summary>
+    public DbSet<Perfil> Perfis { get; set; } = null!;
+
+    /// <summary>
+    /// DbSet para vínculos entre usuários e perfis.
+    /// </summary>
+    public DbSet<UsuarioPerfil> UsuariosPerfis { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Configurações de entidades podem ser adicionadas aqui
-        // Exemplo:
-        // modelBuilder.ApplyConfiguration(new ExemploConfiguration());
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 }

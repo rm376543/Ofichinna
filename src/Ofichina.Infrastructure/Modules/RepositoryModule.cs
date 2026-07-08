@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Ofichina.Domain.Entities;
 using Ofichina.Domain.Interfaces;
 using Ofichina.Infrastructure.Repositories;
+using Ofichinna.Authentication.Abstractions;
 
 namespace Ofichina.Infrastructure.DependencyInjection;
 
@@ -22,6 +22,8 @@ public static class RepositoryModule
 
         // Registra o Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        services.AddScoped<IUsuarioAutenticacaoRepository, UsuarioAutenticacaoRepository>();
 
         // Registre aqui os repositórios específicos do domínio
         services.AddScoped<IExemploRepository, ExemploRepository>();
