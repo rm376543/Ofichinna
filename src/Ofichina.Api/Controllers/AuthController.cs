@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ofichina.Contracts.Requests;
 using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Shared;
-using Ofichinna.Authentication.Abstractions;
+using Ofichina.Authentication.Abstractions;
 
 namespace Ofichina.Api.Controllers;
 
