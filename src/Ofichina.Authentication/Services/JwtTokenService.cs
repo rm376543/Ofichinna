@@ -5,9 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Entities;
-using Ofichinna.Authentication.Abstractions;
+using Ofichina.Authentication.Abstractions;
 
-namespace Ofichinna.Authentication.Services;
+namespace Ofichina.Authentication.Services;
 
 public sealed class JwtTokenService : IJwtTokenService
 {

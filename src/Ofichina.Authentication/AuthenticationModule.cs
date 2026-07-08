@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Ofichinna.Authentication;
+namespace Ofichina.Authentication;
 
 /// <summary>
 /// Módulo de registro de Autenticacao do Sistema

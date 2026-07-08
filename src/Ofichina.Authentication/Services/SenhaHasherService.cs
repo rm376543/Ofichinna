@@ -1,7 +1,7 @@
-using Ofichinna.Authentication.Abstractions;
-using Ofichinna.Authentication.Security;
+using Ofichina.Authentication.Abstractions;
+using Ofichina.Authentication.Security;
 
-namespace Ofichinna.Authentication.Services;
+namespace Ofichina.Authentication.Services;
 
 public sealed class SenhaHasherService : ISenhaHasher
 {

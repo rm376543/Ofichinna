@@ -3,7 +3,7 @@ using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Shared;
 
-namespace Ofichinna.Authentication.Abstractions;
+namespace Ofichina.Authentication.Abstractions;
 
 /// <summary>
 /// Contrato principal do fluxo de autenticação.

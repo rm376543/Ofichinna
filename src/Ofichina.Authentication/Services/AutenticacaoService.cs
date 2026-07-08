@@ -3,9 +3,9 @@ using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Interfaces;
 using Ofichina.Domain.Shared;
-using Ofichinna.Authentication.Abstractions;
+using Ofichina.Authentication.Abstractions;
 
-namespace Ofichinna.Authentication.Services;
+namespace Ofichina.Authentication.Services;
 
 public sealed class AutenticacaoService : IAutenticacaoService
 {

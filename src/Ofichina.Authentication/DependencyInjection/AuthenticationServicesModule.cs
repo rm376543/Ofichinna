@@ -1,9 +1,9 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Ofichinna.Authentication.Abstractions;
-using Ofichinna.Authentication.Services;
+using Ofichina.Authentication.Abstractions;
+using Ofichina.Authentication.Services;
 
-namespace Ofichinna.Authentication.DependencyInjection;
+namespace Ofichina.Authentication.DependencyInjection;
 
 /// <summary>
 /// Registra os serviços de autenticação da aplicação.

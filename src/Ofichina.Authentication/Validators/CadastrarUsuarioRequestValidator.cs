@@ -1,7 +1,7 @@
 using FluentValidation;
 using Ofichina.Contracts.Requests;
 
-namespace Ofichinna.Authentication.Validators;
+namespace Ofichina.Authentication.Validators;
 
 public sealed class CadastrarUsuarioRequestValidator : AbstractValidator<CadastrarUsuarioRequest>
 {

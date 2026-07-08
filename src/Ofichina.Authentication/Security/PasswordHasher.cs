@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace Ofichinna.Authentication.Security;
+namespace Ofichina.Authentication.Security;
 
 public static class PasswordHasher
 {
