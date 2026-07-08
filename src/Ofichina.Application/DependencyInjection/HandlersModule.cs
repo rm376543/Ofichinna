@@ -10,9 +10,6 @@ public static class HandlersModule
 {
     public static IServiceCollection AddHandlers(this IServiceCollection services)
     {
-        // Aqui podem ser registrados handlers de CQRS ou mediadores
-        // Exemplo: services.AddMediatR(typeof(HandlersModule));
-
         return services;
     }
 }

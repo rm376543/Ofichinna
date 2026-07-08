@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Ofichina.Contracts\Ofichina.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\Autenticacao\Commands\" />
+  </ItemGroup>
+
 </Project>
