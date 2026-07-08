@@ -92,8 +92,12 @@
 
 ### 5. API Layer (Existente)
 
-- ✅ `src/Ofichina.Api/Program.cs` (Configurado para usar AddApplication)
+- ✅ `src/Ofichina.Api/Program.cs` (Configurado para usar AddBootstrapMiddleware)
 - ✅ `src/Ofichina.Api/Modules/SwaggerModule.cs` (Swagger integrado)
+
+### 6. Bootstrap Layer (Novo)
+
+- ✅ `Ofichina.Bootstrap/DependencyInjection.cs` (Camada de composição da aplicação)
 
 ---
 
@@ -107,6 +111,12 @@
 ## 🏗️ Estrutura Visual da Arquitetura
 
 ```
+┌─────────────────────────────────────────────────────────────────┐
+│                Ofichina.Bootstrap (Composição)                   │
+│        AddBootstrapMiddleware / orquestração inicial             │
+└──────────────────────┬──────────────────────────────────────────┘
+					   │
+					   ↓
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Ofichina.Api (Apresentação)                   │
 │  Controllers | Middlewares | Handlers de Exceção | Autorização   │
@@ -170,17 +180,18 @@
 ```
 1. Program.cs executa
    ↓
-2. builder.Services.AddApplication(configuration)
+2. builder.Services.AddBootstrapMiddleware(configuration)
    ↓
-3. ApplicationModule.AddApplication() coordena:
-   ├─ ValidationModule.AddValidations()
-   │  └─ Auto-descobre validadores FluentValidation
+3. BootstrapMiddleware coordena:
+   ├─ ApplicationModule.AddApplication()
+   │  ├─ ValidationModule.AddValidations()
+   │  │  └─ Auto-descobre validadores FluentValidation
    │
-   ├─ HandlersModule.AddHandlers()
-   │  └─ Registra handlers de CQRS (quando usar MediatR)
+   │  ├─ HandlersModule.AddHandlers()
+   │  │  └─ Registra handlers de CQRS (quando usar MediatR)
    │
-   ├─ ServicesModule.AddApplicationServices()
-   │  └─ Registra serviços da aplicação
+   │  └─ ServicesModule.AddApplicationServices()
+   │     └─ Registra serviços da aplicação
    │
    └─ InfrastructureModule.AddInfrastructure(configuration)
 	  ├─ DatabaseModule.AddDatabase()

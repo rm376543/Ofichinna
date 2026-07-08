@@ -13,7 +13,7 @@
 | **Camadas** | 5 |
 | **Módulos de DI** | 6 |
 | **Padrões de Design** | 8 |
-| **Projetos** | 5 |
+| **Projetos** | 6 |
 | **Status Build** | ✅ Sucesso |
 | **Erros de Compilação** | 0 |
 | **Avisos** | 0 |
@@ -25,9 +25,13 @@
 ### Clean Architecture com CQRS
 
 ```
-┌─────────────────┐
-│   API LAYER     │  Controllers, Middlewares
-└────────┬────────┘
+┌──────────────────────┐
+│   BOOTSTRAP LAYER    │  Composição e orquestração da aplicação
+└────────┬─────────────┘
+		 │
+┌────────▼─────────────┐
+│   API LAYER          │  Controllers, Middlewares
+└────────┬─────────────┘
 		 │
 ┌────────▼────────────────────────────┐
 │ APPLICATION LAYER                   │
@@ -296,7 +300,7 @@ A arquitetura Clean Architecture foi **totalmente implementada, validada e docum
 ### 📊 Qualidade
 - 5 camadas bem definidas
 - 8 padrões de design
-- 31 arquivos criados
+- 32 arquivos criados
 - 0 erros de compilação
 - 100% da arquitetura proposta implementada
 

@@ -5,11 +5,19 @@
 ```
 📦 SOLUÇÃO OFICHINNA
 │
+├─ 🧩 BOOTSTRAP LAYER (Ofichina.Bootstrap)
+│  │  Responsabilidade: Compor a aplicação e orquestrar a inicialização
+│  │
+│  ├─ DependencyInjection.cs
+│  │  └─ AddBootstrapMiddleware(configuration)
+│  │
+│  └─ Referências: Authentication, Application, Infrastructure
+│
 ├─ 🌐 API LAYER (Ofichina.Api)
 │  │  Responsabilidade: Receber requisições HTTP
 │  │
 │  ├─ Program.cs
-│  │  └─ builder.Services.AddApplication(configuration)
+│  │  └─ builder.Services.AddBootstrapMiddleware(configuration)
 │  │
 │  ├─ Controllers/
 │  │  └─ [Controllers a serem criados]
@@ -17,7 +25,7 @@
 │  ├─ Modules/
 │  │  └─ SwaggerModule.cs ✅
 │  │
-│  └─ Referências: Application
+│  └─ Referências: Bootstrap, Application, Contracts
 │
 ├─ 📋 CONTRACTS LAYER (Ofichina.Contracts)
 │  │  Responsabilidade: Definir contratos entre API e Application
@@ -30,6 +38,17 @@
 │  ├─ Responses/ ✅
 │  │  └─ ApiResponse.cs
 │  │     • ApiResponse (sem dados)
+│  │
+├─ 🔐 AUTHENTICATION LAYER (Ofichinna.Authentication)
+│  │  Responsabilidade: Regras, serviços e configuração JWT de autenticação
+│  │
+│  ├─ AuthenticationModule.cs
+│  ├─ DependencyInjection/
+│  │  └─ AuthenticationServicesModule.cs
+│  ├─ Abstractions/
+│  ├─ Services/
+│  ├─ Security/
+│  └─ Validators/
 │  │     • ApiResponse<T> (com dados)
 │  │
 │  ├─ DTOs/ ✅

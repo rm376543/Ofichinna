@@ -11,9 +11,9 @@
 ## 📊 O Que Foi Entregue
 
 ### ✅ Arquitetura Implementada
-- **5 Camadas** com separação clara de responsabilidades
+- **6 Projetos/Camadas** com separação clara de responsabilidades
 - **8 Padrões de Design** aplicados
-- **31 Arquivos** criados
+- **32 Arquivos** criados
 - **6 Módulos de DI** bem organizados
 - **~2.500+ linhas** de código
 
@@ -31,6 +31,9 @@
 - **GUIA_IMPLEMENTACAO.md** - Passo-a-passo prático
 - **RELATORIO_IMPLEMENTACAO.md** - Validação completa
 - **INDICE.md** - Navegação da documentação
+ - **START_HERE.md** - Ponto de entrada rápido
+ - **RESUMO_FINAL.md** - Sumário final
+ - **DOCUMENTACAO_COMPLETA.md** - Índice geral
 
 ---
 
@@ -42,7 +45,11 @@
 ├──────────────────────────────────────────────────────┤
 │                                                       │
 │  ┌────────────────────────────────────────────┐     │
-│  │ API LAYER (Controllers, Middlewares, etc)  │     │
+│  │ BOOTSTRAP LAYER (composição da aplicação)  │     │
+│  └────────────────┬─────────────────────────┘     │
+│                   │                                 │
+│  ┌────────────────▼──────────────────────────┐     │
+│  │ API LAYER (Controllers, Middlewares, etc) │     │
 │  └────────────────┬─────────────────────────┘     │
 │                   │                                 │
 │  ┌────────────────▼──────────────────────────┐     │
