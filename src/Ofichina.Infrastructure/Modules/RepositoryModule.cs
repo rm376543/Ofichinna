@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Ofichina.Domain.Interfaces;
 using Ofichina.Infrastructure.Repositories;
-using Ofichinna.Authentication.Abstractions;
+using Ofichina.Authentication.Abstractions;
 
 namespace Ofichina.Infrastructure.DependencyInjection;
 

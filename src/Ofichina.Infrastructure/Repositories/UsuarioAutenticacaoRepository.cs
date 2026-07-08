@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Shared;
 using Ofichina.Infrastructure.Persistence;
-using Ofichinna.Authentication.Abstractions;
+using Ofichina.Authentication.Abstractions;
 
 namespace Ofichina.Infrastructure.Repositories;
 

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Ofichina.Infrastructure.Persistence;
-using Ofichinna.Authentication.Abstractions;
+using Ofichina.Authentication.Abstractions;
 
 namespace Ofichina.Infrastructure.Services;
 

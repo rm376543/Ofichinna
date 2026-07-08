@@ -1,4 +1,4 @@
-using Ofichinna.Authentication.Security;
+using Ofichina.Authentication.Security;
 
 namespace Ofichina.Infrastructure.Persistence.Seeds;
 
