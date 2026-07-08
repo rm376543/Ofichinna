@@ -1,10 +1,10 @@
 using Ofichina.Api.Modules;
-using Ofichina.Application.DependencyInjection;
 using Ofichina.Bootstrap;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddSwaggerModule();
@@ -20,6 +20,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
