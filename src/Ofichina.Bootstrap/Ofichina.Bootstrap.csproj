@@ -7,10 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Ofichina.Application\Ofichina.Application.csproj" />
-    <ProjectReference Include="..\src\Ofichina.Infrastructure\Ofichina.Infrastructure.csproj" />
-    <ProjectReference Include="..\src\Ofichina.Authentication\Ofichina.Authentication.csproj" />
-    <ProjectReference Include="..\src\Ofichina.Authentication\Ofichina.Authentication.csproj" />
+    <ProjectReference Include="..\Ofichina.Application\Ofichina.Application.csproj" />
+    <ProjectReference Include="..\Ofichina.Infrastructure\Ofichina.Infrastructure.csproj" />
+    <ProjectReference Include="..\Ofichina.Authentication\Ofichina.Authentication.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
-using Ofichina.Application.UseCases.Autenticacao.Commands;
-using Ofichina.Application.Validators;
+using Ofichina.Authentication.Validators;
+using Ofichina.Contracts.Requests;
 
 namespace Ofichina.UnitTests.Autenticacao;
 
@@ -8,8 +8,8 @@ public sealed class CadastrarUsuarioCommandValidatorTests
     [Fact]
     public void Deve_Validar_Comando_Valido()
     {
-        var validator = new CadastrarUsuarioCommandValidator();
-        var command = new CadastrarUsuarioCommand("Maria Silva", "maria@ofichinna.com", "123456");
+        var validator = new AutenticacaoRequestValidator();
+        var command = new AutenticacaoRequest { Email = "maria@ofichinna.com", Senha = "123456" };
 
         var result = validator.Validate(command);
 
@@ -19,13 +19,13 @@ public sealed class CadastrarUsuarioCommandValidatorTests
     [Fact]
     public void Deve_Rejeitar_Email_Invalido_E_Senha_Curta()
     {
-        var validator = new CadastrarUsuarioCommandValidator();
-        var command = new CadastrarUsuarioCommand("Maria Silva", "email-invalido", "123");
+        var validator = new AutenticacaoRequestValidator();
+        var command = new AutenticacaoRequest { Email = "email-invalido", Senha = "123" };
 
         var result = validator.Validate(command);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, x => x.PropertyName == nameof(CadastrarUsuarioCommand.Email));
-        Assert.Contains(result.Errors, x => x.PropertyName == nameof(CadastrarUsuarioCommand.Senha));
+        Assert.Contains(result.Errors, x => x.PropertyName == nameof(AutenticacaoRequest.Email));
+        Assert.Contains(result.Errors, x => x.PropertyName == nameof(AutenticacaoRequest.Senha));
     }
 }

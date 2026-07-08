@@ -21,7 +21,6 @@
     <ProjectReference Include="..\Ofichina.Application\Ofichina.Application.csproj" />
     <ProjectReference Include="..\Ofichina.Authentication\Ofichina.Authentication.csproj" />
     <ProjectReference Include="..\Ofichina.Domain\Ofichina.Domain.csproj" />
-    <ProjectReference Include="..\Ofichinna.Authentication\Ofichina.Authentication.csproj" />
   </ItemGroup>
 
   <ItemGroup>

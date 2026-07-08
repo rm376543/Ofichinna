@@ -1,7 +1,7 @@
-using Ofichina.Application.Abstractions;
-using Ofichina.Application.UseCases.Autenticacao.Commands;
-using Ofichina.Application.UseCases.Autenticacao.Handlers;
+using Ofichina.Authentication.Abstractions;
+using Ofichina.Authentication.Services;
 using Ofichina.Contracts.Responses;
+using Ofichina.Contracts.Requests;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Interfaces;
 using Ofichina.Domain.Shared;
@@ -18,10 +18,11 @@ public sealed class CadastrarUsuarioCommandHandlerTests
         var consultaRepository = new FakeUsuarioAutenticacaoRepository(usuarios);
         var jwtTokenService = new FakeJwtTokenService();
         var senhaHasher = new FakeSenhaHasher();
+        var perfilService = new FakePerfilAutorizacaoService();
         var unitOfWork = new FakeUnitOfWork();
-        var handler = new CadastrarUsuarioCommandHandler(repository, consultaRepository, jwtTokenService, senhaHasher, unitOfWork);
+        var handler = new AutenticacaoService(repository, unitOfWork, consultaRepository, perfilService, jwtTokenService, senhaHasher);
 
-        var result = await handler.HandleAsync(new CadastrarUsuarioCommand("Maria Silva", "maria@ofichinna.com", "123456"));
+        var result = await handler.CadastrarAsync(new CadastrarUsuarioRequest { Nome = "Maria Silva", Email = "maria@ofichinna.com", Senha = "123456" });
 
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
@@ -46,10 +47,11 @@ public sealed class CadastrarUsuarioCommandHandlerTests
         var consultaRepository = new FakeUsuarioAutenticacaoRepository(usuarios);
         var jwtTokenService = new FakeJwtTokenService();
         var senhaHasher = new FakeSenhaHasher();
+        var perfilService = new FakePerfilAutorizacaoService();
         var unitOfWork = new FakeUnitOfWork();
-        var handler = new CadastrarUsuarioCommandHandler(repository, consultaRepository, jwtTokenService, senhaHasher, unitOfWork);
+        var handler = new AutenticacaoService(repository, unitOfWork, consultaRepository, perfilService, jwtTokenService, senhaHasher);
 
-        var result = await handler.HandleAsync(new CadastrarUsuarioCommand("Maria Silva", "maria@ofichinna.com", "123456"));
+        var result = await handler.CadastrarAsync(new CadastrarUsuarioRequest { Nome = "Maria Silva", Email = "maria@ofichinna.com", Senha = "123456" });
 
         Assert.False(result.IsSuccess);
         Assert.Equal("Já existe um usuário cadastrado com este e-mail.", result.Error);
@@ -109,6 +111,19 @@ public sealed class CadastrarUsuarioCommandHandlerTests
                 AccessToken = "fake-token",
                 ExpiraEm = DateTime.UtcNow.AddHours(1)
             });
+        }
+    }
+
+    private sealed class FakePerfilAutorizacaoService : IPerfilAutorizacaoService
+    {
+        public Task<IReadOnlyCollection<string>> ObterPerfisAsync(Guid usuarioId, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult<IReadOnlyCollection<string>>([]);
+        }
+
+        public Task<bool> PossuiPerfilAsync(Guid usuarioId, string perfil, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(false);
         }
     }
 
