@@ -10,7 +10,7 @@
     <ProjectReference Include="..\src\Ofichina.Application\Ofichina.Application.csproj" />
     <ProjectReference Include="..\src\Ofichina.Infrastructure\Ofichina.Infrastructure.csproj" />
     <ProjectReference Include="..\src\Ofichina.Authentication\Ofichina.Authentication.csproj" />
-    <ProjectReference Include="..\src\Ofichinna.Authentication\Ofichina.Authentication.csproj" />
+    <ProjectReference Include="..\src\Ofichina.Authentication\Ofichina.Authentication.csproj" />
   </ItemGroup>
 
 </Project>
