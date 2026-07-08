@@ -15,6 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Ofichina.Application\Ofichina.Application.csproj" />
+    <ProjectReference Include="..\..\src\Ofichina.Contracts\Ofichina.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Ofichina.Domain\Ofichina.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 
