@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ofichina.Application.DependencyInjection;
-using Ofichinna.Authentication.DependencyInjection;
+using Ofichina.Authentication.DependencyInjection;
 using Ofichina.Infrastructure.DependencyInjection;
-using Ofichinna.Authentication;
+using Ofichina.Authentication;
 
 namespace Ofichina.Bootstrap;
 
