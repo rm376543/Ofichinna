@@ -1,4 +1,4 @@
-using Ofichina.Domain.Shared;
+using Ofichina.Domain.ValueObjects;
 
 namespace Ofichina.Domain.Entities;
 

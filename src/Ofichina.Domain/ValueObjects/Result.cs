@@ -1,4 +1,4 @@
-namespace Ofichina.Domain.Shared;
+namespace Ofichina.Domain.ValueObjects;
 
 /// <summary>
 /// Resultado padrão para operações da aplicação.
