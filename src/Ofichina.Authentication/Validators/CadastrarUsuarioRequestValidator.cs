@@ -9,16 +9,16 @@ public sealed class CadastrarUsuarioRequestValidator : AbstractValidator<CreateC
     public CadastrarUsuarioRequestValidator()
     {
         RuleFor(x => x.Nome)
-            .NotEmpty()
-            .MaximumLength(150);
+            .NotEmpty().WithMessage("O nome é obrigatório.")
+            .MaximumLength(150).WithMessage("O nome não pode exceder 150 caracteres.");
 
         RuleFor(x => x.Email)
-            .NotEmpty()
-            .EmailAddress()
-            .MaximumLength(200);
+            .NotEmpty().WithMessage("O e-mail é obrigatório.")
+            .EmailAddress().WithMessage("O e-mail informado é inválido.")
+            .MaximumLength(200).WithMessage("O e-mail não pode exceder 200 caracteres.");
 
         RuleFor(x => x.Senha)
-            .NotEmpty()
-            .MinimumLength(6);
+            .NotEmpty().WithMessage("A senha é obrigatória.")
+            .MinimumLength(6).WithMessage("A senha deve conter ao menos 6 caracteres.");
     }
 }
