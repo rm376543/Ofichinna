@@ -1,6 +1,6 @@
 using System.Net.Mail;
 
-namespace Ofichina.Domain.Shared;
+namespace Ofichina.Domain.ValueObjects;
 
 /// <summary>
 /// Representa um endereço de e-mail do domínio.
@@ -29,11 +29,10 @@ public sealed class Email : ValueObject
         }
     }
 
-    public static implicit operator Email(string email) => Criar(email);
-
-    public static implicit operator string(Email email) => email.Value;
-
-    public override string ToString() => Value;
+    public override string ToString()
+    {
+        return Value;
+    }
 
     protected override IEnumerable<object> GetAtomicValues()
     {

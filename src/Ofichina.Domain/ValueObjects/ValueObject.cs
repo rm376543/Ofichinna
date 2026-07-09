@@ -1,4 +1,4 @@
-namespace Ofichina.Domain.Shared;
+namespace Ofichina.Domain.ValueObjects;
 
 /// <summary>
 /// Classe base para objetos de valor (Value Objects).
