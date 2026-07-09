@@ -17,12 +17,12 @@ public sealed class UsuarioAutenticacaoRepository : IUsuarioAutenticacaoReposito
 
     public async Task<Usuario?> ObterPorEmailAsync(string email, CancellationToken cancellationToken = default)
     {
-        var normalizedEmail = Email.Criar(email).Value;
+        var normalizedEmail = Email.Criar(email);
 
         return await _context.Usuarios
             .AsNoTracking()
             .Include(x => x.Perfis)
                 .ThenInclude(x => x.Perfil)
-            .FirstOrDefaultAsync(x => EF.Property<string>(x, nameof(Usuario.Email)) == normalizedEmail, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Email == normalizedEmail, cancellationToken);
     }
 }
