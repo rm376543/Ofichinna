@@ -8,7 +8,7 @@ using Ofichina.Contracts.Requests.Autenticacao;
 using Ofichina.Contracts.Requests.Cliente;
 using Ofichina.Contracts.Requests.Usuario;
 
-namespace Ofichina.Api.Controllers;
+namespace Ofichina.Api.Controllers.Autenticacao;
 
 [Authorize]
 [ApiController]
