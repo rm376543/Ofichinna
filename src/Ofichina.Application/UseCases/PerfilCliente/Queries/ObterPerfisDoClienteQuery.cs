@@ -1,6 +1,6 @@
 ﻿using Ofichina.Application.Abstractions;
 
-namespace Ofichina.Application.UseCases.Cliente.Queries;
+namespace Ofichina.Application.UseCases.PerfilCliente.Queries;
 
 public sealed class ObterPerfisDoClienteQuery : IQuery<IReadOnlyCollection<string>>
 {

@@ -2,14 +2,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Autenticacao.Commands;
 using Ofichina.Application.UseCases.Autenticacao.Handlers;
-using Ofichina.Application.UseCases.Cliente.Commands;
-using Ofichina.Application.UseCases.Cliente.Handlers;
+using Ofichina.Application.UseCases.PerfilCliente.Commands;
+using Ofichina.Application.UseCases.PerfilCliente.Handlers;
 using Ofichina.Application.UseCases.Perfis.Commands;
 using Ofichina.Application.UseCases.Perfis.Handlers;
 using Ofichina.Application.UseCases.Perfis.Queries;
-using Ofichina.Application.UseCases.Cliente.Queries;
+using Ofichina.Application.UseCases.PerfilCliente.Queries;
 using Ofichina.Contracts.Responses;
-using Ofichina.Contracts.Responses.Cliente;
+using Ofichina.Contracts.Responses.PerfilCliente;
 using Ofichina.Contracts.Responses.Perfil;
 using Ofichina.Domain.ValueObjects;
 
