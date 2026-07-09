@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
 using Ofichina.Contracts.Requests.Perfil;
 
-namespace Ofichina.Application.Validators;
+namespace Ofichina.Application.Validators.Perfil;
 
 /// <summary>
 /// Validador para atualização de perfil.
 /// </summary>
-public class UpdatePerfilRequestValidator : AbstractValidator<UpdatePerfilRequest>
+public sealed class UpdatePerfilRequestValidator : AbstractValidator<UpdatePerfilRequest>
 {
     public UpdatePerfilRequestValidator()
     {

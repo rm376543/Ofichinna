@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using Ofichina.Application.UseCases.Cliente.Commands;
+using Ofichina.Application.UseCases.PerfilCliente.Commands;
 
-namespace Ofichina.Application.Validators.Cliente;
+namespace Ofichina.Application.Validators.PerfilCliente;
 
 public sealed class VincularPerfilClienteCommandValidator : AbstractValidator<VincularPerfilClienteCommand>
 {

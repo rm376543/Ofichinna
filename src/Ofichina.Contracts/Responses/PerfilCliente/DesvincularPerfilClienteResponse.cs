@@ -1,4 +1,4 @@
-﻿namespace Ofichina.Contracts.Responses.Cliente;
+﻿namespace Ofichina.Contracts.Responses.PerfilCliente;
 
 public sealed class DesvincularPerfilClienteResponse
 {

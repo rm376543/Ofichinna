@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
 using Ofichina.Contracts.Requests.Perfil;
 
-namespace Ofichina.Application.Validators;
+namespace Ofichina.Application.Validators.Perfil;
 
 /// <summary>
 /// Validador para criação de perfil.
 /// </summary>
-public class CreatePerfilRequestValidator : AbstractValidator<CreatePerfilRequest>
+public sealed class CreatePerfilRequestValidator : AbstractValidator<CreatePerfilRequest>
 {
     public CreatePerfilRequestValidator()
     {

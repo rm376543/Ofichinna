@@ -5,6 +5,6 @@
         public const string Ler = "Leitura";
         public const string Escrever = "Escrita";
         public const string Atualizar = "Atualizar";
-        public const string Apagar = "Deletar";
+        public const string Deletar = "Deletar";
     }
 }

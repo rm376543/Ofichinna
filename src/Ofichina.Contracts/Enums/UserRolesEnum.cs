@@ -2,7 +2,7 @@
 {
     public static class UserRolesEnum
     {
-        public const string Usuario = "Usuario";
-        public const string Admin = "Administrador";
+        public const string Usuario = "USUARIO";
+        public const string Admin = "ADMIN";
     }
 }

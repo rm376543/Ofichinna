@@ -1,6 +1,4 @@
-﻿using Ofichina.Contracts.Requests;
-
-namespace Ofichina.Contracts.Requests.Usuario;
+﻿namespace Ofichina.Contracts.Requests.PerfilCliente;
 
 public sealed class VincularPerfilClienteRequest : CreateRequest
 {

@@ -1,10 +1,10 @@
 ﻿using Ofichina.Application.Abstractions;
-using Ofichina.Application.UseCases.Cliente.Commands;
-using Ofichina.Contracts.Responses.Cliente;
+using Ofichina.Application.UseCases.PerfilCliente.Commands;
+using Ofichina.Contracts.Responses.PerfilCliente;
 using Ofichina.Domain.Interfaces;
 using Ofichina.Domain.ValueObjects;
 
-namespace Ofichina.Application.UseCases.Cliente.Handlers;
+namespace Ofichina.Application.UseCases.PerfilCliente.Handlers;
 
 public sealed class DesvincularPerfilClienteCommandHandler : ICommandHandler<DesvincularPerfilClienteCommand, Result<DesvincularPerfilClienteResponse>>
 {

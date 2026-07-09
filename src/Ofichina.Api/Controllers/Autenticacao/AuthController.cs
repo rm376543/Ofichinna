@@ -10,7 +10,6 @@ using Ofichina.Domain.ValueObjects;
 
 namespace Ofichina.Api.Controllers.Autenticacao;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public sealed class AuthController : ControllerBase
@@ -32,6 +31,12 @@ public sealed class AuthController : ControllerBase
         _registerHandler = registerHandler;
     }
 
+    /// <summary>
+    /// Realiza o login do cliente.
+    /// </summary>
+    /// <param name="request">Dados de autenticacao do cliente.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso, erro de validação ou acesso negado.</returns>
     [AllowAnonymous]
     [HttpPost("login")]
     [ProducesResponseType(typeof(ApiResponse<AutenticacaoResponse>), StatusCodes.Status200OK)]
@@ -58,6 +63,12 @@ public sealed class AuthController : ControllerBase
         return Ok(ApiResponse<AutenticacaoResponse>.SuccessResponse(result.Value, "Autenticação realizada com sucesso."));
     }
 
+    /// <summary>
+    /// Cria um login para o cliente.
+    /// </summary>
+    /// <param name="request">Dados para criar o usuario do cliente.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso, erro de validação ou erro ao concluir cadastro.</returns>
     [AllowAnonymous]
     [HttpPost("register")]
     [ProducesResponseType(typeof(ApiResponse<AutenticacaoResponse>), StatusCodes.Status201Created)]

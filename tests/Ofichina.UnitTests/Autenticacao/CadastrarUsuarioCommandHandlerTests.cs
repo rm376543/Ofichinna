@@ -1,7 +1,7 @@
 using Ofichina.Authentication.Abstractions;
 using Ofichina.Authentication.Services;
+using Ofichina.Contracts.Requests.Usuario;
 using Ofichina.Contracts.Responses;
-using Ofichina.Contracts.Requests;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Interfaces;
 using Ofichina.Domain.ValueObjects;
@@ -22,7 +22,7 @@ public sealed class CadastrarUsuarioCommandHandlerTests
         var unitOfWork = new FakeUnitOfWork();
         var handler = new AutenticacaoService(repository, unitOfWork, consultaRepository, perfilService, jwtTokenService, senhaHasher);
 
-        var result = await handler.CadastrarAsync(new CadastrarUsuarioRequest { Nome = "Maria Silva", Email = "maria@ofichinna.com", Senha = "123456" });
+        var result = await handler.CadastrarAsync(new CreateClienteRequest { Nome = "Maria Silva", Email = "maria@ofichinna.com", Senha = "123456" });
 
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
@@ -53,7 +53,7 @@ public sealed class CadastrarUsuarioCommandHandlerTests
         var unitOfWork = new FakeUnitOfWork();
         var handler = new AutenticacaoService(repository, unitOfWork, consultaRepository, perfilService, jwtTokenService, senhaHasher);
 
-        var result = await handler.CadastrarAsync(new CadastrarUsuarioRequest { Nome = "Maria Silva", Email = "maria@ofichinna.com", Senha = "123456" });
+        var result = await handler.CadastrarAsync(new CreateClienteRequest { Nome = "Maria Silva", Email = "maria@ofichinna.com", Senha = "123456" });
 
         Assert.False(result.IsSuccess);
         Assert.Equal("Já existe um usuário cadastrado com este e-mail.", result.Error);

@@ -1,8 +1,8 @@
 ﻿using Ofichina.Application.Abstractions;
-using Ofichina.Application.UseCases.Cliente.Queries;
+using Ofichina.Application.UseCases.PerfilCliente.Queries;
 using Ofichina.Authentication.Abstractions;
 
-namespace Ofichina.Application.UseCases.Cliente.Handlers;
+namespace Ofichina.Application.UseCases.PerfilCliente.Handlers;
 
 public sealed class ObterPerfisDoClienteQueryHandler
     : IQueryHandler<ObterPerfisDoClienteQuery, IReadOnlyCollection<string>>
