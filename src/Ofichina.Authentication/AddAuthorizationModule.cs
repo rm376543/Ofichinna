@@ -21,7 +21,9 @@ namespace Ofichina.Authentication
                     policy.RequireRole(UserRolesEnum.Usuario, UserRolesEnum.Admin))
                 .AddPolicy(UserPolicyEnum.Escrever, policy =>
                     policy.RequireRole(UserRolesEnum.Admin))
-                .AddPolicy(UserPolicyEnum.Apagar, policy =>
+                .AddPolicy(UserPolicyEnum.Atualizar, policy =>
+                    policy.RequireRole(UserRolesEnum.Admin))
+                .AddPolicy(UserPolicyEnum.Deletar, policy =>
                     policy.RequireRole(UserRolesEnum.Admin));
 
             return services;

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace Ofichina.Authentication;
 
@@ -16,8 +17,8 @@ public static class AuthenticationModule
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var issuer = configuration["Jwt:Issuer"] ?? "Ofichina";
-        var audience = configuration["Jwt:Audience"] ?? "Ofichina";
+        var issuer = configuration["Jwt:Issuer"] ?? "ofichinna";
+        var audience = configuration["Jwt:Audience"] ?? "ofichinna";
         var key = configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key não configurada.");
 
         services.AddAuthentication(options =>
@@ -36,7 +37,60 @@ public static class AuthenticationModule
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
                 ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
+                ClockSkew = TimeSpan.Zero,
+                NameClaimType = ClaimTypes.NameIdentifier,
+                RoleClaimType = ClaimTypes.Role
+            };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    Console.WriteLine("===== TOKEN RECEBIDO =====");
+
+                    Console.WriteLine(context.Request.Headers.Authorization);
+
+                    Console.WriteLine("==========================");
+
+                    foreach (var header in context.Request.Headers)
+                    {
+                        Console.WriteLine($"{header.Key} = {header.Value}");
+                    }
+
+                    return Task.CompletedTask;
+                },
+
+                OnAuthenticationFailed = context =>
+                {
+                    Console.WriteLine("================================");
+                    Console.WriteLine(context.Exception.GetType().FullName);
+                    Console.WriteLine(context.Exception.Message);
+                    Console.WriteLine(context.Exception);
+                    Console.WriteLine("================================");
+
+                    return Task.CompletedTask;
+                },
+
+                OnTokenValidated = context =>
+                {
+                    Console.WriteLine("Token válido!");
+
+                    foreach (var claim in context.Principal!.Claims)
+                    {
+                        Console.WriteLine($"{claim.Type}: {claim.Value}");
+                    }
+
+                    return Task.CompletedTask;
+                },
+
+                OnChallenge = context =>
+                {
+                    Console.WriteLine("Challenge:");
+                    Console.WriteLine(context.Error);
+                    Console.WriteLine(context.ErrorDescription);
+
+                    return Task.CompletedTask;
+                }
             };
         });
 

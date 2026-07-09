@@ -20,8 +20,8 @@ public sealed class JwtTokenService : IJwtTokenService
 
     public Task<TokenJwtResponse> GerarTokenAsync(Usuario usuario, IReadOnlyCollection<string> perfis, CancellationToken cancellationToken = default)
     {
-        var issuer = _configuration["Jwt:Issuer"] ?? "Ofichina";
-        var audience = _configuration["Jwt:Audience"] ?? "Ofichina";
+        var issuer = _configuration["Jwt:Issuer"] ?? "ofichinna";
+        var audience = _configuration["Jwt:Audience"] ?? "ofichinna";
         var key = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key não configurada.");
         var expirationMinutes = int.TryParse(_configuration["Jwt:ExpirationMinutes"], out var minutes) ? minutes : 60;
 
