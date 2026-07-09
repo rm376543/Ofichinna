@@ -5,8 +5,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddAuthorization();
-
 builder.Services.AddSwaggerModule();
 
 // Adiciona todos os serviços de infraestrutura e demais

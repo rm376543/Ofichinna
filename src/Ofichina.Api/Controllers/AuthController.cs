@@ -1,30 +1,35 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using Ofichina.Contracts.Requests;
 using Ofichina.Contracts.Responses;
-using Ofichina.Domain.Shared;
 using Ofichina.Authentication.Abstractions;
+using Microsoft.AspNetCore.Authorization;
+using Ofichina.Contracts.Enums;
+using Ofichina.Contracts.Requests.Autenticacao;
+using Ofichina.Contracts.Requests.Cliente;
+using Ofichina.Contracts.Requests.Usuario;
 
 namespace Ofichina.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public sealed class AuthController : ControllerBase
 {
     private readonly IAutenticacaoService _autenticacaoService;
     private readonly IValidator<AutenticacaoRequest> _validator;
-    private readonly IValidator<CadastrarUsuarioRequest> _cadastroValidator;
+    private readonly IValidator<CreateClienteRequest> _cadastroValidator;
 
     public AuthController(
         IAutenticacaoService autenticacaoService,
         IValidator<AutenticacaoRequest> validator,
-        IValidator<CadastrarUsuarioRequest> cadastroValidator)
+        IValidator<CreateClienteRequest> cadastroValidator)
     {
         _autenticacaoService = autenticacaoService;
         _validator = validator;
         _cadastroValidator = cadastroValidator;
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     [ProducesResponseType(typeof(ApiResponse<AutenticacaoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -50,11 +55,13 @@ public sealed class AuthController : ControllerBase
         return Ok(ApiResponse<AutenticacaoResponse>.SuccessResponse(result.Value, "Autenticação realizada com sucesso."));
     }
 
+    [AllowAnonymous]
+    //[Authorize(Roles = PerfilSistemaEnum.Administrador)]
     [HttpPost("register")]
     [ProducesResponseType(typeof(ApiResponse<AutenticacaoResponse>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<AutenticacaoResponse>>> RegisterAsync(
-        [FromBody] CadastrarUsuarioRequest request,
+        [FromBody] CreateClienteRequest request,
         CancellationToken cancellationToken)
     {
         var validation = await _cadastroValidator.ValidateAsync(request, cancellationToken);
