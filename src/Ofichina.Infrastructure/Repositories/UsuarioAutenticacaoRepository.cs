@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Shared;
+using Ofichina.Domain.ValueObjects;
 using Ofichina.Infrastructure.Persistence;
 using Ofichina.Authentication.Abstractions;
 
