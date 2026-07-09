@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Autenticacao\" />
-    <Folder Include="Controllers\Cliente\" />
     <Folder Include="Controllers\Veiculo\" />
     <Folder Include="Controllers\Orcamento\" />
     <Folder Include="Controllers\Servicos\" />
