@@ -7,7 +7,6 @@ using Ofichina.Application.UseCases.Perfis.Queries;
 using Ofichina.Contracts.Requests.Perfil;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Perfil;
-using Ofichina.Domain.ValueObjects;
 
 namespace Ofichina.Api.Controllers.Perfis;
 
