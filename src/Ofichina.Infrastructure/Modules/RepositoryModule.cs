@@ -28,6 +28,8 @@ public static class RepositoryModule
         // Registre aqui os repositórios específicos do domínio
         services.AddScoped<IExemploRepository, ExemploRepository>();
 
+        services.AddScoped<IPerfilRepository, PerfilRepository>();
+
         return services;
     }
 }
