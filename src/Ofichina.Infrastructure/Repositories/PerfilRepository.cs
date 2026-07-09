@@ -1,0 +1,36 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Ofichina.Domain.Entities;
+using Ofichina.Domain.Interfaces;
+using Ofichina.Infrastructure.Persistence;
+
+namespace Ofichina.Infrastructure.Repositories;
+
+/// <summary>
+/// Implementação do repositório específico para Perfil.
+/// </summary>
+public class PerfilRepository : Repository<Perfil>, IPerfilRepository
+{
+    private readonly ApplicationDbContext _context;
+
+    public PerfilRepository(ApplicationDbContext context) : base(context)
+    {
+        _context = context;
+    }
+
+    public async Task<Perfil?> GetByCodigoAsync(string codigo)
+    {
+        var normalizedCodigo = codigo.Trim().ToUpperInvariant();
+
+        return await _context.Set<Perfil>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Codigo.ToUpper() == normalizedCodigo);
+    }
+
+    public async Task<IEnumerable<Perfil>> GetAllAtivosAsync()
+    {
+        return await _context.Set<Perfil>()
+            .AsNoTracking()
+            .Where(x => x.Ativo)
+            .ToListAsync();
+    }
+}
