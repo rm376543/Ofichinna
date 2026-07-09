@@ -10,8 +10,8 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
 {
     public void Configure(EntityTypeBuilder<Usuario> builder)
     {
-        Email Email = Email.Criar("admin@ofichinna.local");
-        
+        var adminEmail = Email.Criar("admin@ofichinna.local");
+
         builder.ToTable("Usuarios");
 
         builder.HasKey(x => x.Id);
@@ -20,14 +20,14 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .HasMaxLength(150)
             .IsRequired();
 
-        builder.Property(x => Email)
+        builder.Property(x => x.Email)
             .HasConversion(
                 email => email.Value,
                 value => Email.Criar(value))
             .HasMaxLength(200)
             .IsRequired();
 
-        builder.HasIndex(x => Email)
+        builder.HasIndex(x => x.Email)
             .IsUnique();
 
         builder.Property(x => x.SenhaHash)
@@ -41,7 +41,7 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
 
         builder.HasData(new Usuario(
             nome: "Administrador",
-            email: Email,
+            email: adminEmail,
             senhaHash: AuthSeed.AdminPasswordHash)
         {
             Id = AuthSeed.AdminUsuarioId,

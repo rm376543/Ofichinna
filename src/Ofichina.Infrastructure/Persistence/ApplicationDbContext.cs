@@ -34,7 +34,7 @@ public class ApplicationDbContext : DbContext
     /// DbSet para vínculos entre usuários e perfis.
     /// </summary>
     public DbSet<UsuarioPerfil> UsuariosPerfis { get; set; } = null!;
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
