@@ -1,7 +1,9 @@
-using Ofichina.Contracts.Requests;
+using Ofichina.Contracts.Requests.Autenticacao;
+using Ofichina.Contracts.Requests.Cliente;
+using Ofichina.Contracts.Requests.Usuario;
 using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Shared;
+using Ofichina.Domain.ValueObjects;
 
 namespace Ofichina.Authentication.Abstractions;
 
@@ -12,7 +14,7 @@ public interface IAutenticacaoService
 {
     Task<Result<AutenticacaoResponse>> AutenticarAsync(AutenticacaoRequest request, CancellationToken cancellationToken = default);
 
-    Task<Result<AutenticacaoResponse>> CadastrarAsync(CadastrarUsuarioRequest request, CancellationToken cancellationToken = default);
+    Task<Result<AutenticacaoResponse>> CadastrarAsync(CreateClienteRequest request, CancellationToken cancellationToken = default);
 }
 
 /// <summary>

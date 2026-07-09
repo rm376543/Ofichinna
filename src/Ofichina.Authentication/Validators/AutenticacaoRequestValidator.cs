@@ -1,5 +1,5 @@
 using FluentValidation;
-using Ofichina.Contracts.Requests;
+using Ofichina.Contracts.Requests.Autenticacao;
 
 namespace Ofichina.Authentication.Validators;
 

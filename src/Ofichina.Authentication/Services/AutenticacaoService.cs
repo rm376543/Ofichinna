@@ -1,9 +1,11 @@
-using Ofichina.Contracts.Requests;
 using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Interfaces;
-using Ofichina.Domain.Shared;
+using Ofichina.Domain.ValueObjects;
 using Ofichina.Authentication.Abstractions;
+using Ofichina.Contracts.Requests.Autenticacao;
+using Ofichina.Contracts.Requests.Cliente;
+using Ofichina.Contracts.Requests.Usuario;
 
 namespace Ofichina.Authentication.Services;
 
@@ -34,8 +36,8 @@ public sealed class AutenticacaoService : IAutenticacaoService
 
     public async Task<Result<AutenticacaoResponse>> AutenticarAsync(AutenticacaoRequest request, CancellationToken cancellationToken = default)
     {
-        var email = Email.Criar(request.Email);
-        var usuario = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email, cancellationToken);
+        Email email = Email.Criar(request.Email);
+        var usuario = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email.Value, cancellationToken);
 
         if (usuario is null || !usuario.Ativo)
         {
@@ -61,12 +63,12 @@ public sealed class AutenticacaoService : IAutenticacaoService
         });
     }
 
-    public async Task<Result<AutenticacaoResponse>> CadastrarAsync(CadastrarUsuarioRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result<AutenticacaoResponse>> CadastrarAsync(CreateClienteRequest request, CancellationToken cancellationToken = default)
     {
         var nome = request.Nome.Trim();
-        var email = Email.Criar(request.Email);
+        Email email = Email.Criar(request.Email);
 
-        var usuarioExistente = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email, cancellationToken);
+        var usuarioExistente = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email.Value, cancellationToken);
         if (usuarioExistente is not null)
         {
             return Result.Failure<AutenticacaoResponse>("Já existe um usuário cadastrado com este e-mail.");

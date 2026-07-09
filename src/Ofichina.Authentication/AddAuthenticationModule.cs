@@ -12,7 +12,7 @@ namespace Ofichina.Authentication;
 /// </summary>
 public static class AuthenticationModule
 {
-    public static IServiceCollection AddAuthenticationModule(
+    public static IServiceCollection AddAuthenticationModules(
         this IServiceCollection services,
         IConfiguration configuration)
     {
