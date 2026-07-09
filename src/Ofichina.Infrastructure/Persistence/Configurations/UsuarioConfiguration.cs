@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Shared;
+using Ofichina.Domain.ValueObjects;
 using Ofichina.Infrastructure.Persistence.Seeds;
 
 namespace Ofichina.Infrastructure.Persistence.Configurations;
@@ -10,6 +10,8 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
 {
     public void Configure(EntityTypeBuilder<Usuario> builder)
     {
+        Email Email = Email.Criar("admin@ofichinna.local");
+        
         builder.ToTable("Usuarios");
 
         builder.HasKey(x => x.Id);
@@ -18,14 +20,14 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .HasMaxLength(150)
             .IsRequired();
 
-        builder.Property(x => x.Email)
+        builder.Property(x => Email)
             .HasConversion(
                 email => email.Value,
                 value => Email.Criar(value))
             .HasMaxLength(200)
             .IsRequired();
 
-        builder.HasIndex(x => x.Email)
+        builder.HasIndex(x => Email)
             .IsUnique();
 
         builder.Property(x => x.SenhaHash)
@@ -39,7 +41,7 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
 
         builder.HasData(new Usuario(
             nome: "Administrador",
-            email: "admin@ofichinna.local",
+            email: Email,
             senhaHash: AuthSeed.AdminPasswordHash)
         {
             Id = AuthSeed.AdminUsuarioId,
