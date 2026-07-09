@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi;
+using System.Reflection;
 
 namespace Ofichina.Api.Modules;
 
@@ -7,6 +8,8 @@ public static class SwaggerModule
 {
     public static IServiceCollection AddSwaggerModule(this IServiceCollection services)
     {
+        const string schemeId = "bearer";
+
         services.AddEndpointsApiExplorer();
 
         services.AddSwaggerGen(options =>
@@ -32,6 +35,9 @@ public static class SwaggerModule
                 }
             });
 
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
             var securityScheme = new OpenApiSecurityScheme
             {
                 Name = "Authorization",
@@ -42,7 +48,11 @@ public static class SwaggerModule
                 BearerFormat = "JWT"
             };
 
+            options.IncludeXmlComments(xmlPath);
+
             options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, securityScheme);
+
+            options.AddSecurityRequirement(document => new() { [new OpenApiSecuritySchemeReference("Bearer", document)] = [] });
         });
 
         return services;
