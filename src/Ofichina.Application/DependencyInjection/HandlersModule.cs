@@ -1,9 +1,17 @@
 using Microsoft.Extensions.DependencyInjection;
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.UseCases.Autenticacao.Commands;
+using Ofichina.Application.UseCases.Autenticacao.Handlers;
+using Ofichina.Application.UseCases.Cliente.Commands;
+using Ofichina.Application.UseCases.Cliente.Handlers;
 using Ofichina.Application.UseCases.Perfis.Commands;
 using Ofichina.Application.UseCases.Perfis.Handlers;
 using Ofichina.Application.UseCases.Perfis.Queries;
+using Ofichina.Application.UseCases.Cliente.Queries;
+using Ofichina.Contracts.Responses;
+using Ofichina.Contracts.Responses.Cliente;
 using Ofichina.Contracts.Responses.Perfil;
+using Ofichina.Domain.ValueObjects;
 
 namespace Ofichina.Application.DependencyInjection;
 
@@ -22,6 +30,15 @@ public static class HandlersModule
 
         services.AddScoped<IQueryHandler<GetPerfilByIdQuery, PerfilResponse?>, GetPerfilByIdQueryHandler>();
         services.AddScoped<IQueryHandler<GetPerfisQuery, IReadOnlyCollection<PerfilResponse>>, GetPerfisQueryHandler>();
+
+        // Autenticacao
+        services.AddScoped<ICommandHandler<AutenticarCommand, Result<AutenticacaoResponse>>, AutenticarCommandHandler>();
+        services.AddScoped<ICommandHandler<CadastrarClienteCommand, Result<AutenticacaoResponse>>, CadastrarClienteCommandHandler>();
+
+        //ClientePerfil
+        services.AddScoped<ICommandHandler<VincularPerfilClienteCommand, Result<VincularPerfilClienteResponse>>, VincularPerfilClienteCommandHandler>();
+        services.AddScoped<ICommandHandler<DesvincularPerfilClienteCommand, Result<DesvincularPerfilClienteResponse>>, DesvincularPerfilClienteCommandHandler>();
+        services.AddScoped<IQueryHandler<ObterPerfisDoClienteQuery, IReadOnlyCollection<string>>, ObterPerfisDoClienteQueryHandler>();
 
         return services;
     }
