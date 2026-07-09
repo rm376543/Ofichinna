@@ -1,5 +1,5 @@
 using Ofichina.Authentication.Validators;
-using Ofichina.Contracts.Requests;
+using Ofichina.Contracts.Requests.Autenticacao;
 
 namespace Ofichina.UnitTests.Autenticacao;
 
