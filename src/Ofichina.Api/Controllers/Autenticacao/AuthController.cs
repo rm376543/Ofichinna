@@ -1,12 +1,12 @@
 using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
-using Ofichina.Contracts.Responses;
-using Ofichina.Authentication.Abstractions;
 using Microsoft.AspNetCore.Authorization;
-using Ofichina.Contracts.Enums;
+using Microsoft.AspNetCore.Mvc;
+using Ofichina.Application.Abstractions;
+using Ofichina.Application.UseCases.Autenticacao.Commands;
 using Ofichina.Contracts.Requests.Autenticacao;
-using Ofichina.Contracts.Requests.Cliente;
 using Ofichina.Contracts.Requests.Usuario;
+using Ofichina.Contracts.Responses;
+using Ofichina.Domain.ValueObjects;
 
 namespace Ofichina.Api.Controllers.Autenticacao;
 
@@ -15,18 +15,21 @@ namespace Ofichina.Api.Controllers.Autenticacao;
 [Route("api/[controller]")]
 public sealed class AuthController : ControllerBase
 {
-    private readonly IAutenticacaoService _autenticacaoService;
-    private readonly IValidator<AutenticacaoRequest> _validator;
-    private readonly IValidator<CreateClienteRequest> _cadastroValidator;
+    private readonly IValidator<AutenticacaoRequest> _loginValidator;
+    private readonly IValidator<CreateClienteRequest> _registerValidator;
+    private readonly ICommandHandler<AutenticarCommand, Result<AutenticacaoResponse>> _loginHandler;
+    private readonly ICommandHandler<CadastrarClienteCommand, Result<AutenticacaoResponse>> _registerHandler;
 
     public AuthController(
-        IAutenticacaoService autenticacaoService,
-        IValidator<AutenticacaoRequest> validator,
-        IValidator<CreateClienteRequest> cadastroValidator)
+        IValidator<AutenticacaoRequest> loginValidator,
+        IValidator<CreateClienteRequest> registerValidator,
+        ICommandHandler<AutenticarCommand, Result<AutenticacaoResponse>> loginHandler,
+        ICommandHandler<CadastrarClienteCommand, Result<AutenticacaoResponse>> registerHandler)
     {
-        _autenticacaoService = autenticacaoService;
-        _validator = validator;
-        _cadastroValidator = cadastroValidator;
+        _loginValidator = loginValidator;
+        _registerValidator = registerValidator;
+        _loginHandler = loginHandler;
+        _registerHandler = registerHandler;
     }
 
     [AllowAnonymous]
@@ -38,14 +41,14 @@ public sealed class AuthController : ControllerBase
         [FromBody] AutenticacaoRequest request,
         CancellationToken cancellationToken)
     {
-        var validation = await _validator.ValidateAsync(request, cancellationToken);
+        var validation = await _loginValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
         {
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _autenticacaoService.AutenticarAsync(request, cancellationToken);
+        var result = await _loginHandler.HandleAsync(new AutenticarCommand(request.Email, request.Senha));
 
         if (!result.IsSuccess || result.Value is null)
         {
@@ -56,7 +59,6 @@ public sealed class AuthController : ControllerBase
     }
 
     [AllowAnonymous]
-    //[Authorize(Roles = PerfilSistemaEnum.Administrador)]
     [HttpPost("register")]
     [ProducesResponseType(typeof(ApiResponse<AutenticacaoResponse>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -64,20 +66,23 @@ public sealed class AuthController : ControllerBase
         [FromBody] CreateClienteRequest request,
         CancellationToken cancellationToken)
     {
-        var validation = await _cadastroValidator.ValidateAsync(request, cancellationToken);
+        var validation = await _registerValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
         {
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _autenticacaoService.CadastrarAsync(request, cancellationToken);
+        var result = await _registerHandler.HandleAsync(
+            new CadastrarClienteCommand(request.Nome, request.Email, request.Senha));
 
         if (!result.IsSuccess || result.Value is null)
         {
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível concluir o cadastro."));
         }
 
-        return StatusCode(StatusCodes.Status201Created, ApiResponse<AutenticacaoResponse>.SuccessResponse(result.Value, "Cadastro realizado com sucesso."));
+        return StatusCode(
+            StatusCodes.Status201Created,
+            ApiResponse<AutenticacaoResponse>.SuccessResponse(result.Value, "Cadastro realizado com sucesso."));
     }
 }
