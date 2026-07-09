@@ -30,6 +30,8 @@ public static class RepositoryModule
 
         services.AddScoped<IPerfilRepository, PerfilRepository>();
 
+        services.AddScoped<IClientePerfilRepository, ClientePerfilRepository>();
+
         return services;
     }
 }
