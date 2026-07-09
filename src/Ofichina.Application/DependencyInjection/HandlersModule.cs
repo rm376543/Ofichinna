@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.UseCases.Perfil.Commands;
-using Ofichina.Application.UseCases.Perfil.Handlers;
-using Ofichina.Application.UseCases.Perfil.Queries;
+using Ofichina.Application.UseCases.Perfis.Commands;
+using Ofichina.Application.UseCases.Perfis.Handlers;
+using Ofichina.Application.UseCases.Perfis.Queries;
 using Ofichina.Contracts.Responses.Perfil;
 
 namespace Ofichina.Application.DependencyInjection;

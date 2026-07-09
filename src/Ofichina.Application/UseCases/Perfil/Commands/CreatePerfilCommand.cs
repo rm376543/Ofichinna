@@ -1,6 +1,6 @@
 ﻿using Ofichina.Application.Abstractions;
 
-namespace Ofichina.Application.UseCases.Perfil.Commands;
+namespace Ofichina.Application.UseCases.Perfis.Commands;
 
 /// <summary>
 /// Comando para criar um novo perfil.

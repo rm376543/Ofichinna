@@ -1,7 +1,7 @@
 ﻿using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Responses.Perfil;
 
-namespace Ofichina.Application.UseCases.Perfil.Queries;
+namespace Ofichina.Application.UseCases.Perfis.Queries;
 
 /// <summary>
 /// Query para obter um perfil por ID.

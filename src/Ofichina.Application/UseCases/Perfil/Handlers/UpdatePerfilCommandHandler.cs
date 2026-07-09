@@ -1,9 +1,9 @@
 ﻿using Ofichina.Application.Abstractions;
-using Ofichina.Application.UseCases.Perfil.Commands;
+using Ofichina.Application.UseCases.Perfis.Commands;
 using Ofichina.Domain.Interfaces;
 using Ofichina.Domain.ValueObjects;
 
-namespace Ofichina.Application.UseCases.Perfil.Handlers;
+namespace Ofichina.Application.UseCases.Perfis.Handlers;
 
 /// <summary>
 /// Handler para atualizar um perfil.

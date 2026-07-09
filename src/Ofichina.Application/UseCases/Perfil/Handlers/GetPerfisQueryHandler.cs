@@ -1,9 +1,9 @@
 ﻿using Ofichina.Application.Abstractions;
-using Ofichina.Application.UseCases.Perfil.Queries;
+using Ofichina.Application.UseCases.Perfis.Queries;
 using Ofichina.Contracts.Responses.Perfil;
 using Ofichina.Domain.Interfaces;
 
-namespace Ofichina.Application.UseCases.Perfil.Handlers;
+namespace Ofichina.Application.UseCases.Perfis.Handlers;
 
 /// <summary>
 /// Handler para listar perfis.

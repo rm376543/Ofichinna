@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.UseCases.Perfil.Commands;
-using Ofichina.Application.UseCases.Perfil.Queries;
+using Ofichina.Application.UseCases.Perfis.Commands;
+using Ofichina.Application.UseCases.Perfis.Queries;
 using Ofichina.Contracts.Requests.Perfil;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Perfil;

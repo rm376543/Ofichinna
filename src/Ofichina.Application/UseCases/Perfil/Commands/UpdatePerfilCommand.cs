@@ -1,7 +1,7 @@
 ﻿using Ofichina.Application.Abstractions;
 using Ofichina.Domain.ValueObjects;
 
-namespace Ofichina.Application.UseCases.Perfil.Commands;
+namespace Ofichina.Application.UseCases.Perfis.Commands;
 
 /// <summary>
 /// Comando para atualizar um perfil.
