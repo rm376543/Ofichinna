@@ -13,8 +13,9 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddAuthorizationModule();
+        services.AddAuthenticationModules(configuration);
         services.AddAuthenticationServices();
-        services.AddAuthenticationModule(configuration);
         services.AddApplication();
         services.AddInfrastructure(configuration);
 
