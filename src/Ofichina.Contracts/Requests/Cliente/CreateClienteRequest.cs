@@ -1,9 +1,9 @@
-namespace Ofichina.Contracts.Requests;
+namespace Ofichina.Contracts.Requests.Usuario;
 
 /// <summary>
 /// Requisição para cadastro de novo usuário.
 /// </summary>
-public class CadastrarUsuarioRequest
+public class CreateClienteRequest : CreateRequest
 {
     public string Nome { get; set; } = string.Empty;
 
