@@ -4,7 +4,7 @@ using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Requests;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Interfaces;
-using Ofichina.Domain.Shared;
+using Ofichina.Domain.ValueObjects;
 
 namespace Ofichina.UnitTests.Autenticacao;
 
@@ -39,9 +39,11 @@ public sealed class CadastrarUsuarioCommandHandlerTests
     [Fact]
     public async Task Deve_Falhar_Quando_Email_Ja_Existe()
     {
+        var emailCriado = Email.Criar("maria@ofichinna.com");
+
         var usuarios = new List<Usuario>
         {
-            new("Maria Silva", "maria@ofichinna.com", "hash:123456")
+            new("Maria Silva", emailCriado, "hash:123456")
         };
         var repository = new FakeUsuarioRepository(usuarios);
         var consultaRepository = new FakeUsuarioAutenticacaoRepository(usuarios);
