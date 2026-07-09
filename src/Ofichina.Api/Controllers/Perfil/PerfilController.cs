@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Perfis.Commands;
 using Ofichina.Application.UseCases.Perfis.Queries;
+using Ofichina.Contracts.Enums;
 using Ofichina.Contracts.Requests.Perfil;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Perfil;
@@ -43,7 +44,11 @@ public sealed class PerfisController : ControllerBase
         _getByIdHandler = getByIdHandler;
     }
 
-    [AllowAnonymous]
+    /// <summary>
+    /// Retorna todos os perfis cadastrados.
+    /// </summary>
+    /// <returns>Lista de perfis.</returns>
+    [Authorize(Policy = UserPolicyEnum.Ler)]
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<PerfilResponse>>), StatusCodes.Status200OK)]
     public async Task<ActionResult<ApiResponse<IReadOnlyCollection<PerfilResponse>>>> GetAllAsync(
@@ -54,7 +59,12 @@ public sealed class PerfisController : ControllerBase
         return Ok(ApiResponse<IReadOnlyCollection<PerfilResponse>>.SuccessResponse(result));
     }
 
-    [AllowAnonymous]
+    /// <summary>
+    /// Retorna um perfil pelo identificador.
+    /// </summary>
+    /// <param name="id">Identificador do perfil.</param>
+    /// <returns>Perfil encontrado ou erro 404 quando não existir.</returns>
+    [Authorize(Policy = UserPolicyEnum.Ler)]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PerfilResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -72,7 +82,13 @@ public sealed class PerfisController : ControllerBase
         return Ok(ApiResponse<PerfilResponse>.SuccessResponse(result));
     }
 
-    [AllowAnonymous]
+    /// <summary>
+    /// Cria um novo perfil.
+    /// </summary>
+    /// <param name="request">Dados do perfil a ser criado.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Id do perfil criado ou erro de validação.</returns>
+    [Authorize(Policy = UserPolicyEnum.Escrever)]
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -100,21 +116,21 @@ public sealed class PerfisController : ControllerBase
             ApiResponse<Guid>.SuccessResponse(id, "Perfil criado com sucesso."));
     }
 
-    [AllowAnonymous]
-    [HttpPut("{id:guid}")]
+    /// <summary>
+    /// Atualiza um perfil existente.
+    /// </summary>
+    /// <param name="request">Dados atualizados do perfil.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso, erro de validação ou perfil não encontrado.</returns>
+    [Authorize(Policy = UserPolicyEnum.Atualizar)]
+    [HttpPut]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> UpdateAsync(
-        Guid id,
         [FromBody] UpdatePerfilRequest request,
         CancellationToken cancellationToken)
     {
-        if (id != request.Id)
-        {
-            return BadRequest(ApiResponse.FailureResponse("O Id da rota deve ser igual ao Id do corpo da requisição."));
-        }
-
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
@@ -139,7 +155,13 @@ public sealed class PerfisController : ControllerBase
         return Ok(ApiResponse.SuccessResponse("Perfil atualizado com sucesso."));
     }
 
-    [AllowAnonymous]
+    /// <summary>
+    /// Desativa um perfil existente.
+    /// </summary>
+    /// <param name="id">Identificador do perfil.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso ou erro 404.</returns>
+    [Authorize(Policy = UserPolicyEnum.Deletar)]
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
