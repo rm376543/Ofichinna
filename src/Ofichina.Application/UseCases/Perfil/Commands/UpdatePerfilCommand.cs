@@ -1,5 +1,5 @@
 ﻿using Ofichina.Application.Abstractions;
-using Ofichina.Domain.ValueObjects;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Application.UseCases.Perfis.Commands;
 

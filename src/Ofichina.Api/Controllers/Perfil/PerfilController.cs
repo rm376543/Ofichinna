@@ -13,7 +13,7 @@ namespace Ofichina.Api.Controllers.Perfis;
 
 [Authorize]
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/perfil")]
 #pragma warning disable S6960
 public sealed class PerfisController : ControllerBase
 #pragma warning restore S6960

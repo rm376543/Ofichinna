@@ -4,8 +4,8 @@ using Ofichina.Domain.Interfaces;
 using Ofichina.Domain.ValueObjects;
 using Ofichina.Authentication.Abstractions;
 using Ofichina.Contracts.Requests.Autenticacao;
-using Ofichina.Contracts.Requests.Cliente;
 using Ofichina.Contracts.Requests.Usuario;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Authentication.Services;
 

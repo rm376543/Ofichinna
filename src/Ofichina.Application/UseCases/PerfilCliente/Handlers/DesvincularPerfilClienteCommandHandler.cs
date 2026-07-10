@@ -1,8 +1,8 @@
 ﻿using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.PerfilCliente.Commands;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.PerfilCliente;
 using Ofichina.Domain.Interfaces;
-using Ofichina.Domain.ValueObjects;
 
 namespace Ofichina.Application.UseCases.PerfilCliente.Handlers;
 

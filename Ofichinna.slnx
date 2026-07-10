@@ -9,6 +9,7 @@
     <Project Path="src/Ofichina.Infrastructure/Ofichina.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Ofichina.ArchitectureTests/Ofichina.ArchitectureTests.csproj" Id="147a685d-d3f9-4dc2-8993-9c8ac4482693" />
     <Project Path="tests/Ofichina.IntegrationTests/Ofichina.IntegrationTests.csproj" />
     <Project Path="tests/Ofichina.UnitTests/Ofichina.UnitTests.csproj" />
   </Folder>
