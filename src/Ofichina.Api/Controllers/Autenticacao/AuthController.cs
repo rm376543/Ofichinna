@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Autenticacao.Commands;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Autenticacao;
 using Ofichina.Contracts.Requests.Usuario;
 using Ofichina.Contracts.Responses;
-using Ofichina.Domain.ValueObjects;
 
 namespace Ofichina.Api.Controllers.Autenticacao;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
 public sealed class AuthController : ControllerBase
 {
     private readonly IValidator<AutenticacaoRequest> _loginValidator;

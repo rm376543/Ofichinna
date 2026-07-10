@@ -4,17 +4,17 @@ using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.PerfilCliente.Commands;
 using Ofichina.Application.UseCases.PerfilCliente.Queries;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Enums;
 using Ofichina.Contracts.Requests.PerfilCliente;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.PerfilCliente;
-using Ofichina.Domain.ValueObjects;
 
 namespace Ofichina.Api.Controllers.PerfilCliente;
 
 [Authorize]
 [ApiController]
-[Route("api/clientes/{clienteId:guid}/perfis")]
+[Route("api/cliente/{clienteId:guid}/perfil")]
 public sealed class PerfilClienteController : ControllerBase
 {
     private readonly IValidator<VincularPerfilClienteRequest> _vincularValidator;
