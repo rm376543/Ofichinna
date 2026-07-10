@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
-using Ofichina.Infrastructure.Persistence.Seeds;
 
 namespace Ofichina.Infrastructure.Persistence.Configurations;
 
@@ -10,8 +9,6 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
 {
     public void Configure(EntityTypeBuilder<Usuario> builder)
     {
-        var adminEmail = Email.Criar("admin@ofichinna.local");
-
         builder.ToTable("Usuarios");
 
         builder.HasKey(x => x.Id);
@@ -38,15 +35,5 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .WithOne(x => x.Usuario)
             .HasForeignKey(x => x.UsuarioId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasData(new Usuario(
-            nome: "Administrador",
-            email: adminEmail,
-            senhaHash: AuthSeed.AdminPasswordHash)
-        {
-            Id = AuthSeed.AdminUsuarioId,
-            CreatedAt = new DateTime(2026, 7, 7, 21, 43, 51, 914, DateTimeKind.Utc).AddTicks(7864),
-            Ativo = true
-        });
     }
 }
