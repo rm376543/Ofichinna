@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Ofichina.Domain.Entities;
-using Ofichina.Infrastructure.Persistence.Seeds;
 
 namespace Ofichina.Infrastructure.Persistence.Configurations;
 
@@ -31,15 +30,5 @@ public class PerfilConfiguration : IEntityTypeConfiguration<Perfil>
             .WithOne(x => x.Perfil)
             .HasForeignKey(x => x.PerfilId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasData(new Perfil(
-            codigo: "ADMIN",
-            nome: "Administrador",
-            descricao: "Perfil com acesso total ao sistema")
-        {
-            Id = AuthSeed.AdminPerfilId,
-            CreatedAt = new DateTime(2026, 7, 7, 21, 43, 51, 903, DateTimeKind.Utc).AddTicks(6297),
-            Ativo = true
-        });
     }
 }

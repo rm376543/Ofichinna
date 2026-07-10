@@ -17,6 +17,8 @@ public static class RepositoryModule
     public static IServiceCollection AddRepositories(
         this IServiceCollection services)
     {
+        // Registre aqui os repositórios específicos do domínio
+
         // Registra o repositório genérico
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
@@ -24,9 +26,6 @@ public static class RepositoryModule
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddScoped<IUsuarioAutenticacaoRepository, UsuarioAutenticacaoRepository>();
-
-        // Registre aqui os repositórios específicos do domínio
-        services.AddScoped<IExemploRepository, ExemploRepository>();
 
         services.AddScoped<IPerfilRepository, PerfilRepository>();
 

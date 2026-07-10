@@ -9,7 +9,6 @@ public class ValidatorTests
     [Fact]
     public void Validators_Devem_Terminar_Com_Validator()
     {
-        AssertAssemblyValidators(typeof(CreateExemploRequestValidator).Assembly);
         AssertAssemblyValidators(typeof(AutenticacaoRequestValidator).Assembly);
     }
 

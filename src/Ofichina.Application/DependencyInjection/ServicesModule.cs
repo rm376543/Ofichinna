@@ -11,7 +11,6 @@ public static class ServicesModule
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         // Registra serviços específicos da aplicação aqui
-        // Exemplo: services.AddScoped<IClienteService, ClienteService>();
 
         return services;
     }

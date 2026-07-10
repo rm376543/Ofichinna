@@ -16,11 +16,6 @@ public class ApplicationDbContext : DbContext
     }
 
     /// <summary>
-    /// DbSet para a entidade Exemplo.
-    /// </summary>
-    public DbSet<Exemplo> Exemplos { get; set; } = null!;
-
-    /// <summary>
     /// DbSet para usuários autenticáveis.
     /// </summary>
     public DbSet<Usuario> Usuarios { get; set; } = null!;
