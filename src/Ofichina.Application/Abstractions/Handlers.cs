@@ -1,4 +1,4 @@
-using Ofichina.Domain.ValueObjects;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Application.Abstractions;
 

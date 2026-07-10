@@ -1,5 +1,6 @@
 ﻿using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Perfis.Commands;
+using Ofichina.Contracts.Common;
 using Ofichina.Domain.Interfaces;
 using Ofichina.Domain.ValueObjects;
 

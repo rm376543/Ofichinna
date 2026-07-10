@@ -3,6 +3,7 @@ using Ofichina.Authentication.Abstractions;
 using Ofichina.Contracts.Responses;
 using Ofichina.Domain.ValueObjects;
 using Ofichina.Application.UseCases.Autenticacao.Commands;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Application.UseCases.Autenticacao.Handlers;
 

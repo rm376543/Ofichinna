@@ -11,7 +11,7 @@ using Ofichina.Application.UseCases.PerfilCliente.Queries;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.PerfilCliente;
 using Ofichina.Contracts.Responses.Perfil;
-using Ofichina.Domain.ValueObjects;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Application.DependencyInjection;
 

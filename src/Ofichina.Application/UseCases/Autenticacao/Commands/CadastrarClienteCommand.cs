@@ -1,6 +1,6 @@
 ﻿using Ofichina.Application.Abstractions;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses;
-using Ofichina.Domain.ValueObjects;
 
 namespace Ofichina.Application.UseCases.Autenticacao.Commands;
 
