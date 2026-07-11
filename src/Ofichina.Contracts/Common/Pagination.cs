@@ -1,9 +1,9 @@
-namespace Ofichina.Contracts.DTOs;
+namespace Ofichina.Contracts.Common;
 
 /// <summary>
 /// DTO para paginação.
 /// </summary>
-public class PaginationDto
+public class Pagination
 {
     /// <summary>
     /// Número da página (começa em 1).
@@ -15,11 +15,11 @@ public class PaginationDto
     /// </summary>
     public int PageSize { get; set; } = 10;
 
-    public PaginationDto()
+    public Pagination()
     {
     }
 
-    public PaginationDto(int pageNumber, int pageSize)
+    public Pagination(int pageNumber, int pageSize)
     {
         PageNumber = pageNumber > 0 ? pageNumber : 1;
         PageSize = pageSize > 0 ? pageSize : 10;
