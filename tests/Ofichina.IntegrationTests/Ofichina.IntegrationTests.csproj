@@ -15,7 +15,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Ofichina.Api\Ofichina.Api.csproj" />
+    <ProjectReference Include="..\..\src\Ofichina.Infrastructure\Ofichina.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Ofichina.Infrastructure\" />
+    <Folder Include="Ofichina.Api\" />
   </ItemGroup>
 
 </Project>
