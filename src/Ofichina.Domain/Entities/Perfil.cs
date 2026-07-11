@@ -6,24 +6,10 @@ namespace Ofichina.Domain.Entities;
 public class Perfil : Entity
 {
     /// <summary>
-    /// Código único do perfil, usado como role/claim.
-    /// </summary>
-    public string Codigo { get; set; } = string.Empty;
-
-    /// <summary>
     /// Nome descritivo do perfil.
     /// </summary>
-    public string Nome { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Descrição do perfil.
-    /// </summary>
-    public string? Descricao { get; set; }
-
-    /// <summary>
-    /// Indica se o perfil está disponível para uso.
-    /// </summary>
-    public bool Ativo { get; set; } = true;
+    public string NomePerfil { get; set; } = string.Empty;
+    public string Descricao { get; set; } = string.Empty;
 
     /// <summary>
     /// Usuários vinculados ao perfil.
@@ -34,10 +20,14 @@ public class Perfil : Entity
     {
     }
 
-    public Perfil(string codigo, string nome, string? descricao = null)
+    public Perfil(string nomePerfil, string descricao)
     {
-        Codigo = codigo;
-        Nome = nome;
+        NomePerfil = nomePerfil;
         Descricao = descricao;
+    }
+
+    public bool PerfilEstaAtivo ()
+    {
+        return DeletedAt == null;
     }
 }
