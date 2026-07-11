@@ -8,8 +8,6 @@ public static class SwaggerModule
 {
     public static IServiceCollection AddSwaggerModule(this IServiceCollection services)
     {
-        const string schemeId = "bearer";
-
         services.AddEndpointsApiExplorer();
 
         services.AddSwaggerGen(options =>

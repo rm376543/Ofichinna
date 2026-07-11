@@ -39,7 +39,7 @@ public sealed class AutenticacaoService : IAutenticacaoService
         Email email = Email.Criar(request.Email);
         var usuario = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email.Value, cancellationToken);
 
-        if (usuario is null || !usuario.Ativo)
+        if (usuario is null || !usuario.UsuarioEstaAtivo())
         {
             return Result.Failure<AutenticacaoResponse>("Credenciais inválidas.");
         }
@@ -55,7 +55,6 @@ public sealed class AutenticacaoService : IAutenticacaoService
         return Result.Success(new AutenticacaoResponse
         {
             UsuarioId = usuario.Id,
-            Nome = usuario.Nome,
             Email = usuario.Email.Value,
             Perfis = perfis,
             AccessToken = token.AccessToken,
@@ -65,7 +64,6 @@ public sealed class AutenticacaoService : IAutenticacaoService
 
     public async Task<Result<AutenticacaoResponse>> CadastrarAsync(CreateClienteRequest request, CancellationToken cancellationToken = default)
     {
-        var nome = request.Nome.Trim();
         Email email = Email.Criar(request.Email);
 
         var usuarioExistente = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email.Value, cancellationToken);
@@ -74,7 +72,7 @@ public sealed class AutenticacaoService : IAutenticacaoService
             return Result.Failure<AutenticacaoResponse>("Já existe um usuário cadastrado com este e-mail.");
         }
 
-        var usuario = new Usuario(nome, email, _senhaHasher.GerarHash(request.Senha));
+        var usuario = new Usuario(email, _senhaHasher.GerarHash(request.Senha));
         await _usuarioRepository.AddAsync(usuario);
         await _unitOfWork.SaveChangesAsync();
 
@@ -83,7 +81,6 @@ public sealed class AutenticacaoService : IAutenticacaoService
         return Result.Success(new AutenticacaoResponse
         {
             UsuarioId = usuario.Id,
-            Nome = usuario.Nome,
             Email = usuario.Email.Value,
             Perfis = [],
             AccessToken = token.AccessToken,

@@ -15,13 +15,13 @@ namespace Ofichina.Api.Controllers.PerfilCliente;
 [Authorize]
 [ApiController]
 [Route("api/cliente/{clienteId:guid}/perfil")]
-public sealed class PerfilClienteController : ControllerBase
+public sealed class PerfilUsuarioController : ControllerBase
 {
     private readonly IValidator<VincularPerfilClienteRequest> _vincularValidator;
     private readonly ICommandHandler<VincularPerfilClienteCommand, Result<VincularPerfilClienteResponse>> _vincularHandler;
     private readonly IQueryHandler<ObterPerfisDoClienteQuery, IReadOnlyCollection<string>> _obterPerfisHandler;
 
-    public PerfilClienteController(
+    public PerfilUsuarioController(
         IValidator<VincularPerfilClienteRequest> vincularValidator,
         ICommandHandler<VincularPerfilClienteCommand, Result<VincularPerfilClienteResponse>> vincularHandler,
         IQueryHandler<ObterPerfisDoClienteQuery, IReadOnlyCollection<string>> obterPerfisHandler)
@@ -36,6 +36,7 @@ public sealed class PerfilClienteController : ControllerBase
     /// </summary>
     /// <param name="clienteId">Identificador do cliente.</param>
     /// <param name="perfilId">Identificador do perfil.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>
     /// Retorna sucesso quando o vínculo é criado;
     /// retorna erro quando cliente, perfil ou vínculo já existirem.
@@ -44,6 +45,8 @@ public sealed class PerfilClienteController : ControllerBase
     [HttpPost("{perfilId:guid}")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse>> VincularAsync(
         Guid clienteId,
         Guid perfilId,
@@ -80,6 +83,8 @@ public sealed class PerfilClienteController : ControllerBase
     [Authorize(Policy = UserPolicyEnum.Ler)]
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<string>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse<IReadOnlyCollection<string>>>> ObterPerfisAsync(Guid clienteId)
     {
         var perfis = await _obterPerfisHandler.HandleAsync(new ObterPerfisDoClienteQuery(clienteId));

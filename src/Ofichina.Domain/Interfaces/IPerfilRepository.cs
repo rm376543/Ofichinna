@@ -8,9 +8,9 @@ namespace Ofichina.Domain.Interfaces;
 public interface IPerfilRepository : IRepository<Perfil>
 {
     /// <summary>
-    /// Busca um perfil pelo código.
+    /// Busca um perfil pelo nome do perfil.
     /// </summary>
-    Task<Perfil?> GetByCodigoAsync(string codigo);
+    Task<Perfil?> GetByNomeAsync(string nomePerfil);
 
     /// <summary>
     /// Lista todos os perfis ativos.

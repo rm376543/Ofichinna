@@ -31,17 +31,15 @@ public class UpdatePerfilCommandHandler : ICommandHandler<UpdatePerfilCommand>
             return Result.Failure("Perfil não encontrado.");
         }
 
-        var codigoExistente = await _repository.GetByCodigoAsync(command.Codigo);
+        var nomeExistente = await _repository.GetByNomeAsync(command.NomePerfil);
 
-        if (codigoExistente is not null && codigoExistente.Id != command.Id)
+        if (nomeExistente is not null && nomeExistente.Id != command.Id)
         {
-            return Result.Failure("Já existe um perfil com este código.");
+            return Result.Failure("Já existe um perfil com este nome.");
         }
 
-        perfil.Codigo = command.Codigo;
-        perfil.Nome = command.Nome;
+        perfil.NomePerfil = command.NomePerfil;
         perfil.Descricao = command.Descricao;
-        perfil.Ativo = command.Ativo;
 
         await _repository.UpdateAsync(perfil);
         await _unitOfWork.SaveChangesAsync();

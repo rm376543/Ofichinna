@@ -15,6 +15,7 @@ public static class DependencyInjection
     {
         services.AddAuthorizationModule();
         services.AddAuthenticationModules(configuration);
+        services.AddAuthorizationResultHandlerModule();
         services.AddAuthenticationServices();
         services.AddApplication();
         services.AddInfrastructure(configuration);

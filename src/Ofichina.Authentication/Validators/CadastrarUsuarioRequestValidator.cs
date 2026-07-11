@@ -8,10 +8,6 @@ public sealed class CadastrarUsuarioRequestValidator : AbstractValidator<CreateC
 {
     public CadastrarUsuarioRequestValidator()
     {
-        RuleFor(x => x.Nome)
-            .NotEmpty().WithMessage("O nome é obrigatório.")
-            .MaximumLength(150).WithMessage("O nome não pode exceder 150 caracteres.");
-
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("O e-mail é obrigatório.")
             .EmailAddress().WithMessage("O e-mail informado é inválido.")

@@ -25,12 +25,11 @@ public class GetPerfisQueryHandler : IQueryHandler<GetPerfisQuery, IReadOnlyColl
             .Select(perfil => new PerfilResponse
             {
                 Id = perfil.Id,
-                Codigo = perfil.Codigo,
-                Nome = perfil.Nome,
+                Nome = perfil.NomePerfil,
                 Descricao = perfil.Descricao,
-                Ativo = perfil.Ativo,
                 CreatedAt = perfil.CreatedAt,
-                UpdatedAt = perfil.UpdatedAt
+                UpdatedAt = perfil.UpdatedAt,
+                DeletedAt = perfil.DeletedAt
             })
             .ToList();
     }

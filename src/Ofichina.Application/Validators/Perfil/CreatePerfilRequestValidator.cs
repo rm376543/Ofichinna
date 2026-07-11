@@ -10,15 +10,11 @@ public sealed class CreatePerfilRequestValidator : AbstractValidator<CreatePerfi
 {
     public CreatePerfilRequestValidator()
     {
-        RuleFor(x => x.Codigo)
-            .NotEmpty().WithMessage("O código do perfil é obrigatório.")
-            .MaximumLength(50).WithMessage("O código do perfil não pode exceder 50 caracteres.");
-
-        RuleFor(x => x.Nome)
+        RuleFor(x => x.NomePerfil)
             .NotEmpty().WithMessage("O nome do perfil é obrigatório.")
-            .MaximumLength(150).WithMessage("O nome do perfil não pode exceder 150 caracteres.");
+            .MaximumLength(30).WithMessage("O nome do perfil não pode exceder 30 caracteres.");
 
         RuleFor(x => x.Descricao)
-            .MaximumLength(300).WithMessage("A descrição não pode exceder 300 caracteres.");
+            .MaximumLength(100).WithMessage("A descrição não pode exceder 100 caracteres.");
     }
 }

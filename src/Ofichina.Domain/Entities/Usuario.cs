@@ -8,11 +8,6 @@ namespace Ofichina.Domain.Entities;
 public class Usuario : Entity
 {
     /// <summary>
-    /// Nome de exibição do usuário.
-    /// </summary>
-    public string Nome { get; set; } = string.Empty;
-
-    /// <summary>
     /// E-mail utilizado para autenticação.
     /// </summary>
     public Email Email { get; set; } = default!;
@@ -23,11 +18,6 @@ public class Usuario : Entity
     public string SenhaHash { get; set; } = string.Empty;
 
     /// <summary>
-    /// Indica se o usuário pode autenticar.
-    /// </summary>
-    public bool Ativo { get; set; } = true;
-
-    /// <summary>
     /// Perfis associados ao usuário.
     /// </summary>
     public ICollection<UsuarioPerfil> Perfis { get; set; } = [];
@@ -36,10 +26,14 @@ public class Usuario : Entity
     {
     }
 
-    public Usuario(string nome, Email email, string senhaHash)
+    public Usuario(Email email, string senhaHash)
     {
-        Nome = nome;
         Email = email;
         SenhaHash = senhaHash;
+    }
+
+    public bool UsuarioEstaAtivo ()
+    {
+        return DeletedAt == null;
     }
 }

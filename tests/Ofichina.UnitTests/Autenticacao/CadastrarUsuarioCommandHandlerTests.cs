@@ -22,12 +22,11 @@ public sealed class CadastrarUsuarioCommandHandlerTests
         var unitOfWork = new FakeUnitOfWork();
         var handler = new AutenticacaoService(repository, unitOfWork, consultaRepository, perfilService, jwtTokenService, senhaHasher);
 
-        var result = await handler.CadastrarAsync(new CreateClienteRequest { Nome = "Maria Silva", Email = "maria@ofichinna.com", Senha = "123456" });
+        var result = await handler.CadastrarAsync(new CreateClienteRequest { Email = "maria@ofichinna.com", Senha = "123456" });
 
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
         Assert.Single(usuarios);
-        Assert.Equal("Maria Silva", usuarios[0].Nome);
         Assert.Equal("maria@ofichinna.com", usuarios[0].Email.Value);
         Assert.Equal("hash:123456", usuarios[0].SenhaHash);
         Assert.Equal("fake-token", result.Value!.AccessToken);
@@ -43,7 +42,7 @@ public sealed class CadastrarUsuarioCommandHandlerTests
 
         var usuarios = new List<Usuario>
         {
-            new("Maria Silva", emailCriado, "hash:123456")
+            new(emailCriado, "hash:123456")
         };
         var repository = new FakeUsuarioRepository(usuarios);
         var consultaRepository = new FakeUsuarioAutenticacaoRepository(usuarios);
@@ -53,11 +52,11 @@ public sealed class CadastrarUsuarioCommandHandlerTests
         var unitOfWork = new FakeUnitOfWork();
         var handler = new AutenticacaoService(repository, unitOfWork, consultaRepository, perfilService, jwtTokenService, senhaHasher);
 
-        var result = await handler.CadastrarAsync(new CreateClienteRequest { Nome = "Maria Silva", Email = "maria@ofichinna.com", Senha = "123456" });
+        var result = await handler.CadastrarAsync(new CreateClienteRequest { Email = "maria@ofichinna.com", Senha = "123456" });
 
         Assert.False(result.IsSuccess);
         Assert.Equal("Já existe um usuário cadastrado com este e-mail.", result.Error);
-        Assert.Equal(1, usuarios.Count);
+        Assert.Single(usuarios);
         Assert.Equal(0, unitOfWork.SaveChangesCalls);
     }
 

@@ -85,7 +85,7 @@ public sealed class AuthController : ControllerBase
         }
 
         var result = await _registerHandler.HandleAsync(
-            new CadastrarClienteCommand(request.Nome, request.Email, request.Senha));
+            new CadastrarClienteCommand(request.Email, request.Senha));
 
         if (!result.IsSuccess || result.Value is null)
         {

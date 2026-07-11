@@ -46,48 +46,28 @@ public static class AuthenticationModule
             {
                 OnMessageReceived = context =>
                 {
-                    Console.WriteLine("===== TOKEN RECEBIDO =====");
-
-                    Console.WriteLine(context.Request.Headers.Authorization);
-
-                    Console.WriteLine("==========================");
-
-                    foreach (var header in context.Request.Headers)
-                    {
-                        Console.WriteLine($"{header.Key} = {header.Value}");
-                    }
+                    Console.WriteLine("Evento: OnMessageReceived");
 
                     return Task.CompletedTask;
                 },
 
                 OnAuthenticationFailed = context =>
                 {
-                    Console.WriteLine("================================");
-                    Console.WriteLine(context.Exception.GetType().FullName);
-                    Console.WriteLine(context.Exception.Message);
-                    Console.WriteLine(context.Exception);
-                    Console.WriteLine("================================");
+                    Console.WriteLine("Evento: OnAuthenticationFailed");
 
                     return Task.CompletedTask;
                 },
 
                 OnTokenValidated = context =>
                 {
-                    Console.WriteLine("Token válido!");
-
-                    foreach (var claim in context.Principal!.Claims)
-                    {
-                        Console.WriteLine($"{claim.Type}: {claim.Value}");
-                    }
+                    Console.WriteLine("Evento: OnAuthenticationFailed");
 
                     return Task.CompletedTask;
                 },
 
                 OnChallenge = context =>
                 {
-                    Console.WriteLine("Challenge:");
-                    Console.WriteLine(context.Error);
-                    Console.WriteLine(context.ErrorDescription);
+                    Console.WriteLine("Evento: OnChallenge");
 
                     return Task.CompletedTask;
                 }

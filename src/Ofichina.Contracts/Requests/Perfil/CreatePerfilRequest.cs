@@ -5,11 +5,7 @@
 /// </summary>
 public class CreatePerfilRequest : CreateRequest
 {
-    public string Codigo { get; set; } = string.Empty;
+    public string NomePerfil { get; set; } = string.Empty;
 
-    public string Nome { get; set; } = string.Empty;
-
-    public string? Descricao { get; set; }
-
-    public bool Ativo { get; set; } = true;
+    public string Descricao { get; set; } = string.Empty;
 }

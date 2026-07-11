@@ -36,7 +36,7 @@ public sealed class VincularPerfilClienteCommandHandler : ICommandHandler<Vincul
         if (perfil is null)
             return Result.Failure<VincularPerfilClienteResponse>("Perfil não encontrado.");
 
-        if (!perfil.Ativo)
+        if (!perfil.PerfilEstaAtivo())
             return Result.Failure<VincularPerfilClienteResponse>("Perfil inativo.");
 
         var vinculoExistente = await _usuarioPerfilRepository.GetByUsuarioIdPerfilIdAsync(

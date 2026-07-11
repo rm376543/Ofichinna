@@ -17,20 +17,20 @@ public class PerfilRepository : Repository<Perfil>, IPerfilRepository
         _context = context;
     }
 
-    public async Task<Perfil?> GetByCodigoAsync(string codigo)
+    public async Task<Perfil?> GetByNomeAsync(string nomePerfil)
     {
-        var normalizedCodigo = codigo.Trim().ToUpperInvariant();
+        var normalizedNome = nomePerfil.Trim().ToUpperInvariant();
 
         return await _context.Set<Perfil>()
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Codigo.ToUpper() == normalizedCodigo);
+            .FirstOrDefaultAsync(x => x.NomePerfil.ToUpper() == normalizedNome);
     }
 
     public async Task<IEnumerable<Perfil>> GetAllAtivosAsync()
     {
         return await _context.Set<Perfil>()
             .AsNoTracking()
-            .Where(x => x.Ativo)
+            .Where(x => x.DeletedAt == null )
             .ToListAsync();
     }
 }

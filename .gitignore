@@ -62,3 +62,4 @@ nunit-*.xml
 
 copilot-instructions.md
 db/**/*
+.env

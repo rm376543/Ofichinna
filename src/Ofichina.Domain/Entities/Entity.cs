@@ -21,6 +21,11 @@ public abstract class Entity
     /// </summary>
     public DateTime? UpdatedAt { get; set; }
 
+    /// <summary>
+    /// Data de exclusão (soft-delete) da entidade.
+    /// </summary>
+    public DateTime? DeletedAt { get; set; }
+
     protected Entity()
     {
     }

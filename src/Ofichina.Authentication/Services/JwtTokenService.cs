@@ -33,7 +33,6 @@ public sealed class JwtTokenService : IJwtTokenService
             new(JwtRegisteredClaimNames.UniqueName, usuario.Email.Value),
             new(JwtRegisteredClaimNames.Email, usuario.Email.Value),
             new(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-            new(ClaimTypes.Name, usuario.Nome),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 

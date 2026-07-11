@@ -7,15 +7,13 @@ public class PerfilResponse
 {
     public Guid Id { get; set; }
 
-    public string Codigo { get; set; } = string.Empty;
-
     public string Nome { get; set; } = string.Empty;
 
     public string? Descricao { get; set; }
 
-    public bool Ativo { get; set; }
-
     public DateTime CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
+
+    public DateTime? DeletedAt { get; set; }
 }
