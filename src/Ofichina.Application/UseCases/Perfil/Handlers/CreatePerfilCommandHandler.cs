@@ -20,15 +20,15 @@ public class CreatePerfilCommandHandler : ICommandHandler<CreatePerfilCommand, G
 
     public async Task<Guid> HandleAsync(CreatePerfilCommand command)
     {
-        var existente = await _repository.GetByCodigoAsync(command.Codigo);
+        var existente = await _repository.GetByNomeAsync(command.NomePerfil);
 
         if (existente is not null)
         {
-            throw new InvalidOperationException("Já existe um perfil com este código.");
+            throw new InvalidOperationException("Já existe um perfil com este nome.");
         }
 
-        var perfil = new Perfil(command.Codigo, command.Nome, command.Descricao);
-        perfil.Ativo = command.Ativo;
+        var perfil = new Perfil(command.NomePerfil, command.Descricao);
+        perfil.DeletedAt = null;
 
         await _repository.AddAsync(perfil);
         await _unitOfWork.SaveChangesAsync();

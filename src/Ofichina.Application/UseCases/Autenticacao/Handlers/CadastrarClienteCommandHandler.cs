@@ -33,7 +33,6 @@ public sealed class CadastrarClienteCommandHandler : ICommandHandler<CadastrarCl
 
     public async Task<Result<AutenticacaoResponse>> HandleAsync(CadastrarClienteCommand command)
     {
-        var nome = command.Nome.Trim();
         var email = Email.Criar(command.Email);
 
         var usuarioExistente = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email.Value);
@@ -43,7 +42,7 @@ public sealed class CadastrarClienteCommandHandler : ICommandHandler<CadastrarCl
             return Result.Failure<AutenticacaoResponse>("Já existe um usuário cadastrado com este e-mail.");
         }
 
-        var usuario = new Usuario(nome, email, _senhaHasher.GerarHash(command.Senha));
+        var usuario = new Usuario(email, _senhaHasher.GerarHash(command.Senha));
 
         await _usuarioRepository.AddAsync(usuario);
         await _unitOfWork.SaveChangesAsync();
@@ -54,7 +53,6 @@ public sealed class CadastrarClienteCommandHandler : ICommandHandler<CadastrarCl
         return Result.Success(new AutenticacaoResponse
         {
             UsuarioId = usuario.Id,
-            Nome = usuario.Nome,
             Email = usuario.Email.Value,
             Perfis = perfis,
             AccessToken = token.AccessToken,

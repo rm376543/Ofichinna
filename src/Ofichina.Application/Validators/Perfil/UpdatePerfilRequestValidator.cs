@@ -13,13 +13,9 @@ public sealed class UpdatePerfilRequestValidator : AbstractValidator<UpdatePerfi
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("O Id do perfil é obrigatório.");
 
-        RuleFor(x => x.Codigo)
-            .NotEmpty().WithMessage("O código do perfil é obrigatório.")
-            .MaximumLength(50).WithMessage("O código do perfil não pode exceder 50 caracteres.");
-
-        RuleFor(x => x.Nome)
+        RuleFor(x => x.NomePerfil)
             .NotEmpty().WithMessage("O nome do perfil é obrigatório.")
-            .MaximumLength(150).WithMessage("O nome do perfil não pode exceder 150 caracteres.");
+            .MaximumLength(30).WithMessage("O nome do perfil não pode exceder 30 caracteres.");
 
         RuleFor(x => x.Descricao)
             .MaximumLength(300).WithMessage("A descrição não pode exceder 300 caracteres.");

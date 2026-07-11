@@ -10,20 +10,14 @@ public class UpdatePerfilCommand : ICommand<Result>
 {
     public Guid Id { get; set; }
 
-    public string Codigo { get; set; } = string.Empty;
+    public string NomePerfil { get; set; } = string.Empty;
 
-    public string Nome { get; set; } = string.Empty;
+    public string Descricao { get; set; }
 
-    public string? Descricao { get; set; }
-
-    public bool Ativo { get; set; }
-
-    public UpdatePerfilCommand(Guid id, string codigo, string nome, string? descricao, bool ativo)
+    public UpdatePerfilCommand(Guid id, string nomePerfil, string descricao)
     {
         Id = id;
-        Codigo = codigo;
-        Nome = nome;
+        NomePerfil = nomePerfil;
         Descricao = descricao;
-        Ativo = ativo;
     }
 }

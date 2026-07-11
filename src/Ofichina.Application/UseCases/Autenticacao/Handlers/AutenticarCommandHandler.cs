@@ -32,7 +32,7 @@ public sealed class AutenticarCommandHandler : ICommandHandler<AutenticarCommand
 
         var usuario = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email.Value);
 
-        if (usuario is null || !usuario.Ativo)
+        if (usuario is null || !usuario.UsuarioEstaAtivo())
             return Result.Failure<AutenticacaoResponse>("Credenciais inválidas.");
 
         if (!_senhaHasher.Verificar(command.Senha, usuario.SenhaHash))
@@ -44,7 +44,6 @@ public sealed class AutenticarCommandHandler : ICommandHandler<AutenticarCommand
         return Result.Success(new AutenticacaoResponse
         {
             UsuarioId = usuario.Id,
-            Nome = usuario.Nome,
             Email = usuario.Email.Value,
             Perfis = perfis,
             AccessToken = token.AccessToken,
