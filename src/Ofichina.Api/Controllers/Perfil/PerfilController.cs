@@ -51,6 +51,8 @@ public sealed class PerfisController : ControllerBase
     [Authorize(Policy = UserPolicyEnum.Ler)]
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<PerfilResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse<IReadOnlyCollection<PerfilResponse>>>> GetAllAsync(
         CancellationToken cancellationToken)
     {
@@ -63,10 +65,13 @@ public sealed class PerfisController : ControllerBase
     /// Retorna um perfil pelo identificador.
     /// </summary>
     /// <param name="id">Identificador do perfil.</param>
+    /// <param name="cancellationToken"></param>
     /// <returns>Perfil encontrado ou erro 404 quando não existir.</returns>
     [Authorize(Policy = UserPolicyEnum.Ler)]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PerfilResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<PerfilResponse>>> GetByIdAsync(
         Guid id,
@@ -92,6 +97,8 @@ public sealed class PerfisController : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse<Guid>>> CreateAsync(
         [FromBody] CreatePerfilRequest request,
         CancellationToken cancellationToken)
@@ -104,10 +111,8 @@ public sealed class PerfisController : ControllerBase
         }
 
         var command = new CreatePerfilCommand(
-            request.Codigo,
-            request.Nome,
-            request.Descricao,
-            request.Ativo);
+            request.NomePerfil,
+            request.Descricao);
 
         var id = await _createHandler.HandleAsync(command);
 
@@ -126,7 +131,8 @@ public sealed class PerfisController : ControllerBase
     [HttpPut]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse>> UpdateAsync(
         [FromBody] UpdatePerfilRequest request,
         CancellationToken cancellationToken)
@@ -140,10 +146,8 @@ public sealed class PerfisController : ControllerBase
 
         var result = await _updateHandler.HandleAsync(new UpdatePerfilCommand(
             request.Id,
-            request.Codigo,
-            request.Nome,
-            request.Descricao,
-            request.Ativo));
+            request.NomePerfil,
+            request.Descricao));
 
         if (!result.IsSuccess)
         {
@@ -164,6 +168,8 @@ public sealed class PerfisController : ControllerBase
     [Authorize(Policy = UserPolicyEnum.Deletar)]
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> DeleteAsync(
         Guid id,

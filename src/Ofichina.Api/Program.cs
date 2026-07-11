@@ -1,5 +1,8 @@
 using Ofichina.Api.Modules;
 using Ofichina.Bootstrap;
+using DotNetEnv;
+
+Env.TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
