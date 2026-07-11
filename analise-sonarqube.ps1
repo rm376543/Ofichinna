@@ -1,4 +1,4 @@
-$token = "sqp_ef2c39a9e025eedacf28e973c55e54716d81d6fe"
+$token = "sqp_cf8689b77d22c1dcd23fe2b509484194ac9d4611"
 $sonarHost = "http://localhost:9000"
 $key = "Ofichinna"
 
