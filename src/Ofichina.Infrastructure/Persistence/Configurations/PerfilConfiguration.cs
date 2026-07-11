@@ -8,23 +8,16 @@ public class PerfilConfiguration : IEntityTypeConfiguration<Perfil>
 {
     public void Configure(EntityTypeBuilder<Perfil> builder)
     {
-        builder.ToTable("Perfis");
+        builder.ToTable("Perfil");
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Codigo)
+        builder.Property(x => x.NomePerfil)
             .HasMaxLength(50)
             .IsRequired();
 
-        builder.HasIndex(x => x.Codigo)
+        builder.HasIndex(x => x.NomePerfil)
             .IsUnique();
-
-        builder.Property(x => x.Nome)
-            .HasMaxLength(150)
-            .IsRequired();
-
-        builder.Property(x => x.Descricao)
-            .HasMaxLength(300);
 
         builder.HasMany(x => x.Usuarios)
             .WithOne(x => x.Perfil)

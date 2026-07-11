@@ -6,92 +6,85 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ofichina.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialAuth : Migration
+    public partial class _001clientesperfis : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Perfis",
+                name: "Perfil",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Codigo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Descricao = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    Ativo = table.Column<bool>(type: "bit", nullable: false),
+                    NomePerfil = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Descricao = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Perfis", x => x.Id);
+                    table.PrimaryKey("PK_Perfil", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Usuarios",
+                name: "Usuario",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     SenhaHash = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    Ativo = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Usuarios", x => x.Id);
+                    table.PrimaryKey("PK_Usuario", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UsuariosPerfis",
+                name: "UsuarioPerfil",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PerfilId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UsuariosPerfis", x => x.Id);
+                    table.PrimaryKey("PK_UsuarioPerfil", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UsuariosPerfis_Perfis_PerfilId",
+                        name: "FK_UsuarioPerfil_Perfil_PerfilId",
                         column: x => x.PerfilId,
-                        principalTable: "Perfis",
+                        principalTable: "Perfil",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UsuariosPerfis_Usuarios_UsuarioId",
+                        name: "FK_UsuarioPerfil_Usuario_UsuarioId",
                         column: x => x.UsuarioId,
-                        principalTable: "Usuarios",
+                        principalTable: "Usuario",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Perfis_Codigo",
-                table: "Perfis",
-                column: "Codigo",
+                name: "IX_Perfil_NomePerfil",
+                table: "Perfil",
+                column: "NomePerfil",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Usuarios_Email",
-                table: "Usuarios",
-                column: "Email",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UsuariosPerfis_PerfilId",
-                table: "UsuariosPerfis",
+                name: "IX_UsuarioPerfil_PerfilId",
+                table: "UsuarioPerfil",
                 column: "PerfilId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UsuariosPerfis_UsuarioId_PerfilId",
-                table: "UsuariosPerfis",
+                name: "IX_UsuarioPerfil_UsuarioId_PerfilId",
+                table: "UsuarioPerfil",
                 columns: new[] { "UsuarioId", "PerfilId" },
                 unique: true);
         }
@@ -100,13 +93,13 @@ namespace Ofichina.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "UsuariosPerfis");
+                name: "UsuarioPerfil");
 
             migrationBuilder.DropTable(
-                name: "Perfis");
+                name: "Perfil");
 
             migrationBuilder.DropTable(
-                name: "Usuarios");
+                name: "Usuario");
         }
     }
 }

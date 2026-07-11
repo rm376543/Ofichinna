@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using DotNetEnv;
 
 namespace Ofichina.Infrastructure.Persistence;
 
@@ -7,8 +8,14 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
 {
     public ApplicationDbContext CreateDbContext(string[] args)
     {
+        Env.TraversePath().Load();
+
+        var connectionString =
+            Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+            ?? throw new InvalidOperationException("ConnectionStrings__DefaultConnection não configurada.");
+
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-        optionsBuilder.UseSqlServer("Server=localhost,1433;Database=ofichinna;User Id=sa;Password=P@ssw0rd2024!Ofichina;TrustServerCertificate=True");
+        optionsBuilder.UseSqlServer(connectionString);
 
         return new ApplicationDbContext(optionsBuilder.Options);
     }

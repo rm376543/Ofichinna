@@ -28,35 +28,30 @@ namespace Ofichina.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("Ativo")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Codigo")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Descricao")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Nome")
+                    b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NomePerfil")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Codigo")
+                    b.HasIndex("NomePerfil")
                         .IsUnique();
 
-                    b.ToTable("Perfis", (string)null);
+                    b.ToTable("Perfil", (string)null);
                 });
 
             modelBuilder.Entity("Ofichina.Domain.Entities.Usuario", b =>
@@ -65,21 +60,16 @@ namespace Ofichina.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("Ativo")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("SenhaHash")
                         .IsRequired()
@@ -91,10 +81,7 @@ namespace Ofichina.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.ToTable("Usuarios", (string)null);
+                    b.ToTable("Usuario", (string)null);
                 });
 
             modelBuilder.Entity("Ofichina.Domain.Entities.UsuarioPerfil", b =>
@@ -104,6 +91,9 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("PerfilId")
@@ -122,7 +112,7 @@ namespace Ofichina.Infrastructure.Migrations
                     b.HasIndex("UsuarioId", "PerfilId")
                         .IsUnique();
 
-                    b.ToTable("UsuariosPerfis", (string)null);
+                    b.ToTable("UsuarioPerfil", (string)null);
                 });
 
             modelBuilder.Entity("Ofichina.Domain.Entities.UsuarioPerfil", b =>

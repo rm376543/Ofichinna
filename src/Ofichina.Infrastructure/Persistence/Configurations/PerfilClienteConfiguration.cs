@@ -7,7 +7,7 @@ public class UsuarioPerfilConfiguration : IEntityTypeConfiguration<UsuarioPerfil
 {
     public void Configure(EntityTypeBuilder<UsuarioPerfil> builder)
     {
-        builder.ToTable("UsuariosPerfis");
+        builder.ToTable("UsuarioPerfil");
 
         builder.HasKey(x => x.Id);
 
