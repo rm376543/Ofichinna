@@ -57,7 +57,7 @@ public sealed class CadastrarUsuarioCommandHandlerTests
 
         Assert.False(result.IsSuccess);
         Assert.Equal("Já existe um usuário cadastrado com este e-mail.", result.Error);
-        Assert.Equal(1, usuarios.Count);
+        Assert.Single(usuarios);
         Assert.Equal(0, unitOfWork.SaveChangesCalls);
     }
 
