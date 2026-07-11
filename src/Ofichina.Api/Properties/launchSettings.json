@@ -1,4 +1,4 @@
-﻿{
+{
   "profiles": {
     "http": {
       "commandName": "Project",
@@ -7,7 +7,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5184"
+      "applicationUrl": "http://localhost:5184",
+      "sqlDebugging": true
     },
     "https": {
       "commandName": "Project",
@@ -16,7 +17,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7109;http://localhost:5184"
+      "applicationUrl": "https://localhost:7109;http://localhost:5184",
+      "sqlDebugging": true
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json"
