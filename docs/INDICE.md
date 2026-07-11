@@ -7,6 +7,9 @@ DOCUMENTAÇÃO OFICHINNA
 │
 ├─ 🎯 INÍCIO RÁPIDO
 │  │
+│  ├─ START_HERE.md ⭐⭐⭐
+│  │  └─ Ponto de partida em 3 passos
+│  │
 │  └─ README.md ⭐⭐⭐
 │     └─ Visão geral do projeto e navegação
 │
@@ -48,10 +51,23 @@ DOCUMENTAÇÃO OFICHINNA
 │     ├─ Código exemplo comentado
 │     └─ Sugestões de boas práticas
 │
+├─ 📎 API E CONTRATOS
+│  │
+│  ├─ API_REFERENCE.md ⭐⭐⭐
+│  │  ├─ Autenticação JWT
+│  │  ├─ Endpoints de perfil
+│  │  ├─ Exemplos de request/response
+│  │  └─ Códigos de status
+│  │
+│  └─ CONTRIBUTING.md ⭐⭐
+│     ├─ Regras de contribuição
+│     ├─ Padrões de documentação
+│     └─ Checklist antes de PR
+│
 ├─ ✅ VALIDAÇÃO E RASTREAMENTO (15 min de leitura)
 │  │
 │  └─ RELATORIO_IMPLEMENTACAO.md ⭐⭐
-│     ├─ Resumo de 31 arquivos criados
+│     ├─ Resumo da base consolidada
 │     ├─ Estrutura visual da arquitetura
 │     ├─ Fluxo de inicialização detalhado
 │     ├─ Tabela de padrões
@@ -59,6 +75,20 @@ DOCUMENTAÇÃO OFICHINNA
 │     ├─ Estatísticas
 │     ├─ Exemplo prático rápido
 │     └─ Suporte e referências
+│
+├─ 🧰 SUPORTE
+│  │
+│  ├─ TROUBLESHOOTING.md ⭐⭐
+│  │  ├─ Banco de dados
+│  │  ├─ Migrations
+│  │  ├─ Swagger
+│  │  └─ SonarQube
+│  │
+│  └─ AUTORIZACAO-RBAC-POLICIES.md ⭐⭐
+│     ├─ Roles e policies
+│     ├─ FallbackPolicy
+│     └─ Proteção de rotas
+│
 │
 └─ 📑 NAVEGAÇÃO (Este arquivo)
    └─ INDICE.md
@@ -164,9 +194,12 @@ DOCUMENTAÇÃO OFICHINNA
 |-----------|-------------|---------|--------|-------|
 | **README.md** | ⭐ Superficial | Todos | ~300 linhas | 10 min |
 | **SUMARIO_EXECUTIVO.md** | ⭐⭐ Média | PMs, Leads | ~400 linhas | 15 min |
+| **START_HERE.md** | ⭐ Superficial | Todos | ~200 linhas | 5 min |
 | **MAPA_VISUAL.md** | ⭐⭐⭐ Profunda | Devs, Arquitetos | ~600 linhas | 20 min |
 | **ARQUITETURA.md** | ⭐⭐⭐ Profunda | Devs, Arquitetos | ~500 linhas | 20 min |
 | **GUIA_IMPLEMENTACAO.md** | ⭐⭐⭐ Profunda | Devs | ~400 linhas | 20 min |
+| **API_REFERENCE.md** | ⭐⭐ Média | Devs, Integração | ~200 linhas | 10 min |
+| **CONTRIBUTING.md** | ⭐ Média | Devs | ~100 linhas | 5 min |
 | **RELATORIO_IMPLEMENTACAO.md** | ⭐⭐⭐ Profunda | Arquitetos, QA | ~700 linhas | 25 min |
 
 ---
@@ -182,7 +215,7 @@ DOCUMENTAÇÃO OFICHINNA
 → SUMARIO_EXECUTIVO.md > "📊 Resumo em Números"
 
 **"Que foi implementado?"**
-→ RELATORIO_IMPLEMENTACAO.md > "📦 Resumo de Arquivos Criados"
+→ RELATORIO_IMPLEMENTACAO.md > "Resumo da base consolidada"
 
 **"Quanto tempo vai levar para aprender?"**
 → Este documento > "👥 Roteiros por Perfil"
@@ -218,6 +251,12 @@ DOCUMENTAÇÃO OFICHINNA
 
 **"Como uso os padrões de design?"**
 → GUIA_IMPLEMENTACAO.md > "## Padrões de Design Utilizados"
+
+**"Como vejo contratos da API?"**
+→ API_REFERENCE.md > "Endpoints de autenticação"
+
+**"Como colaborar com o projeto?"**
+→ CONTRIBUTING.md > "Regras principais"
 
 **"Tenho uma dúvida sobre CQRS?"**
 → MAPA_VISUAL.md > "## 🏗️ Estrutura Hierárquica" (Application Layer)

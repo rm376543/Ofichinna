@@ -40,13 +40,14 @@ builder.Services.AddBootstrapMiddleware(builder.Configuration);
 **Uso:**
 Contratos entre API e Application Layer
 
-### 3. **Ofichinna.Authentication** - Camada de Autenticação
+### 3. **Ofichina.Authentication** - Camada de Autenticação
 Centraliza a configuração e as regras de autenticação da solução.
 
 **Submódulos:**
-- **AuthenticationModule**: configura JWT Bearer no pipeline
-- **AuthenticationServicesModule**: registra serviços, validadores e contratos de autenticação
-- **Services**: geração de token, hash de senha e orquestração do login/cadastro
+- **AddAuthenticationModule.cs**: configura JWT Bearer no pipeline
+- **AddAuthorizationModule.cs**: registra policies e fallback policy
+- **AuthenticationServicesModule.cs**: registra serviços, validadores e contratos de autenticação
+- **AuthorizationResultHandlerModule.cs**: customiza a resposta de autorização
 
 **Estrutura:**
 ```
@@ -68,7 +69,7 @@ Coordena e orquestra a lógica de negócio
 - **HandlersModule**: Handlers CQRS (Commands e Queries)
   - Abstrações: ICommand<T>, IQuery<T>
   - Interfaces: ICommandHandler<T>, IQueryHandler<T>
-  - Exemplo: CreateExemploCommandHandler, GetExemploByIdQueryHandler
+  - Exemplo: handlers de autenticação e de perfil
 
 - **ServicesModule**: Serviços da aplicação
   - Lógica de orquestração
@@ -81,16 +82,10 @@ Application/
 │   ├── Contracts.cs (ICommand, IQuery)
 │   └── Handlers.cs (ICommandHandler, IQueryHandler)
 ├── Validators/
-│   └── CreateExemploRequestValidator.cs
+│   └── Validators de autenticação e perfis
 ├── UseCases/
-│   └── Exemplo/
-│       ├── Commands/
-│       │   └── CreateExemploCommand.cs
-│       ├── Queries/
-│       │   └── GetExemploByIdQuery.cs
-│       └── Handlers/
-│           ├── CreateExemploCommandHandler.cs
-│           └── GetExemploByIdQueryHandler.cs
+│   ├── Autenticacao/
+│   └── Perfis/
 └── DependencyInjection/
 	├── ApplicationModule.cs (orquestra tudo)
 	├── ValidationModule.cs
@@ -106,11 +101,10 @@ Define as regras de negócio e entidades
 Domain/
 ├── Entities/
 │   ├── Entity.cs (classe base)
-│   └── Exemplo.cs (exemplo de entidade)
+│   └── Entidades de usuário e perfil
 ├── Interfaces/
 │   ├── IRepository.cs (interface genérica)
-│   ├── IUnitOfWork.cs
-│   └── IExemploRepository.cs (específica)
+│   └── IUnitOfWork.cs
 ├── Specifications/
 │   └── Specification.cs (Specification Pattern)
 └── Shared/
@@ -119,7 +113,7 @@ Domain/
 ```
 
 **Características:**
-- Entity base com Id (Guid), CreatedAt, UpdatedAt
+- Entity base com Id (Guid), CreatedAt, UpdatedAt e DeletedAt
 - Repositórios genéricos e específicos
 - Padrão Unit of Work
 - Specification Pattern para queries complexas
@@ -136,7 +130,7 @@ Implementação de detalhes técnicos
 - **RepositoryModule**: Implementação de repositórios
   - Repository<T> genérico
   - UnitOfWork
-  - ExemploRepository específico
+  - Repositórios concretos de usuário e perfil
   - Repositório de autenticação para consulta de usuários
 
 - **ServicesModule**: Serviços de apoio à autenticação
@@ -158,7 +152,7 @@ Infrastructure/
 └── Repositories/
 	├── Repository.cs (genérico)
 	├── UnitOfWork.cs
-	└── ExemploRepository.cs (específico)
+	└── Repositórios concretos de usuário e perfil
 ```
 
 ## Fluxo de Dependência
@@ -169,14 +163,12 @@ Program.cs
 AddBootstrapMiddleware(configuration)
 	↓
 BootstrapMiddleware
+	├── AddAuthorizationModule()
+	├── AddAuthenticationModules(configuration)
+	├── AddAuthorizationResultHandlerModule()
+	├── AddAuthenticationServices()
 	├── AddApplication()
-	│   ├── ValidationModule
-	│   ├── HandlersModule
-	│   └── ServicesModule
 	└── AddInfrastructure(configuration)
-		├── DatabaseModule
-		├── RepositoryModule
-		└── InfrastructureServicesModule
 ```
 
 ## Padrões Implementados
@@ -184,7 +176,7 @@ BootstrapMiddleware
 ### 1. **CQRS (Command Query Responsibility Segregation)**
 Separação entre operações de leitura (Queries) e escrita (Commands)
 - Handlers específicos para cada operação
-- Exemplo: CreateExemploCommandHandler, GetExemploByIdQueryHandler
+- Exemplo: handlers de autenticação e de perfil
 
 ### 2. **Specification Pattern**
 Encapsulamento de critérios de consulta complexos
@@ -262,34 +254,9 @@ public class ClienteRepository : Repository<Cliente>, IClienteRepository
 }
 ```
 
-### 3. Registrar no RepositoryModule
+### 3. Implementar um Handler CQRS
 
 ```csharp
-services.AddScoped<IClienteRepository, ClienteRepository>();
-```
-
-### 4. Criar um Validador
-
-```csharp
-public class CreateClienteRequestValidator : AbstractValidator<CreateClienteRequest>
-{
-	public CreateClienteRequestValidator()
-	{
-		RuleFor(x => x.Nome).NotEmpty().MaximumLength(100);
-		RuleFor(x => x.Email).EmailAddress();
-	}
-}
-```
-
-### 5. Criar um Command/Query e Handler
-
-```csharp
-public class CreateClienteCommand : ICommand<Guid>
-{
-	public string Nome { get; set; }
-	public string Email { get; set; }
-}
-
 public class CreateClienteCommandHandler : ICommandHandler<CreateClienteCommand, Guid>
 {
 	public async Task<Guid> HandleAsync(CreateClienteCommand command)
@@ -300,29 +267,6 @@ public class CreateClienteCommandHandler : ICommandHandler<CreateClienteCommand,
 		return cliente.Id;
 	}
 }
-```
-
-### 6. Criar um Controller
-
-```csharp
-[ApiController]
-[Route("api/[controller]")]
-public class ClientesController : ControllerBase
-{
-	// Injetar handlers e executar
-}
-```
-
-## Próximos Passos
-
-1. Implementar Controllers para os endpoints
-2. Adicionar Middleware de tratamento de erros
-3. Implementar autenticação e autorização
-4. Criar migrations do Entity Framework
-5. Adicionar testes unitários e de integração
-6. Implementar logging e observabilidade
-7. Configurar versionamento de API
-8. Adicionar cache quando necessário
 
 ## Notas Importantes
 

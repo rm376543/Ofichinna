@@ -18,7 +18,7 @@ dotnet ef migrations add InitialCreate -p src/Ofichina.Infrastructure
 dotnet ef database update -p src/Ofichina.Infrastructure
 
 # 5. Executar
-dotnet run -p src/Ofichina.Api
+dotnet run --project src/Ofichina.Api
 
 # 6. Acessar
 https://localhost:7000/swagger
@@ -36,6 +36,7 @@ https://localhost:7000/swagger
 | Técnico detalhado | ARQUITETURA.md | 15 min |
 | Implementar feature | GUIA_IMPLEMENTACAO.md | 20 min |
 | Validação técnica | RELATORIO_IMPLEMENTACAO.md | 10 min |
+| Problemas comuns | TROUBLESHOOTING.md | 5 min |
 | Navegar docs | INDICE.md | 5 min |
 
 ---
@@ -75,7 +76,7 @@ dotnet ef migrations add [NomeMigration] -p src/Ofichina.Infrastructure
 dotnet ef database update -p src/Ofichina.Infrastructure
 
 # Rodar projeto
-dotnet run -p src/Ofichina.Api
+dotnet run --project src/Ofichina.Api
 
 # Remover última migration
 dotnet ef migrations remove -p src/Ofichina.Infrastructure
@@ -272,6 +273,12 @@ dotnet test /p:CollectCoverage=true
 ```
 
 ---
+
+## 📎 Documentos úteis
+
+- `API_REFERENCE.md` para contratos e exemplos reais da API.
+- `CONTRIBUTING.md` para padrões de documentação e contribuição.
+- `TROUBLESHOOTING.md` para suporte operacional.
 
 ## 🔑 Variáveis de Ambiente
 

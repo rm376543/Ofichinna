@@ -44,8 +44,11 @@
  - 18 Selecione o tipo de projeto (C#)
  - 19 Abra o powershell novamente, navegue na raiz do seu projeto onde tem o arquivo .sln
  - 20 rode os comandos abaixo na sequencia, um por um.:
+	```bash
 	- dotnet tool install --global dotnet-sonarscanner (vai instalar a ferramenta no seu projeto)
 	- dotnet tool install --global dotnet-coverage (vai criar o arquivo de cobertura de testes, utilizado na tela de overview do sonarqube)
+	```
+
 	## Esse comando abaixo sera mostrado na tela do sonarqube ja preenchido, apenas copie-o e cole no powershell
 	- dotnet sonarscanner begin /k:"Ofichinna" /d:sonar.host.url="http://localhost:9000" /d:sonar.token="" <-- Comando ja esta pronto so substituir o token gerado no passo 17, entre as aspas do final do comando.
 
@@ -82,3 +85,11 @@
 				> Generate Tokens 
 				> Informe um nome para o token e clique em Generate > Copie o token gerado e cole no campo "Token" do Visual Studio, clique em OK
 		- Volte na tela para inserir o token e vincule o projeto.
+```bash
+dotnet tool install --global dotnet-sonarscanner
+dotnet tool install --global dotnet-coverage
+dotnet sonarscanner begin /k:"Ofichinna" /d:sonar.host.url="http://localhost:9000" /d:sonar.token="<token>"
+dotnet build --no-incremental
+dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
+dotnet sonarscanner end /d:sonar.token="<token>"
+```
