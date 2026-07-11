@@ -7,22 +7,26 @@ Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, ut
 ### ✅ Status
 - **Implementação**: Completa
 - **Build**: ✅ Sucesso (sem erros)
-- **Documentação**: ✅ Completa
-- **Pronto para**: Desenvolvimento de features
+- **Documentação**: ✅ Base consolidada e em evolução
+- **Pronto para**: Evolução de features e documentação
 
 ---
 
 ## 📖 Documentação
 
 ### 🔴 COMECE AQUI
-1. **[📋 SUMARIO_EXECUTIVO.md](./SUMARIO_EXECUTIVO.md)** - Visão geral de 5 minutos
+1. **[🎯 START_HERE.md](./START_HERE.md)** - Ponto de partida rápido
+   - Visão resumida da solução
+   - Próximos passos
+   - Ordem de leitura
+2. **[📋 SUMARIO_EXECUTIVO.md](./SUMARIO_EXECUTIVO.md)** - Visão geral de 5 minutos
    - Status da implementação
    - Números e métricas
    - Quick start
    - Próximos passos
 
 ### 🔵 ENTENDA A ARQUITETURA
-2. **[🏗️ MAPA_VISUAL.md](./MAPA_VISUAL.md)** - Diagramas e visualizações
+3. **[🏗️ MAPA_VISUAL.md](./MAPA_VISUAL.md)** - Diagramas e visualizações
    - Estrutura hierárquica completa
    - Fluxo de requisição
    - Ciclo de inicialização
@@ -30,7 +34,7 @@ Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, ut
    - Exemplo de extensão
    - Dicas de desenvolvimento
 
-3. **[📐 ARQUITETURA.md](./ARQUITETURA.md)** - Referência técnica detalhada
+4. **[📐 ARQUITETURA.md](./ARQUITETURA.md)** - Referência técnica detalhada
    - Descrição de cada camada
    - Padrões implementados
    - Estrutura de pastas
@@ -45,14 +49,29 @@ Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, ut
    - Padrões de design
    - Código exemplo comentado
 
+5. **[📎 API_REFERENCE.md](./API_REFERENCE.md)** - Referência da API
+   - Endpoints de autenticação e perfil
+   - Exemplos de request/response
+   - Códigos de status
+
+6. **[🤝 CONTRIBUTING.md](./CONTRIBUTING.md)** - Guia de contribuição
+   - Regras de documentação
+   - Padrões de entrega
+   - Checklist antes de PR
+
 ### 🟡 VALIDAÇÃO E RASTREAMENTO
-5. **[✅ RELATORIO_IMPLEMENTACAO.md](./RELATORIO_IMPLEMENTACAO.md)** - Relatório completo
-   - 32 arquivos criados
+7. **[✅ RELATORIO_IMPLEMENTACAO.md](./RELATORIO_IMPLEMENTACAO.md)** - Relatório completo
+   - Base consolidada da implementação
    - Estrutura de pastas
    - Padrões de design
    - Validação
    - Estatísticas
    - Checklist de qualidade
+
+8. **[🧰 TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Suporte operacional
+   - Banco de dados
+   - Migrations
+   - SonarQube
 
 ---
 
@@ -74,13 +93,21 @@ Ofichinna/
 │  ├─ Ofichina.UnitTests/
 │  └─ Ofichina.IntegrationTests/
 │
-└─ Documentação/
-   ├─ README.md (este arquivo)
+└─ docs/
+   ├─ README.md
+   ├─ START_HERE.md
    ├─ SUMARIO_EXECUTIVO.md
    ├─ MAPA_VISUAL.md
    ├─ ARQUITETURA.md
    ├─ GUIA_IMPLEMENTACAO.md
-   └─ RELATORIO_IMPLEMENTACAO.md
+   ├─ QUICK_REFERENCE.md
+   ├─ API_REFERENCE.md
+   ├─ CONTRIBUTING.md
+   ├─ RELATORIO_IMPLEMENTACAO.md
+   ├─ INDICE.md
+   ├─ TROUBLESHOOTING.md
+   ├─ AUTORIZACAO-RBAC-POLICIES.md
+   └─ adr/
 ```
 
 ---
@@ -99,16 +126,15 @@ Ofichinna/
 
 ### 2. Criar Migrations
 ```bash
-cd src/Ofichina.Infrastructure
-dotnet ef migrations add InitialAuth
-dotnet ef database update
+dotnet ef migrations add InitialAuth -p src/Ofichina.Infrastructure
+dotnet ef database update -p src/Ofichina.Infrastructure
 ```
 
 > O projeto `Ofichina.Infrastructure` já possui `ApplicationDbContextFactory` para suportar o `dotnet ef` em design-time.
 
 ### 3. Executar
 ```bash
-dotnet run -p src/Ofichina.Api
+dotnet run --project src/Ofichina.Api
 ```
 
 Acesse: `https://localhost:7000/swagger`
@@ -147,14 +173,12 @@ Acesse: `https://localhost:7000/swagger`
 Program.cs
     ↓
 AddBootstrapMiddleware(configuration)
+    ├─ AddAuthorizationModule()
+    ├─ AddAuthenticationModules(configuration)
+    ├─ AddAuthorizationResultHandlerModule()
+    ├─ AddAuthenticationServices()
     ├─ AddApplication()
-    │   ├─ ValidationModule
-    │   ├─ HandlersModule
-    │   └─ ServicesModule
     └─ AddInfrastructure(configuration)
-        ├─ DatabaseModule (EF Core)
-        ├─ RepositoryModule (Repository + UnitOfWork)
-        └─ InfrastructureServicesModule
 ```
 
 ---
@@ -183,12 +207,12 @@ Veja exemplo completo em **GUIA_IMPLEMENTACAO.md**
 
 | Métrica | Valor |
 |---------|-------|
-| Projetos | 6 |
-| Arquivos Criados | 31 |
+| Projetos | 9 |
+| Arquivos Criados | Base consolidada |
 | Linhas de Código | ~2.500+ |
 | Padrões de Design | 8 |
-| Módulos de DI | 6 |
-| Camadas | 5 |
+| Módulos de DI | Múltiplos |
+| Camadas | 6 |
 | Build Status | ✅ Sucesso |
 | Erros | 0 |
 
@@ -209,6 +233,9 @@ Veja exemplo completo em **GUIA_IMPLEMENTACAO.md**
 - 📖 [ARQUITETURA.md](./ARQUITETURA.md) - Referência técnica
 - 📖 [GUIA_IMPLEMENTACAO.md](./GUIA_IMPLEMENTACAO.md) - Guia prático
 - 📖 [RELATORIO_IMPLEMENTACAO.md](./RELATORIO_IMPLEMENTACAO.md) - Relatório
+- 📖 [API_REFERENCE.md](./API_REFERENCE.md) - Contratos e exemplos da API
+- 📖 [CONTRIBUTING.md](./CONTRIBUTING.md) - Padrões de contribuição
+- 📖 [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Solução de problemas
 
 ---
 
@@ -269,7 +296,7 @@ R: Veja MAPA_VISUAL.md na seção "Mapeamento de Responsabilidades".
 R: 8 padrões listados em ARQUITETURA.md e RELATORIO_IMPLEMENTACAO.md.
 
 **P: Posso usar MediatR?**  
-R: Sim, a estrutura está preparada (veja HandlersModule).
+R: A solução usa abstrações próprias para commands e queries; adapte MediatR apenas se isso for necessário.
 
 **P: Como testar?**  
 R: Crie testes em projects `Ofichina.UnitTests` e `Ofichina.IntegrationTests`.
@@ -321,12 +348,14 @@ Pronto para:     ✅ Desenvolvimento
 1. **[📋 SUMARIO_EXECUTIVO.md](./SUMARIO_EXECUTIVO.md)** - Leia agora (5 min)
 2. **[🏗️ MAPA_VISUAL.md](./MAPA_VISUAL.md)** - Entenda a arquitetura (10 min)
 3. **[📖 GUIA_IMPLEMENTACAO.md](./GUIA_IMPLEMENTACAO.md)** - Implemente sua feature
+4. **[📎 API_REFERENCE.md](./API_REFERENCE.md)** - Consulte contratos e exemplos
+5. **[🤝 CONTRIBUTING.md](./CONTRIBUTING.md)** - Siga os padrões do projeto
 
 ---
 
-**Última atualização:** 2025  
-**Versão:** 1.0  
-**Status:** ✅ PRONTO PARA DESENVOLVIMENTO
+**Última atualização:** 2026  
+**Versão:** 1.1  
+**Status:** ✅ PRONTO PARA EVOLUIR
 
 ---
 

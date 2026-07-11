@@ -8,12 +8,12 @@
 
 | Métrica | Valor |
 |---------|-------|
-| **Arquivos Criados** | 31 |
+| **Arquivos Criados** | Base consolidada |
 | **Linhas de Código** | ~2.500+ |
-| **Camadas** | 5 |
-| **Módulos de DI** | 6 |
+| **Camadas** | 6 |
+| **Módulos de DI** | Múltiplos |
 | **Padrões de Design** | 8 |
-| **Projetos** | 6 |
+| **Projetos** | 9 |
 | **Status Build** | ✅ Sucesso |
 | **Erros de Compilação** | 0 |
 | **Avisos** | 0 |
@@ -22,7 +22,7 @@
 
 ## 🏗️ Arquitetura Implementada
 
-### Clean Architecture com CQRS
+### Clean Architecture com CQRS e Auth/JWT
 
 ```
 ┌──────────────────────┐
@@ -30,7 +30,7 @@
 └────────┬─────────────┘
 		 │
 ┌────────▼─────────────┐
-│   API LAYER          │  Controllers, Middlewares
+│   API LAYER          │  Controllers, Swagger, Authorization
 └────────┬─────────────┘
 		 │
 ┌────────▼────────────────────────────┐
@@ -39,18 +39,15 @@
 │  Validators, Use Cases)             │
 └────────┬────────────────────────────┘
 		 │
-	┌────┴──────┐
-	│            │
-┌───▼──┐   ┌────▼────┐
-│Domain│   │Contract │
-│      │   │         │
-└───┬──┘   └─────────┘
-	│
-┌───▼──────────────────┐
-│INFRASTRUCTURE LAYER  │
-│(EF Core, Repositories│
-│ UnitOfWork, Services)│
-└────────────────────┘
+┌────────▼─────────┐   ┌─────────────┐
+│   DOMAIN         │   │ CONTRACTS   │
+│ Regras de negócio│   │ DTOs/Responses
+└────────┬─────────┘   └─────┬───────┘
+		 │                   │
+┌────────▼───────────────────┐
+│ INFRASTRUCTURE LAYER       │
+│ EF Core, Repositories, JWT │
+└────────────────────────────┘
 ```
 
 ---
@@ -71,24 +68,24 @@
 ## 📦 O Que Foi Criado
 
 ### Domain Layer ✅
-- Entity base com Id (Guid), CreatedAt, UpdatedAt
-- Interfaces de repositório (genérica e específica)
+- Entity base com Id (Guid), CreatedAt, UpdatedAt e DeletedAt
+- Interfaces de repositório e Unit of Work
 - Padrão Specification
 - Result e ValueObject patterns
-- **Exemplo:** Entidade Exemplo com IExemploRepository
+- Entidades de domínio para usuários e perfis
 
 ### Application Layer ✅
 - CQRS abstractions (ICommand, IQuery)
 - Handlers para commands e queries
 - Validação com FluentValidation (autodiscovery)
-- Use cases de exemplo (CreateExemplo, GetExemploById)
+- Use cases de autenticação e perfis
 - Orquestração via ApplicationModule
 
 ### Infrastructure Layer ✅
 - Entity Framework Core com SQL Server
 - Repositório genérico e específico
 - Unit of Work para transações
-- ApplicationDbContext com DbSet
+- ApplicationDbContext com DbSet de usuários, perfis e vínculos
 - Módulos de database, repositories e serviços
 
 ### Contracts Layer ✅
@@ -99,8 +96,8 @@
 
 ### API Layer ✅
 - Program.cs configurado
-- Swagger integrado
-- Pronto para Controllers
+- Swagger integrado com XML comments
+- Controllers de autenticação e perfil
 
 ---
 
@@ -122,6 +119,8 @@
 |-----------|----------|
 | **ARQUITETURA.md** | Referência técnica completa, padrões, uso |
 | **GUIA_IMPLEMENTACAO.md** | Guia prático passo-a-passo com exemplos |
+| **API_REFERENCE.md** | Contratos e exemplos reais da API |
+| **CONTRIBUTING.md** | Regras para contribuição e documentação |
 | **RELATORIO_IMPLEMENTACAO.md** | Relatório detalhado de tudo que foi criado |
 | **MAPA_VISUAL.md** | Diagramas visuais da arquitetura |
 
@@ -143,20 +142,20 @@
 ### 2. Criar Migrations
 
 ```bash
-dotnet ef migrations add InitialCreate -p src/Ofichina.Infrastructure
+dotnet ef migrations add InitialAuth -p src/Ofichina.Infrastructure
 dotnet ef database update -p src/Ofichina.Infrastructure
 ```
 
 ### 3. Testar a Estrutura
 
 ```bash
-dotnet build                    # Deve compilar sem erros
-dotnet run -p src/Ofichina.Api # Deve iniciar sem erros
+dotnet build                         # Deve compilar sem erros
+dotnet run --project src/Ofichina.Api # Deve iniciar sem erros
 ```
 
 ### 4. Implementar Primeira Feature
 
-Seguir o padrão do exemplo (Exemplo) para criar novas entidades, repositórios, commands, queries e handlers.
+Seguir o padrão de autenticação e perfil para criar novas features, repositórios, commands, queries e handlers.
 
 ---
 
@@ -197,50 +196,52 @@ Seguir o padrão do exemplo (Exemplo) para criar novas entidades, repositórios,
 
 ### 1. Requisição HTTP chega
 ```
-POST /api/exemplos
+POST /api/auth/login
 Content-Type: application/json
 
 {
-  "nome": "Meu Exemplo",
-  "descricao": "Descrição do exemplo"
+	"email": "admin@ofichinna.com",
+  "senha": "Senha@123"
 }
 ```
 
 ### 2. Controller recebe e valida
 ```csharp
-[HttpPost]
-public async Task<IActionResult> Create(CreateExemploRequest request)
+[HttpPost("login")]
+public async Task<ActionResult<ApiResponse<AutenticacaoResponse>>> LoginAsync(AutenticacaoRequest request)
 {
 	// Validação automática pelo FluentValidation
-	var command = new CreateExemploCommand(request.Nome, request.Descricao);
-	var id = await _handler.HandleAsync(command);
-	return CreatedAtAction(nameof(Get), new { id }, id);
+	var command = new AutenticarCommand(request.Email, request.Senha);
+	var result = await _handler.HandleAsync(command);
+	return Ok(ApiResponse<AutenticacaoResponse>.SuccessResponse(result.Value!));
 }
 ```
 
 ### 3. Handler executa
 ```csharp
-public async Task<Guid> HandleAsync(CreateExemploCommand command)
+public async Task<Result<AutenticacaoResponse>> HandleAsync(AutenticarCommand command)
 {
-	var exemplo = new Exemplo(command.Nome, command.Descricao);
-	await _repository.AddAsync(exemplo);
-	await _unitOfWork.SaveChangesAsync();
-	return exemplo.Id;
+	var autenticacao = await _autenticacaoService.AutenticarAsync(command.Email, command.Senha);
+	return Result<AutenticacaoResponse>.Success(autenticacao);
 }
 ```
 
-### 4. Banco de dados persiste
+### 4. Banco de dados valida credenciais e perfis
 ```sql
-INSERT INTO Exemplos (Id, Nome, Descricao, Ativo, CreatedAt)
-VALUES (NEW_GUID, 'Meu Exemplo', 'Descrição...', 1, GETUTCDATE())
+SELECT * FROM Usuarios WHERE Email = 'admin@ofichinna.com'
 ```
 
 ### 5. Resposta retorna
 ```json
 {
   "success": true,
-  "data": "550e8400-e29b-41d4-a716-446655440000",
-  "message": "Exemplo criado com sucesso"
+	"message": "Autenticação realizada com sucesso.",
+  "data": {
+	"accessToken": "eyJhbGciOi...",
+	"usuarioId": "550e8400-e29b-41d4-a716-446655440000",
+	"email": "admin@ofichinna.com",
+	"perfis": ["ADMIN"]
+  }
 }
 ```
 
