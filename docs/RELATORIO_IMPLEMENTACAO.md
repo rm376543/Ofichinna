@@ -240,26 +240,25 @@
 ## 🚀 Próximos Passos Recomendados
 
 ### Imediatos
-- [ ] Configurar `appsettings.json` com connection string
-- [ ] Executar `dotnet ef migrations add InitialCreate`
-- [ ] Executar `dotnet ef database update`
-- [ ] Testar Project.Api com swagger
+- [x] Configurar `appsettings.json` com connection string
+- [x] Executar `dotnet ef migrations add InitialCreate`
+- [x] Executar `dotnet ef database update`
+- [x] Testar Project.Api com swagger
 
 ### Curto Prazo
-- [ ] Criar Controllers para endpoints
-- [ ] Implementar Middleware de erro centralizado
-- [ ] Adicionar Autenticação/Autorização
-- [ ] Criar testes unitários e de integração
+- [x] Criar Controllers para endpoints
+- [x] Implementar Middleware de erro centralizado
+- [x] Adicionar Autenticação/Autorização
+- [x] Criar testes unitários e de integração
 
 ### Médio Prazo
-- [ ] Implementar logging (Serilog)
+- [x] Implementar logging (Serilog)
 - [ ] Adicionar cache (Redis)
 - [ ] Configurar versionamento de API
 - [ ] Implementar Health Checks
 
 ### Longo Prazo
-- [ ] Adicionar OpenAPI/Swagger improvements
-- [ ] Implementar HATEOAS
+- [x] Adicionar OpenAPI/Swagger improvements
 - [ ] Configurar rate limiting
 - [ ] Preparar para deploy (Docker, CI/CD)
 
