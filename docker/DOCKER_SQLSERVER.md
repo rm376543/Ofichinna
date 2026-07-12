@@ -15,6 +15,8 @@ Ofichinna/
 │   ├── docker-compose.yml        # Orquestração de containers
 │   ├── DOCKER_SQLSERVER.md       # Documentação detalhada (este arquivo)
 │   ├── QUICKSTART.md             # Guia rápido de inicialização
+│   ├── LOGGING.md                # Documentação de logging e Seq
+│   └── EXEMPLOS_CORRELATION_ID.md # Exemplos de uso do correlation id
 └── src/Ofichina.Api/
 	├── appsettings.json              # String de conexão para produção
 	└── appsettings.Development.json  # String de conexão para desenvolvimento
@@ -30,9 +32,19 @@ Ofichinna/
 - Docker instalado e em execução
 - Docker Compose instalado
 
+#### Serviços disponíveis
+- `sqlserver`: banco de dados SQL Server na porta `1433`
+- `seq`: visualização de logs na porta `5341`
+- `sonarqube`: análise de qualidade de código na porta `9000`
+
 #### Iniciar o SQL Server
 ```bash
 docker-compose up -d
+```
+
+#### Iniciar apenas o Seq
+```bash
+docker-compose up -d seq
 ```
 
 #### Verificar status
@@ -162,6 +174,11 @@ O Docker Compose cria 2 volumes para persistência de dados:
 | Volume | Função |
 |--------|--------|
 | `sqlserver_data` | Armazena os arquivos de banco de dados |
+| `seq_data` | Armazena os eventos do Seq |
+| `postgres_data` | Armazena dados do PostgreSQL do SonarQube |
+| `sonarqube_data` | Armazena os dados do SonarQube |
+| `sonarqube_extensions` | Armazena as extensões do SonarQube |
+| `sonarqube_logs` | Armazena os logs do SonarQube |
 
 ---
 
@@ -177,6 +194,18 @@ O Docker Compose cria 2 volumes para persistência de dados:
 ---
 
 ## 🐛 Troubleshooting
+
+### Acessar o Seq
+```bash
+docker-compose logs -f seq
+```
+
+Abra no navegador:
+```text
+http://localhost:5341
+```
+
+Se o Seq não carregar, verifique se a porta `5341` está livre e se o serviço foi iniciado com `docker-compose up -d seq`.
 
 ### Container não inicia
 ```bash
@@ -216,6 +245,8 @@ docker-compose -f docker/docker-compose.yml up -d
 - ✅ **docker/docker-compose.yml** - Orquestração completa
 - ✅ **docker/DOCKER_SQLSERVER.md** - Documentação completa (este arquivo)
 - ✅ **docker/QUICKSTART.md** - Guia rápido
+- ✅ **docs/LOGGING.md** - Configuração de logging, correlation id e Seq
+- ✅ **docs/EXEMPLOS_CORRELATION_ID.md** - Exemplos práticos de uso
 - ✅ **src/Ofichina.Api/appsettings.json** - String de conexão
 - ✅ **src/Ofichina.Api/appsettings.Development.json** - String de conexão
 

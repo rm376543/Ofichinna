@@ -32,7 +32,7 @@
  - 6 Na tela que aparecera com opções adicionais so reforce o uso da porta, aqui estou utilizando 9000
  - 7 Abra o navegador e navegue para seu localhost - http://localhost:9000
  - 8 No login / senha digite > admin/admin
- - 9 Vai pedir para trocar senha
+ - 9 Vai pedir para trocar senha > usei ->S0n@rQub32026
  - 10 Apos fazer login, voce precisa criar a configuração local do projeto
  - 11 Clique na opção "Create a Local Project"
  - 12 Informe aqui o nome do projeto (Project Display Name) - Tente deixar o mesmo nome do projeto c#

@@ -1,15 +1,16 @@
-﻿using System.Text;
+﻿using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
+using Ofichina.Authentication.Security;
 
 namespace Ofichina.Authentication;
 
 /// <summary>
-/// Módulo de registro de Autenticacao do Sistema
-/// Registra toda logica de autenticacao do sistema
+/// Módulo de registro de Autenticacao do Sistema.
+/// Registra toda logica de autenticacao do sistema.
 /// </summary>
 public static class AuthenticationModule
 {
@@ -20,6 +21,8 @@ public static class AuthenticationModule
         var issuer = configuration["Jwt:Issuer"] ?? "ofichinna";
         var audience = configuration["Jwt:Audience"] ?? "ofichinna";
         var key = configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key não configurada.");
+
+        services.AddTransient<LoggingJwtBearerEvents>();
 
         services.AddAuthentication(options =>
         {
@@ -42,36 +45,7 @@ public static class AuthenticationModule
                 RoleClaimType = ClaimTypes.Role
             };
 
-            options.Events = new JwtBearerEvents
-            {
-                OnMessageReceived = context =>
-                {
-                    Console.WriteLine("Evento: OnMessageReceived");
-
-                    return Task.CompletedTask;
-                },
-
-                OnAuthenticationFailed = context =>
-                {
-                    Console.WriteLine("Evento: OnAuthenticationFailed");
-
-                    return Task.CompletedTask;
-                },
-
-                OnTokenValidated = context =>
-                {
-                    Console.WriteLine("Evento: OnAuthenticationFailed");
-
-                    return Task.CompletedTask;
-                },
-
-                OnChallenge = context =>
-                {
-                    Console.WriteLine("Evento: OnChallenge");
-
-                    return Task.CompletedTask;
-                }
-            };
+            options.EventsType = typeof(LoggingJwtBearerEvents);
         });
 
         return services;
