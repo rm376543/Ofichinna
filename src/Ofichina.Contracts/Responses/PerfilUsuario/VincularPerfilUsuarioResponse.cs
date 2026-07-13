@@ -1,6 +1,6 @@
-﻿namespace Ofichina.Contracts.Responses.PerfilCliente;
+﻿namespace Ofichina.Contracts.Responses.PerfilUsuario;
 
-public sealed class VincularPerfilClienteResponse
+public sealed class VincularPerfilUsuarioResponse
 {
     public Guid UsuarioId { get; set; }
 
