@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Domain.ValueObjects;
 
@@ -8,14 +9,14 @@ namespace Ofichina.Domain.ValueObjects;
 public sealed class Placa : ValueObject
 {
     private static readonly Regex PlacaBrasilRegex =
-        #pragma warning disable S6444
+#pragma warning disable S6444
         new(@"^[A-Z]{3}[0-9]{4}$", RegexOptions.Compiled);
-        #pragma warning restore S6444
+#pragma warning restore S6444
 
     private static readonly Regex PlacaMercosulRegex =
-        #pragma warning disable S6444
+#pragma warning disable S6444
         new(@"^[A-Z]{3}[0-9][A-Z][0-9]{2}$", RegexOptions.Compiled);
-        #pragma warning restore S6444
+#pragma warning restore S6444
 
     public string Value { get; }
 
@@ -26,23 +27,24 @@ public sealed class Placa : ValueObject
 
     public static Placa Criar(string placa)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(placa);
+        if (string.IsNullOrWhiteSpace(placa))
+            throw new DomainException("Placa inválida.");
 
         placa = Normalizar(placa);
 
         if (!EhValida(placa))
-            throw new ArgumentException("Placa inválida.", nameof(placa));
+            throw new DomainException("Placa inválida.");
 
         return new Placa(placa);
     }
 
     private static string Normalizar(string placa)
     {
-        #pragma warning disable S6444
+#pragma warning disable S6444
         return Regex
             .Replace(placa, @"[^A-Za-z0-9]", "")
             .ToUpperInvariant();
-        #pragma warning restore S6444
+#pragma warning restore S6444
     }
 
     private static bool EhValida(string placa)

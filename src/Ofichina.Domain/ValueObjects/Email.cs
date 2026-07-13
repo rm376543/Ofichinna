@@ -1,4 +1,5 @@
 using System.Net.Mail;
+using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Domain.ValueObjects;
 
@@ -16,7 +17,8 @@ public sealed class Email : ValueObject
 
     public static Email Criar(string email)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(email);
+        if (string.IsNullOrWhiteSpace(email))
+            throw new DomainException("E-mail inválido.");
 
         try
         {
@@ -25,7 +27,7 @@ public sealed class Email : ValueObject
         }
         catch (FormatException ex)
         {
-            throw new ArgumentException("E-mail inválido.", nameof(email), ex);
+            throw new DomainException("E-mail inválido.", ex);
         }
     }
 
