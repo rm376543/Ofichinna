@@ -10,7 +10,7 @@ public class UpdatePerfilCommand : ICommand<Result>
 {
     public Guid Id { get; set; }
 
-    public string NomePerfil { get; set; } = string.Empty;
+    public string NomePerfil { get; set; }
 
     public string Descricao { get; set; }
 

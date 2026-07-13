@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using Ofichina.Domain.Exceptions;
+using System.Runtime.ConstrainedExecution;
+using System.Text.RegularExpressions;
 
 namespace Ofichina.Domain.ValueObjects;
 
@@ -16,14 +18,15 @@ public sealed class Telefone : ValueObject
 
     public static Telefone Criar(string telefone)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(telefone);
+        if (string.IsNullOrWhiteSpace(telefone))
+            throw new DomainException("Telefone nao pode ser nulo ou vazio.");
 
         #pragma warning disable S6444
         telefone = Regex.Replace(telefone, @"\D", "");
         #pragma warning restore S6444
 
         if (!EhValido(telefone))
-            throw new ArgumentException("Telefone inválido.", nameof(telefone));
+            throw new DomainException($"Telefone {telefone} inválido.");
 
         return new Telefone(telefone);
     }

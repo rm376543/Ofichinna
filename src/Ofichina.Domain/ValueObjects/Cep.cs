@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿
+using Ofichina.Domain.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace Ofichina.Domain.ValueObjects;
 
@@ -16,14 +18,15 @@ public sealed class Cep : ValueObject
 
     public static Cep Criar(string cep)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(cep);
+        if(string.IsNullOrWhiteSpace(cep))
+            throw new DomainException("CEP nao pode ser nulo ou vazio.");
 
         #pragma warning disable S6444
         cep = Regex.Replace(cep, @"\D", "");
         #pragma warning restore S6444
 
         if (!EhValido(cep))
-            throw new ArgumentException("CEP inválido.", nameof(cep));
+            throw new DomainException($"CEP {cep} inválido.");
 
         return new Cep(cep);
     }

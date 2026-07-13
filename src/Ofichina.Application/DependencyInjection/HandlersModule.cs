@@ -24,12 +24,12 @@ public static class HandlersModule
     public static IServiceCollection AddHandlers(this IServiceCollection services)
     {
         // Perfis
-        services.AddScoped<ICommandHandler<CreatePerfilCommand, Guid>, CreatePerfilCommandHandler>();
-        services.AddScoped<ICommandHandler<UpdatePerfilCommand>, UpdatePerfilCommandHandler>();
-        services.AddScoped<ICommandHandler<DeletePerfilCommand>, DeletePerfilCommandHandler>();
+        services.AddScoped<ICommandHandler<CreatePerfilCommand, Result>, CreatePerfilCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdatePerfilCommand, Result>, UpdatePerfilCommandHandler>();
+        services.AddScoped<ICommandHandler<DeletePerfilCommand, Result>, DeletePerfilCommandHandler>();
 
-        services.AddScoped<IQueryHandler<GetPerfilByIdQuery, PerfilResponse?>, GetPerfilByIdQueryHandler>();
-        services.AddScoped<IQueryHandler<GetPerfisQuery, IReadOnlyCollection<PerfilResponse>>, GetPerfisQueryHandler>();
+        services.AddScoped<IQueryHandler<GetPerfilByIdQuery, Result<PerfilResponse>>, GetPerfilByIdQueryHandler>();
+        services.AddScoped<IQueryHandler<GetPerfisQuery, Result<IReadOnlyCollection<PerfilResponse>>>, GetPerfisQueryHandler>();
 
         // Autenticacao
         services.AddScoped<ICommandHandler<AutenticarCommand, Result<AutenticacaoResponse>>, AutenticarCommandHandler>();

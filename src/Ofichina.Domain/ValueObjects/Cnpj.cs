@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Domain.ValueObjects;
 
@@ -16,14 +17,15 @@ public sealed class Cnpj : ValueObject
 
     public static Cnpj Criar(string cnpj)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(cnpj);
+        if (string.IsNullOrWhiteSpace(cnpj))
+            throw new DomainException("CNPJ inválido.");
 
-        #pragma warning disable S6444
+#pragma warning disable S6444
         cnpj = Regex.Replace(cnpj, @"\D", "");
-        #pragma warning restore S6444
+#pragma warning restore S6444
 
         if (!EhValido(cnpj))
-            throw new ArgumentException("CNPJ inválido.", nameof(cnpj));
+            throw new DomainException("CNPJ inválido.");
 
         return new Cnpj(cnpj);
     }
@@ -33,7 +35,6 @@ public sealed class Cnpj : ValueObject
         if (cnpj.Length != 14)
             return false;
 
-        // Rejeita CNPJs com todos os dígitos iguais
         if (cnpj.Distinct().Count() == 1)
             return false;
 

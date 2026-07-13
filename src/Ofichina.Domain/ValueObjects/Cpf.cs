@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Domain.ValueObjects;
 
@@ -16,14 +17,15 @@ public sealed class Cpf : ValueObject
 
     public static Cpf Criar(string cpf)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(cpf);
+        if (string.IsNullOrWhiteSpace(cpf))
+            throw new DomainException("CPF inválido.");
 
-        #pragma warning disable S6444
+#pragma warning disable S6444
         cpf = Regex.Replace(cpf, @"\D", "");
-        #pragma warning restore S6444
+#pragma warning restore S6444
 
         if (!EhValido(cpf))
-            throw new ArgumentException("CPF inválido.", nameof(cpf));
+            throw new DomainException("CPF inválido.");
 
         return new Cpf(cpf);
     }
@@ -33,11 +35,9 @@ public sealed class Cpf : ValueObject
         if (cpf.Length != 11)
             return false;
 
-        // Rejeita CPFs com todos os dígitos iguais
         if (cpf.Distinct().Count() == 1)
             return false;
 
-        // Primeiro dígito
         var soma = 0;
 
         for (int i = 0; i < 9; i++)
@@ -49,7 +49,6 @@ public sealed class Cpf : ValueObject
         if (cpf[9] - '0' != primeiroDigito)
             return false;
 
-        // Segundo dígito
         soma = 0;
 
         for (int i = 0; i < 10; i++)

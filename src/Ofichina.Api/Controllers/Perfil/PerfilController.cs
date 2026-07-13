@@ -8,6 +8,7 @@ using Ofichina.Contracts.Enums;
 using Ofichina.Contracts.Requests.Perfil;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Perfil;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Api.Controllers.Perfis;
 
@@ -20,20 +21,24 @@ public sealed class PerfisController : ControllerBase
 {
     private readonly IValidator<CreatePerfilRequest> _createValidator;
     private readonly IValidator<UpdatePerfilRequest> _updateValidator;
-    private readonly ICommandHandler<CreatePerfilCommand, Guid> _createHandler;
-    private readonly ICommandHandler<UpdatePerfilCommand> _updateHandler;
-    private readonly ICommandHandler<DeletePerfilCommand> _deleteHandler;
-    private readonly IQueryHandler<GetPerfisQuery, IReadOnlyCollection<PerfilResponse>> _getAllHandler;
-    private readonly IQueryHandler<GetPerfilByIdQuery, PerfilResponse?> _getByIdHandler;
+    private readonly ICommandHandler<CreatePerfilCommand, Result> _createHandler;
+    private readonly ICommandHandler<UpdatePerfilCommand, Result> _updateHandler;
+    private readonly ICommandHandler<DeletePerfilCommand, Result> _deleteHandler;
+    private readonly IQueryHandler<GetPerfisQuery, Result<IReadOnlyCollection<PerfilResponse>>> _getAllHandler;
+    private readonly IQueryHandler<GetPerfilByIdQuery, Result<PerfilResponse>> _getByIdHandler;
+    private readonly ILogger<PerfisController> _logger;
 
+#pragma warning disable S107
     public PerfisController(
         IValidator<CreatePerfilRequest> createValidator,
         IValidator<UpdatePerfilRequest> updateValidator,
-        ICommandHandler<CreatePerfilCommand, Guid> createHandler,
-        ICommandHandler<UpdatePerfilCommand> updateHandler,
-        ICommandHandler<DeletePerfilCommand> deleteHandler,
-        IQueryHandler<GetPerfisQuery, IReadOnlyCollection<PerfilResponse>> getAllHandler,
-        IQueryHandler<GetPerfilByIdQuery, PerfilResponse?> getByIdHandler)
+        ICommandHandler<CreatePerfilCommand, Result> createHandler,
+        ICommandHandler<UpdatePerfilCommand, Result> updateHandler,
+        ICommandHandler<DeletePerfilCommand, Result> deleteHandler,
+        IQueryHandler<GetPerfisQuery, Result<IReadOnlyCollection<PerfilResponse>>> getAllHandler,
+        IQueryHandler<GetPerfilByIdQuery, Result<PerfilResponse>> getByIdHandler,
+        ILogger<PerfisController> logger)
+#pragma warning restore S107
     {
         _createValidator = createValidator;
         _updateValidator = updateValidator;
@@ -42,11 +47,13 @@ public sealed class PerfisController : ControllerBase
         _deleteHandler = deleteHandler;
         _getAllHandler = getAllHandler;
         _getByIdHandler = getByIdHandler;
+        _logger = logger;
     }
 
     /// <summary>
     /// Retorna todos os perfis cadastrados.
     /// </summary>
+    /// <param name="cancellationToken"></param>
     /// <returns>Lista de perfis.</returns>
     [Authorize(Policy = UserPolicyEnum.Ler)]
     [HttpGet]
@@ -54,11 +61,19 @@ public sealed class PerfisController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse<IReadOnlyCollection<PerfilResponse>>>> GetAllAsync(
-        CancellationToken cancellationToken)
+    CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Iniciando a obtenção de todos os perfis.");
         var result = await _getAllHandler.HandleAsync(new GetPerfisQuery());
 
-        return Ok(ApiResponse<IReadOnlyCollection<PerfilResponse>>.SuccessResponse(result));
+        if (!result.IsSuccess)
+        {
+            _logger.LogError("Erro ao obter os perfis: {Error}", result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os perfis."));
+        }
+
+        _logger.LogInformation("Perfis obtidos com sucesso. Total de perfis: {Count}", result.Value?.Count ?? 0);
+        return Ok(ApiResponse<IReadOnlyCollection<PerfilResponse>>.SuccessResponse(result.Value ?? []));
     }
 
     /// <summary>
@@ -74,17 +89,20 @@ public sealed class PerfisController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<PerfilResponse>>> GetByIdAsync(
-        Guid id,
-        CancellationToken cancellationToken)
+    Guid id,
+    CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Iniciando a obtenção do perfil com Id: {Id}", id);
         var result = await _getByIdHandler.HandleAsync(new GetPerfilByIdQuery(id));
 
-        if (result is null)
+        if (!result.IsSuccess || result.Value is null)
         {
-            return NotFound(ApiResponse.FailureResponse("Perfil não encontrado."));
+            _logger.LogError("Perfil com Id: {Id} não encontrado.", id);
+            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Perfil não encontrado."));
         }
 
-        return Ok(ApiResponse<PerfilResponse>.SuccessResponse(result));
+        _logger.LogInformation("Perfil com Id: {Id} obtido com sucesso.", id);
+        return Ok(ApiResponse<PerfilResponse>.SuccessResponse(result.Value));
     }
 
     /// <summary>
@@ -95,18 +113,20 @@ public sealed class PerfisController : ControllerBase
     /// <returns>Id do perfil criado ou erro de validação.</returns>
     [Authorize(Policy = UserPolicyEnum.Escrever)]
     [HttpPost]
-    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<Guid>>> CreateAsync(
+    public async Task<ActionResult<ApiResponse>> CreateAsync(
         [FromBody] CreatePerfilRequest request,
         CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Iniciando a criação de um novo perfil com Nome: {NomePerfil}", request.NomePerfil);
         var validation = await _createValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
         {
+            _logger.LogError("Erro ao validar a criação do perfil com Nome: {NomePerfil}. Erros: {Erros}", request.NomePerfil, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
@@ -114,11 +134,12 @@ public sealed class PerfisController : ControllerBase
             request.NomePerfil,
             request.Descricao);
 
-        var id = await _createHandler.HandleAsync(command);
+        await _createHandler.HandleAsync(command);
 
+        _logger.LogInformation("Perfil criado com sucesso, Nome: {NomePerfil}", request.NomePerfil);
         return StatusCode(
             StatusCodes.Status201Created,
-            ApiResponse<Guid>.SuccessResponse(id, "Perfil criado com sucesso."));
+            ApiResponse.SuccessResponse($"Perfil criado com sucesso, Nome: {request.NomePerfil}"));
     }
 
     /// <summary>
@@ -137,10 +158,12 @@ public sealed class PerfisController : ControllerBase
         [FromBody] UpdatePerfilRequest request,
         CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Iniciando a atualização do perfil com Id: {Id}", request.Id);
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
         {
+            _logger.LogError("Erro ao validar a atualização do perfil com Id: {Id}. Erros: {Erros}", request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
@@ -151,11 +174,13 @@ public sealed class PerfisController : ControllerBase
 
         if (!result.IsSuccess)
         {
+            _logger.LogError("Erro ao atualizar o perfil com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
             return result.Error == "Perfil não encontrado."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
                 : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o perfil."));
         }
 
+        _logger.LogInformation("Perfil com Id: {Id} atualizado com sucesso.", request.Id);
         return Ok(ApiResponse.SuccessResponse("Perfil atualizado com sucesso."));
     }
 
@@ -175,13 +200,16 @@ public sealed class PerfisController : ControllerBase
         Guid id,
         CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Iniciando a desativação do perfil com Id: {Id}", id);
         var result = await _deleteHandler.HandleAsync(new DeletePerfilCommand(id));
 
         if (!result.IsSuccess)
         {
+            _logger.LogError("Erro ao desativar o perfil com Id: {Id}. Erro: {Erro}", id, result.Error);
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Perfil não encontrado."));
         }
 
+        _logger.LogInformation("Perfil com Id: {Id} desativado com sucesso.", id);
         return Ok(ApiResponse.SuccessResponse("Perfil desativado com sucesso."));
     }
 }
