@@ -2,30 +2,30 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.UseCases.PerfilCliente.Commands;
-using Ofichina.Application.UseCases.PerfilCliente.Queries;
+using Ofichina.Application.UseCases.PerfilUsuario.Commands;
+using Ofichina.Application.UseCases.PerfilUsuario.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Enums;
-using Ofichina.Contracts.Requests.PerfilCliente;
+using Ofichina.Contracts.Requests.PerfilUsuario;
 using Ofichina.Contracts.Responses;
-using Ofichina.Contracts.Responses.PerfilCliente;
+using Ofichina.Contracts.Responses.PerfilUsuario;
 
-namespace Ofichina.Api.Controllers.PerfilCliente;
+namespace Ofichina.Api.Controllers.PerfilUsuario;
 
 [Authorize]
 [ApiController]
-[Route("api/cliente/{clienteId:guid}/perfil")]
+[Route("api/usuario/{usuarioId:guid}/perfil")]
 public sealed class PerfilUsuarioController : ControllerBase
 {
-    private readonly IValidator<VincularPerfilClienteRequest> _vincularValidator;
-    private readonly ICommandHandler<VincularPerfilClienteCommand, Result<VincularPerfilClienteResponse>> _vincularHandler;
-    private readonly IQueryHandler<ObterPerfisDoClienteQuery, IReadOnlyCollection<string>> _obterPerfisHandler;
+    private readonly IValidator<VincularPerfilUsuarioRequest> _vincularValidator;
+    private readonly ICommandHandler<VincularPerfilUsuarioCommand, Result<VincularPerfilUsuarioResponse >> _vincularHandler;
+    private readonly IQueryHandler<ObterPerfisDoUsuarioQuery, IReadOnlyCollection<string>> _obterPerfisHandler;
     private readonly ILogger<PerfilUsuarioController> _logger;
 
     public PerfilUsuarioController(
-        IValidator<VincularPerfilClienteRequest> vincularValidator,
-        ICommandHandler<VincularPerfilClienteCommand, Result<VincularPerfilClienteResponse>> vincularHandler,
-        IQueryHandler<ObterPerfisDoClienteQuery, IReadOnlyCollection<string>> obterPerfisHandler,
+        IValidator<VincularPerfilUsuarioRequest> vincularValidator,
+        ICommandHandler<VincularPerfilUsuarioCommand, Result<VincularPerfilUsuarioResponse>> vincularHandler,
+        IQueryHandler<ObterPerfisDoUsuarioQuery, IReadOnlyCollection<string>> obterPerfisHandler,
         ILogger<PerfilUsuarioController> logger)
     {
         _vincularValidator = vincularValidator;
@@ -35,14 +35,14 @@ public sealed class PerfilUsuarioController : ControllerBase
     }
 
     /// <summary>
-    /// Vincula um perfil a um cliente existente.
+    /// Vincula um perfil a um usuário existente.
     /// </summary>
-    /// <param name="clienteId">Identificador do cliente.</param>
+    /// <param name="usuarioId">Identificador do usuário.</param>
     /// <param name="perfilId">Identificador do perfil.</param>
     /// <param name="cancellationToken"></param>
     /// <returns>
     /// Retorna sucesso quando o vínculo é criado;
-    /// retorna erro quando cliente, perfil ou vínculo já existirem.
+    /// retorna erro quando usuário, perfil ou vínculo já existirem.
     /// </returns>
     [Authorize(Policy = UserPolicyEnum.Escrever)]
     [HttpPost("{perfilId:guid}")]
@@ -51,15 +51,15 @@ public sealed class PerfilUsuarioController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse>> VincularAsync(
-        Guid clienteId,
+        Guid usuarioId,
         Guid perfilId,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando vinculação de perfil. ClienteId: {ClienteId}, PerfilId: {PerfilId}", clienteId, perfilId);
+        _logger.LogInformation("Iniciando vinculação de perfil. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}", usuarioId, perfilId);
 
-        var request = new VincularPerfilClienteRequest
+        var request = new VincularPerfilUsuarioRequest
         {
-            UsuarioId = clienteId,
+            UsuarioId = usuarioId,
             PerfilId = perfilId
         };
 
@@ -67,43 +67,43 @@ public sealed class PerfilUsuarioController : ControllerBase
 
         if (!validation.IsValid)
         {
-            _logger.LogWarning("Validação falhou ao vincular perfil. ClienteId: {ClienteId}, PerfilId: {PerfilId}, Erros: {Errors}",
-                clienteId, perfilId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            _logger.LogWarning("Validação falhou ao vincular perfil. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}, Erros: {Errors}",
+                usuarioId, perfilId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _vincularHandler.HandleAsync(new VincularPerfilClienteCommand(
+        var result = await _vincularHandler.HandleAsync(new VincularPerfilUsuarioCommand(
             request.UsuarioId,
             request.PerfilId));
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Falha ao vincular perfil. ClienteId: {ClienteId}, PerfilId: {PerfilId}, Erro: {Error}",
-                clienteId, perfilId, result.Error);
+            _logger.LogError("Falha ao vincular perfil. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}, Erro: {Error}",
+                usuarioId, perfilId, result.Error);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível vincular o perfil."));
         }
 
-        _logger.LogInformation("Perfil vinculado com sucesso. ClienteId: {ClienteId}, PerfilId: {PerfilId}", clienteId, perfilId);
+        _logger.LogInformation("Perfil vinculado com sucesso. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}", usuarioId, perfilId);
         return Ok(ApiResponse.SuccessResponse(result.Value?.Mensagem ?? "Perfil vinculado com sucesso."));
     }
 
     /// <summary>
-    /// Retorna todos os perfis vinculados a um cliente.
+    /// Retorna todos os perfis vinculados a um usuário.
     /// </summary>
-    /// <param name="clienteId">Identificador do cliente.</param>
-    /// <returns>Lista com os códigos dos perfis vinculados ao cliente.</returns>
+    /// <param name="usuarioId">Identificador do usuário.</param>
+    /// <returns>Lista com os códigos dos perfis vinculados ao usuário.</returns>
     [Authorize(Policy = UserPolicyEnum.Ler)]
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<string>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<string>>>> ObterPerfisAsync(Guid clienteId)
+    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<string>>>> ObterPerfisAsync(Guid usuarioId)
     {
-        _logger.LogInformation("Consultando perfis do cliente. ClienteId: {ClienteId}", clienteId);
+        _logger.LogInformation("Consultando perfis do usuário. UsuarioId: {UsuarioId}", usuarioId);
 
-        var perfis = await _obterPerfisHandler.HandleAsync(new ObterPerfisDoClienteQuery(clienteId));
+        var perfis = await _obterPerfisHandler.HandleAsync(new ObterPerfisDoUsuarioQuery(usuarioId));
 
-        _logger.LogInformation("Perfis obtidos com sucesso. ClienteId: {ClienteId}, Quantidade: {Quantidade}", clienteId, perfis.Count);
+        _logger.LogInformation("Perfis obtidos com sucesso. UsuarioId: {UsuarioId}, Quantidade: {Quantidade}", usuarioId, perfis.Count);
 
         return Ok(ApiResponse<IReadOnlyCollection<string>>.SuccessResponse(perfis));
     }
