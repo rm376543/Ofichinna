@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Ofichina.Contracts.Requests.PerfilCliente
+﻿namespace Ofichina.Contracts.Requests.PerfilUsuario
 {
-    internal class DesvincularPerfilClienteRequest
+    public class DesvincularPerfilUsuarioRequest
     {
     }
 }

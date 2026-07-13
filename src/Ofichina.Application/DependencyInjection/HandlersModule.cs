@@ -2,14 +2,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Autenticacao.Commands;
 using Ofichina.Application.UseCases.Autenticacao.Handlers;
-using Ofichina.Application.UseCases.PerfilCliente.Commands;
-using Ofichina.Application.UseCases.PerfilCliente.Handlers;
+using Ofichina.Application.UseCases.PerfilUsuario.Commands;
+using Ofichina.Application.UseCases.PerfilUsuario.Handlers;
 using Ofichina.Application.UseCases.Perfis.Commands;
 using Ofichina.Application.UseCases.Perfis.Handlers;
 using Ofichina.Application.UseCases.Perfis.Queries;
-using Ofichina.Application.UseCases.PerfilCliente.Queries;
+using Ofichina.Application.UseCases.PerfilUsuario.Queries;
 using Ofichina.Contracts.Responses;
-using Ofichina.Contracts.Responses.PerfilCliente;
+using Ofichina.Contracts.Responses.PerfilUsuario;
 using Ofichina.Contracts.Responses.Perfil;
 using Ofichina.Contracts.Common;
 
@@ -35,10 +35,10 @@ public static class HandlersModule
         services.AddScoped<ICommandHandler<AutenticarCommand, Result<AutenticacaoResponse>>, AutenticarCommandHandler>();
         services.AddScoped<ICommandHandler<CadastrarClienteCommand, Result<AutenticacaoResponse>>, CadastrarClienteCommandHandler>();
 
-        //ClientePerfil
-        services.AddScoped<ICommandHandler<VincularPerfilClienteCommand, Result<VincularPerfilClienteResponse>>, VincularPerfilClienteCommandHandler>();
-        services.AddScoped<ICommandHandler<DesvincularPerfilClienteCommand, Result<DesvincularPerfilClienteResponse>>, DesvincularPerfilClienteCommandHandler>();
-        services.AddScoped<IQueryHandler<ObterPerfisDoClienteQuery, IReadOnlyCollection<string>>, ObterPerfisDoClienteQueryHandler>();
+        //UsuarioPerfil
+        services.AddScoped<ICommandHandler<VincularPerfilUsuarioCommand, Result<VincularPerfilUsuarioResponse>>, VincularPerfilUsuarioCommandHandler>();
+        services.AddScoped<ICommandHandler<DesvincularPerfilUsuarioCommand, Result<DesvincularPerfilUsuarioResponse>>, DesvincularPerfilUsuarioCommandHandler>();
+        services.AddScoped<IQueryHandler<ObterPerfisDoUsuarioQuery, IReadOnlyCollection<string>>, ObterPerfisDoUsuarioQueryHandler>();
 
         return services;
     }

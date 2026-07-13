@@ -5,11 +5,11 @@ using Ofichina.Infrastructure.Persistence;
 
 namespace Ofichina.Infrastructure.Repositories;
 
-public sealed class ClientePerfilRepository : Repository<UsuarioPerfil>, IClientePerfilRepository
+public sealed class PerfilUsuarioRepository : Repository<UsuarioPerfil>, IPerfilUsuarioRepository
 {
     private readonly ApplicationDbContext _context;
 
-    public ClientePerfilRepository(ApplicationDbContext context) : base(context)
+    public PerfilUsuarioRepository(ApplicationDbContext context) : base(context)
     {
         _context = context;
     }

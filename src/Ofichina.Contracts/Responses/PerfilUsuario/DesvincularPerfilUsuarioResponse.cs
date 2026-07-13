@@ -1,6 +1,6 @@
-﻿namespace Ofichina.Contracts.Responses.PerfilCliente;
+﻿namespace Ofichina.Contracts.Responses.PerfilUsuario;
 
-public sealed class DesvincularPerfilClienteResponse
+public sealed class DesvincularPerfilUsuarioResponse
 {
     public Guid UsuarioId { get; set; }
 

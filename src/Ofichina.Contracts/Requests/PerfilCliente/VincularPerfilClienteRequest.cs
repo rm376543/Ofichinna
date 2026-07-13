@@ -1,6 +1,6 @@
-﻿namespace Ofichina.Contracts.Requests.PerfilCliente;
+﻿namespace Ofichina.Contracts.Requests.PerfilUsuario;
 
-public sealed class VincularPerfilClienteRequest : CreateRequest
+public sealed class VincularPerfilUsuarioRequest : CreateRequest
 {
     public Guid UsuarioId { get; set; }
 
