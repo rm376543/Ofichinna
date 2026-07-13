@@ -1,4 +1,5 @@
 ﻿using Ofichina.Application.Abstractions;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Perfil;
 
 namespace Ofichina.Application.UseCases.Perfis.Queries;
@@ -6,7 +7,7 @@ namespace Ofichina.Application.UseCases.Perfis.Queries;
 /// <summary>
 /// Query para obter um perfil por ID.
 /// </summary>
-public class GetPerfilByIdQuery : IQuery<PerfilResponse?>
+public class GetPerfilByIdQuery : IQuery<Result<PerfilResponse>>
 {
     public Guid Id { get; set; }
 

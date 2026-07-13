@@ -5,6 +5,7 @@ using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Ofichina.UnitTests.Application.Autenticacao;
 
@@ -21,7 +22,12 @@ public class AutenticarCommandHandlerTests
         var tokenService = new FakeJwtTokenService();
         var senhaHasher = new FakeSenhaHasher(true);
 
-        var handler = new AutenticarCommandHandler(repository, perfilService, tokenService, senhaHasher);
+        var handler = new AutenticarCommandHandler(
+            repository,
+            perfilService,
+            tokenService,
+            senhaHasher,
+            NullLogger<AutenticarCommandHandler>.Instance);
         var command = new AutenticarCommand("admin@ofichinna.com", "Senha@123");
 
         Result<AutenticacaoResponse> result = await handler.HandleAsync(command);
@@ -46,13 +52,18 @@ public class AutenticarCommandHandlerTests
         var tokenService = new FakeJwtTokenService();
         var senhaHasher = new FakeSenhaHasher(true);
 
-        var handler = new AutenticarCommandHandler(repository, perfilService, tokenService, senhaHasher);
+        var handler = new AutenticarCommandHandler(
+            repository,
+            perfilService,
+            tokenService,
+            senhaHasher,
+            NullLogger<AutenticarCommandHandler>.Instance);
         var command = new AutenticarCommand("inexistente@ofichinna.com", "Senha@123");
 
         Result<AutenticacaoResponse> result = await handler.HandleAsync(command);
 
         Assert.False(result.IsSuccess);
-        Assert.Equal("Credenciais inválidas.", result.Error);
+        Assert.Equal("Verifique os dados fornecidos.", result.Error);
         Assert.Null(result.Value);
         Assert.True(repository.FoiChamado);
         Assert.False(perfilService.FoiChamado);
