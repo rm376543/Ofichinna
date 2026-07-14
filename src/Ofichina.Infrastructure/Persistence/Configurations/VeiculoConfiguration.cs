@@ -1,0 +1,45 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Ofichina.Domain.Entities;
+using Ofichina.Domain.ValueObjects;
+
+namespace Ofichina.Infrastructure.Persistence.Configurations;
+
+public class VeiculoConfiguration : IEntityTypeConfiguration<Veiculo>
+{
+    public void Configure(EntityTypeBuilder<Veiculo> builder)
+    {
+        builder.ToTable("Veiculos");
+
+        builder.HasKey(v => v.Id);
+
+        builder.Property(v => v.PessoaId)
+            .IsRequired();
+
+        builder.Property(v => v.Placa)
+            .HasConversion(
+                placa => placa.Numero,
+                valor => Placa.Criar(valor))
+            .HasMaxLength(7)
+            .IsRequired();
+
+        builder.Property(v => v.Marca)
+            .HasMaxLength(100)
+            .IsRequired();
+
+        builder.Property(v => v.Modelo)
+            .HasMaxLength(100)
+            .IsRequired();
+
+        builder.Property(v => v.Ano)
+            .IsRequired();
+
+        builder.HasOne(v => v.Pessoa)
+            .WithMany(p => p.Veiculos)
+            .HasForeignKey(v => v.PessoaId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(v => v.Placa)
+            .IsUnique();
+    }
+}
