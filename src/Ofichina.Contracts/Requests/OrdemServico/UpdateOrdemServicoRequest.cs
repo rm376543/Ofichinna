@@ -13,7 +13,7 @@ public sealed class UpdateOrdemServicoRequest : UpdateRequest
     /// <summary>
     /// Funcionário responsável pelo atendimento.
     /// </summary>
-    public Guid ResponsavelId { get; init; }
+    public Guid FuncionarioId { get; init; }
 
     /// <summary>
     /// Descrição atualizada do problema relatado pelo cliente.
