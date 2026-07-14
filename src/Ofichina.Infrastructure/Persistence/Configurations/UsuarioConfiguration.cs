@@ -28,5 +28,8 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .WithOne(x => x.Usuario)
             .HasForeignKey(x => x.UsuarioId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Navigation(x => x.Perfis)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

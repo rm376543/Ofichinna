@@ -1,6 +1,6 @@
 using Ofichina.Contracts.Requests.OrdemServicos;
 
-namespace Ofichina.Contracts.Requests.Cliente;
+namespace Ofichina.Contracts.Requests.OrdemServico;
 
 /// <summary>
 /// Requisição para cadastro de nova ordem de serviço.
@@ -8,9 +8,9 @@ namespace Ofichina.Contracts.Requests.Cliente;
 public sealed class CreateOrdemServicoRequest : CreateRequest
 {
     /// <summary>
-    /// Cliente proprietário do veículo.
+    /// Pessoa proprietária do veículo.
     /// </summary>
-    public Guid ClienteId { get; init; }
+    public Guid PessoaId { get; init; }
 
     /// <summary>
     /// Veículo que receberá o atendimento.
@@ -20,7 +20,7 @@ public sealed class CreateOrdemServicoRequest : CreateRequest
     /// <summary>
     /// Funcionário responsável pelo atendimento.
     /// </summary>
-    public Guid ResponsavelId { get; init; }
+    public Guid FuncionarioId { get; init; }
 
     /// <summary>
     /// Quilometragem atual do veículo na entrada.
@@ -28,7 +28,7 @@ public sealed class CreateOrdemServicoRequest : CreateRequest
     public int QuilometragemEntrada { get; init; }
 
     /// <summary>
-    /// Descrição do problema informado pelo cliente.
+    /// Descrição do problema informado pela pessoa.
     /// </summary>
     public string ProblemaRelatado { get; init; } = string.Empty;
 

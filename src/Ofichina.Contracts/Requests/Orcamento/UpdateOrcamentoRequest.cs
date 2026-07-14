@@ -8,9 +8,9 @@ namespace Ofichina.Contracts.Requests.Orcamento
     public class UpdateOrcamentoRequest : UpdateRequest
     {
         /// <summary>
-        /// Cliente relacionado ao orçamento.
+        /// Pessoa relacionada ao orçamento.
         /// </summary>
-        public Guid ClienteId { get; init; }
+        public Guid PessoaId { get; init; }
 
         /// <summary>
         /// Veículo relacionado ao orçamento.

@@ -6,9 +6,9 @@
 public sealed class CreateVeiculoRequest : CreateRequest
 {
     /// <summary>
-    /// Identificador do cliente proprietário.
+    /// Identificador da pessoa proprietária.
     /// </summary>
-    public Guid ClienteId { get; init; }
+    public Guid PessoaId { get; init; }
 
     /// <summary>
     /// Placa do veículo.

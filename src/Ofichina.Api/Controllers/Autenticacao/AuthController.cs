@@ -15,16 +15,16 @@ namespace Ofichina.Api.Controllers.Autenticacao;
 public sealed class AuthController : ControllerBase
 {
     private readonly IValidator<AutenticacaoRequest> _loginValidator;
-    private readonly IValidator<CreateClienteRequest> _registerValidator;
+    private readonly IValidator<CadastrarUsuarioRequest> _registerValidator;
     private readonly ICommandHandler<AutenticarCommand, Result<AutenticacaoResponse>> _loginHandler;
-    private readonly ICommandHandler<CadastrarClienteCommand, Result<AutenticacaoResponse>> _registerHandler;
+    private readonly ICommandHandler<CadastrarUsuarioCommand, Result<AutenticacaoResponse>> _registerHandler;
     private readonly ILogger<AuthController> _logger;
 
     public AuthController(
         IValidator<AutenticacaoRequest> loginValidator,
-        IValidator<CreateClienteRequest> registerValidator,
+        IValidator<CadastrarUsuarioRequest> registerValidator,
         ICommandHandler<AutenticarCommand, Result<AutenticacaoResponse>> loginHandler,
-        ICommandHandler<CadastrarClienteCommand, Result<AutenticacaoResponse>> registerHandler,
+        ICommandHandler<CadastrarUsuarioCommand, Result<AutenticacaoResponse>> registerHandler,
         ILogger<AuthController> logger)
     {
         _loginValidator = loginValidator;
@@ -91,10 +91,10 @@ public sealed class AuthController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<AutenticacaoResponse>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<AutenticacaoResponse>>> RegisterAsync(
-        [FromBody] CreateClienteRequest request,
+        [FromBody] CadastrarUsuarioRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando cadastro de cliente. Email: {Email}", request.Email);
+        _logger.LogInformation("Iniciando cadastro de usuário. Email: {Email}", request.Email);
 
         var validation = await _registerValidator.ValidateAsync(request, cancellationToken);
 
@@ -109,7 +109,7 @@ public sealed class AuthController : ControllerBase
         }
 
         var result = await _registerHandler.HandleAsync(
-            new CadastrarClienteCommand(request.Email, request.Senha));
+            new CadastrarUsuarioCommand(request.Email, request.Senha));
 
         if (!result.IsSuccess || result.Value is null)
         {

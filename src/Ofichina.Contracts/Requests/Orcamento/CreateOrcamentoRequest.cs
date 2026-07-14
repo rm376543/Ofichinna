@@ -1,6 +1,6 @@
 using Ofichina.Contracts.Requests.Orcamentos;
 
-namespace Ofichina.Contracts.Requests.Cliente;
+namespace Ofichina.Contracts.Requests.Orcamento;
 
 /// <summary>
 /// Requisição para cadastro de novo orçamento para um usuário.
@@ -8,9 +8,9 @@ namespace Ofichina.Contracts.Requests.Cliente;
 public sealed class CreateOrcamentoRequest : CreateRequest
 {
     /// <summary>
-    /// Cliente do orçamento.
+    /// Pessoa do orçamento.
     /// </summary>
-    public Guid ClienteId { get; init; }
+    public Guid PessoaId { get; init; }
 
     /// <summary>
     /// Veículo do orçamento.
@@ -18,7 +18,7 @@ public sealed class CreateOrcamentoRequest : CreateRequest
     public Guid VeiculoId { get; init; }
 
     /// <summary>
-    /// Funcionário responsável.
+    /// Responsável.
     /// </summary>
     public Guid ResponsavelId { get; init; }
 

@@ -31,9 +31,9 @@ public class OrdemServico : Entity
 
 
     /// <summary>
-    /// Cliente relacionado à ordem de serviço.
+    /// Pessoa relacionada à ordem de serviço.
     /// </summary>
-    public Guid ClienteId { get; private set; }
+    public Guid PessoaId { get; private set; }
 
 
     /// <summary>
@@ -43,7 +43,7 @@ public class OrdemServico : Entity
 
 
     /// <summary>
-    /// Funcionário responsável pelo atendimento.
+    /// Funcionário responsável pelo atendimento (mecânico/atendente).
     /// </summary>
     public Guid FuncionarioId { get; private set; }
 
@@ -107,13 +107,13 @@ public class OrdemServico : Entity
     /// Cria uma nova ordem de serviço.
     /// </summary>
     public OrdemServico(
-        Guid clienteId,
+        Guid pessoaId,
         Guid veiculoId,
         Guid funcionarioId,
         string? observacao)
     {
-        if (clienteId == Guid.Empty)
-            throw new DomainException("Cliente obrigatório.");
+        if (pessoaId == Guid.Empty)
+            throw new DomainException("Pessoa obrigatória.");
 
         if (veiculoId == Guid.Empty)
             throw new DomainException("Veículo obrigatório.");
@@ -122,7 +122,7 @@ public class OrdemServico : Entity
             throw new DomainException("Funcionário obrigatório.");
 
 
-        ClienteId = clienteId;
+        PessoaId = pessoaId;
         VeiculoId = veiculoId;
         FuncionarioId = funcionarioId;
 
@@ -180,7 +180,6 @@ public class OrdemServico : Entity
     /// Adiciona um serviço na ordem de serviço.
     /// </summary>
     public void AdicionarServico(
-        Guid servicoId,
         string descricao,
         decimal valor)
     {
@@ -188,7 +187,6 @@ public class OrdemServico : Entity
 
         var item = new ItemServico(
             Id,
-            servicoId,
             descricao,
             valor);
 
@@ -203,7 +201,6 @@ public class OrdemServico : Entity
     /// Adiciona uma peça na ordem de serviço.
     /// </summary>
     public void AdicionarPeca(
-        Guid produtoId,
         string descricao,
         int quantidade,
         decimal valorUnitario)
@@ -212,7 +209,6 @@ public class OrdemServico : Entity
 
         var item = new ItemPeca(
             Id,
-            produtoId,
             descricao,
             quantidade,
             valorUnitario);

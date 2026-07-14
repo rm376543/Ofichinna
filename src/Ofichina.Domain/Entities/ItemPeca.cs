@@ -13,13 +13,6 @@ public class ItemPeca : Entity
     /// </summary>
     public Guid OrdemServicoId { get; private set; } = Guid.Empty;
 
-
-    /// <summary>
-    /// Identificador do produto/peça utilizado na ordem de serviço.
-    /// </summary>
-    public Guid ProdutoId { get; private set; } = Guid.Empty;
-
-
     /// <summary>
     /// Descrição da peça no momento da inclusão na ordem.
     /// Mantém o histórico mesmo que o cadastro do produto seja alterado.
@@ -73,9 +66,6 @@ public class ItemPeca : Entity
     /// <param name="ordemServicoId">
     /// Identificador da ordem de serviço.
     /// </param>
-    /// <param name="produtoId">
-    /// Identificador do produto/peça.
-    /// </param>
     /// <param name="descricao">
     /// Descrição da peça.
     /// </param>
@@ -87,7 +77,6 @@ public class ItemPeca : Entity
     /// </param>
     public ItemPeca(
         Guid ordemServicoId,
-        Guid produtoId,
         string descricao,
         int quantidade,
         decimal valorUnitario)
@@ -95,12 +84,6 @@ public class ItemPeca : Entity
         if (ordemServicoId == Guid.Empty)
             throw new DomainException(
                 "Ordem de serviço obrigatória.");
-
-
-        if (produtoId == Guid.Empty)
-            throw new DomainException(
-                "Produto obrigatório.");
-
 
         if (string.IsNullOrWhiteSpace(descricao))
             throw new DomainException(
@@ -118,7 +101,6 @@ public class ItemPeca : Entity
 
 
         OrdemServicoId = ordemServicoId;
-        ProdutoId = produtoId;
         Descricao = descricao;
         Quantidade = quantidade;
         ValorUnitario = valorUnitario;

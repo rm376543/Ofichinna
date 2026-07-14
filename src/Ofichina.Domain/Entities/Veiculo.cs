@@ -5,7 +5,7 @@ namespace Ofichina.Domain.Entities
 {
     public class Veiculo : Entity
     {
-        public Guid ClienteId { get; private set; } = Guid.Empty;
+        public Guid PessoaId { get; private set; } = Guid.Empty;
 
         public Placa Placa { get; private set; } = null!;
 
@@ -15,7 +15,7 @@ namespace Ofichina.Domain.Entities
 
         public int Ano { get; private set; } = 0;
 
-        public Cliente Cliente { get; private set; } = null!;
+        public Pessoa Pessoa { get; private set; } = null!;
 
         private Veiculo()
         {
@@ -23,14 +23,14 @@ namespace Ofichina.Domain.Entities
         }
 
         public Veiculo(
-            Guid clienteId,
+            Guid pessoaId,
             Placa placa,
             string marca,
             string modelo,
             int ano)
         {
-            if (clienteId == Guid.Empty)
-                throw new DomainException("O cliente deve ser informado.");
+            if (pessoaId == Guid.Empty)
+                throw new DomainException("A pessoa deve ser informada.");
 
             if (placa is null)
                 throw new DomainException("A placa deve ser informada.");
@@ -46,7 +46,7 @@ namespace Ofichina.Domain.Entities
             if (ano < 1900 || ano > anoAtual)
                 throw new DomainException("Ano do veículo inválido.");
 
-            ClienteId = clienteId;
+            PessoaId = pessoaId;
             Placa = placa;
             Marca = marca.Trim();
             Modelo = modelo.Trim();
@@ -87,12 +87,12 @@ namespace Ofichina.Domain.Entities
             Ano = ano;
         }
 
-        public void TransferirPara(Guid novoClienteId)
+        public void TransferirPara(Guid novaPessoaId)
         {
-            if (novoClienteId == Guid.Empty)
-                throw new DomainException("O cliente deve ser informado.");
+            if (novaPessoaId == Guid.Empty)
+                throw new DomainException("A pessoa deve ser informada.");
 
-            ClienteId = novoClienteId;
+            PessoaId = novaPessoaId;
         }
     }
 }
