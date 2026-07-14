@@ -21,17 +21,12 @@ public sealed class UsuarioAutenticacaoRepositoryTests : IClassFixture<SqlServer
         var usuarioId = Guid.Parse("550e8400-e29b-41d4-a716-446655440000");
         var perfilId = Guid.Parse("11111111-1111-1111-1111-111111111111");
 
-        var usuario = new Usuario(Email.Criar("admin@ofichinna.com"), "hash-da-senha")
-        {
-            Id = usuarioId
-        };
+        Email email = new Email("admin@ofichinna.com");
+        var usuario = new Usuario(email, "hash-da-senha");
 
-        var perfil = new Perfil("ADMIN", "Perfil administrativo")
-        {
-            Id = perfilId
-        };
+        var perfil = new Perfil("ADMIN", "Perfil administrativo");
 
-        var vinculo = new UsuarioPerfil(usuarioId, perfilId);
+        var vinculo = new UsuarioPerfil(usuario.Id, perfil.Id);
 
         context.Perfis.Add(perfil);
         context.Usuarios.Add(usuario);

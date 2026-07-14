@@ -38,7 +38,7 @@ public sealed class CadastrarUsuarioCommandHandlerTests
     [Fact]
     public async Task Deve_Falhar_Quando_Email_Ja_Existe()
     {
-        var emailCriado = Email.Criar("maria@ofichinna.com");
+        Email emailCriado = new Email("maria@ofichinna.com");
 
         var usuarios = new List<Usuario>
         {
@@ -95,8 +95,8 @@ public sealed class CadastrarUsuarioCommandHandlerTests
 
         public Task<Usuario?> ObterPorEmailAsync(string email, CancellationToken cancellationToken = default)
         {
-            var normalizedEmail = Email.Criar(email).Value;
-            return Task.FromResult(_usuarios.FirstOrDefault(x => x.Email.Value == normalizedEmail));
+            Email normalizedEmail = new Email(email);
+            return Task.FromResult(_usuarios.FirstOrDefault(x => x.Email == normalizedEmail));
         }
     }
 
