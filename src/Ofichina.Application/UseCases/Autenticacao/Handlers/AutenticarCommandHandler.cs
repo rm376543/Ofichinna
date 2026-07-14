@@ -39,13 +39,13 @@ public sealed class AutenticarCommandHandler : ICommandHandler<AutenticarCommand
         {
             _logger.LogInformation("Iniciando autenticação para o email: {Email}", command.Email);
 
-            Email email = Email.Criar(command.Email);
+            Email email = new Email(command.Email);
 
             var usuario = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email.Value);
 
-            if (usuario is null || !usuario.UsuarioEstaAtivo())
+            if (usuario is null || !usuario.EstaAtivo())
             {
-                _logger.LogWarning("Usuário não encontrado ou inativo. Email: {Email}", command.Email);
+                _logger.LogWarning("Usuário não encontrado ou está inativo. Email: {Email}", command.Email);
                 return Result.Failure<AutenticacaoResponse>(ApplicationErrors.VerifiqueDados);
             }
 

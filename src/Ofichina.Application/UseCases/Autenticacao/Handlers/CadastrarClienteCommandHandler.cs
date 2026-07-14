@@ -43,7 +43,7 @@ public sealed class CadastrarClienteCommandHandler : ICommandHandler<CadastrarCl
         {
             _logger.LogInformation("Iniciando cadastro de cliente. Email: {Email}", command.Email);
 
-            var email = Email.Criar(command.Email);
+            Email email = new Email(command.Email);
 
             var usuarioExistente = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email.Value);
 

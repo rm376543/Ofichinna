@@ -39,7 +39,6 @@ public sealed class CreatePerfilCommandHandler : ICommandHandler<CreatePerfilCom
             }
 
             var perfil = new Perfil(command.NomePerfil, command.Descricao);
-            perfil.DeletedAt = null;
 
             await _repository.AddAsync(perfil);
             await _unitOfWork.SaveChangesAsync();
