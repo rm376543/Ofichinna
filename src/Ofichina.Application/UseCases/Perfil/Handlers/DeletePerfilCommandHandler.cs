@@ -38,7 +38,7 @@ public class DeletePerfilCommandHandler : ICommandHandler<DeletePerfilCommand, R
                 return Result.Failure("Perfil não encontrado.");
             }
 
-            perfil.DeletedAt = DateTime.UtcNow;
+            perfil.Excluir();
 
             await _repository.UpdateAsync(perfil);
             await _unitOfWork.SaveChangesAsync();

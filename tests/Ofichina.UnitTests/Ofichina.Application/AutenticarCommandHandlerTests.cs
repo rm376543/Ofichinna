@@ -14,8 +14,7 @@ public class AutenticarCommandHandlerTests
     [Fact]
     public async Task HandleAsync_DeveRetornarToken_QuandoCredenciaisForemValidas()
     {
-        var usuarioId = Guid.Parse("550e8400-e29b-41d4-a716-446655440000");
-        var usuario = CriarUsuarioAtivo(usuarioId, "admin@ofichinna.com", "hash-da-senha");
+        var usuario = CriarUsuarioAtivo("admin@ofichinna.com", "hash-da-senha");
 
         var repository = new FakeUsuarioAutenticacaoRepository(usuario);
         var perfilService = new FakePerfilAutorizacaoService(new[] { "ADMIN" });
@@ -34,7 +33,7 @@ public class AutenticarCommandHandlerTests
 
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
-        Assert.Equal(usuarioId, result.Value!.UsuarioId);
+        Assert.Equal(usuario.Id, result.Value!.UsuarioId);
         Assert.Equal("admin@ofichinna.com", result.Value.Email);
         Assert.Equal("token-gerado", result.Value.AccessToken);
         Assert.Equal(new[] { "ADMIN" }, result.Value.Perfis);
@@ -70,12 +69,11 @@ public class AutenticarCommandHandlerTests
         Assert.False(tokenService.FoiChamado);
     }
 
-    private static Usuario CriarUsuarioAtivo(Guid id, string email, string senhaHash)
+    private static Usuario CriarUsuarioAtivo(string email, string senhaHash)
     {
-        var usuario = new Usuario(Email.Criar(email), senhaHash)
-        {
-            Id = id
-        };
+        Email usuarioEmail = new Email(email);
+
+        var usuario = new Usuario(usuarioEmail, senhaHash);
 
         return usuario;
     }

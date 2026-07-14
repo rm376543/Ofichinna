@@ -19,7 +19,7 @@ public class PerfilConfiguration : IEntityTypeConfiguration<Perfil>
         builder.HasIndex(x => x.NomePerfil)
             .IsUnique();
 
-        builder.HasMany(x => x.Usuarios)
+        builder.HasMany(x => x.UsuariosPerfis)
             .WithOne(x => x.Perfil)
             .HasForeignKey(x => x.PerfilId)
             .OnDelete(DeleteBehavior.Cascade);

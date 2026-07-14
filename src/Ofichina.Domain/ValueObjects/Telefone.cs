@@ -9,12 +9,14 @@ namespace Ofichina.Domain.ValueObjects;
 /// </summary>
 public sealed class Telefone : ValueObject
 {
-    public string Value { get; }
+    public string Value { get; private set; } = null!;
 
     private Telefone(string value)
     {
         Value = value;
     }
+
+    public Telefone() { }
 
     public static Telefone Criar(string telefone)
     {
@@ -44,11 +46,8 @@ public sealed class Telefone : ValueObject
             return false;
 
         // Celular
-        if (telefone.Length == 11)
-        {
-            if (telefone[2] != '9')
-                return false;
-        }
+        if (telefone.Length == 11 && telefone[2] != '9')
+            return false;
 
         return true;
     }

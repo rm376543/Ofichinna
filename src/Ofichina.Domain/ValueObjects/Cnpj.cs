@@ -6,28 +6,29 @@ namespace Ofichina.Domain.ValueObjects;
 /// <summary>
 /// Representa um CNPJ válido do domínio.
 /// </summary>
-public sealed class Cnpj : ValueObject
+public sealed class Cnpj : Documento
 {
-    public string Value { get; }
+    public override TipoDocumento Tipo => TipoDocumento.CNPJ;
 
-    private Cnpj(string value)
+    private Cnpj()
     {
-        Value = value;
     }
 
-    public static Cnpj Criar(string cnpj)
+    public Cnpj(string numero)
+        : base(Normalizar(numero))
+    {
+        if (!EhValido(Numero))
+            throw new DomainException("CNPJ inválido.");
+    }
+
+    private static string Normalizar(string cnpj)
     {
         if (string.IsNullOrWhiteSpace(cnpj))
             throw new DomainException("CNPJ inválido.");
 
-#pragma warning disable S6444
-        cnpj = Regex.Replace(cnpj, @"\D", "");
-#pragma warning restore S6444
-
-        if (!EhValido(cnpj))
-            throw new DomainException("CNPJ inválido.");
-
-        return new Cnpj(cnpj);
+        #pragma warning disable S6444
+        return Regex.Replace(cnpj, @"\D", "");
+        #pragma warning restore S6444
     }
 
     private static bool EhValido(string cnpj)
@@ -38,8 +39,8 @@ public sealed class Cnpj : ValueObject
         if (cnpj.Distinct().Count() == 1)
             return false;
 
-        int[] multiplicador1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-        int[] multiplicador2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+        int[] multiplicador1 = { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
+        int[] multiplicador2 = { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
 
         var soma = 0;
 
@@ -63,10 +64,5 @@ public sealed class Cnpj : ValueObject
         return cnpj[13] - '0' == segundoDigito;
     }
 
-    public override string ToString() => Value;
-
-    protected override IEnumerable<object> GetAtomicValues()
-    {
-        yield return Value;
-    }
+    public override string ToString() => Numero;
 }

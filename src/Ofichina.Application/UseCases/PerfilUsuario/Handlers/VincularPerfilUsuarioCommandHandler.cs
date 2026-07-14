@@ -50,7 +50,7 @@ public sealed class VincularPerfilUsuarioCommandHandler : ICommandHandler<Vincul
                 return Result.Failure<VincularPerfilUsuarioResponse>("Perfil não encontrado.");
             }
 
-            if (!perfil.PerfilEstaAtivo())
+            if (!perfil.EstaAtivo)
             {
                 _logger.LogWarning("Perfil inativo. PerfilId: {PerfilId}", command.PerfilId);
                 return Result.Failure<VincularPerfilUsuarioResponse>("Perfil inativo.");

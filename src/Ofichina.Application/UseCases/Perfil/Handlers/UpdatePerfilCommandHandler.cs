@@ -48,8 +48,8 @@ public class UpdatePerfilCommandHandler : ICommandHandler<UpdatePerfilCommand, R
                 return Result.Failure("Já existe um perfil com este nome.");
             }
 
-            perfil.NomePerfil = command.NomePerfil;
-            perfil.Descricao = command.Descricao;
+            perfil.AlterarNome(command.NomePerfil);
+            perfil.AlterarDescricao(command.Descricao);
 
             await _repository.UpdateAsync(perfil);
             await _unitOfWork.SaveChangesAsync();

@@ -6,28 +6,28 @@ namespace Ofichina.Domain.ValueObjects;
 /// <summary>
 /// Representa um CPF válido do domínio.
 /// </summary>
-public sealed class Cpf : ValueObject
+public sealed class Cpf : Documento
 {
-    public string Value { get; }
+    public override TipoDocumento Tipo => TipoDocumento.CPF;
 
-    private Cpf(string value)
+    private Cpf()
     {
-        Value = value;
     }
 
-    public static Cpf Criar(string cpf)
+    public Cpf(string numero) : base(Normalizar(numero))
+    {
+        if (!EhValido(Numero))
+            throw new DomainException("CPF inválido.");
+    }
+
+    private static string Normalizar(string cpf)
     {
         if (string.IsNullOrWhiteSpace(cpf))
             throw new DomainException("CPF inválido.");
 
-#pragma warning disable S6444
-        cpf = Regex.Replace(cpf, @"\D", "");
-#pragma warning restore S6444
-
-        if (!EhValido(cpf))
-            throw new DomainException("CPF inválido.");
-
-        return new Cpf(cpf);
+        #pragma warning disable S6444
+        return Regex.Replace(cpf, @"\D", "");
+        #pragma warning restore S6444
     }
 
     private static bool EhValido(string cpf)
@@ -60,10 +60,5 @@ public sealed class Cpf : ValueObject
         return cpf[10] - '0' == segundoDigito;
     }
 
-    public override string ToString() => Value;
-
-    protected override IEnumerable<object> GetAtomicValues()
-    {
-        yield return Value;
-    }
+    public override string ToString() => Numero;
 }

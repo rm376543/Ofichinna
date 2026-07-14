@@ -1,33 +1,134 @@
+using Ofichina.Domain.Exceptions;
+
 namespace Ofichina.Domain.Entities;
 
 /// <summary>
 /// Representa um perfil de autorização da aplicação.
+/// Define um conjunto de permissões que podem ser atribuídas aos usuários.
 /// </summary>
 public class Perfil : Entity
 {
     /// <summary>
-    /// Nome descritivo do perfil.
+    /// Nome identificador do perfil.
+    /// Exemplo: Administrador, Mecânico, Atendente.
     /// </summary>
-    public string NomePerfil { get; set; } = string.Empty;
-    public string Descricao { get; set; } = string.Empty;
+    public string NomePerfil { get; private set; } = string.Empty;
+
 
     /// <summary>
-    /// Usuários vinculados ao perfil.
+    /// Descrição das responsabilidades e permissões do perfil.
     /// </summary>
-    public ICollection<UsuarioPerfil> Usuarios { get; set; } = [];
+    public string Descricao { get; private set; } = string.Empty;
 
+
+    /// <summary>
+    /// Lista de vínculos entre usuários e este perfil.
+    /// </summary>
+    public ICollection<UsuarioPerfil> UsuariosPerfis { get; private set; } = [];
+
+
+    /// <summary>
+    /// Indica se o perfil está ativo.
+    /// Perfis desativados permanecem armazenados através de soft delete.
+    /// </summary>
+    public bool EstaAtivo => DeletedAt == null;
+
+
+    /// <summary>
+    /// Construtor utilizado pelo Entity Framework Core.
+    /// </summary>
     private Perfil()
     {
     }
 
-    public Perfil(string nomePerfil, string descricao)
+
+    /// <summary>
+    /// Cria um novo perfil de autorização.
+    /// </summary>
+    /// <param name="nomePerfil">
+    /// Nome do perfil.
+    /// </param>
+    /// <param name="descricao">
+    /// Descrição das responsabilidades do perfil.
+    /// </param>
+    public Perfil(
+        string nomePerfil,
+        string descricao)
     {
-        NomePerfil = nomePerfil;
-        Descricao = descricao;
+        if (string.IsNullOrWhiteSpace(nomePerfil))
+            throw new DomainException(
+                "O nome do perfil deve ser informado.");
+
+
+        if (string.IsNullOrWhiteSpace(descricao))
+            throw new DomainException(
+                "A descrição do perfil deve ser informada.");
+
+
+        NomePerfil = nomePerfil.Trim();
+
+        Descricao = descricao.Trim();
     }
 
-    public bool PerfilEstaAtivo ()
+
+    /// <summary>
+    /// Altera o nome do perfil.
+    /// </summary>
+    /// <param name="nomePerfil">
+    /// Novo nome do perfil.
+    /// </param>
+    public void AlterarNome(string nomePerfil)
     {
-        return DeletedAt == null;
+        if (string.IsNullOrWhiteSpace(nomePerfil))
+            throw new DomainException(
+                "O nome do perfil deve ser informado.");
+
+
+        NomePerfil = nomePerfil.Trim();
+
+        AtualizarDataModificacao();
+    }
+
+
+    /// <summary>
+    /// Altera a descrição do perfil.
+    /// </summary>
+    /// <param name="descricao">
+    /// Nova descrição do perfil.
+    /// </param>
+    public void AlterarDescricao(string descricao)
+    {
+        if (string.IsNullOrWhiteSpace(descricao))
+            throw new DomainException(
+                "A descrição do perfil deve ser informada.");
+
+
+        Descricao = descricao.Trim();
+
+        AtualizarDataModificacao();
+    }
+
+
+    /// <summary>
+    /// Desativa o perfil através de exclusão lógica.
+    /// </summary>
+    public void Desativar()
+    {
+        Excluir();
+    }
+
+
+    /// <summary>
+    /// Reativa um perfil desativado.
+    /// </summary>
+    public void Reativar()
+    {
+        if (!EstaExcluida())
+            return;
+
+
+        DeletedAt = null;
+
+        AtualizarDataModificacao();
     }
 }
