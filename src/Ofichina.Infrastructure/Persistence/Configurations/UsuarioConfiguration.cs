@@ -16,7 +16,7 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
         builder.Property(x => x.Email)
             .HasConversion(
                 email => email.Value,
-                value => Email.Criar(value))
+                value => new Email(value))
             .HasMaxLength(200)
             .IsRequired();
 

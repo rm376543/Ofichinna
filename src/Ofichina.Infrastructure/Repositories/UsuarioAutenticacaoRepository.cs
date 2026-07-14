@@ -17,7 +17,7 @@ public sealed class UsuarioAutenticacaoRepository : IUsuarioAutenticacaoReposito
 
     public async Task<Usuario?> ObterPorEmailAsync(string email, CancellationToken cancellationToken = default)
     {
-        var normalizedEmail = Email.Criar(email);
+        Email normalizedEmail = new Email(email);
 
         return await _context.Usuarios
             .AsNoTracking()
