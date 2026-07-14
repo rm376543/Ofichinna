@@ -52,6 +52,17 @@ public class Cliente : Entity
     /// </summary>
     public Usuario Usuario { get; private set; } = null!;
 
+    /// <summary>
+    /// Veículos associados ao cliente.
+    /// </summary>
+    private readonly List<Veiculo> _veiculos = [];
+
+    /// <summary>
+    /// Coleção de veículos associados ao cliente.
+    /// </summary>
+    public IReadOnlyCollection<Veiculo> Veiculos =>
+        _veiculos.AsReadOnly();
+
 
     /// <summary>
     /// Construtor utilizado pelo Entity Framework Core.
