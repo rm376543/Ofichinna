@@ -36,10 +36,10 @@ public sealed class AutenticacaoService : IAutenticacaoService
 
     public async Task<Result<AutenticacaoResponse>> AutenticarAsync(AutenticacaoRequest request, CancellationToken cancellationToken = default)
     {
-        Email email = Email.Criar(request.Email);
+        Email email = new Email(request.Email);
         var usuario = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email.Value, cancellationToken);
 
-        if (usuario is null || !usuario.UsuarioEstaAtivo())
+        if (usuario is null || !usuario.EstaAtivo())
         {
             return Result.Failure<AutenticacaoResponse>("Credenciais inválidas.");
         }
@@ -64,7 +64,7 @@ public sealed class AutenticacaoService : IAutenticacaoService
 
     public async Task<Result<AutenticacaoResponse>> CadastrarAsync(CreateClienteRequest request, CancellationToken cancellationToken = default)
     {
-        Email email = Email.Criar(request.Email);
+        Email email = new Email(request.Email);
 
         var usuarioExistente = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email.Value, cancellationToken);
         if (usuarioExistente is not null)
