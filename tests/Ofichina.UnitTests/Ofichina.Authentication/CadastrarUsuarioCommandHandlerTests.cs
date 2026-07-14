@@ -22,7 +22,7 @@ public sealed class CadastrarUsuarioCommandHandlerTests
         var unitOfWork = new FakeUnitOfWork();
         var handler = new AutenticacaoService(repository, unitOfWork, consultaRepository, perfilService, jwtTokenService, senhaHasher);
 
-        var result = await handler.CadastrarAsync(new CreateClienteRequest { Email = "maria@ofichinna.com", Senha = "123456" });
+        var result = await handler.CadastrarAsync(new CadastrarUsuarioRequest { Email = "maria@ofichinna.com", Senha = "123456" });
 
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
@@ -52,7 +52,7 @@ public sealed class CadastrarUsuarioCommandHandlerTests
         var unitOfWork = new FakeUnitOfWork();
         var handler = new AutenticacaoService(repository, unitOfWork, consultaRepository, perfilService, jwtTokenService, senhaHasher);
 
-        var result = await handler.CadastrarAsync(new CreateClienteRequest { Email = "maria@ofichinna.com", Senha = "123456" });
+        var result = await handler.CadastrarAsync(new CadastrarUsuarioRequest { Email = "maria@ofichinna.com", Senha = "123456" });
 
         Assert.False(result.IsSuccess);
         Assert.Equal("Já existe um usuário cadastrado com este e-mail.", result.Error);
