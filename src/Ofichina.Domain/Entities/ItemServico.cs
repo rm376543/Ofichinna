@@ -14,13 +14,6 @@ public class ItemServico : Entity
     /// </summary>
     public Guid OrdemServicoId { get; private set; } = Guid.Empty;
 
-
-    /// <summary>
-    /// Identificador do serviço cadastrado no sistema.
-    /// </summary>
-    public Guid ServicoId { get; private set; } = Guid.Empty;
-
-
     /// <summary>
     /// Descrição do serviço no momento da inclusão na ordem de serviço.
     /// Mantém o histórico mesmo que o cadastro original seja alterado.
@@ -68,18 +61,12 @@ public class ItemServico : Entity
     /// </param>
     internal ItemServico(
         Guid ordemServicoId,
-        Guid servicoId,
         string descricao,
         decimal valor)
     {
         if (ordemServicoId == Guid.Empty)
             throw new DomainException(
                 "Ordem de serviço obrigatória.");
-
-
-        if (servicoId == Guid.Empty)
-            throw new DomainException(
-                "Serviço obrigatório.");
 
 
         if (string.IsNullOrWhiteSpace(descricao))
@@ -93,7 +80,6 @@ public class ItemServico : Entity
 
 
         OrdemServicoId = ordemServicoId;
-        ServicoId = servicoId;
         Descricao = descricao.Trim();
         Valor = valor;
     }
