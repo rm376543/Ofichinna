@@ -4,18 +4,17 @@ using Ofichina.Domain.Exceptions;
 namespace Ofichina.Domain.ValueObjects;
 
 /// <summary>
-/// Representa um endereço de e-mail do domínio.
+/// Representa um endereço de e-mail válido.
 /// </summary>
 public sealed class Email : ValueObject
 {
-    public string Value { get; }
+    public string Value { get; private set; } = null!;
 
-    private Email(string value)
+    private Email()
     {
-        Value = value;
     }
 
-    public static Email Criar(string email)
+    public Email(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
             throw new DomainException("E-mail inválido.");
@@ -23,7 +22,8 @@ public sealed class Email : ValueObject
         try
         {
             var address = new MailAddress(email.Trim());
-            return new Email(address.Address.Trim().ToLowerInvariant());
+
+            Value = address.Address.Trim().ToLowerInvariant();
         }
         catch (FormatException ex)
         {
