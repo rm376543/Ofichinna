@@ -12,22 +12,22 @@ using Ofichina.Domain.ValueObjects;
 
 namespace Ofichina.Application.UseCases.Autenticacao.Handlers;
 
-public sealed class CadastrarClienteCommandHandler : ICommandHandler<CadastrarClienteCommand, Result<AutenticacaoResponse>>
+public sealed class CadastrarUsuarioCommandHandler : ICommandHandler<CadastrarUsuarioCommand, Result<AutenticacaoResponse>>
 {
     private readonly IRepository<Usuario> _usuarioRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUsuarioAutenticacaoRepository _usuarioAutenticacaoRepository;
     private readonly IJwtTokenService _jwtTokenService;
     private readonly ISenhaHasher _senhaHasher;
-    private readonly ILogger<CadastrarClienteCommandHandler> _logger;
+    private readonly ILogger<CadastrarUsuarioCommandHandler> _logger;
 
-    public CadastrarClienteCommandHandler(
+    public CadastrarUsuarioCommandHandler(
         IRepository<Usuario> usuarioRepository,
         IUnitOfWork unitOfWork,
         IUsuarioAutenticacaoRepository usuarioAutenticacaoRepository,
         IJwtTokenService jwtTokenService,
         ISenhaHasher senhaHasher,
-        ILogger<CadastrarClienteCommandHandler> logger)
+        ILogger<CadastrarUsuarioCommandHandler> logger)
     {
         _usuarioRepository = usuarioRepository;
         _unitOfWork = unitOfWork;
@@ -37,11 +37,11 @@ public sealed class CadastrarClienteCommandHandler : ICommandHandler<CadastrarCl
         _logger = logger;
     }
 
-    public async Task<Result<AutenticacaoResponse>> HandleAsync(CadastrarClienteCommand command)
+    public async Task<Result<AutenticacaoResponse>> HandleAsync(CadastrarUsuarioCommand command)
     {
         try
         {
-            _logger.LogInformation("Iniciando cadastro de cliente. Email: {Email}", command.Email);
+            _logger.LogInformation("Iniciando cadastro de usuário. Email: {Email}", command.Email);
 
             Email email = new Email(command.Email);
 
@@ -61,7 +61,7 @@ public sealed class CadastrarClienteCommandHandler : ICommandHandler<CadastrarCl
             var perfis = Array.Empty<string>();
             var token = await _jwtTokenService.GerarTokenAsync(usuario, perfis);
 
-            _logger.LogInformation("Cadastro de cliente realizado com sucesso. UsuarioId: {UsuarioId}, Email: {Email}", usuario.Id, usuario.Email.Value);
+            _logger.LogInformation("Cadastro de usuário realizado com sucesso. UsuarioId: {UsuarioId}, Email: {Email}", usuario.Id, usuario.Email.Value);
 
             return Result.Success(new AutenticacaoResponse
             {
@@ -74,12 +74,12 @@ public sealed class CadastrarClienteCommandHandler : ICommandHandler<CadastrarCl
         }
         catch(BusinessException ex)
         {
-            _logger.LogError(ex, "Erro de negócio ao cadastrar cliente. Email: {Email}, Erro: {Erro}", command.Email, ex.Message);
+            _logger.LogError(ex, "Erro de negócio ao cadastrar usuário. Email: {Email}, Erro: {Erro}", command.Email, ex.Message);
             return Result.Failure<AutenticacaoResponse>(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro desconhecido ao cadastrar cliente. Email: {Email}, Erro: {Erro}", command.Email, ex.Message);
+            _logger.LogError(ex, "Erro desconhecido ao cadastrar usuário. Email: {Email}, Erro: {Erro}", command.Email, ex.Message);
             return Result.Failure<AutenticacaoResponse>($"{ApplicationErrors.ErroDesconhecido} - {ex.Message}");
         }
         

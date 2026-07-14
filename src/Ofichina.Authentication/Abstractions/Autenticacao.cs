@@ -13,7 +13,7 @@ public interface IAutenticacaoService
 {
     Task<Result<AutenticacaoResponse>> AutenticarAsync(AutenticacaoRequest request, CancellationToken cancellationToken = default);
 
-    Task<Result<AutenticacaoResponse>> CadastrarAsync(CreateClienteRequest request, CancellationToken cancellationToken = default);
+    Task<Result<AutenticacaoResponse>> CadastrarAsync(CadastrarUsuarioRequest request, CancellationToken cancellationToken = default);
 }
 
 /// <summary>

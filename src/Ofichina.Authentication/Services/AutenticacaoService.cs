@@ -62,7 +62,7 @@ public sealed class AutenticacaoService : IAutenticacaoService
         });
     }
 
-    public async Task<Result<AutenticacaoResponse>> CadastrarAsync(CreateClienteRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result<AutenticacaoResponse>> CadastrarAsync(CadastrarUsuarioRequest request, CancellationToken cancellationToken = default)
     {
         Email email = new Email(request.Email);
 

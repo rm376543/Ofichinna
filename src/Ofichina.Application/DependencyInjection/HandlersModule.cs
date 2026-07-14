@@ -33,7 +33,7 @@ public static class HandlersModule
 
         // Autenticacao
         services.AddScoped<ICommandHandler<AutenticarCommand, Result<AutenticacaoResponse>>, AutenticarCommandHandler>();
-        services.AddScoped<ICommandHandler<CadastrarClienteCommand, Result<AutenticacaoResponse>>, CadastrarClienteCommandHandler>();
+        services.AddScoped<ICommandHandler<CadastrarUsuarioCommand, Result<AutenticacaoResponse>>, CadastrarUsuarioCommandHandler>();
 
         //UsuarioPerfil
         services.AddScoped<ICommandHandler<VincularPerfilUsuarioCommand, Result<VincularPerfilUsuarioResponse>>, VincularPerfilUsuarioCommandHandler>();
