@@ -115,6 +115,16 @@ public class AutenticarCommandHandlerTests
 
         public Task<bool> PossuiPerfilAsync(Guid usuarioId, string perfil, CancellationToken cancellationToken = default)
             => Task.FromResult(_perfis.Contains(perfil));
+
+        public Task<IReadOnlyCollection<string>> ObterPermissoesAsync(Guid usuarioId, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> PossuiPermissaoAsync(Guid usuarioId, string permissao, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     private sealed class FakeJwtTokenService : IJwtTokenService

@@ -26,6 +26,10 @@ public class Perfil : Entity
     /// </summary>
     public ICollection<UsuarioPerfil> UsuariosPerfis { get; private set; } = [];
 
+    /// <summary>
+    /// Lista de vínculos entre perfis e permissoes.
+    /// </summary>
+    public ICollection<PerfilPermissao> PerfisPermissoes { get; private set; } = [];
 
     /// <summary>
     /// Indica se o perfil está ativo.

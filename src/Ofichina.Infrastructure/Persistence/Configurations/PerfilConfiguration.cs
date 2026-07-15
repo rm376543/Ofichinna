@@ -23,5 +23,10 @@ public class PerfilConfiguration : IEntityTypeConfiguration<Perfil>
             .WithOne(x => x.Perfil)
             .HasForeignKey(x => x.PerfilId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(x => x.PerfisPermissoes)
+            .WithOne(x => x.Perfil)
+            .HasForeignKey(x => x.PerfilId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

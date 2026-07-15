@@ -1,11 +1,11 @@
+using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Requests.Autenticacao;
+using Ofichina.Contracts.Requests.Usuario;
 using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Interfaces;
 using Ofichina.Domain.ValueObjects;
 using Ofichina.Authentication.Abstractions;
-using Ofichina.Contracts.Requests.Autenticacao;
-using Ofichina.Contracts.Requests.Usuario;
-using Ofichina.Contracts.Common;
 
 namespace Ofichina.Authentication.Services;
 
@@ -34,10 +34,15 @@ public sealed class AutenticacaoService : IAutenticacaoService
         _senhaHasher = senhaHasher;
     }
 
-    public async Task<Result<AutenticacaoResponse>> AutenticarAsync(AutenticacaoRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result<AutenticacaoResponse>> AutenticarAsync(
+        AutenticacaoRequest request,
+        CancellationToken cancellationToken = default)
     {
-        Email email = new Email(request.Email);
-        var usuario = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email.Value, cancellationToken);
+        Email email = new(request.Email);
+
+        var usuario = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(
+            email.Value,
+            cancellationToken);
 
         if (usuario is null || !usuario.EstaAtivo())
         {
@@ -50,6 +55,7 @@ public sealed class AutenticacaoService : IAutenticacaoService
         }
 
         var perfis = await _perfilService.ObterPerfisAsync(usuario.Id, cancellationToken);
+        var permissoes = await _perfilService.ObterPermissoesAsync(usuario.Id, cancellationToken);
         var token = await _jwtTokenService.GerarTokenAsync(usuario, perfis, cancellationToken);
 
         return Result.Success(new AutenticacaoResponse
@@ -57,16 +63,22 @@ public sealed class AutenticacaoService : IAutenticacaoService
             UsuarioId = usuario.Id,
             Email = usuario.Email.Value,
             Perfis = perfis,
+            Permissoes = permissoes,
             AccessToken = token.AccessToken,
             ExpiraEm = token.ExpiraEm
         });
     }
 
-    public async Task<Result<AutenticacaoResponse>> CadastrarAsync(CadastrarUsuarioRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result<AutenticacaoResponse>> CadastrarAsync(
+        CadastrarUsuarioRequest request,
+        CancellationToken cancellationToken = default)
     {
-        Email email = new Email(request.Email);
+        Email email = new(request.Email);
 
-        var usuarioExistente = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email.Value, cancellationToken);
+        var usuarioExistente = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(
+            email.Value,
+            cancellationToken);
+
         if (usuarioExistente is not null)
         {
             return Result.Failure<AutenticacaoResponse>("Já existe um usuário cadastrado com este e-mail.");
@@ -83,6 +95,7 @@ public sealed class AutenticacaoService : IAutenticacaoService
             UsuarioId = usuario.Id,
             Email = usuario.Email.Value,
             Perfis = [],
+            Permissoes = [],
             AccessToken = token.AccessToken,
             ExpiraEm = token.ExpiraEm
         });

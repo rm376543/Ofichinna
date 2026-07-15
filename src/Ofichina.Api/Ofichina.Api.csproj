@@ -28,11 +28,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Controllers\Autenticacao\" />
+		<Folder Include="Controllers\ItemServico\" />
+		<Folder Include="Controllers\ItemPeca\" />
+		<Folder Include="Controllers\Veiculo\" />
+		<Folder Include="Controllers\Pessoa\" />
 		<Folder Include="Controllers\Veiculo\" />
 		<Folder Include="Controllers\Orcamento\" />
 		<Folder Include="Controllers\Servicos\" />
 		<Folder Include="Controllers\OrdemServico\" />
+		<Folder Include="logs\" />
 	</ItemGroup>
 
 </Project>

@@ -11,9 +11,13 @@ namespace Ofichina.Authentication.Abstractions;
 /// </summary>
 public interface IAutenticacaoService
 {
-    Task<Result<AutenticacaoResponse>> AutenticarAsync(AutenticacaoRequest request, CancellationToken cancellationToken = default);
+    Task<Result<AutenticacaoResponse>> AutenticarAsync(
+        AutenticacaoRequest request,
+        CancellationToken cancellationToken = default);
 
-    Task<Result<AutenticacaoResponse>> CadastrarAsync(CadastrarUsuarioRequest request, CancellationToken cancellationToken = default);
+    Task<Result<AutenticacaoResponse>> CadastrarAsync(
+        CadastrarUsuarioRequest request,
+        CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -29,7 +33,10 @@ public interface IUsuarioAutenticacaoRepository
 /// </summary>
 public interface IJwtTokenService
 {
-    Task<TokenJwtResponse> GerarTokenAsync(Usuario usuario, IReadOnlyCollection<string> perfis, CancellationToken cancellationToken = default);
+    Task<TokenJwtResponse> GerarTokenAsync(
+        Usuario usuario,
+        IReadOnlyCollection<string> perfis,
+        CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -37,9 +44,23 @@ public interface IJwtTokenService
 /// </summary>
 public interface IPerfilAutorizacaoService
 {
-    Task<IReadOnlyCollection<string>> ObterPerfisAsync(Guid usuarioId, CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<string>> ObterPerfisAsync(
+        Guid usuarioId,
+        CancellationToken cancellationToken = default);
 
-    Task<bool> PossuiPerfilAsync(Guid usuarioId, string perfil, CancellationToken cancellationToken = default);
+    Task<bool> PossuiPerfilAsync(
+        Guid usuarioId,
+        string perfil,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<string>> ObterPermissoesAsync(
+        Guid usuarioId,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> PossuiPermissaoAsync(
+        Guid usuarioId,
+        string permissao,
+        CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -48,6 +69,5 @@ public interface IPerfilAutorizacaoService
 public interface ISenhaHasher
 {
     string GerarHash(string senha);
-
     bool Verificar(string senha, string hash);
 }

@@ -35,6 +35,16 @@ public class ApplicationDbContext : DbContext
     /// </summary>
     public DbSet<Pessoa> Pessoas { get; set; } = null!;
 
+    /// <summary>
+    /// DbSet para permissoes.
+    /// </summary>
+    public DbSet<Permissao> Permissoes { get; set; } = null!;
+
+    /// <summary>
+    /// DbSet para vínculos entre perfis e permissoes.
+    /// </summary>
+    public DbSet<PerfilPermissao> PerfisPermissoes { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

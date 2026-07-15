@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using Ofichina.Contracts.Enums;
+using Ofichina.Authentication.Security;
 
 namespace Ofichina.Authentication
 {
     /// <summary>
-    /// Módulo de registro de Autenticacao do Sistema
-    /// Registra toda logica de autenticacao do sistema
+    /// Módulo de registro de Autorização do sistema.
     /// </summary>
     public static class AuthorizationModule
     {
@@ -30,6 +29,13 @@ namespace Ofichina.Authentication
 
             authorizationBuilder.AddPolicy(UserPolicyEnum.Deletar, policy =>
                 policy.RequireRole(UserRolesEnum.Admin));
+            services.AddAuthorizationBuilder()
+                .SetFallbackPolicy(new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build());
+
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+            services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
             return services;
         }
