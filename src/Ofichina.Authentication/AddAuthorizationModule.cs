@@ -13,18 +13,23 @@ namespace Ofichina.Authentication
         public static IServiceCollection AddAuthorizationModule(
             this IServiceCollection services)
         {
-            services.AddAuthorizationBuilder()
-                .SetFallbackPolicy(new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build())
-                .AddPolicy(UserPolicyEnum.Ler, policy =>
-                    policy.RequireRole(UserRolesEnum.Usuario, UserRolesEnum.Admin))
-                .AddPolicy(UserPolicyEnum.Escrever, policy =>
-                    policy.RequireRole(UserRolesEnum.Admin))
-                .AddPolicy(UserPolicyEnum.Atualizar, policy =>
-                    policy.RequireRole(UserRolesEnum.Admin))
-                .AddPolicy(UserPolicyEnum.Deletar, policy =>
-                    policy.RequireRole(UserRolesEnum.Admin));
+            var authorizationBuilder = services.AddAuthorizationBuilder();
+
+            authorizationBuilder.SetFallbackPolicy(new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build());
+
+            authorizationBuilder.AddPolicy(UserPolicyEnum.Ler, policy =>
+                policy.RequireRole(UserRolesEnum.Usuario, UserRolesEnum.Admin));
+
+            authorizationBuilder.AddPolicy(UserPolicyEnum.Escrever, policy =>
+                policy.RequireRole(UserRolesEnum.Admin));
+
+            authorizationBuilder.AddPolicy(UserPolicyEnum.Atualizar, policy =>
+                policy.RequireRole(UserRolesEnum.Admin));
+
+            authorizationBuilder.AddPolicy(UserPolicyEnum.Deletar, policy =>
+                policy.RequireRole(UserRolesEnum.Admin));
 
             return services;
         }
