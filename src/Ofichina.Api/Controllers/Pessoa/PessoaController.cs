@@ -17,7 +17,7 @@ namespace Ofichina.Api.Controllers.Pessoa
     /// </summary>
     [Authorize]
     [ApiController]
-    [Route("api/Pessoa")]
+    [Route("api/pessoa")]
     public sealed class PessoaController : ControllerBase
     {
         private readonly IValidator<CreatePessoaRequest> _createValidator;
