@@ -1,17 +1,22 @@
-﻿namespace Ofichina.Contracts.Requests.Pessoa;
+﻿namespace Ofichina.Contracts.Responses.Pessoa;
 
 /// <summary>
-/// Requisição para cadastro de uma pessoa.
+/// Resposta com os dados de uma pessoa.
 /// </summary>
-public sealed class CreatePessoaRequest : CreateRequest
+public sealed class PessoaResponse
 {
     /// <summary>
-    /// Nome completo ou razão social da pessoa.
+    /// Identificador da pessoa.
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// Nome completo ou razão social.
     /// </summary>
     public string Nome { get; set; } = string.Empty;
 
     /// <summary>
-    /// Documento da pessoa, como CPF ou CNPJ.
+    /// Documento da pessoa.
     /// </summary>
     public string Documento { get; set; } = string.Empty;
 
@@ -59,4 +64,19 @@ public sealed class CreatePessoaRequest : CreateRequest
     /// Identificador do usuário vinculado à pessoa.
     /// </summary>
     public Guid UsuarioId { get; set; }
+
+    /// <summary>
+    /// Data de criação do registro.
+    /// </summary>
+    public DateTime CreatedAt { get; set; }
+
+    /// <summary>
+    /// Data da última atualização.
+    /// </summary>
+    public DateTime? UpdatedAt { get; set; }
+
+    /// <summary>
+    /// Data da exclusão lógica.
+    /// </summary>
+    public DateTime? DeletedAt { get; set; }
 }
