@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Ofichina.Authentication.Security;
+using Ofichina.Contracts.Enums;
 
 namespace Ofichina.Authentication
 {
@@ -12,10 +13,11 @@ namespace Ofichina.Authentication
         public static IServiceCollection AddAuthorizationModule(
             this IServiceCollection services)
         {
-            services.AddAuthorizationBuilder()
-                .SetFallbackPolicy(new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build());
+            var authorizationBuilder = services.AddAuthorizationBuilder();
+
+            authorizationBuilder.SetFallbackPolicy(new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build());
 
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
             services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();

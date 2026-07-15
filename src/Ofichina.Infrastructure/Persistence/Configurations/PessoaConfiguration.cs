@@ -38,13 +38,6 @@ public class PessoaConfiguration : IEntityTypeConfiguration<Pessoa>
             .HasMaxLength(11)
             .IsRequired();
 
-        builder.Property(c => c.Email)
-            .HasConversion(
-                email => email.Value,
-                valor => new Email(valor))
-            .HasMaxLength(200)
-            .IsRequired();
-
         builder.OwnsOne(c => c.Endereco, endereco =>
         {
             endereco.Property(e => e.Logradouro)

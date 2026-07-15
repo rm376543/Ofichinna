@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi;
 using System.Reflection;
+using Ofichina.Contracts.Responses;
 
 namespace Ofichina.Api.Modules;
 
@@ -33,8 +34,11 @@ public static class SwaggerModule
                 }
             });
 
-            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            var assemblies = new[]
+            {
+                Assembly.GetExecutingAssembly(),
+                typeof(ApiResponse).Assembly
+            };
 
             var securityScheme = new OpenApiSecurityScheme
             {
@@ -46,7 +50,16 @@ public static class SwaggerModule
                 BearerFormat = "JWT"
             };
 
-            options.IncludeXmlComments(xmlPath);
+            foreach (var assembly in assemblies)
+            {
+                var xmlFile = $"{assembly.GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+                if (File.Exists(xmlPath))
+                {
+                    options.IncludeXmlComments(xmlPath);
+                }
+            }
 
             options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, securityScheme);
 

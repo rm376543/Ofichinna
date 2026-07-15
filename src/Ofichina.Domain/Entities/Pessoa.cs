@@ -27,11 +27,6 @@ public class Pessoa : Entity
     public Telefone Telefone { get; private set; } = null!;
 
     /// <summary>
-    /// Endereço de e-mail da pessoa.
-    /// </summary>
-    public Email Email { get; private set; } = null!;
-
-    /// <summary>
     /// Endereço residencial ou comercial da pessoa.
     /// </summary>
     public Endereco Endereco { get; private set; } = null!;
@@ -77,7 +72,6 @@ public class Pessoa : Entity
         string nome,
         Documento documento,
         Telefone telefone,
-        Email email,
         Endereco endereco,
         Guid usuarioId)
     {
@@ -90,9 +84,6 @@ public class Pessoa : Entity
         if (telefone is null)
             throw new DomainException("O telefone deve ser informado.");
 
-        if (email is null)
-            throw new DomainException("O e-mail deve ser informado.");
-
         if (endereco is null)
             throw new DomainException("O endereço deve ser informado.");
 
@@ -102,7 +93,6 @@ public class Pessoa : Entity
         Nome = nome.Trim();
         Documento = documento;
         Telefone = telefone;
-        Email = email;
         Endereco = endereco;
         UsuarioId = usuarioId;
     }
@@ -127,16 +117,6 @@ public class Pessoa : Entity
     public void AlterarTelefone(Telefone telefone)
     {
         Telefone = telefone ?? throw new DomainException("Telefone inválido.");
-        AtualizarDataModificacao();
-    }
-
-    /// <summary>
-    /// Altera o e-mail de contato da pessoa.
-    /// </summary>
-    /// <param name="email">Novo e-mail.</param>
-    public void AlterarEmail(Email email)
-    {
-        Email = email ?? throw new DomainException("E-mail inválido.");
         AtualizarDataModificacao();
     }
 

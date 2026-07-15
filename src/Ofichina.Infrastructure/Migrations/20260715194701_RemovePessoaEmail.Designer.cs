@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ofichina.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Ofichina.Infrastructure.Persistence;
 namespace Ofichina.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260715194701_RemovePessoaEmail")]
+    partial class RemovePessoaEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,70 +178,6 @@ namespace Ofichina.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Perfil", (string)null);
-                });
-
-            modelBuilder.Entity("Ofichina.Domain.Entities.PerfilPermissao", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("PerfilId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("PermissaoId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PermissaoId");
-
-                    b.HasIndex("PerfilId", "PermissaoId")
-                        .IsUnique();
-
-                    b.ToTable("PerfilPermissao", (string)null);
-                });
-
-            modelBuilder.Entity("Ofichina.Domain.Entities.Permissao", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Codigo")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Codigo")
-                        .IsUnique();
-
-                    b.ToTable("Permissao", (string)null);
                 });
 
             modelBuilder.Entity("Ofichina.Domain.Entities.Pessoa", b =>
@@ -428,25 +367,6 @@ namespace Ofichina.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Ofichina.Domain.Entities.PerfilPermissao", b =>
-                {
-                    b.HasOne("Ofichina.Domain.Entities.Perfil", "Perfil")
-                        .WithMany("PerfisPermissoes")
-                        .HasForeignKey("PerfilId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Ofichina.Domain.Entities.Permissao", "Permissao")
-                        .WithMany("PerfisPermissoes")
-                        .HasForeignKey("PermissaoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Perfil");
-
-                    b.Navigation("Permissao");
-                });
-
             modelBuilder.Entity("Ofichina.Domain.Entities.Pessoa", b =>
                 {
                     b.HasOne("Ofichina.Domain.Entities.Usuario", "Usuario")
@@ -555,14 +475,7 @@ namespace Ofichina.Infrastructure.Migrations
 
             modelBuilder.Entity("Ofichina.Domain.Entities.Perfil", b =>
                 {
-                    b.Navigation("PerfisPermissoes");
-
                     b.Navigation("UsuariosPerfis");
-                });
-
-            modelBuilder.Entity("Ofichina.Domain.Entities.Permissao", b =>
-                {
-                    b.Navigation("PerfisPermissoes");
                 });
 
             modelBuilder.Entity("Ofichina.Domain.Entities.Pessoa", b =>
