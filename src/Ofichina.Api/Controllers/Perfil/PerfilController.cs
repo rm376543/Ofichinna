@@ -55,7 +55,7 @@ public sealed class PerfisController : ControllerBase
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns>Lista de perfis.</returns>
-    [Authorize(Policy = UserPolicyEnum.Ler)]
+    [Authorize(Policy = "consultor.read")]
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<PerfilResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]

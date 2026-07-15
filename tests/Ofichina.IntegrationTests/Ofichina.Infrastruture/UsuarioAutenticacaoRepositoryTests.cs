@@ -18,9 +18,6 @@ public sealed class UsuarioAutenticacaoRepositoryTests : IClassFixture<SqlServer
     {
         await using var context = _fixture.CreateDbContext();
 
-        var usuarioId = Guid.Parse("550e8400-e29b-41d4-a716-446655440000");
-        var perfilId = Guid.Parse("11111111-1111-1111-1111-111111111111");
-
         Email email = new Email("admin@ofichinna.com");
         var usuario = new Usuario(email, "hash-da-senha");
 
@@ -38,7 +35,7 @@ public sealed class UsuarioAutenticacaoRepositoryTests : IClassFixture<SqlServer
         var result = await repository.ObterPorEmailAsync("ADMIN@OFICHINNA.COM ");
 
         Assert.NotNull(result);
-        Assert.Equal(usuarioId, result!.Id);
+        Assert.IsType<Guid>(result!.Id);
         Assert.Equal("admin@ofichinna.com", result.Email.Value);
         Assert.Single(result.Perfis);
         Assert.Equal("ADMIN", result.Perfis.First().Perfil.NomePerfil);

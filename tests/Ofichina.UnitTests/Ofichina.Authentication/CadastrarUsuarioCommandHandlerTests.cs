@@ -122,9 +122,19 @@ public sealed class CadastrarUsuarioCommandHandlerTests
             return Task.FromResult<IReadOnlyCollection<string>>([]);
         }
 
+        public Task<IReadOnlyCollection<string>> ObterPermissoesAsync(Guid usuarioId, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<bool> PossuiPerfilAsync(Guid usuarioId, string perfil, CancellationToken cancellationToken = default)
         {
             return Task.FromResult(false);
+        }
+
+        public Task<bool> PossuiPermissaoAsync(Guid usuarioId, string permissao, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
         }
     }
 
