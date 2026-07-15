@@ -21,4 +21,5 @@ public class AutenticacaoResponse : TokenJwtResponse
 
     public IReadOnlyCollection<string> Perfis { get; set; } = [];
 
+    public IReadOnlyCollection<string> Permissoes { get; set; } = [];
 }
