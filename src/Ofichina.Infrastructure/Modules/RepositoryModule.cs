@@ -31,6 +31,8 @@ public static class RepositoryModule
 
         services.AddScoped<IPerfilUsuarioRepository, PerfilUsuarioRepository>();
 
+        services.AddScoped<IPessoaRepository, PessoaRepository>();
+
         return services;
     }
 }
