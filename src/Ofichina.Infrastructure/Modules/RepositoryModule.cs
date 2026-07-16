@@ -35,6 +35,8 @@ public static class RepositoryModule
 
         services.AddScoped<IVeiculoRepository, VeiculoRepository>();
 
+        services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
+
         return services;
     }
 }

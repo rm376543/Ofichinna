@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 
 namespace Ofichina.Infrastructure.Persistence;
@@ -39,6 +40,16 @@ public class ApplicationDbContext : DbContext
     /// DbSet para veículos.
     /// </summary>
     public DbSet<Veiculo> Veiculos { get; set; } = null!;
+
+    /// <summary>
+    /// DbSet para ordens de serviço.
+    /// </summary>
+    public DbSet<OrdemServico> OrdensServico { get; set; } = null!;
+
+    /// <summary>
+    /// DbSet para itens de serviço da ordem.
+    /// </summary>
+    public DbSet<ItemServico> ItensServico { get; set; } = null!;
 
     /// <summary>
     /// DbSet para permissoes.

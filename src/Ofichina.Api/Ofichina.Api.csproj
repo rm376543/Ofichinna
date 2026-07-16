@@ -33,7 +33,6 @@
 		<Folder Include="Controllers\Pessoa\" />
 		<Folder Include="Controllers\Orcamento\" />
 		<Folder Include="Controllers\Servicos\" />
-		<Folder Include="Controllers\OrdemServico\" />
 		<Folder Include="logs\" />
 	</ItemGroup>
 
