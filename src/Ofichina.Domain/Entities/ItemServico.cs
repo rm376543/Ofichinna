@@ -50,9 +50,6 @@ public class ItemServico : Entity
     /// <param name="ordemServicoId">
     /// Identificador da ordem de serviço.
     /// </param>
-    /// <param name="servicoId">
-    /// Identificador do serviço cadastrado.
-    /// </param>
     /// <param name="descricao">
     /// Descrição do serviço.
     /// </param>
@@ -82,5 +79,31 @@ public class ItemServico : Entity
         OrdemServicoId = ordemServicoId;
         Descricao = descricao.Trim();
         Valor = valor;
+    }
+
+
+    /// <summary>
+    /// Atualiza os dados do serviço vinculado à ordem.
+    /// </summary>
+    /// <param name="descricao">Nova descrição do serviço.</param>
+    /// <param name="valor">Novo valor do serviço.</param>
+    public void AtualizarDados(
+        string descricao,
+        decimal valor)
+    {
+        if (string.IsNullOrWhiteSpace(descricao))
+            throw new DomainException(
+                "Descrição obrigatória.");
+
+
+        if (valor <= 0)
+            throw new DomainException(
+                "Valor inválido.");
+
+
+        Descricao = descricao.Trim();
+        Valor = valor;
+
+        AtualizarDataModificacao();
     }
 }

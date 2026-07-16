@@ -13,6 +13,9 @@ using Ofichina.Application.UseCases.Perfis.Queries;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.Handlers;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
+using Ofichina.Application.UseCases.OrdensServico.ItemServico.Commands;
+using Ofichina.Application.UseCases.OrdensServico.ItemServico.Handlers;
+using Ofichina.Application.UseCases.OrdensServico.ItemServico.Queries;
 using Ofichina.Application.UseCases.Pessoas.Commands;
 using Ofichina.Application.UseCases.Pessoas.Handlers;
 using Ofichina.Application.UseCases.Pessoas.Queries;
@@ -48,6 +51,12 @@ public static class HandlersModule
         services.AddScoped<ICommandHandler<AlterarStatusOrdemServicoCommand, Result>, AlterarStatusOrdemServicoCommandHandler>();
         services.AddScoped<IQueryHandler<GetOrdensServicoQuery, Result<IReadOnlyCollection<OrdemServicoResponse>>>, GetOrdensServicoQueryHandler>();
         services.AddScoped<IQueryHandler<GetOrdemServicoByIdQuery, Result<OrdemServicoResponse>>, GetOrdemServicoByIdQueryHandler>();
+
+        services.AddScoped<ICommandHandler<CreateItemServicoCommand, Result<Guid>>, CreateItemServicoCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdateItemServicoCommand, Result>, UpdateItemServicoCommandHandler>();
+        services.AddScoped<ICommandHandler<DeleteItemServicoCommand, Result>, DeleteItemServicoCommandHandler>();
+        services.AddScoped<IQueryHandler<GetItemServicosByOrdemServicoQuery, Result<IReadOnlyCollection<ItemServicoResponse>>>, GetItemServicosByOrdemServicoQueryHandler>();
+        services.AddScoped<IQueryHandler<GetItemServicoByIdQuery, Result<ItemServicoResponse>>, GetItemServicoByIdQueryHandler>();
 
         // Perfis
         services.AddScoped<ICommandHandler<CreatePerfilCommand, Result>, CreatePerfilCommandHandler>();

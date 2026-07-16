@@ -91,7 +91,7 @@ public class OrdemServico : Entity
     /// Calculado através dos serviços e peças.
     /// </summary>
     public decimal ValorTotal =>
-        _servicos.Sum(x => x.ValorTotal) +
+        _servicos.Where(x => !x.EstaExcluida()).Sum(x => x.ValorTotal) +
         _pecas.Sum(x => x.ValorTotal);
 
 
@@ -197,7 +197,7 @@ public class OrdemServico : Entity
     /// <summary>
     /// Adiciona um serviço na ordem de serviço.
     /// </summary>
-    public void AdicionarServico(
+    public ItemServico AdicionarServico(
         string descricao,
         decimal valor)
     {
@@ -212,6 +212,66 @@ public class OrdemServico : Entity
         _servicos.Add(item);
 
         AtualizarDataModificacao();
+
+        return item;
+    }
+
+
+    /// <summary>
+    /// Atualiza um serviço existente na ordem de serviço.
+    /// </summary>
+    public void AtualizarServico(
+        Guid itemServicoId,
+        string descricao,
+        decimal valor)
+    {
+        ValidarAlteracaoItens();
+
+
+        var item = ObterServico(itemServicoId);
+
+
+        if (item is null)
+            throw new DomainException(
+                "Serviço não encontrado.");
+
+
+        item.AtualizarDados(
+            descricao,
+            valor);
+
+        AtualizarDataModificacao();
+    }
+
+
+    /// <summary>
+    /// Remove um serviço da ordem de serviço.
+    /// </summary>
+    public void RemoverServico(Guid itemServicoId)
+    {
+        ValidarAlteracaoItens();
+
+
+        var item = ObterServico(itemServicoId);
+
+
+        if (item is null)
+            throw new DomainException(
+                "Serviço não encontrado.");
+
+
+        item.Excluir();
+
+        AtualizarDataModificacao();
+    }
+
+
+    /// <summary>
+    /// Obtém um serviço da ordem pelo identificador.
+    /// </summary>
+    public ItemServico? ObterServico(Guid itemServicoId)
+    {
+        return _servicos.FirstOrDefault(x => x.Id == itemServicoId);
     }
 
 
