@@ -135,6 +135,24 @@ public class OrdemServico : Entity
 
 
     /// <summary>
+    /// Atualiza os dados do atendimento da ordem de serviço.
+    /// </summary>
+    public void AtualizarAtendimento(
+        Guid funcionarioId,
+        string? observacao)
+    {
+        if (funcionarioId == Guid.Empty)
+            throw new DomainException("Funcionário obrigatório.");
+
+
+        FuncionarioId = funcionarioId;
+        Observacao = observacao;
+
+        AtualizarDataModificacao();
+    }
+
+
+    /// <summary>
     /// Inicia o diagnóstico do veículo.
     /// </summary>
     public void IniciarDiagnostico()

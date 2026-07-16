@@ -1,34 +1,36 @@
-using Ofichina.Contracts.Requests;
+using Ofichina.Application.Abstractions;
+using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Requests.OrdemServico;
 
-namespace Ofichina.Contracts.Requests.OrdemServico;
+namespace Ofichina.Application.UseCases.OrdensServico.Commands;
 
 /// <summary>
-/// Requisição para cadastro de nova ordem de serviço.
+/// Comando para criação de ordem de serviço.
 /// </summary>
-public sealed class CreateOrdemServicoRequest : CreateRequest
+public sealed class CreateOrdemServicoCommand : ICommand<Result<Guid>>
 {
     /// <summary>
-    /// Pessoa proprietária do veículo.
+    /// Identificador da pessoa vinculada.
     /// </summary>
     public Guid PessoaId { get; init; }
 
     /// <summary>
-    /// Veículo que receberá o atendimento.
+    /// Identificador do veículo vinculado.
     /// </summary>
     public Guid VeiculoId { get; init; }
 
     /// <summary>
-    /// Funcionário responsável pelo atendimento.
+    /// Identificador do funcionário responsável.
     /// </summary>
     public Guid FuncionarioId { get; init; }
 
     /// <summary>
-    /// Hodometro atual do veículo na entrada.
+    /// Hodômetro de entrada do veículo.
     /// </summary>
     public int HodometroEntrada { get; init; }
 
     /// <summary>
-    /// Descrição do problema informado pela pessoa.
+    /// Problema relatado na abertura da ordem de serviço.
     /// </summary>
     public string ProblemaRelatado { get; init; } = string.Empty;
 
@@ -38,12 +40,12 @@ public sealed class CreateOrdemServicoRequest : CreateRequest
     public string? Observacoes { get; init; }
 
     /// <summary>
-    /// Serviços inicialmente previstos.
+    /// Serviços previstos para a ordem de serviço.
     /// </summary>
     public ICollection<CreateOrdemServicoItemServicoRequest> Servicos { get; init; } = [];
 
     /// <summary>
-    /// Peças inicialmente previstas.
+    /// Peças previstas para a ordem de serviço.
     /// </summary>
     public ICollection<CreateOrdemServicoItemPecaRequest> Pecas { get; init; } = [];
 }

@@ -10,6 +10,9 @@ using Ofichina.Application.UseCases.PerfilUsuario.Queries;
 using Ofichina.Application.UseCases.Perfis.Commands;
 using Ofichina.Application.UseCases.Perfis.Handlers;
 using Ofichina.Application.UseCases.Perfis.Queries;
+using Ofichina.Application.UseCases.OrdensServico.Commands;
+using Ofichina.Application.UseCases.OrdensServico.Handlers;
+using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Application.UseCases.Pessoas.Commands;
 using Ofichina.Application.UseCases.Pessoas.Handlers;
 using Ofichina.Application.UseCases.Pessoas.Queries;
@@ -20,6 +23,7 @@ using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Perfil;
 using Ofichina.Contracts.Responses.PerfilUsuario;
+using Ofichina.Contracts.Responses.OrdemServico;
 using Ofichina.Contracts.Responses.Pessoa;
 using Ofichina.Contracts.Responses.Veiculo;
 
@@ -36,6 +40,14 @@ public static class HandlersModule
         // Autenticacao
         services.AddScoped<ICommandHandler<AutenticarCommand, Result<AutenticacaoResponse>>, AutenticarCommandHandler>();
         services.AddScoped<ICommandHandler<CadastrarUsuarioCommand, Result<AutenticacaoResponse>>, CadastrarUsuarioCommandHandler>();
+
+        // Ordens de Serviço
+        services.AddScoped<ICommandHandler<CreateOrdemServicoCommand, Result<Guid>>, CreateOrdemServicoCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdateOrdemServicoCommand, Result>, UpdateOrdemServicoCommandHandler>();
+        services.AddScoped<ICommandHandler<DeleteOrdemServicoCommand, Result>, DeleteOrdemServicoCommandHandler>();
+        services.AddScoped<ICommandHandler<AlterarStatusOrdemServicoCommand, Result>, AlterarStatusOrdemServicoCommandHandler>();
+        services.AddScoped<IQueryHandler<GetOrdensServicoQuery, Result<IReadOnlyCollection<OrdemServicoResponse>>>, GetOrdensServicoQueryHandler>();
+        services.AddScoped<IQueryHandler<GetOrdemServicoByIdQuery, Result<OrdemServicoResponse>>, GetOrdemServicoByIdQueryHandler>();
 
         // Perfis
         services.AddScoped<ICommandHandler<CreatePerfilCommand, Result>, CreatePerfilCommandHandler>();

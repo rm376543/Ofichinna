@@ -1,4 +1,6 @@
-﻿namespace Ofichina.Contracts.Requests.OrdemServicos;
+﻿using Ofichina.Contracts.Requests;
+
+namespace Ofichina.Contracts.Requests.OrdemServico;
 
 /// <summary>
 /// Peça associada à ordem de serviço.

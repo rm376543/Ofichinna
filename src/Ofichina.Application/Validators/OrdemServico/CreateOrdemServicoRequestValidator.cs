@@ -1,0 +1,39 @@
+using FluentValidation;
+using Ofichina.Contracts.Requests.OrdemServico;
+
+namespace Ofichina.Application.Validators.OrdemServico;
+
+/// <summary>
+/// Validador para criação de ordem de serviço.
+/// </summary>
+public sealed class CreateOrdemServicoRequestValidator : AbstractValidator<CreateOrdemServicoRequest>
+{
+    public CreateOrdemServicoRequestValidator()
+    {
+        RuleFor(x => x.PessoaId)
+            .NotEmpty().WithMessage("A pessoa vinculada é obrigatória.");
+
+        RuleFor(x => x.VeiculoId)
+            .NotEmpty().WithMessage("O veículo vinculado é obrigatório.");
+
+        RuleFor(x => x.FuncionarioId)
+            .NotEmpty().WithMessage("O funcionário responsável é obrigatório.");
+
+        RuleFor(x => x.HodometroEntrada)
+            .GreaterThanOrEqualTo(0).WithMessage("O hodômetro de entrada não pode ser negativo.");
+
+        RuleFor(x => x.ProblemaRelatado)
+            .NotEmpty().WithMessage("O problema relatado é obrigatório.")
+            .MaximumLength(500).WithMessage("O problema relatado não pode exceder 500 caracteres.");
+
+        RuleFor(x => x.Observacoes)
+            .MaximumLength(1000).WithMessage("As observações não podem exceder 1000 caracteres.")
+            .When(x => !string.IsNullOrWhiteSpace(x.Observacoes));
+
+        RuleForEach(x => x.Servicos)
+            .SetValidator(new CreateOrdemServicoItemServicoRequestValidator());
+
+        RuleForEach(x => x.Pecas)
+            .SetValidator(new CreateOrdemServicoItemPecaRequestValidator());
+    }
+}
