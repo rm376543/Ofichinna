@@ -46,7 +46,7 @@ public sealed class VeiculoController : ControllerBase
     /// </summary>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de veículos.</returns>
-    [AllowAnonymous]
+    [Authorize(Roles = "ADMIN")]
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<VeiculoResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -69,7 +69,7 @@ public sealed class VeiculoController : ControllerBase
     /// <param name="id">Identificador do veículo.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Veículo encontrado ou erro 404.</returns>
-    [Authorize(Policy = "usuario.ler")]
+    [Authorize(Roles = "ADMIN")]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<VeiculoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -93,6 +93,7 @@ public sealed class VeiculoController : ControllerBase
     /// <param name="request">Dados do veículo.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Identificador do veículo criado ou erro de validação.</returns>
+    [Authorize(Roles = "ADMIN")]
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -138,6 +139,7 @@ public sealed class VeiculoController : ControllerBase
     /// <param name="request">Dados atualizados do veículo.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso, erro de validação ou veículo não encontrado.</returns>
+    [Authorize(Roles = "ADMIN")]
     [HttpPut]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -186,6 +188,7 @@ public sealed class VeiculoController : ControllerBase
     /// <param name="id">Identificador do veículo.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
+    [Authorize(Roles = "ADMIN")]
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]

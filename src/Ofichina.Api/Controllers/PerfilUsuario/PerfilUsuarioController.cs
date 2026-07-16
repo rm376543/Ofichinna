@@ -44,7 +44,7 @@ public sealed class PerfilUsuarioController : ControllerBase
     /// Retorna sucesso quando o vínculo é criado;
     /// retorna erro quando usuário, perfil ou vínculo já existirem.
     /// </returns>
-    [Authorize(Policy = UserPolicyEnum.Escrever)]
+    [Authorize(Roles = "ADMIN")]
     [HttpPost("{perfilId:guid}")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -92,7 +92,7 @@ public sealed class PerfilUsuarioController : ControllerBase
     /// </summary>
     /// <param name="usuarioId">Identificador do usuário.</param>
     /// <returns>Lista com os códigos dos perfis vinculados ao usuário.</returns>
-    [Authorize(Policy = UserPolicyEnum.Ler)]
+    [Authorize(Roles = "ADMIN")]
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<string>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]

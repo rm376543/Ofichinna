@@ -56,7 +56,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Lista de pessoas.</returns>
         //[Authorize(Policy = UserPolicyEnum.Ler)]
-        [AllowAnonymous]
+        [Authorize(Roles = "ADMIN")]
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<PessoaResponse>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -82,7 +82,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         /// <param name="id">Identificador da pessoa.</param>
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Pessoa encontrada ou erro 404.</returns>
-        [Authorize(Policy = UserPolicyEnum.Ler)]
+        [Authorize(Roles = "ADMIN")]
         [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(ApiResponse<PessoaResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -158,7 +158,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         /// <param name="request">Dados atualizados da pessoa.</param>
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Mensagem de sucesso, erro de validação ou pessoa não encontrada.</returns>
-        [Authorize(Policy = UserPolicyEnum.Atualizar)]
+        [Authorize(Roles = "ADMIN")]
         [HttpPut]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -200,7 +200,7 @@ namespace Ofichina.Api.Controllers.Pessoa
             }
 
             return Ok(ApiResponse.SuccessResponse("Pessoa atualizada com sucesso."));
-        }   
+        }
 
         /// <summary>
         /// Desativa uma pessoa existente.
@@ -208,7 +208,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         /// <param name="id">Identificador da pessoa.</param>
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Mensagem de sucesso ou erro 404.</returns>
-        [Authorize(Policy = UserPolicyEnum.Deletar)]
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
