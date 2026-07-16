@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ofichina.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class _001BasePessoa : Migration
+    public partial class _001base : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,6 +28,22 @@ namespace Ofichina.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Permissao",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Codigo = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Descricao = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Permissao", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Usuario",
                 columns: table => new
                 {
@@ -44,6 +60,34 @@ namespace Ofichina.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PerfilPermissao",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PerfilId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PermissaoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PerfilPermissao", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PerfilPermissao_Perfil_PerfilId",
+                        column: x => x.PerfilId,
+                        principalTable: "Perfil",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PerfilPermissao_Permissao_PermissaoId",
+                        column: x => x.PermissaoId,
+                        principalTable: "Permissao",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Pessoas",
                 columns: table => new
                 {
@@ -51,7 +95,6 @@ namespace Ofichina.Infrastructure.Migrations
                     Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Documento = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
                     Telefone = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     EnderecoLogradouro = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     EnderecoNumero = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     EnderecoComplemento = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -112,7 +155,11 @@ namespace Ofichina.Infrastructure.Migrations
                     Placa = table.Column<string>(type: "nvarchar(7)", maxLength: 7, nullable: false),
                     Marca = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Modelo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Ano = table.Column<int>(type: "int", nullable: false),
+                    AnoFabricacao = table.Column<int>(type: "int", nullable: false),
+                    Cor = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Observacoes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Hodometro = table.Column<int>(type: "int", nullable: false),
+                    Ativo = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -248,6 +295,23 @@ namespace Ofichina.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_PerfilPermissao_PerfilId_PermissaoId",
+                table: "PerfilPermissao",
+                columns: new[] { "PerfilId", "PermissaoId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PerfilPermissao_PermissaoId",
+                table: "PerfilPermissao",
+                column: "PermissaoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Permissao_Codigo",
+                table: "Permissao",
+                column: "Codigo",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Pessoas_UsuarioId",
                 table: "Pessoas",
                 column: "UsuarioId",
@@ -286,10 +350,16 @@ namespace Ofichina.Infrastructure.Migrations
                 name: "ItensPeca");
 
             migrationBuilder.DropTable(
+                name: "PerfilPermissao");
+
+            migrationBuilder.DropTable(
                 name: "UsuarioPerfil");
 
             migrationBuilder.DropTable(
                 name: "OrdensServico");
+
+            migrationBuilder.DropTable(
+                name: "Permissao");
 
             migrationBuilder.DropTable(
                 name: "Perfil");

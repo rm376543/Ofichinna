@@ -1,4 +1,4 @@
-﻿namespace Ofichina.Contracts.Requests.Veiculos;
+﻿namespace Ofichina.Contracts.Requests.Veiculo;
 
 /// <summary>
 /// Dados necessários para criação de um veículo.
@@ -39,6 +39,11 @@ public sealed class CreateVeiculoRequest : CreateRequest
     /// Observações sobre o veículo.
     /// </summary>
     public string? Observacoes { get; init; }
+
+    /// <summary>
+    /// Hodometro atual do veículo.
+    /// </summary>
+    public int Hodometro { get; init; }
 
     /// <summary>
     /// Indica se o veículo está ativo.

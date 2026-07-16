@@ -31,7 +31,23 @@ public class VeiculoConfiguration : IEntityTypeConfiguration<Veiculo>
             .HasMaxLength(100)
             .IsRequired();
 
-        builder.Property(v => v.Ano)
+        builder.Property(v => v.AnoFabricacao)
+            .IsRequired();
+
+        builder.Property(v => v.Cor)
+            .HasMaxLength(50)
+            .IsRequired();
+
+        builder.Property(v => v.Observacoes)
+            .HasMaxLength(1000);
+
+        builder.Property(v => v.Hodometro)
+            .HasConversion(
+                hodometro => hodometro.Valor,
+                valor => Hodometro.Criar(valor))
+            .IsRequired();
+
+        builder.Property(v => v.Ativo)
             .IsRequired();
 
         builder.HasOne(v => v.Pessoa)

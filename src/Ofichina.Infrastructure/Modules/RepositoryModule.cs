@@ -33,6 +33,8 @@ public static class RepositoryModule
 
         services.AddScoped<IPessoaRepository, PessoaRepository>();
 
+        services.AddScoped<IVeiculoRepository, VeiculoRepository>();
+
         return services;
     }
 }

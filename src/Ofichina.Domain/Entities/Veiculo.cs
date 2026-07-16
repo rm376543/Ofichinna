@@ -13,7 +13,15 @@ namespace Ofichina.Domain.Entities
 
         public string Modelo { get; private set; } = null!;
 
-        public int Ano { get; private set; } = 0;
+        public int AnoFabricacao { get; private set; } = 0;
+
+        public string Cor { get; private set; } = string.Empty;
+
+        public string? Observacoes { get; private set; }
+
+        public Hodometro Hodometro { get; private set; } = null!;
+
+        public bool Ativo { get; private set; } = true;
 
         public Pessoa Pessoa { get; private set; } = null!;
 
@@ -22,12 +30,18 @@ namespace Ofichina.Domain.Entities
             // Necessário para o Entity Framework
         }
 
+#pragma warning disable S107
         public Veiculo(
             Guid pessoaId,
             Placa placa,
             string marca,
             string modelo,
-            int ano)
+            int anoFabricacao,
+            string cor,
+            string? observacoes,
+            Hodometro quilometragem,
+            bool ativo)
+#pragma warning restore S107
         {
             if (pessoaId == Guid.Empty)
                 throw new DomainException("A pessoa deve ser informada.");
@@ -43,14 +57,30 @@ namespace Ofichina.Domain.Entities
 
             var anoAtual = DateTime.Now.Year + 1;
 
-            if (ano < 1900 || ano > anoAtual)
+            if (anoFabricacao < 1900 || anoFabricacao > anoAtual)
                 throw new DomainException("Ano do veículo inválido.");
+
+            if (quilometragem is null)
+                throw new DomainException("A quilometragem deve ser informada.");
 
             PessoaId = pessoaId;
             Placa = placa;
             Marca = marca.Trim();
             Modelo = modelo.Trim();
-            Ano = ano;
+            AnoFabricacao = anoFabricacao;
+            Cor = string.IsNullOrWhiteSpace(cor) ? string.Empty : cor.Trim();
+            Observacoes = string.IsNullOrWhiteSpace(observacoes) ? null : observacoes.Trim();
+            Hodometro = quilometragem;
+            Ativo = ativo;
+        }
+
+        public void AlterarPessoa(Guid novaPessoaId)
+        {
+            if (novaPessoaId == Guid.Empty)
+                throw new DomainException("A pessoa deve ser informada.");
+
+            PessoaId = novaPessoaId;
+            AtualizarDataModificacao();
         }
 
         public void AlterarPlaca(Placa novaPlaca)
@@ -59,6 +89,7 @@ namespace Ofichina.Domain.Entities
                 throw new DomainException("A placa deve ser informada.");
 
             Placa = novaPlaca;
+            AtualizarDataModificacao();
         }
 
         public void AlterarModelo(string modelo)
@@ -67,6 +98,7 @@ namespace Ofichina.Domain.Entities
                 throw new DomainException("O modelo deve ser informado.");
 
             Modelo = modelo.Trim();
+            AtualizarDataModificacao();
         }
 
         public void AlterarMarca(string marca)
@@ -75,24 +107,57 @@ namespace Ofichina.Domain.Entities
                 throw new DomainException("A marca deve ser informada.");
 
             Marca = marca.Trim();
+            AtualizarDataModificacao();
         }
 
-        public void AlterarAno(int ano)
+        public void AlterarAnoFabricacao(int anoFabricacao)
         {
             var anoAtual = DateTime.Now.Year + 1;
 
-            if (ano < 1900 || ano > anoAtual)
+            if (anoFabricacao < 1900 || anoFabricacao > anoAtual)
                 throw new DomainException("Ano do veículo inválido.");
 
-            Ano = ano;
+            AnoFabricacao = anoFabricacao;
+            AtualizarDataModificacao();
         }
 
-        public void TransferirPara(Guid novaPessoaId)
+        public void AlterarCor(string? cor)
         {
-            if (novaPessoaId == Guid.Empty)
-                throw new DomainException("A pessoa deve ser informada.");
+            Cor = string.IsNullOrWhiteSpace(cor) ? string.Empty : cor.Trim();
+            AtualizarDataModificacao();
+        }
 
-            PessoaId = novaPessoaId;
+        public void AlterarObservacoes(string? observacoes)
+        {
+            Observacoes = string.IsNullOrWhiteSpace(observacoes) ? null : observacoes.Trim();
+            AtualizarDataModificacao();
+        }
+
+        public void AlterarHodometro(Hodometro quilometragem)
+        {
+            if (quilometragem is null)
+                throw new DomainException("A quilometragem deve ser informada.");
+
+            Hodometro = quilometragem;
+            AtualizarDataModificacao();
+        }
+
+        public void Ativar()
+        {
+            if (Ativo)
+                return;
+
+            Ativo = true;
+            AtualizarDataModificacao();
+        }
+
+        public void Desativar()
+        {
+            if (!Ativo)
+                return;
+
+            Ativo = false;
+            AtualizarDataModificacao();
         }
     }
 }

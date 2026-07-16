@@ -1,4 +1,5 @@
 using Ofichina.Api.Modules;
+using Ofichina.Api.Middleware;
 using Ofichina.Bootstrap;
 using DotNetEnv;
 using Serilog;
@@ -32,6 +33,7 @@ var app = builder.Build();
 
 // Registrar middleware de Correlation ID (deve ser um dos primeiros)
 app.UseCorrelationId();
+app.UseMiddleware<ApiExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
