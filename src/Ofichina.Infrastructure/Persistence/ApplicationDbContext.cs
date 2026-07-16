@@ -36,6 +36,11 @@ public class ApplicationDbContext : DbContext
     public DbSet<Pessoa> Pessoas { get; set; } = null!;
 
     /// <summary>
+    /// DbSet para veículos.
+    /// </summary>
+    public DbSet<Veiculo> Veiculos { get; set; } = null!;
+
+    /// <summary>
     /// DbSet para permissoes.
     /// </summary>
     public DbSet<Permissao> Permissoes { get; set; } = null!;

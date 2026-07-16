@@ -1,15 +1,10 @@
-﻿namespace Ofichina.Contracts.Requests.Veiculos;
+﻿namespace Ofichina.Contracts.Requests.Veiculo;
 
 /// <summary>
 /// Dados necessários para atualização de um veículo.
 /// </summary>
 public sealed class UpdateVeiculoRequest : UpdateRequest
 {
-    /// <summary>
-    /// Identificador do veículo.
-    /// </summary>
-    public Guid VeiculoId { get; init; }
-
     /// <summary>
     /// Identificador da pessoa proprietária.
     /// </summary>
@@ -44,6 +39,11 @@ public sealed class UpdateVeiculoRequest : UpdateRequest
     /// Observações sobre o veículo.
     /// </summary>
     public string? Observacoes { get; init; }
+
+    /// <summary>
+    /// Hodometro atual do veículo.
+    /// </summary>
+    public int Hodometro { get; init; }
 
     /// <summary>
     /// Indica se o veículo está ativo.

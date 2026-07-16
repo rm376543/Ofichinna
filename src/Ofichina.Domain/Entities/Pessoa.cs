@@ -10,6 +10,8 @@ namespace Ofichina.Domain.Entities;
 /// </summary>
 public class Pessoa : Entity
 {
+    private readonly List<Veiculo> _veiculos = [];
+
     /// <summary>
     /// Nome completo ou razão social da pessoa.
     /// </summary>
@@ -42,12 +44,7 @@ public class Pessoa : Entity
     public Usuario Usuario { get; private set; } = null!;
 
     /// <summary>
-    /// Veículos associados à pessoa.
-    /// </summary>
-    private readonly List<Veiculo> _veiculos = [];
-
-    /// <summary>
-    /// Coleção de veículos associados à pessoa.
+    /// Veículos vinculados à pessoa.
     /// </summary>
     public IReadOnlyCollection<Veiculo> Veiculos => _veiculos.AsReadOnly();
 

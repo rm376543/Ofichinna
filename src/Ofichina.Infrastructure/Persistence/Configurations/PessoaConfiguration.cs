@@ -21,9 +21,6 @@ public class PessoaConfiguration : IEntityTypeConfiguration<Pessoa>
         builder.Property(c => c.UsuarioId)
             .IsRequired();
 
-        builder.Navigation(c => c.Veiculos)
-            .UsePropertyAccessMode(PropertyAccessMode.Field);
-
         builder.Property(c => c.Documento)
             .HasConversion(
                 documento => documento.Numero,
@@ -83,6 +80,9 @@ public class PessoaConfiguration : IEntityTypeConfiguration<Pessoa>
             .WithOne()
             .HasForeignKey<Pessoa>(c => c.UsuarioId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Navigation(c => c.Veiculos)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 
     private static Documento CriarDocumento(string numero)

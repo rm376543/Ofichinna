@@ -23,9 +23,9 @@ public sealed class CreateOrdemServicoRequest : CreateRequest
     public Guid FuncionarioId { get; init; }
 
     /// <summary>
-    /// Quilometragem atual do veículo na entrada.
+    /// Hodometro atual do veículo na entrada.
     /// </summary>
-    public int QuilometragemEntrada { get; init; }
+    public int HodometroEntrada { get; init; }
 
     /// <summary>
     /// Descrição do problema informado pela pessoa.
