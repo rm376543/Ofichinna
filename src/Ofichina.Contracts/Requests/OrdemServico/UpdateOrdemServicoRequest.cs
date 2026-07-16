@@ -1,15 +1,12 @@
-﻿namespace Ofichina.Contracts.Requests.OrdemServicos;
+﻿using Ofichina.Contracts.Requests;
+
+namespace Ofichina.Contracts.Requests.OrdemServico;
 
 /// <summary>
 /// Dados necessários para atualização de uma ordem de serviço.
 /// </summary>
 public sealed class UpdateOrdemServicoRequest : UpdateRequest
 {
-    /// <summary>
-    /// Identificador da ordem de serviço.
-    /// </summary>
-    public Guid OrdemServicoId { get; init; }
-
     /// <summary>
     /// Funcionário responsável pelo atendimento.
     /// </summary>
