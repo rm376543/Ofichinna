@@ -55,7 +55,7 @@ public sealed class PerfisController : ControllerBase
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns>Lista de perfis.</returns>
-    [Authorize(Policy = "consultor.read")]
+    [Authorize(Roles = "ADMIN")]
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<PerfilResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -82,7 +82,7 @@ public sealed class PerfisController : ControllerBase
     /// <param name="id">Identificador do perfil.</param>
     /// <param name="cancellationToken"></param>
     /// <returns>Perfil encontrado ou erro 404 quando não existir.</returns>
-    [Authorize(Policy = UserPolicyEnum.Ler)]
+    [Authorize(Roles = "ADMIN")]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PerfilResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -111,7 +111,7 @@ public sealed class PerfisController : ControllerBase
     /// <param name="request">Dados do perfil a ser criado.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Id do perfil criado ou erro de validação.</returns>
-    [Authorize(Policy = UserPolicyEnum.Escrever)]
+    [Authorize(Roles = "ADMIN")]
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -148,7 +148,7 @@ public sealed class PerfisController : ControllerBase
     /// <param name="request">Dados atualizados do perfil.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso, erro de validação ou perfil não encontrado.</returns>
-    [Authorize(Policy = UserPolicyEnum.Atualizar)]
+    [Authorize(Roles = "ADMIN")]
     [HttpPut]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -190,7 +190,7 @@ public sealed class PerfisController : ControllerBase
     /// <param name="id">Identificador do perfil.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
-    [Authorize(Policy = UserPolicyEnum.Deletar)]
+    [Authorize(Roles = "ADMIN")]
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
