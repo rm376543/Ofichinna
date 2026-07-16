@@ -19,6 +19,9 @@ using Ofichina.Application.UseCases.OrdensServico.ItemServico.Queries;
 using Ofichina.Application.UseCases.Pessoas.Commands;
 using Ofichina.Application.UseCases.Pessoas.Handlers;
 using Ofichina.Application.UseCases.Pessoas.Queries;
+using Ofichina.Application.UseCases.Servicos.Commands;
+using Ofichina.Application.UseCases.Servicos.Handlers;
+using Ofichina.Application.UseCases.Servicos.Queries;
 using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Application.UseCases.Veiculos.Handlers;
 using Ofichina.Application.UseCases.Veiculos.Queries;
@@ -28,6 +31,7 @@ using Ofichina.Contracts.Responses.Perfil;
 using Ofichina.Contracts.Responses.PerfilUsuario;
 using Ofichina.Contracts.Responses.OrdemServico;
 using Ofichina.Contracts.Responses.Pessoa;
+using Ofichina.Contracts.Responses.Servicos;
 using Ofichina.Contracts.Responses.Veiculo;
 
 namespace Ofichina.Application.DependencyInjection;
@@ -72,6 +76,13 @@ public static class HandlersModule
         services.AddScoped<ICommandHandler<DeletePessoaCommand, Result>, DeletePessoaCommandHandler>();
         services.AddScoped<IQueryHandler<GetPessoaByIdQuery, Result<PessoaResponse>>, GetPessoaByIdQueryHandler>();
         services.AddScoped<IQueryHandler<GetPessoasQuery, Result<IReadOnlyCollection<PessoaResponse>>>, GetPessoaQueryHandler>();
+
+        // Servicos
+        services.AddScoped<ICommandHandler<CreateServicoCommand, Result<Guid>>, CreateServicoCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdateServicoCommand, Result>, UpdateServicoCommandHandler>();
+        services.AddScoped<ICommandHandler<DeleteServicoCommand, Result>, DeleteServicoCommandHandler>();
+        services.AddScoped<IQueryHandler<GetServicosQuery, Result<IReadOnlyCollection<ServicoResponse>>>, GetServicosQueryHandler>();
+        services.AddScoped<IQueryHandler<GetServicoByIdQuery, Result<ServicoResponse>>, GetServicoByIdQueryHandler>();
 
         // Veiculos
         services.AddScoped<ICommandHandler<CreateVeiculoCommand, Result<Guid>>, CreateVeiculoCommandHandler>();
