@@ -12,8 +12,8 @@ using Ofichina.Infrastructure.Persistence;
 namespace Ofichina.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260714180319_001-BasePessoa")]
-    partial class _001BasePessoa
+    [Migration("20260716023737_002-veiculos-campo-quilometro-hodometro")]
+    partial class _002veiculoscampoquilometrohodometro
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -180,6 +180,70 @@ namespace Ofichina.Infrastructure.Migrations
                     b.ToTable("Perfil", (string)null);
                 });
 
+            modelBuilder.Entity("Ofichina.Domain.Entities.PerfilPermissao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("PerfilId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PermissaoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PermissaoId");
+
+                    b.HasIndex("PerfilId", "PermissaoId")
+                        .IsUnique();
+
+                    b.ToTable("PerfilPermissao", (string)null);
+                });
+
+            modelBuilder.Entity("Ofichina.Domain.Entities.Permissao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Codigo")
+                        .IsUnique();
+
+                    b.ToTable("Permissao", (string)null);
+                });
+
             modelBuilder.Entity("Ofichina.Domain.Entities.Pessoa", b =>
                 {
                     b.Property<Guid>("Id")
@@ -196,11 +260,6 @@ namespace Ofichina.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(14)
                         .HasColumnType("nvarchar(14)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -293,14 +352,25 @@ namespace Ofichina.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Ano")
+                    b.Property<int>("AnoFabricacao")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Cor")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Hodometro")
+                        .HasColumnType("int");
 
                     b.Property<string>("Marca")
                         .IsRequired()
@@ -311,6 +381,10 @@ namespace Ofichina.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Observacoes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<Guid>("PessoaId")
                         .HasColumnType("uniqueidentifier");
@@ -370,6 +444,25 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasForeignKey("OrdemServicoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Ofichina.Domain.Entities.PerfilPermissao", b =>
+                {
+                    b.HasOne("Ofichina.Domain.Entities.Perfil", "Perfil")
+                        .WithMany("PerfisPermissoes")
+                        .HasForeignKey("PerfilId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ofichina.Domain.Entities.Permissao", "Permissao")
+                        .WithMany("PerfisPermissoes")
+                        .HasForeignKey("PermissaoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Perfil");
+
+                    b.Navigation("Permissao");
                 });
 
             modelBuilder.Entity("Ofichina.Domain.Entities.Pessoa", b =>
@@ -480,7 +573,14 @@ namespace Ofichina.Infrastructure.Migrations
 
             modelBuilder.Entity("Ofichina.Domain.Entities.Perfil", b =>
                 {
+                    b.Navigation("PerfisPermissoes");
+
                     b.Navigation("UsuariosPerfis");
+                });
+
+            modelBuilder.Entity("Ofichina.Domain.Entities.Permissao", b =>
+                {
+                    b.Navigation("PerfisPermissoes");
                 });
 
             modelBuilder.Entity("Ofichina.Domain.Entities.Pessoa", b =>
