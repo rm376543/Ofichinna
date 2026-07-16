@@ -1,12 +1,18 @@
-using Ofichina.Contracts.Requests;
+using Ofichina.Application.Abstractions;
+using Ofichina.Contracts.Common;
 
-namespace Ofichina.Contracts.Requests.Servicos;
+namespace Ofichina.Application.UseCases.Servicos.Commands;
 
 /// <summary>
-/// Dados necessários para criação de um serviço.
+/// Comando para atualização de serviço.
 /// </summary>
-public sealed class CreateServicoRequest : CreateRequest
+public sealed class UpdateServicoCommand : ICommand<Result>
 {
+    /// <summary>
+    /// Identificador do serviço.
+    /// </summary>
+    public Guid Id { get; init; }
+
     /// <summary>
     /// Nome do serviço.
     /// </summary>

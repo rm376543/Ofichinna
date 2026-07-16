@@ -1,11 +1,12 @@
-using Ofichina.Contracts.Requests;
+using Ofichina.Application.Abstractions;
+using Ofichina.Contracts.Common;
 
-namespace Ofichina.Contracts.Requests.Servicos;
+namespace Ofichina.Application.UseCases.Servicos.Commands;
 
 /// <summary>
-/// Dados necessários para criação de um serviço.
+/// Comando para criação de serviço.
 /// </summary>
-public sealed class CreateServicoRequest : CreateRequest
+public sealed class CreateServicoCommand : ICommand<Result<Guid>>
 {
     /// <summary>
     /// Nome do serviço.
@@ -23,7 +24,7 @@ public sealed class CreateServicoRequest : CreateRequest
     public decimal Valor { get; init; }
 
     /// <summary>
-    /// Indica se o serviço está ativo.
+    /// Indica se o serviço inicia ativo.
     /// </summary>
     public bool Ativo { get; init; } = true;
 }
