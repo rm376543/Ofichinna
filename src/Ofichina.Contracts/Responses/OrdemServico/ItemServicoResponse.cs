@@ -11,6 +11,11 @@ public sealed class ItemServicoResponse
     public Guid Id { get; set; }
 
     /// <summary>
+    /// Identificador do serviço cadastrado vinculado ao item.
+    /// </summary>
+    public Guid ServicoId { get; set; }
+
+    /// <summary>
     /// Identificador da ordem de serviço à qual o item pertence.
     /// </summary>
     public Guid OrdemServicoId { get; set; }
