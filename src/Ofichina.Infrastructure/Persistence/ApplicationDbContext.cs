@@ -47,6 +47,11 @@ public class ApplicationDbContext : DbContext
     public DbSet<OrdemServico> OrdensServico { get; set; } = null!;
 
     /// <summary>
+    /// DbSet para agendamentos.
+    /// </summary>
+    public DbSet<Agendamento> Agendamentos { get; set; } = null!;
+
+    /// <summary>
     /// DbSet para itens de serviço da ordem.
     /// </summary>
     public DbSet<ItemServico> ItensServico { get; set; } = null!;

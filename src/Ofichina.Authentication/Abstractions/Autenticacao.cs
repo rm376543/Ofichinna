@@ -40,6 +40,14 @@ public interface IJwtTokenService
 }
 
 /// <summary>
+/// Contrato para acesso ao usuário autenticado na requisição atual.
+/// </summary>
+public interface IUsuarioAtualService
+{
+    Guid? ObterUsuarioId();
+}
+
+/// <summary>
 /// Contrato para leitura/validação de perfis associados ao usuário.
 /// </summary>
 public interface IPerfilAutorizacaoService
