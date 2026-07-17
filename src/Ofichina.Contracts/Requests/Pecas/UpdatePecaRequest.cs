@@ -1,15 +1,12 @@
-﻿namespace Ofichina.Contracts.Requests.Pecas;
+﻿using Ofichina.Contracts.Requests;
+
+namespace Ofichina.Contracts.Requests.Pecas;
 
 /// <summary>
 /// Dados necessários para atualização de uma peça.
 /// </summary>
 public sealed class UpdatePecaRequest : UpdateRequest
 {
-    /// <summary>
-    /// Identificador da peça.
-    /// </summary>
-    public Guid PecaId { get; init; }
-
     /// <summary>
     /// Nome da peça.
     /// </summary>

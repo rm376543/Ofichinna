@@ -1,4 +1,6 @@
-﻿namespace Ofichina.Contracts.Requests.Pecas;
+﻿using Ofichina.Contracts.Requests;
+
+namespace Ofichina.Contracts.Requests.Pecas;
 
 /// <summary>
 /// Dados necessários para criação de uma peça.
