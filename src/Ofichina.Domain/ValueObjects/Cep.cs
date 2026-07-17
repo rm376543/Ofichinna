@@ -11,12 +11,7 @@ public sealed class Cep : ValueObject
 {
     public string Value { get; }
 
-    private Cep(string value)
-    {
-        Value = value;
-    }
-
-    public static Cep Criar(string cep)
+    public Cep (string cep)
     {
         if(string.IsNullOrWhiteSpace(cep))
             throw new DomainException("CEP nao pode ser nulo ou vazio.");
@@ -28,7 +23,7 @@ public sealed class Cep : ValueObject
         if (!EhValido(cep))
             throw new DomainException($"CEP {cep} inválido.");
 
-        return new Cep(cep);
+        Value = cep;
     }
 
     private static bool EhValido(string cep)

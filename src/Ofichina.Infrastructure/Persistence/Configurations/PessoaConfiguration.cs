@@ -31,7 +31,7 @@ public class PessoaConfiguration : IEntityTypeConfiguration<Pessoa>
         builder.Property(c => c.Telefone)
             .HasConversion(
                 telefone => telefone.Value,
-                valor => Telefone.Criar(valor))
+                valor => new Telefone(valor))
             .HasMaxLength(11)
             .IsRequired();
 
@@ -70,7 +70,7 @@ public class PessoaConfiguration : IEntityTypeConfiguration<Pessoa>
             endereco.Property(e => e.Cep)
                 .HasConversion(
                     cep => cep.Value,
-                    valor => Cep.Criar(valor))
+                    valor => new Cep(valor))
                 .HasColumnName("EnderecoCep")
                 .HasMaxLength(8)
                 .IsRequired();

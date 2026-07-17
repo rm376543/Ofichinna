@@ -37,7 +37,7 @@ public sealed class UpdateVeiculoCommandHandler : ICommandHandler<UpdateVeiculoC
         {
             _logger.LogInformation("Iniciando atualização do veículo. Id: {VeiculoId}", command.Id);
 
-            var placa = Placa.Criar(command.Placa);
+            var placa = new Placa(command.Placa);
 
             var veiculo = await _veiculoRepository.GetByIdAsync(command.Id);
 
@@ -62,7 +62,7 @@ public sealed class UpdateVeiculoCommandHandler : ICommandHandler<UpdateVeiculoC
             veiculo.AlterarAnoFabricacao(command.AnoFabricacao);
             veiculo.AlterarCor(command.Cor);
             veiculo.AlterarObservacoes(command.Observacoes);
-            veiculo.AlterarHodometro(Hodometro.Criar(command.Hodometro));
+            veiculo.AlterarHodometro(new Hodometro(command.Hodometro));
 
             if (command.Ativo)
                 veiculo.Ativar();
