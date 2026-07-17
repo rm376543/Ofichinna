@@ -1,0 +1,68 @@
+using Microsoft.Extensions.Logging;
+using Ofichina.Application.Abstractions;
+using Ofichina.Application.UseCases.Pecas.Queries;
+using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Responses.Pecas;
+using Ofichina.Domain.Entities;
+using Ofichina.Domain.Interfaces;
+
+namespace Ofichina.Application.UseCases.Pecas.Handlers;
+
+/// <summary>
+/// Handler para obter peça por Id.
+/// </summary>
+public sealed class GetPecaByIdQueryHandler : IQueryHandler<GetPecaByIdQuery, Result<PecaResponse>>
+{
+    private readonly IRepository<Peca> _pecaRepository;
+    private readonly ILogger<GetPecaByIdQueryHandler> _logger;
+
+    /// <summary>
+    /// Inicializa uma nova instância do handler de busca por Id.
+    /// </summary>
+    public GetPecaByIdQueryHandler(
+        IRepository<Peca> pecaRepository,
+        ILogger<GetPecaByIdQueryHandler> logger)
+    {
+        _pecaRepository = pecaRepository;
+        _logger = logger;
+    }
+
+    /// <inheritdoc />
+    public async Task<Result<PecaResponse>> HandleAsync(GetPecaByIdQuery query)
+    {
+        try
+        {
+            var peca = await _pecaRepository.GetByIdAsync(query.Id);
+
+            if (peca is null)
+                return Result.Failure<PecaResponse>("Peça não encontrada.");
+
+            if (peca.EstaExcluida())
+                return Result.Failure<PecaResponse>("Peça não encontrada.");
+
+            return Result.Success(Mapear(peca));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao obter peça com Id: {PecaId}", query.Id);
+            return Result.Failure<PecaResponse>("Não foi possível obter a peça.");
+        }
+    }
+
+    private static PecaResponse Mapear(Peca peca)
+    {
+        return new PecaResponse
+        {
+            Id = peca.Id,
+            Nome = peca.Nome,
+            Descricao = peca.Descricao,
+            Codigo = peca.Codigo,
+            Valor = peca.Valor,
+            QuantidadeEstoque = peca.QuantidadeEstoque,
+            Ativo = peca.Ativo,
+            CreatedAt = peca.CreatedAt,
+            UpdatedAt = peca.UpdatedAt,
+            DeletedAt = peca.DeletedAt
+        };
+    }
+}

@@ -19,6 +19,9 @@ using Ofichina.Application.UseCases.OrdensServico.ItemServico.Queries;
 using Ofichina.Application.UseCases.Pessoas.Commands;
 using Ofichina.Application.UseCases.Pessoas.Handlers;
 using Ofichina.Application.UseCases.Pessoas.Queries;
+using Ofichina.Application.UseCases.Pecas.Commands;
+using Ofichina.Application.UseCases.Pecas.Handlers;
+using Ofichina.Application.UseCases.Pecas.Queries;
 using Ofichina.Application.UseCases.Servicos.Commands;
 using Ofichina.Application.UseCases.Servicos.Handlers;
 using Ofichina.Application.UseCases.Servicos.Queries;
@@ -31,6 +34,7 @@ using Ofichina.Contracts.Responses.Perfil;
 using Ofichina.Contracts.Responses.PerfilUsuario;
 using Ofichina.Contracts.Responses.OrdemServico;
 using Ofichina.Contracts.Responses.Pessoa;
+using Ofichina.Contracts.Responses.Pecas;
 using Ofichina.Contracts.Responses.Servicos;
 using Ofichina.Contracts.Responses.Veiculo;
 
@@ -76,6 +80,13 @@ public static class HandlersModule
         services.AddScoped<ICommandHandler<DeletePessoaCommand, Result>, DeletePessoaCommandHandler>();
         services.AddScoped<IQueryHandler<GetPessoaByIdQuery, Result<PessoaResponse>>, GetPessoaByIdQueryHandler>();
         services.AddScoped<IQueryHandler<GetPessoasQuery, Result<IReadOnlyCollection<PessoaResponse>>>, GetPessoaQueryHandler>();
+
+        // Pecas
+        services.AddScoped<ICommandHandler<CreatePecaCommand, Result<Guid>>, CreatePecaCommandHandler>();
+        services.AddScoped<ICommandHandler<UpdatePecaCommand, Result>, UpdatePecaCommandHandler>();
+        services.AddScoped<ICommandHandler<DeletePecaCommand, Result>, DeletePecaCommandHandler>();
+        services.AddScoped<IQueryHandler<GetPecaByIdQuery, Result<PecaResponse>>, GetPecaByIdQueryHandler>();
+        services.AddScoped<IQueryHandler<GetPecasQuery, Result<IReadOnlyCollection<PecaResponse>>>, GetPecasQueryHandler>();
 
         // Servicos
         services.AddScoped<ICommandHandler<CreateServicoCommand, Result<Guid>>, CreateServicoCommandHandler>();
