@@ -37,7 +37,7 @@ public sealed class CreateVeiculoCommandHandler : ICommandHandler<CreateVeiculoC
         {
             _logger.LogInformation("Iniciando criação de veículo. Placa: {Placa}", command.Placa);
 
-            var placa = Placa.Criar(command.Placa);
+            var placa = new Placa(command.Placa);
 
             var pessoa = await _pessoaRepository.GetByIdAsync(command.PessoaId);
 
@@ -58,7 +58,7 @@ public sealed class CreateVeiculoCommandHandler : ICommandHandler<CreateVeiculoC
                 command.AnoFabricacao,
                 command.Cor ?? string.Empty,
                 command.Observacoes,
-                Hodometro.Criar(command.Hodometro),
+                new Hodometro(command.Hodometro),
                 command.Ativo);
 
             await _veiculoRepository.AddAsync(veiculo);

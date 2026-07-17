@@ -46,7 +46,7 @@ public sealed class CreatePessoaCommandHandler : ICommandHandler<CreatePessoaCom
             }
 
             var documento = CriarDocumento(command.Documento);
-            var telefone = Telefone.Criar(command.Telefone);
+            var telefone = new Telefone(command.Telefone);
             var endereco = new Endereco(
                 command.Logradouro,
                 command.Numero,
@@ -54,7 +54,7 @@ public sealed class CreatePessoaCommandHandler : ICommandHandler<CreatePessoaCom
                 command.Bairro,
                 command.Cidade,
                 command.Estado,
-                Cep.Criar(command.Cep));
+                new Cep(command.Cep));
 
             var pessoa = new Pessoa(command.Nome,
                                     documento,

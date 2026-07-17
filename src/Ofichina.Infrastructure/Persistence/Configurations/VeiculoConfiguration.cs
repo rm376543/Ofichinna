@@ -19,7 +19,7 @@ public class VeiculoConfiguration : IEntityTypeConfiguration<Veiculo>
         builder.Property(v => v.Placa)
             .HasConversion(
                 placa => placa.Numero,
-                valor => Placa.Criar(valor))
+                valor => new Placa(valor))
             .HasMaxLength(7)
             .IsRequired();
 
@@ -44,7 +44,7 @@ public class VeiculoConfiguration : IEntityTypeConfiguration<Veiculo>
         builder.Property(v => v.Hodometro)
             .HasConversion(
                 hodometro => hodometro.Valor,
-                valor => Hodometro.Criar(valor))
+                valor => new Hodometro(valor))
             .IsRequired();
 
         builder.Property(v => v.Ativo)

@@ -42,7 +42,7 @@ public sealed class UpdatePessoaCommandHandler : ICommandHandler<UpdatePessoaCom
             }
 
             pessoa.AlterarNome(command.Nome);
-            pessoa.AlterarTelefone(Telefone.Criar(command.Telefone));
+            pessoa.AlterarTelefone(new Telefone(command.Telefone));
             pessoa.AlterarEndereco(new Endereco(
                 command.Logradouro,
                 command.Numero,
@@ -50,7 +50,7 @@ public sealed class UpdatePessoaCommandHandler : ICommandHandler<UpdatePessoaCom
                 command.Bairro,
                 command.Cidade,
                 command.Estado,
-                Cep.Criar(command.Cep)));
+                new Cep(command.Cep)));
 
             await _repository.UpdateAsync(pessoa);
             await _unitOfWork.SaveChangesAsync();

@@ -11,14 +11,9 @@ public sealed class Telefone : ValueObject
 {
     public string Value { get; private set; } = null!;
 
-    private Telefone(string value)
-    {
-        Value = value;
-    }
-
     public Telefone() { }
 
-    public static Telefone Criar(string telefone)
+    public Telefone (string telefone)
     {
         if (string.IsNullOrWhiteSpace(telefone))
             throw new DomainException("Telefone nao pode ser nulo ou vazio.");
@@ -30,7 +25,7 @@ public sealed class Telefone : ValueObject
         if (!EhValido(telefone))
             throw new DomainException($"Telefone {telefone} inválido.");
 
-        return new Telefone(telefone);
+        Value = telefone;
     }
 
     private static bool EhValido(string telefone)

@@ -16,20 +16,14 @@ public sealed class Placa : ValueObject
     private static readonly Regex PlacaMercosulRegex = new(@"^[A-Z]{3}[0-9][A-Z][0-9]{2}$", RegexOptions.Compiled);
 #pragma warning restore S6444
 
-
     public string Numero { get; private set; } = null!;
-
-    private Placa(string numero)
-    {
-        Numero = numero;
-    }
 
     public Placa()
     {
-
+        // EF Core
     }
 
-    public static Placa Criar(string placa)
+    public Placa(string placa)
     {
         if (string.IsNullOrWhiteSpace(placa))
             throw new DomainException("Placa inválida.");
@@ -39,7 +33,7 @@ public sealed class Placa : ValueObject
         if (!EhValida(placa))
             throw new DomainException("Placa inválida.");
 
-        return new Placa(placa);
+        Numero = placa;
     }
 
     private static string Normalizar(string placa)
@@ -72,5 +66,4 @@ public sealed class Placa : ValueObject
     {
         yield return Numero;
     }
-
 }
