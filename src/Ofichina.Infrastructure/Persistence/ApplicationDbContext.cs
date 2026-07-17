@@ -57,6 +57,11 @@ public class ApplicationDbContext : DbContext
     public DbSet<Servico> Servicos { get; set; } = null!;
 
     /// <summary>
+    /// DbSet para peças cadastradas no catálogo.
+    /// </summary>
+    public DbSet<Peca> Pecas { get; set; } = null!;
+
+    /// <summary>
     /// DbSet para permissoes.
     /// </summary>
     public DbSet<Permissao> Permissoes { get; set; } = null!;

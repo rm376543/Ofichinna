@@ -1,12 +1,18 @@
-﻿using Ofichina.Contracts.Requests;
+using Ofichina.Application.Abstractions;
+using Ofichina.Contracts.Common;
 
-namespace Ofichina.Contracts.Requests.Pecas;
+namespace Ofichina.Application.UseCases.Pecas.Commands;
 
 /// <summary>
-/// Dados necessários para atualização de uma peça.
+/// Comando para atualização de peça.
 /// </summary>
-public sealed class UpdatePecaRequest : UpdateRequest
+public sealed class UpdatePecaCommand : ICommand<Result>
 {
+    /// <summary>
+    /// Identificador da peça.
+    /// </summary>
+    public Guid Id { get; init; }
+
     /// <summary>
     /// Nome da peça.
     /// </summary>
@@ -23,7 +29,7 @@ public sealed class UpdatePecaRequest : UpdateRequest
     public string Codigo { get; init; } = string.Empty;
 
     /// <summary>
-    /// Valor da peça.
+    /// Valor unitário da peça.
     /// </summary>
     public decimal Valor { get; init; }
 

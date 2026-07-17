@@ -1,0 +1,12 @@
+using Ofichina.Application.Abstractions;
+using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Responses.Pecas;
+
+namespace Ofichina.Application.UseCases.Pecas.Queries;
+
+/// <summary>
+/// Consulta para listar peças.
+/// </summary>
+public sealed class GetPecasQuery : IQuery<Result<IReadOnlyCollection<PecaResponse>>>
+{
+}

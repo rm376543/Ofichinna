@@ -1,11 +1,12 @@
-﻿using Ofichina.Contracts.Requests;
+using Ofichina.Application.Abstractions;
+using Ofichina.Contracts.Common;
 
-namespace Ofichina.Contracts.Requests.Pecas;
+namespace Ofichina.Application.UseCases.Pecas.Commands;
 
 /// <summary>
-/// Dados necessários para atualização de uma peça.
+/// Comando para criação de peça.
 /// </summary>
-public sealed class UpdatePecaRequest : UpdateRequest
+public sealed class CreatePecaCommand : ICommand<Result<Guid>>
 {
     /// <summary>
     /// Nome da peça.
@@ -23,17 +24,17 @@ public sealed class UpdatePecaRequest : UpdateRequest
     public string Codigo { get; init; } = string.Empty;
 
     /// <summary>
-    /// Valor da peça.
+    /// Valor unitário da peça.
     /// </summary>
     public decimal Valor { get; init; }
 
     /// <summary>
-    /// Quantidade em estoque.
+    /// Quantidade inicial em estoque.
     /// </summary>
     public int QuantidadeEstoque { get; init; }
 
     /// <summary>
-    /// Indica se a peça está ativa.
+    /// Indica se a peça inicia ativa.
     /// </summary>
     public bool Ativo { get; init; } = true;
 }
