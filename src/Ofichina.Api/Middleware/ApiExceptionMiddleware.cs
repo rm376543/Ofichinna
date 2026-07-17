@@ -1,6 +1,5 @@
 using FluentValidation;
 using Ofichina.Contracts.Responses;
-using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Api.Middleware;
 
@@ -37,12 +36,6 @@ public sealed class ApiExceptionMiddleware
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
                     await context.Response.WriteAsJsonAsync(
                         ApiResponse.FailureResponse(validationException.Errors.Select(x => x.ErrorMessage)));
-                    return;
-
-                case DomainException domainException:
-                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    await context.Response.WriteAsJsonAsync(
-                        ApiResponse.FailureResponse(domainException.Message));
                     return;
 
                 case KeyNotFoundException:

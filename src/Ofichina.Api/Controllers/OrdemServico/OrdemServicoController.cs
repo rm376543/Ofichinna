@@ -5,10 +5,10 @@ using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Enums;
 using Ofichina.Contracts.Requests.OrdemServico;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.OrdemServico;
-using Ofichina.Domain.Aggregates;
 
 namespace Ofichina.Api.Controllers.OrdemServico;
 

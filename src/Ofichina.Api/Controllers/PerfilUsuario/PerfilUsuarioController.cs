@@ -5,7 +5,6 @@ using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.PerfilUsuario.Commands;
 using Ofichina.Application.UseCases.PerfilUsuario.Queries;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Enums;
 using Ofichina.Contracts.Requests.PerfilUsuario;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.PerfilUsuario;
