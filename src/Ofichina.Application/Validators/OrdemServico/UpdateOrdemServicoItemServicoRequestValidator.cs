@@ -12,8 +12,5 @@ public sealed class UpdateOrdemServicoItemServicoRequestValidator : AbstractVali
     {
         RuleFor(x => x.ServicoId)
             .NotEmpty().WithMessage("O identificador do serviço é obrigatório.");
-
-        RuleFor(x => x.Quantidade)
-            .GreaterThan(0).WithMessage("A quantidade do serviço deve ser maior que zero.");
     }
 }

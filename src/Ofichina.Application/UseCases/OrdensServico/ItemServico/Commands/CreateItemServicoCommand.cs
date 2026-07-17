@@ -14,12 +14,7 @@ public sealed class CreateItemServicoCommand : ICommand<Result<Guid>>
     public Guid OrdemServicoId { get; init; }
 
     /// <summary>
-    /// Descrição do serviço.
+    /// Identificador do serviço cadastrado.
     /// </summary>
-    public string Descricao { get; init; } = string.Empty;
-
-    /// <summary>
-    /// Valor cobrado pelo serviço.
-    /// </summary>
-    public decimal Valor { get; init; }
+    public Guid ServicoId { get; init; }
 }
