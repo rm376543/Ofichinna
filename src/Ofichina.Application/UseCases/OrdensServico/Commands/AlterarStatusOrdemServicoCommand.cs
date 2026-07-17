@@ -1,6 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
-using Ofichina.Domain.Aggregates;
+using Ofichina.Contracts.Enums;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Commands;
 

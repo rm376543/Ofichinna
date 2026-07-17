@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Enums;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.Interfaces;
@@ -37,7 +38,7 @@ public sealed class AlterarStatusOrdemServicoCommandHandler : ICommandHandler<Al
             if (ordemServico is null || ordemServico.EstaExcluida())
                 return Result.Failure("Ordem de serviço não encontrada.");
 
-            AlterarStatus(ordemServico, command.StatusDestino);
+            AlterarStatus(ordemServico, MapearStatus(command.StatusDestino));
 
             await _ordemServicoRepository.UpdateAsync(ordemServico);
             await _unitOfWork.SaveChangesAsync();
@@ -82,5 +83,20 @@ public sealed class AlterarStatusOrdemServicoCommandHandler : ICommandHandler<Al
             default:
                 throw new DomainException("Status de destino inválido.");
         }
+    }
+
+    private static StatusOrdemServico MapearStatus(StatusOrdemServico statusDestino)
+    {
+        return statusDestino switch
+        {
+            StatusOrdemServico.Recebida => StatusOrdemServico.Recebida,
+            StatusOrdemServico.EmDiagnostico => StatusOrdemServico.EmDiagnostico,
+            StatusOrdemServico.AguardandoAprovacao => StatusOrdemServico.AguardandoAprovacao,
+            StatusOrdemServico.EmExecucao => StatusOrdemServico.EmExecucao,
+            StatusOrdemServico.Finalizada => StatusOrdemServico.Finalizada,
+            StatusOrdemServico.Entregue => StatusOrdemServico.Entregue,
+            StatusOrdemServico.Cancelada => StatusOrdemServico.Cancelada,
+            _ => throw new DomainException("Status de destino inválido.")
+        };
     }
 }

@@ -10,6 +10,11 @@ namespace Ofichina.Domain.Entities;
 public class ItemServico : Entity
 {
     /// <summary>
+    /// Identificador do serviço cadastrado vinculado ao item.
+    /// </summary>
+    public Guid ServicoId { get; private set; } = Guid.Empty;
+
+    /// <summary>
     /// Identificador da ordem de serviço à qual o serviço pertence.
     /// </summary>
     public Guid OrdemServicoId { get; private set; } = Guid.Empty;
@@ -57,10 +62,16 @@ public class ItemServico : Entity
     /// Valor cobrado pelo serviço.
     /// </param>
     internal ItemServico(
+        Guid servicoId,
         Guid ordemServicoId,
         string descricao,
         decimal valor)
     {
+        if (servicoId == Guid.Empty)
+            throw new DomainException(
+                "Serviço obrigatório.");
+
+
         if (ordemServicoId == Guid.Empty)
             throw new DomainException(
                 "Ordem de serviço obrigatória.");
@@ -76,6 +87,7 @@ public class ItemServico : Entity
                 "Valor inválido.");
 
 
+        ServicoId = servicoId;
         OrdemServicoId = ordemServicoId;
         Descricao = descricao.Trim();
         Valor = valor;

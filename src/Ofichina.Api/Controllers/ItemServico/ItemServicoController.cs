@@ -9,7 +9,7 @@ using Ofichina.Contracts.Requests.OrdemServico;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.OrdemServico;
 
-namespace Ofichina.Api.Controllers.OrdemServico;
+namespace Ofichina.Api.Controllers.ItemServico;
 
 /// <summary>
 /// Controller responsável pelo CRUD de itens de serviço vinculados à ordem de serviço.
@@ -122,11 +122,10 @@ public sealed class ItemServicoController : ControllerBase
     public async Task<ActionResult<ApiResponse<Guid>>> CriarItemServico(
         Guid ordemServicoId,
         [FromBody] CreateItemServicoRequest request,
-        [FromServices] IQueryHandler<GetItemServicosByOrdemServicoQuery, Result<IReadOnlyCollection<ItemServicoResponse>>> _,
         [FromServices] ICommandHandler<CreateItemServicoCommand, Result<Guid>> handler,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a criação de item de serviço. OrdemServicoId: {OrdemServicoId}.", ordemServicoId);
+        _logger.LogInformation("Iniciando a criação de item de serviço. OrdemServicoId: {OrdemServicoId}, ServicoId: {ServicoId}.", ordemServicoId, request.ServicoId);
 
         var validation = await _createValidator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
@@ -138,14 +137,13 @@ public sealed class ItemServicoController : ControllerBase
         var result = await handler.HandleAsync(new CreateItemServicoCommand
         {
             OrdemServicoId = ordemServicoId,
-            Descricao = request.Descricao,
-            Valor = request.Valor
+            ServicoId = request.ServicoId
         });
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Falha ao criar item de serviço. OrdemServicoId: {OrdemServicoId}. Erro: {Erro}", ordemServicoId, result.Error);
-            return result.Error == "Ordem de serviço não encontrada."
+            _logger.LogWarning("Falha ao criar item de serviço. OrdemServicoId: {OrdemServicoId}, ServicoId: {ServicoId}. Erro: {Erro}", ordemServicoId, request.ServicoId, result.Error);
+            return result.Error == "Ordem de serviço não encontrada." || result.Error == "Serviço não encontrado."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
                 : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o item de serviço."));
         }

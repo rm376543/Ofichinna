@@ -5,7 +5,6 @@ using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pessoas.Commands;
 using Ofichina.Application.UseCases.Pessoas.Queries;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Enums;
 using Ofichina.Contracts.Requests.Pessoa;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Pessoa;

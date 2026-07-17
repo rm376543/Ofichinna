@@ -10,7 +10,7 @@ public sealed class CreateOrdemServicoItemPecaRequest : CreateRequest
     /// <summary>
     /// Peça cadastrada.
     /// </summary>
-    public Guid OrdemServicoItemPecaId { get; init; }
+    public Guid PecaId { get; init; }
 
     /// <summary>
     /// Quantidade utilizada.

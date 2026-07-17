@@ -10,11 +10,7 @@ public sealed class CreateItemServicoRequestValidator : AbstractValidator<Create
 {
     public CreateItemServicoRequestValidator()
     {
-        RuleFor(x => x.Descricao)
-            .NotEmpty().WithMessage("A descrição do serviço é obrigatória.")
-            .MaximumLength(200).WithMessage("A descrição do serviço não pode exceder 200 caracteres.");
-
-        RuleFor(x => x.Valor)
-            .GreaterThan(0).WithMessage("O valor do serviço deve ser maior que zero.");
+        RuleFor(x => x.ServicoId)
+            .NotEmpty().WithMessage("O identificador do serviço é obrigatório.");
     }
 }

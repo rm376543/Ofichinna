@@ -1,21 +1,8 @@
 ﻿using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
+using Ofichina.Domain.Enums;
 
 namespace Ofichina.Domain.Aggregates;
-
-/// <summary>
-/// Define os possíveis estados de uma ordem de serviço.
-/// </summary>
-public enum StatusOrdemServico
-{
-    Recebida = 1,
-    EmDiagnostico = 2,
-    AguardandoAprovacao = 3,
-    EmExecucao = 4,
-    Finalizada = 5,
-    Entregue = 6,
-    Cancelada = 7
-}
 
 
 /// <summary>
@@ -198,12 +185,14 @@ public class OrdemServico : Entity
     /// Adiciona um serviço na ordem de serviço.
     /// </summary>
     public ItemServico AdicionarServico(
+        Guid servicoId,
         string descricao,
         decimal valor)
     {
         ValidarAlteracaoItens();
 
         var item = new ItemServico(
+            servicoId,
             Id,
             descricao,
             valor);

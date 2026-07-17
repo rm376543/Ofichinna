@@ -10,8 +10,8 @@ public sealed class CreateOrdemServicoItemPecaRequestValidator : AbstractValidat
 {
     public CreateOrdemServicoItemPecaRequestValidator()
     {
-        RuleFor(x => x.OrdemServicoItemPecaId)
-            .NotEmpty().WithMessage("O identificador do item de peça é obrigatório.");
+        RuleFor(x => x.PecaId)
+            .NotEmpty().WithMessage("O identificador da peça é obrigatório.");
 
         RuleFor(x => x.Quantidade)
             .GreaterThan(0).WithMessage("A quantidade da peça deve ser maior que zero.");

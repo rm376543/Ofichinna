@@ -10,10 +10,7 @@ public sealed class CreateOrdemServicoItemServicoRequestValidator : AbstractVali
 {
     public CreateOrdemServicoItemServicoRequestValidator()
     {
-        RuleFor(x => x.OrdemServicoItemId)
-            .NotEmpty().WithMessage("O identificador do item de serviço é obrigatório.");
-
-        RuleFor(x => x.Quantidade)
-            .GreaterThan(0).WithMessage("A quantidade do serviço deve ser maior que zero.");
+        RuleFor(x => x.ServicoId)
+            .NotEmpty().WithMessage("O identificador do serviço é obrigatório.");
     }
 }

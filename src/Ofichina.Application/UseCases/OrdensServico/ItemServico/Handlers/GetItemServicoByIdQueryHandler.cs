@@ -50,6 +50,7 @@ public sealed class GetItemServicoByIdQueryHandler : IQueryHandler<GetItemServic
         return new ItemServicoResponse
         {
             Id = item.Id,
+            ServicoId = item.ServicoId,
             OrdemServicoId = item.OrdemServicoId,
             Descricao = item.Descricao,
             Valor = item.Valor,
