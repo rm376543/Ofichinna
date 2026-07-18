@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Contracts.Common;
@@ -7,7 +7,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Veiculos.Handlers;
 
 /// <summary>
-/// Handler para remoção lógica de veículo.
+/// Handler para remoÃ§Ã£o lÃ³gica de veÃ­culo.
 /// </summary>
 public sealed class DeleteVeiculoCommandHandler : ICommandHandler<DeleteVeiculoCommand, Result>
 {
@@ -25,27 +25,26 @@ public sealed class DeleteVeiculoCommandHandler : ICommandHandler<DeleteVeiculoC
         _logger = logger;
     }
 
-    public async Task<Result> HandleAsync(DeleteVeiculoCommand command)
+    public async Task<Result> HandleAsync(DeleteVeiculoCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
-            var veiculo = await _veiculoRepository.GetByIdAsync(command.Id);
+            var veiculo = await _veiculoRepository.GetByIdAsync(command.Id, cancellationToken);
 
             if (veiculo is null || veiculo.EstaExcluida())
-                return Result.Failure("Veículo não encontrado.");
+                return Result.Failure("VeÃ­culo nÃ£o encontrado.");
 
             veiculo.Desativar();
-            veiculo.Excluir();
 
-            await _veiculoRepository.UpdateAsync(veiculo);
+            await _veiculoRepository.UpdateAsync(veiculo, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
             return Result.Success();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao remover veículo. VeiculoId: {VeiculoId}", command.Id);
-            return Result.Failure("Não foi possível remover o veículo.");
+            _logger.LogError(ex, "Erro ao remover veÃ­culo. VeiculoId: {VeiculoId}", command.Id);
+            return Result.Failure("NÃ£o foi possÃ­vel remover o veÃ­culo.");
         }
     }
 }

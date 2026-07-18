@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Contracts.Common;
@@ -9,7 +9,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 
 /// <summary>
-/// Handler para obter uma ordem de serviço por identificador.
+/// Handler para obter uma ordem de serviÃ§o por identificador.
 /// </summary>
 public sealed class GetOrdemServicoByIdQueryHandler : IQueryHandler<GetOrdemServicoByIdQuery, Result<OrdemServicoResponse>>
 {
@@ -24,21 +24,21 @@ public sealed class GetOrdemServicoByIdQueryHandler : IQueryHandler<GetOrdemServ
         _logger = logger;
     }
 
-    public async Task<Result<OrdemServicoResponse>> HandleAsync(GetOrdemServicoByIdQuery query)
+    public async Task<Result<OrdemServicoResponse>> HandleAsync(GetOrdemServicoByIdQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
-            var ordemServico = await _ordemServicoRepository.GetByIdAsync(query.Id);
+            var ordemServico = await _ordemServicoRepository.GetByIdAsync(query.Id, cancellationToken);
 
             if (ordemServico is null || ordemServico.EstaExcluida())
-                return Result.Failure<OrdemServicoResponse>("Ordem de serviço não encontrada.");
+                return Result.Failure<OrdemServicoResponse>("Ordem de serviÃ§o nÃ£o encontrada.");
 
             return Result.Success(Mapear(ordemServico));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao obter ordem de serviço por identificador. OrdemServicoId: {OrdemServicoId}", query.Id);
-            return Result.Failure<OrdemServicoResponse>("Não foi possível obter a ordem de serviço.");
+            _logger.LogError(ex, "Erro ao obter ordem de serviÃ§o por identificador. OrdemServicoId: {OrdemServicoId}", query.Id);
+            return Result.Failure<OrdemServicoResponse>("NÃ£o foi possÃ­vel obter a ordem de serviÃ§o.");
         }
     }
 
@@ -61,3 +61,4 @@ public sealed class GetOrdemServicoByIdQueryHandler : IQueryHandler<GetOrdemServ
         };
     }
 }
+

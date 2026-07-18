@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Servicos.Queries;
 using Ofichina.Contracts.Common;
@@ -9,7 +9,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Servicos.Handlers;
 
 /// <summary>
-/// Handler para listar serviços.
+/// Handler para listar serviÃ§os.
 /// </summary>
 public sealed class GetServicosQueryHandler : IQueryHandler<GetServicosQuery, Result<IReadOnlyCollection<ServicoResponse>>>
 {
@@ -24,14 +24,13 @@ public sealed class GetServicosQueryHandler : IQueryHandler<GetServicosQuery, Re
         _logger = logger;
     }
 
-    public async Task<Result<IReadOnlyCollection<ServicoResponse>>> HandleAsync(GetServicosQuery query)
+    public async Task<Result<IReadOnlyCollection<ServicoResponse>>> HandleAsync(GetServicosQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
-            var servicos = await _servicoRepository.GetAllAsync();
+            var servicos = await _servicoRepository.GetPagedAsync(query.Pagination, cancellationToken);
 
-            var resultado = servicos
-                .Where(servico => !servico.EstaExcluida())
+            var resultado = servicos.Items
                 .Select(Mapear)
                 .ToList();
 
@@ -39,8 +38,8 @@ public sealed class GetServicosQueryHandler : IQueryHandler<GetServicosQuery, Re
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao listar serviços.");
-            return Result.Failure<IReadOnlyCollection<ServicoResponse>>("Não foi possível obter os serviços.");
+            _logger.LogError(ex, "Erro ao listar serviÃ§os.");
+            return Result.Failure<IReadOnlyCollection<ServicoResponse>>("NÃ£o foi possÃ­vel obter os serviÃ§os.");
         }
     }
 
@@ -52,7 +51,7 @@ public sealed class GetServicosQueryHandler : IQueryHandler<GetServicosQuery, Re
             Nome = servico.Nome,
             Descricao = servico.Descricao,
             Valor = servico.Valor,
-            Ativo = servico.Ativo,
+            Ativo = !servico.EstaExcluida(),
             CreatedAt = servico.CreatedAt,
             UpdatedAt = servico.UpdatedAt,
             DeletedAt = servico.DeletedAt

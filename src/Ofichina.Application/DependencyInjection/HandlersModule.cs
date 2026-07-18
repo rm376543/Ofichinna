@@ -4,6 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Autenticacao.Commands;
 using Ofichina.Application.UseCases.Autenticacao.Handlers;
+using Ofichina.Application.UseCases.Agendamentos.Commands;
+using Ofichina.Application.UseCases.Agendamentos.Handlers;
+using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Application.UseCases.PerfilUsuario.Commands;
 using Ofichina.Application.UseCases.PerfilUsuario.Handlers;
 using Ofichina.Application.UseCases.PerfilUsuario.Queries;
@@ -16,6 +19,8 @@ using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Handlers;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Queries;
+using Ofichina.Application.UseCases.OrdensServico.ItemPeca.Commands;
+using Ofichina.Application.UseCases.OrdensServico.ItemPeca.Handlers;
 using Ofichina.Application.UseCases.Pessoas.Commands;
 using Ofichina.Application.UseCases.Pessoas.Handlers;
 using Ofichina.Application.UseCases.Pessoas.Queries;
@@ -30,6 +35,7 @@ using Ofichina.Application.UseCases.Veiculos.Handlers;
 using Ofichina.Application.UseCases.Veiculos.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses;
+using Ofichina.Contracts.Responses.Agendamento;
 using Ofichina.Contracts.Responses.Perfil;
 using Ofichina.Contracts.Responses.PerfilUsuario;
 using Ofichina.Contracts.Responses.OrdemServico;
@@ -52,6 +58,11 @@ public static class HandlersModule
         services.AddScoped<ICommandHandler<AutenticarCommand, Result<AutenticacaoResponse>>, AutenticarCommandHandler>();
         services.AddScoped<ICommandHandler<CadastrarUsuarioCommand, Result<AutenticacaoResponse>>, CadastrarUsuarioCommandHandler>();
 
+        // Agendamentos
+        services.AddScoped<ICommandHandler<CreateAgendamentoCommand, Result<AgendamentoResponse>>, CreateAgendamentoCommandHandler>();
+        services.AddScoped<IQueryHandler<GetAgendamentosQuery, Result<IReadOnlyCollection<AgendamentoResponse>>>, GetAgendamentosQueryHandler>();
+        services.AddScoped<IQueryHandler<GetAgendamentoByIdQuery, Result<AgendamentoResponse>>, GetAgendamentoByIdQueryHandler>();
+
         // Ordens de Serviço
         services.AddScoped<ICommandHandler<CreateOrdemServicoCommand, Result<Guid>>, CreateOrdemServicoCommandHandler>();
         services.AddScoped<ICommandHandler<UpdateOrdemServicoCommand, Result>, UpdateOrdemServicoCommandHandler>();
@@ -65,6 +76,7 @@ public static class HandlersModule
         services.AddScoped<ICommandHandler<DeleteItemServicoCommand, Result>, DeleteItemServicoCommandHandler>();
         services.AddScoped<IQueryHandler<GetItemServicosByOrdemServicoQuery, Result<IReadOnlyCollection<ItemServicoResponse>>>, GetItemServicosByOrdemServicoQueryHandler>();
         services.AddScoped<IQueryHandler<GetItemServicoByIdQuery, Result<ItemServicoResponse>>, GetItemServicoByIdQueryHandler>();
+        services.AddScoped<ICommandHandler<UtilizarItemPecaCommand, Result>, UtilizarItemPecaCommandHandler>();
 
         // Perfis
         services.AddScoped<ICommandHandler<CreatePerfilCommand, Result>, CreatePerfilCommandHandler>();

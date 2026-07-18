@@ -1,4 +1,5 @@
 using Ofichina.Domain.Entities;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Domain.Interfaces;
 
@@ -10,10 +11,15 @@ public interface IVeiculoRepository : IRepository<Veiculo>
     /// <summary>
     /// Obtém um veículo pelo identificador, incluindo a pessoa vinculada.
     /// </summary>
-    Task<Veiculo?> GetByIdWithPessoaAsync(Guid id);
+    Task<Veiculo?> GetByIdWithPessoaAsync(Guid id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Lista todos os veículos, incluindo a pessoa vinculada.
     /// </summary>
-    Task<IEnumerable<Veiculo>> GetAllWithPessoaAsync();
+    Task<IEnumerable<Veiculo>> GetAllWithPessoaAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Lista veículos paginados, incluindo a pessoa vinculada.
+    /// </summary>
+    Task<PagedResult<Veiculo>> GetPagedWithPessoaAsync(Pagination pagination, CancellationToken cancellationToken = default);
 }

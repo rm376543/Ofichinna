@@ -26,13 +26,13 @@ public class UpdatePerfilCommandHandler : ICommandHandler<UpdatePerfilCommand, R
         _logger = logger;
     }
 
-    public async Task<Result> HandleAsync(UpdatePerfilCommand command)
+    public async Task<Result> HandleAsync(UpdatePerfilCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Iniciando atualização do perfil com Id: {PerfilId}", command.Id);
 
-            var perfil = await _repository.GetByIdAsync(command.Id);
+            var perfil = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (perfil is null)
             {
@@ -40,7 +40,7 @@ public class UpdatePerfilCommandHandler : ICommandHandler<UpdatePerfilCommand, R
                 return Result.Failure("Perfil não encontrado.");
             }
 
-            var nomeExistente = await _repository.GetByNomeAsync(command.NomePerfil);
+            var nomeExistente = await _repository.GetByNomeAsync(command.NomePerfil, cancellationToken);
 
             if (nomeExistente is not null && nomeExistente.Id != command.Id)
             {
@@ -51,7 +51,7 @@ public class UpdatePerfilCommandHandler : ICommandHandler<UpdatePerfilCommand, R
             perfil.AlterarNome(command.NomePerfil);
             perfil.AlterarDescricao(command.Descricao);
 
-            await _repository.UpdateAsync(perfil);
+            await _repository.UpdateAsync(perfil, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Perfil com Id: {PerfilId} atualizado com sucesso.", command.Id);

@@ -1,163 +1,223 @@
 ﻿using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.ValueObjects;
 
-namespace Ofichina.Domain.Entities
+namespace Ofichina.Domain.Entities;
+
+/// <summary>
+/// Representa um veículo associado a uma pessoa no domínio da oficina.
+/// </summary>
+public class Veiculo : Entity
 {
-    public class Veiculo : Entity
+    /// <summary>
+    /// Identificador da pessoa proprietária do veículo.
+    /// </summary>
+    public Guid PessoaId { get; private set; } = Guid.Empty;
+
+    /// <summary>
+    /// Placa do veículo.
+    /// </summary>
+    public Placa Placa { get; private set; } = null!;
+
+    /// <summary>
+    /// Marca do veículo.
+    /// </summary>
+    public string Marca { get; private set; } = null!;
+
+    /// <summary>
+    /// Modelo do veículo.
+    /// </summary>
+    public string Modelo { get; private set; } = null!;
+
+    /// <summary>
+    /// Ano de fabricação do veículo.
+    /// </summary>
+    public int AnoFabricacao { get; private set; } = 0;
+
+    /// <summary>
+    /// Cor do veículo.
+    /// </summary>
+    public string Cor { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// Observações adicionais sobre o veículo.
+    /// </summary>
+    public string? Observacoes { get; private set; }
+
+    /// <summary>
+    /// Hodômetro atual do veículo.
+    /// </summary>
+    public Hodometro Hodometro { get; private set; } = null!;
+
+    /// <summary>
+    /// Navegação para a pessoa proprietária.
+    /// </summary>
+    public Pessoa Pessoa { get; private set; } = null!;
+
+    private Veiculo()
     {
-        public Guid PessoaId { get; private set; } = Guid.Empty;
-
-        public Placa Placa { get; private set; } = null!;
-
-        public string Marca { get; private set; } = null!;
-
-        public string Modelo { get; private set; } = null!;
-
-        public int AnoFabricacao { get; private set; } = 0;
-
-        public string Cor { get; private set; } = string.Empty;
-
-        public string? Observacoes { get; private set; }
-
-        public Hodometro Hodometro { get; private set; } = null!;
-
-        public bool Ativo { get; private set; } = true;
-
-        public Pessoa Pessoa { get; private set; } = null!;
-
-        private Veiculo()
-        {
-            // Necessário para o Entity Framework
-        }
+    }
 
 #pragma warning disable S107
-        public Veiculo(
-            Guid pessoaId,
-            Placa placa,
-            string marca,
-            string modelo,
-            int anoFabricacao,
-            string cor,
-            string? observacoes,
-            Hodometro quilometragem,
-            bool ativo)
+    /// <summary>
+    /// Cria um novo veículo para uma pessoa.
+    /// </summary>
+    /// <param name="pessoaId">Identificador da pessoa proprietária.</param>
+    /// <param name="placa">Placa do veículo.</param>
+    /// <param name="marca">Marca do veículo.</param>
+    /// <param name="modelo">Modelo do veículo.</param>
+    /// <param name="anoFabricacao">Ano de fabricação.</param>
+    /// <param name="cor">Cor do veículo.</param>
+    /// <param name="observacoes">Observações adicionais.</param>
+    /// <param name="quilometragem">Hodômetro do veículo.</param>
 #pragma warning restore S107
-        {
-            if (pessoaId == Guid.Empty)
-                throw new DomainException("A pessoa deve ser informada.");
+    public Veiculo(
+        Guid pessoaId,
+        Placa placa,
+        string marca,
+        string modelo,
+        int anoFabricacao,
+        string cor,
+        string? observacoes,
+        Hodometro quilometragem)
+    {
+        if (pessoaId == Guid.Empty)
+            throw new DomainException("A pessoa deve ser informada.");
 
-            if (placa is null)
-                throw new DomainException("A placa deve ser informada.");
+        if (placa is null)
+            throw new DomainException("A placa deve ser informada.");
 
-            if (string.IsNullOrWhiteSpace(marca))
-                throw new DomainException("A marca deve ser informada.");
+        if (string.IsNullOrWhiteSpace(marca))
+            throw new DomainException("A marca deve ser informada.");
 
-            if (string.IsNullOrWhiteSpace(modelo))
-                throw new DomainException("O modelo deve ser informado.");
+        if (string.IsNullOrWhiteSpace(modelo))
+            throw new DomainException("O modelo deve ser informado.");
 
-            var anoAtual = DateTime.Now.Year + 1;
+        var anoAtual = DateTime.Now.Year + 1;
 
-            if (anoFabricacao < 1900 || anoFabricacao > anoAtual)
-                throw new DomainException("Ano do veículo inválido.");
+        if (anoFabricacao < 1900 || anoFabricacao > anoAtual)
+            throw new DomainException("Ano do veículo inválido.");
 
-            if (quilometragem is null)
-                throw new DomainException("A quilometragem deve ser informada.");
+        if (quilometragem is null)
+            throw new DomainException("A quilometragem deve ser informada.");
 
-            PessoaId = pessoaId;
-            Placa = placa;
-            Marca = marca.Trim();
-            Modelo = modelo.Trim();
-            AnoFabricacao = anoFabricacao;
-            Cor = string.IsNullOrWhiteSpace(cor) ? string.Empty : cor.Trim();
-            Observacoes = string.IsNullOrWhiteSpace(observacoes) ? null : observacoes.Trim();
-            Hodometro = quilometragem;
-            Ativo = ativo;
-        }
+        PessoaId = pessoaId;
+        Placa = placa;
+        Marca = marca.Trim();
+        Modelo = modelo.Trim();
+        AnoFabricacao = anoFabricacao;
+        Cor = string.IsNullOrWhiteSpace(cor) ? string.Empty : cor.Trim();
+        Observacoes = string.IsNullOrWhiteSpace(observacoes) ? null : observacoes.Trim();
+        Hodometro = quilometragem;
+    }
 
-        public void AlterarPessoa(Guid novaPessoaId)
-        {
-            if (novaPessoaId == Guid.Empty)
-                throw new DomainException("A pessoa deve ser informada.");
+    /// <summary>
+    /// Altera a pessoa proprietária do veículo.
+    /// </summary>
+    public void AlterarPessoa(Guid novaPessoaId)
+    {
+        if (novaPessoaId == Guid.Empty)
+            throw new DomainException("A pessoa deve ser informada.");
 
-            PessoaId = novaPessoaId;
-            AtualizarDataModificacao();
-        }
+        PessoaId = novaPessoaId;
+        AtualizarDataModificacao();
+    }
 
-        public void AlterarPlaca(Placa novaPlaca)
-        {
-            if (novaPlaca is null)
-                throw new DomainException("A placa deve ser informada.");
+    /// <summary>
+    /// Altera a placa do veículo.
+    /// </summary>
+    public void AlterarPlaca(Placa novaPlaca)
+    {
+        if (novaPlaca is null)
+            throw new DomainException("A placa deve ser informada.");
 
-            Placa = novaPlaca;
-            AtualizarDataModificacao();
-        }
+        Placa = novaPlaca;
+        AtualizarDataModificacao();
+    }
 
-        public void AlterarModelo(string modelo)
-        {
-            if (string.IsNullOrWhiteSpace(modelo))
-                throw new DomainException("O modelo deve ser informado.");
+    /// <summary>
+    /// Altera o modelo do veículo.
+    /// </summary>
+    public void AlterarModelo(string modelo)
+    {
+        if (string.IsNullOrWhiteSpace(modelo))
+            throw new DomainException("O modelo deve ser informado.");
 
-            Modelo = modelo.Trim();
-            AtualizarDataModificacao();
-        }
+        Modelo = modelo.Trim();
+        AtualizarDataModificacao();
+    }
 
-        public void AlterarMarca(string marca)
-        {
-            if (string.IsNullOrWhiteSpace(marca))
-                throw new DomainException("A marca deve ser informada.");
+    /// <summary>
+    /// Altera a marca do veículo.
+    /// </summary>
+    public void AlterarMarca(string marca)
+    {
+        if (string.IsNullOrWhiteSpace(marca))
+            throw new DomainException("A marca deve ser informada.");
 
-            Marca = marca.Trim();
-            AtualizarDataModificacao();
-        }
+        Marca = marca.Trim();
+        AtualizarDataModificacao();
+    }
 
-        public void AlterarAnoFabricacao(int anoFabricacao)
-        {
-            var anoAtual = DateTime.Now.Year + 1;
+    /// <summary>
+    /// Altera o ano de fabricação do veículo.
+    /// </summary>
+    public void AlterarAnoFabricacao(int anoFabricacao)
+    {
+        var anoAtual = DateTime.Now.Year + 1;
 
-            if (anoFabricacao < 1900 || anoFabricacao > anoAtual)
-                throw new DomainException("Ano do veículo inválido.");
+        if (anoFabricacao < 1900 || anoFabricacao > anoAtual)
+            throw new DomainException("Ano do veículo inválido.");
 
-            AnoFabricacao = anoFabricacao;
-            AtualizarDataModificacao();
-        }
+        AnoFabricacao = anoFabricacao;
+        AtualizarDataModificacao();
+    }
 
-        public void AlterarCor(string? cor)
-        {
-            Cor = string.IsNullOrWhiteSpace(cor) ? string.Empty : cor.Trim();
-            AtualizarDataModificacao();
-        }
+    /// <summary>
+    /// Altera a cor do veículo.
+    /// </summary>
+    public void AlterarCor(string? cor)
+    {
+        Cor = string.IsNullOrWhiteSpace(cor) ? string.Empty : cor.Trim();
+        AtualizarDataModificacao();
+    }
 
-        public void AlterarObservacoes(string? observacoes)
-        {
-            Observacoes = string.IsNullOrWhiteSpace(observacoes) ? null : observacoes.Trim();
-            AtualizarDataModificacao();
-        }
+    /// <summary>
+    /// Altera as observações do veículo.
+    /// </summary>
+    public void AlterarObservacoes(string? observacoes)
+    {
+        Observacoes = string.IsNullOrWhiteSpace(observacoes) ? null : observacoes.Trim();
+        AtualizarDataModificacao();
+    }
 
-        public void AlterarHodometro(Hodometro quilometragem)
-        {
-            if (quilometragem is null)
-                throw new DomainException("A quilometragem deve ser informada.");
+    /// <summary>
+    /// Altera o hodômetro do veículo.
+    /// </summary>
+    public void AlterarHodometro(Hodometro quilometragem)
+    {
+        if (quilometragem is null)
+            throw new DomainException("A quilometragem deve ser informada.");
 
-            Hodometro = quilometragem;
-            AtualizarDataModificacao();
-        }
+        Hodometro = quilometragem;
+        AtualizarDataModificacao();
+    }
 
-        public void Ativar()
-        {
-            if (Ativo)
-                return;
+    /// <summary>
+    /// Reativa o veículo caso ele tenha sido desativado logicamente.
+    /// </summary>
+    public void Ativar()
+    {
+        Reativar();
+    }
 
-            Ativo = true;
-            AtualizarDataModificacao();
-        }
+    /// <summary>
+    /// Desativa logicamente o veículo.
+    /// </summary>
+    public void Desativar()
+    {
+        if (EstaExcluida())
+            return;
 
-        public void Desativar()
-        {
-            if (!Ativo)
-                return;
-
-            Ativo = false;
-            AtualizarDataModificacao();
-        }
+        Excluir();
     }
 }

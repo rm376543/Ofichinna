@@ -7,7 +7,7 @@ namespace Ofichina.Application.Abstractions;
 /// </summary>
 public interface IQueryHandler<in TQuery, TResponse> where TQuery : IQuery<TResponse>
 {
-    Task<TResponse> HandleAsync(TQuery query);
+    Task<TResponse> HandleAsync(TQuery query, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -15,7 +15,7 @@ public interface IQueryHandler<in TQuery, TResponse> where TQuery : IQuery<TResp
 /// </summary>
 public interface ICommandHandler<in TCommand, TResponse> where TCommand : ICommand<TResponse>
 {
-    Task<TResponse> HandleAsync(TCommand command);
+    Task<TResponse> HandleAsync(TCommand command, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -23,5 +23,5 @@ public interface ICommandHandler<in TCommand, TResponse> where TCommand : IComma
 /// </summary>
 public interface ICommandHandler<in TCommand> where TCommand : ICommand<Result>
 {
-    Task<Result> HandleAsync(TCommand command);
+    Task<Result> HandleAsync(TCommand command, CancellationToken cancellationToken = default);
 }

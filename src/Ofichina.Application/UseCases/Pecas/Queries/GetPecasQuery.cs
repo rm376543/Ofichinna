@@ -9,4 +9,5 @@ namespace Ofichina.Application.UseCases.Pecas.Queries;
 /// </summary>
 public sealed class GetPecasQuery : IQuery<Result<IReadOnlyCollection<PecaResponse>>>
 {
+    public Pagination Pagination { get; init; } = new();
 }

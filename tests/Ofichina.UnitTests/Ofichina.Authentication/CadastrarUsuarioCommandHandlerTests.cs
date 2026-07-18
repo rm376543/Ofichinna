@@ -1,5 +1,6 @@
 using Ofichina.Authentication.Abstractions;
 using Ofichina.Authentication.Services;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Usuario;
 using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Entities;
@@ -69,19 +70,26 @@ public sealed class CadastrarUsuarioCommandHandlerTests
             _usuarios = usuarios;
         }
 
-        public Task AddAsync(Usuario entity)
+        public Task AddAsync(Usuario entity, CancellationToken cancellationToken = default)
         {
             _usuarios.Add(entity);
             return Task.CompletedTask;
         }
 
-        public Task DeleteAsync(Usuario entity) => Task.CompletedTask;
+        public Task DeleteAsync(Usuario entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-        public Task<IEnumerable<Usuario>> GetAllAsync() => Task.FromResult<IEnumerable<Usuario>>(_usuarios);
+        public Task<IEnumerable<Usuario>> GetAllAsync(CancellationToken cancellationToken = default) => Task.FromResult<IEnumerable<Usuario>>(_usuarios);
 
-        public Task<Usuario?> GetByIdAsync(Guid id) => Task.FromResult(_usuarios.FirstOrDefault(x => x.Id == id));
+        public Task<Usuario?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) => Task.FromResult(_usuarios.FirstOrDefault(x => x.Id == id));
 
-        public Task UpdateAsync(Usuario entity) => Task.CompletedTask;
+        public Task<PagedResult<Usuario>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(new PagedResult<Usuario>(_usuarios, _usuarios.Count, 1, Math.Max(_usuarios.Count, 1)));
+        }
+
+        public Task UpdateAsync(Usuario entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+        public Task HardDeleteAsync(Usuario entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 
     private sealed class FakeUsuarioAutenticacaoRepository : IUsuarioAutenticacaoRepository

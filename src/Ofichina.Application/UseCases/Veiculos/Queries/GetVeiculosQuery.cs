@@ -9,4 +9,5 @@ namespace Ofichina.Application.UseCases.Veiculos.Queries;
 /// </summary>
 public sealed class GetVeiculosQuery : IQuery<Result<IReadOnlyCollection<VeiculoResponse>>>
 {
+    public Pagination Pagination { get; init; } = new();
 }

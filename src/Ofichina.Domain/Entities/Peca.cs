@@ -34,11 +34,6 @@ public class Peca : Entity
     public int QuantidadeEstoque { get; private set; }
 
     /// <summary>
-    /// Indica se a peça está ativa para uso no catálogo.
-    /// </summary>
-    public bool Ativo { get; private set; } = true;
-
-    /// <summary>
     /// Construtor utilizado pelo Entity Framework Core.
     /// </summary>
     private Peca()
@@ -53,14 +48,12 @@ public class Peca : Entity
     /// <param name="codigo">Código interno da peça.</param>
     /// <param name="valor">Valor unitário da peça.</param>
     /// <param name="quantidadeEstoque">Quantidade inicial em estoque.</param>
-    /// <param name="ativo">Indica se a peça inicia ativa.</param>
     public Peca(
         string nome,
         string? descricao,
         string codigo,
         decimal valor,
-        int quantidadeEstoque,
-        bool ativo)
+        int quantidadeEstoque)
     {
         ValidarDados(nome, codigo, valor, quantidadeEstoque);
 
@@ -69,7 +62,6 @@ public class Peca : Entity
         Codigo = codigo.Trim();
         Valor = valor;
         QuantidadeEstoque = quantidadeEstoque;
-        Ativo = ativo;
     }
 
     /// <summary>
@@ -141,27 +133,22 @@ public class Peca : Entity
     }
 
     /// <summary>
-    /// Ativa a peça no catálogo.
+    /// Ativa a peça no catálogo por meio da reativação lógica.
     /// </summary>
     public void Ativar()
     {
-        if (Ativo)
-            return;
-
-        Ativo = true;
-        AtualizarDataModificacao();
+        Reativar();
     }
 
     /// <summary>
-    /// Desativa a peça no catálogo.
+    /// Desativa a peça no catálogo por meio de exclusão lógica.
     /// </summary>
     public void Desativar()
     {
-        if (!Ativo)
+        if (EstaExcluida())
             return;
 
-        Ativo = false;
-        AtualizarDataModificacao();
+        Excluir();
     }
 
     /// <summary>

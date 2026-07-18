@@ -25,12 +25,12 @@ public class DeletePerfilCommandHandler : ICommandHandler<DeletePerfilCommand, R
         _logger = logger;
     }
 
-    public async Task<Result> HandleAsync(DeletePerfilCommand command)
+    public async Task<Result> HandleAsync(DeletePerfilCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Iniciando desativação do perfil com Id {PerfilId}.", command.Id);
-            var perfil = await _repository.GetByIdAsync(command.Id);
+            var perfil = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (perfil is null)
             {
@@ -40,7 +40,7 @@ public class DeletePerfilCommandHandler : ICommandHandler<DeletePerfilCommand, R
 
             perfil.Excluir();
 
-            await _repository.UpdateAsync(perfil);
+            await _repository.UpdateAsync(perfil, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Perfil com Id {PerfilId} desativado com sucesso.", command.Id);

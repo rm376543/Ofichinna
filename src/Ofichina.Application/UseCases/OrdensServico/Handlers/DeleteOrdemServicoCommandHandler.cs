@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Contracts.Common;
@@ -8,7 +8,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 
 /// <summary>
-/// Handler para remoção lógica de ordem de serviço.
+/// Handler para remoÃ§Ã£o lÃ³gica de ordem de serviÃ§o.
 /// </summary>
 public sealed class DeleteOrdemServicoCommandHandler : ICommandHandler<DeleteOrdemServicoCommand, Result>
 {
@@ -26,28 +26,29 @@ public sealed class DeleteOrdemServicoCommandHandler : ICommandHandler<DeleteOrd
         _logger = logger;
     }
 
-    public async Task<Result> HandleAsync(DeleteOrdemServicoCommand command)
+    public async Task<Result> HandleAsync(DeleteOrdemServicoCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
-            _logger.LogInformation("Iniciando remoção da ordem de serviço. OrdemServicoId: {OrdemServicoId}.", command.Id);
+            _logger.LogInformation("Iniciando remoÃ§Ã£o da ordem de serviÃ§o. OrdemServicoId: {OrdemServicoId}.", command.Id);
 
-            var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.Id);
+            var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.Id, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
-                return Result.Failure("Ordem de serviço não encontrada.");
+                return Result.Failure("Ordem de serviÃ§o nÃ£o encontrada.");
 
             ordemServico.Excluir();
 
-            await _ordemServicoRepository.UpdateAsync(ordemServico);
+            await _ordemServicoRepository.UpdateAsync(ordemServico, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation("Ordem de serviço removida com sucesso. OrdemServicoId: {OrdemServicoId}", command.Id);
+            _logger.LogInformation("Ordem de serviÃ§o removida com sucesso. OrdemServicoId: {OrdemServicoId}", command.Id);
             return Result.Success();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao remover ordem de serviço. OrdemServicoId: {OrdemServicoId}", command.Id);
-            return Result.Failure("Não foi possível remover a ordem de serviço.");
+            _logger.LogError(ex, "Erro inesperado ao remover ordem de serviÃ§o. OrdemServicoId: {OrdemServicoId}", command.Id);
+            return Result.Failure("NÃ£o foi possÃ­vel remover a ordem de serviÃ§o.");
         }
     }
 }
+

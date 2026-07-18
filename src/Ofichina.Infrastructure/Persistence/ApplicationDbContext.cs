@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 
@@ -47,6 +48,11 @@ public class ApplicationDbContext : DbContext
     public DbSet<OrdemServico> OrdensServico { get; set; } = null!;
 
     /// <summary>
+    /// DbSet para agendamentos.
+    /// </summary>
+    public DbSet<Agendamento> Agendamentos { get; set; } = null!;
+
+    /// <summary>
     /// DbSet para itens de serviço da ordem.
     /// </summary>
     public DbSet<ItemServico> ItensServico { get; set; } = null!;
@@ -76,5 +82,29 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        ApplySoftDeleteQueryFilters(modelBuilder);
+    }
+
+    private static void ApplySoftDeleteQueryFilters(ModelBuilder modelBuilder)
+    {
+        var method = typeof(ApplicationDbContext)
+            .GetMethod(nameof(ApplySoftDeleteQueryFilter), BindingFlags.NonPublic | BindingFlags.Static);
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            if (entityType.ClrType is null || !typeof(Entity).IsAssignableFrom(entityType.ClrType) || entityType.ClrType == typeof(Entity))
+            {
+                continue;
+            }
+
+            method?.MakeGenericMethod(entityType.ClrType)
+                .Invoke(null, [modelBuilder]);
+        }
+    }
+
+    private static void ApplySoftDeleteQueryFilter<TEntity>(ModelBuilder modelBuilder) where TEntity : Entity
+    {
+        modelBuilder.Entity<TEntity>()
+            .HasQueryFilter(entity => entity.DeletedAt == null);
     }
 }

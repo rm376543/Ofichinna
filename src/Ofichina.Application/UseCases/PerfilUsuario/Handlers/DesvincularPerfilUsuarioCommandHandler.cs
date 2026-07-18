@@ -23,14 +23,13 @@ public sealed class DesvincularPerfilUsuarioCommandHandler : ICommandHandler<Des
         _logger = logger;
     }
 
-    public async Task<Result<DesvincularPerfilUsuarioResponse>> HandleAsync(DesvincularPerfilUsuarioCommand command)
+    public async Task<Result<DesvincularPerfilUsuarioResponse>> HandleAsync(DesvincularPerfilUsuarioCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Iniciando desvinculação de perfil do usuário: [UsuarioId] {UsuarioId}, [PerfilId] {PerfilId}", command.UsuarioId, command.PerfilId);
             var vinculo = await _clientePerfilRepository.GetByUsuarioIdPerfilIdAsync(
-                command.UsuarioId,
-                command.PerfilId);
+                command.UsuarioId, command.PerfilId, cancellationToken);
 
             if (vinculo is null)
             {
@@ -38,7 +37,7 @@ public sealed class DesvincularPerfilUsuarioCommandHandler : ICommandHandler<Des
                 return Result.Failure<DesvincularPerfilUsuarioResponse>("Vínculo entre usuário e perfil não encontrado.");
             }
 
-            await _clientePerfilRepository.DeleteAsync(vinculo);
+            await _clientePerfilRepository.DeleteAsync(vinculo, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Perfil desvinculado com sucesso do usuário: [UsuarioId] {UsuarioId}, [PerfilId] {PerfilId}", command.UsuarioId, command.PerfilId);

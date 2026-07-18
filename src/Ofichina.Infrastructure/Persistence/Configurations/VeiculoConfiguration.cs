@@ -47,9 +47,6 @@ public class VeiculoConfiguration : IEntityTypeConfiguration<Veiculo>
                 valor => new Hodometro(valor))
             .IsRequired();
 
-        builder.Property(v => v.Ativo)
-            .IsRequired();
-
         builder.HasOne(v => v.Pessoa)
             .WithMany(p => p.Veiculos)
             .HasForeignKey(v => v.PessoaId)

@@ -37,6 +37,8 @@ public static class RepositoryModule
 
         services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
 
+        services.AddScoped<IAgendamentoRepository, AgendamentoRepository>();
+
         return services;
     }
 }

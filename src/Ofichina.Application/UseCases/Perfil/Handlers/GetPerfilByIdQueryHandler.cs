@@ -21,12 +21,12 @@ public class GetPerfilByIdQueryHandler : IQueryHandler<GetPerfilByIdQuery, Resul
         _logger = logger;
     }
 
-    public async Task<Result<PerfilResponse>> HandleAsync(GetPerfilByIdQuery query)
+    public async Task<Result<PerfilResponse>> HandleAsync(GetPerfilByIdQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Iniciando a obtenção do perfil por ID: {Id}", query.Id);
-            var perfil = await _repository.GetByIdAsync(query.Id);
+            var perfil = await _repository.GetByIdAsync(query.Id, cancellationToken);
 
             if (perfil is null)
             {

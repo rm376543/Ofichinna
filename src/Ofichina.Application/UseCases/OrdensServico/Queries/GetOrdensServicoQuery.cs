@@ -9,4 +9,5 @@ namespace Ofichina.Application.UseCases.OrdensServico.Queries;
 /// </summary>
 public sealed class GetOrdensServicoQuery : IQuery<Result<IReadOnlyCollection<OrdemServicoResponse>>>
 {
+    public Pagination Pagination { get; init; } = new();
 }

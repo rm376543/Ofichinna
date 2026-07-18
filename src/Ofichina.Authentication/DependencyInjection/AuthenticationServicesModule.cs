@@ -13,7 +13,9 @@ public static class AuthenticationServicesModule
     public static IServiceCollection AddAuthenticationServices(this IServiceCollection services)
     {
         services.AddValidatorsFromAssembly(typeof(AuthenticationServicesModule).Assembly, includeInternalTypes: true);
+        services.AddHttpContextAccessor();
         services.AddScoped<IAutenticacaoService, AutenticacaoService>();
+        services.AddScoped<IUsuarioAtualService, UsuarioAtualService>();
         services.AddSingleton<IJwtTokenService, JwtTokenService>();
         services.AddSingleton<ISenhaHasher, SenhaHasherService>();
 

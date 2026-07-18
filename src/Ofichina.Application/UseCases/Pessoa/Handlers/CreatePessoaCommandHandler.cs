@@ -31,13 +31,13 @@ public sealed class CreatePessoaCommandHandler : ICommandHandler<CreatePessoaCom
         _logger = logger;
     }
 
-    public async Task<Result<Guid>> HandleAsync(CreatePessoaCommand command)
+    public async Task<Result<Guid>> HandleAsync(CreatePessoaCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Iniciando a criação da pessoa com documento {Documento}.", command.Documento);
 
-            var usuario = await _usuarioRepository.GetByIdAsync(command.UsuarioId);
+            var usuario = await _usuarioRepository.GetByIdAsync(command.UsuarioId, cancellationToken);
 
             if (usuario is null)
             {
@@ -62,7 +62,7 @@ public sealed class CreatePessoaCommandHandler : ICommandHandler<CreatePessoaCom
                                     endereco,
                                     command.UsuarioId);
 
-            await _repository.AddAsync(pessoa);
+            await _repository.AddAsync(pessoa, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Pessoa criada com sucesso. PessoaId: {PessoaId}", pessoa.Id);

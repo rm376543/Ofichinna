@@ -27,13 +27,13 @@ public sealed class UpdatePessoaCommandHandler : ICommandHandler<UpdatePessoaCom
         _logger = logger;
     }
 
-    public async Task<Result> HandleAsync(UpdatePessoaCommand command)
+    public async Task<Result> HandleAsync(UpdatePessoaCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Iniciando atualização da pessoa com Id: {PessoaId}.", command.Id);
 
-            var pessoa = await _repository.GetByIdAsync(command.Id);
+            var pessoa = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (pessoa is null || pessoa.EstaExcluida())
             {
@@ -52,7 +52,7 @@ public sealed class UpdatePessoaCommandHandler : ICommandHandler<UpdatePessoaCom
                 command.Estado,
                 new Cep(command.Cep)));
 
-            await _repository.UpdateAsync(pessoa);
+            await _repository.UpdateAsync(pessoa, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Pessoa atualizada com sucesso. PessoaId: {PessoaId}", command.Id);
@@ -70,3 +70,4 @@ public sealed class UpdatePessoaCommandHandler : ICommandHandler<UpdatePessoaCom
         }
     }
 }
+

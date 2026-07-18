@@ -9,6 +9,16 @@ namespace Ofichina.Domain.Entities;
 public class ItemPeca : Entity
 {
     /// <summary>
+    /// Identificador da peça relacionada ao item.
+    /// </summary>
+    public Guid PecaId { get; private set; } = Guid.Empty;
+
+    /// <summary>
+    /// Navegação para a peça cadastrada.
+    /// </summary>
+    public Peca? Peca { get; private set; }
+
+    /// <summary>
     /// Identificador da ordem de serviço à qual a peça pertence.
     /// </summary>
     public Guid OrdemServicoId { get; private set; } = Guid.Empty;
@@ -66,6 +76,9 @@ public class ItemPeca : Entity
     /// <param name="ordemServicoId">
     /// Identificador da ordem de serviço.
     /// </param>
+    /// <param name="pecaId">
+    /// Identificador da peça cadastrada.
+    /// </param>
     /// <param name="descricao">
     /// Descrição da peça.
     /// </param>
@@ -75,8 +88,9 @@ public class ItemPeca : Entity
     /// <param name="valorUnitario">
     /// Valor unitário da peça.
     /// </param>
-    public ItemPeca(
+    internal ItemPeca(
         Guid ordemServicoId,
+        Guid pecaId,
         string descricao,
         int quantidade,
         decimal valorUnitario)
@@ -84,6 +98,10 @@ public class ItemPeca : Entity
         if (ordemServicoId == Guid.Empty)
             throw new DomainException(
                 "Ordem de serviço obrigatória.");
+
+        if (pecaId == Guid.Empty)
+            throw new DomainException(
+                "Peça obrigatória.");
 
         if (string.IsNullOrWhiteSpace(descricao))
             throw new DomainException(
@@ -101,6 +119,7 @@ public class ItemPeca : Entity
 
 
         OrdemServicoId = ordemServicoId;
+        PecaId = pecaId;
         Descricao = descricao;
         Quantidade = quantidade;
         ValorUnitario = valorUnitario;

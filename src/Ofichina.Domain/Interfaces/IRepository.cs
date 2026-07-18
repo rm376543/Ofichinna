@@ -1,3 +1,4 @@
+using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
 
 namespace Ofichina.Domain.Interfaces;
@@ -12,25 +13,35 @@ public interface IRepository<TEntity> where TEntity : Entity
     /// <summary>
     /// Adiciona uma entidade ao repositório.
     /// </summary>
-    Task AddAsync(TEntity entity);
+    Task AddAsync(TEntity entity, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Busca uma entidade por seu Id.
     /// </summary>
-    Task<TEntity?> GetByIdAsync(Guid id);
+    Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Obtém todas as entidades.
     /// </summary>
-    Task<IEnumerable<TEntity>> GetAllAsync();
+    Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Obtém uma página de entidades.
+    /// </summary>
+    Task<PagedResult<TEntity>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Atualiza uma entidade.
     /// </summary>
-    Task UpdateAsync(TEntity entity);
+    Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Remove uma entidade.
     /// </summary>
-    Task DeleteAsync(TEntity entity);
+    Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Remove fisicamente uma entidade.
+    /// </summary>
+    Task HardDeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
 }

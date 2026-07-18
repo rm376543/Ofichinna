@@ -14,17 +14,17 @@ public sealed class PerfilUsuarioRepository : Repository<UsuarioPerfil>, IPerfil
         _context = context;
     }
 
-    public async Task<bool> ExisteAsync(Guid clienteId, Guid perfilId)
+    public async Task<bool> ExisteAsync(Guid clienteId, Guid perfilId, CancellationToken cancellationToken = default)
     {
         return await _context.UsuariosPerfis
             .AsNoTracking()
-            .AnyAsync(x => x.UsuarioId == clienteId && x.PerfilId == perfilId);
+            .AnyAsync(x => x.UsuarioId == clienteId && x.PerfilId == perfilId, cancellationToken);
     }
 
-    public async Task<UsuarioPerfil?> GetByUsuarioIdPerfilIdAsync(Guid usuarioId, Guid perfilId)
+    public async Task<UsuarioPerfil?> GetByUsuarioIdPerfilIdAsync(Guid usuarioId, Guid perfilId, CancellationToken cancellationToken = default)
     {
         return await _context.UsuariosPerfis
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.UsuarioId == usuarioId && x.PerfilId == perfilId);
+            .FirstOrDefaultAsync(x => x.UsuarioId == usuarioId && x.PerfilId == perfilId, cancellationToken);
     }
 }

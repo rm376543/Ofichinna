@@ -9,7 +9,7 @@ public class ItemServicoConfiguration : IEntityTypeConfiguration<ItemServico>
 {
     public void Configure(EntityTypeBuilder<ItemServico> builder)
     {
-        builder.ToTable("ItemServico");
+        builder.ToTable("ItensServico");
 
         builder.HasKey(i => i.Id);
 

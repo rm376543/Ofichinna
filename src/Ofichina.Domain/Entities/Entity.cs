@@ -77,6 +77,19 @@ public abstract class Entity
 
 
     /// <summary>
+    /// Reativa uma entidade previamente excluída logicamente.
+    /// </summary>
+    public void Reativar()
+    {
+        if (!EstaExcluida())
+            return;
+
+        DeletedAt = null;
+        AtualizarDataModificacao();
+    }
+
+
+    /// <summary>
     /// Compara entidades através do seu identificador único.
     /// Entidades são consideradas iguais quando possuem o mesmo Id.
     /// </summary>
@@ -88,7 +101,10 @@ public abstract class Entity
         if (ReferenceEquals(this, entity))
             return true;
 
-        return Id == entity.Id;
+        if (Id == Guid.Empty || entity.Id == Guid.Empty)
+            return false;
+
+        return GetType() == entity.GetType() && Id == entity.Id;
     }
 
 
@@ -97,6 +113,6 @@ public abstract class Entity
     /// </summary>
     public override int GetHashCode()
     {
-        return Id.GetHashCode();
+        return HashCode.Combine(GetType(), Id);
     }
 }

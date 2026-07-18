@@ -9,4 +9,5 @@ namespace Ofichina.Application.UseCases.Perfis.Queries;
 /// </summary>
 public class GetPerfisQuery : IQuery<Result<IReadOnlyCollection<PerfilResponse>>>
 {
+    public Pagination Pagination { get; init; } = new();
 }
