@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Veiculos.Queries;
 using Ofichina.Contracts.Common;
@@ -8,7 +8,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Veiculos.Handlers;
 
 /// <summary>
-/// Handler para listar veículos.
+/// Handler para listar veÃ­culos.
 /// </summary>
 public sealed class GetVeiculosQueryHandler : IQueryHandler<GetVeiculosQuery, Result<IReadOnlyCollection<VeiculoResponse>>>
 {
@@ -23,14 +23,13 @@ public sealed class GetVeiculosQueryHandler : IQueryHandler<GetVeiculosQuery, Re
         _logger = logger;
     }
 
-    public async Task<Result<IReadOnlyCollection<VeiculoResponse>>> HandleAsync(GetVeiculosQuery query)
+    public async Task<Result<IReadOnlyCollection<VeiculoResponse>>> HandleAsync(GetVeiculosQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
-            var veiculos = await _veiculoRepository.GetAllWithPessoaAsync();
+            var veiculos = await _veiculoRepository.GetPagedWithPessoaAsync(query.Pagination, cancellationToken);
 
-            var resultado = veiculos
-                .Where(veiculo => !veiculo.EstaExcluida())
+            var resultado = veiculos.Items
                 .Select(Mapear)
                 .ToList();
 
@@ -38,8 +37,8 @@ public sealed class GetVeiculosQueryHandler : IQueryHandler<GetVeiculosQuery, Re
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao listar veículos.");
-            return Result.Failure<IReadOnlyCollection<VeiculoResponse>>("Não foi possível obter os veículos.");
+            _logger.LogError(ex, "Erro ao listar veÃ­culos.");
+            return Result.Failure<IReadOnlyCollection<VeiculoResponse>>("NÃ£o foi possÃ­vel obter os veÃ­culos.");
         }
     }
 
@@ -66,7 +65,7 @@ public sealed class GetVeiculosQueryHandler : IQueryHandler<GetVeiculosQuery, Re
             Observacoes = veiculo.Observacoes,
             Hodometro = veiculo.Hodometro.Valor,
             HodometroFormatada = veiculo.Hodometro.ToString(),
-            Ativo = veiculo.Ativo,
+            Ativo = !veiculo.EstaExcluida(),
             CreatedAt = veiculo.CreatedAt,
             UpdatedAt = veiculo.UpdatedAt,
             DeletedAt = veiculo.DeletedAt

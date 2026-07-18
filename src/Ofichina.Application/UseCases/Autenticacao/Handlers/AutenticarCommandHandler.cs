@@ -31,7 +31,7 @@ public sealed class AutenticarCommandHandler : ICommandHandler<AutenticarCommand
         _logger = logger;
     }
 
-    public async Task<Result<AutenticacaoResponse>> HandleAsync(AutenticarCommand command)
+    public async Task<Result<AutenticacaoResponse>> HandleAsync(AutenticarCommand command, CancellationToken cancellationToken = default)
     {
         try
         {

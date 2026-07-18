@@ -10,18 +10,24 @@ public sealed class CreateAgendamentoRequestValidator : AbstractValidator<Create
 {
     public CreateAgendamentoRequestValidator()
     {
+        RuleFor(x => x.ConsultorPessoaId)
+            .NotEmpty().WithMessage("O consultor é obrigatório.");
+
+        RuleFor(x => x.DataAgendamento)
+            .NotEqual(default(DateOnly)).WithMessage("A data do agendamento é obrigatória.");
+
         RuleFor(x => x.VeiculoId)
             .NotEmpty().WithMessage("O veículo é obrigatório.");
 
-        RuleFor(x => x.DataHoraPreferida)
-            .Must(dataHora => dataHora > DateTime.UtcNow).WithMessage("A data e hora do agendamento devem ser futuras.");
+        RuleFor(x => x.HorarioAgendamento)
+            .NotEqual(default(TimeOnly)).WithMessage("O horário do agendamento é obrigatório.");
 
-        RuleFor(x => x.Motivo)
-            .NotEmpty().WithMessage("O motivo do agendamento é obrigatório.")
-            .MaximumLength(200).WithMessage("O motivo do agendamento não pode exceder 200 caracteres.");
+        RuleFor(x => x)
+            .Must(x => x.DataAgendamento.ToDateTime(x.HorarioAgendamento) > DateTime.Now)
+            .WithMessage("A data e o horário do agendamento devem estar no futuro.")
+            .When(x => x.DataAgendamento != default && x.HorarioAgendamento != default);
 
-        RuleFor(x => x.Observacoes)
-            .MaximumLength(1000).WithMessage("As observações não podem exceder 1000 caracteres.")
-            .When(x => !string.IsNullOrWhiteSpace(x.Observacoes));
+        RuleFor(x => x.Descricao)
+            .MaximumLength(1000).WithMessage("A descrição do agendamento não pode exceder 1000 caracteres.");
     }
 }

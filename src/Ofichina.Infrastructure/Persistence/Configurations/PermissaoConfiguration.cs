@@ -8,7 +8,7 @@ public class PermissaoConfiguration : IEntityTypeConfiguration<Permissao>
 {
     public void Configure(EntityTypeBuilder<Permissao> builder)
     {
-        builder.ToTable("Permissao");
+        builder.ToTable("Permissoes");
 
         builder.HasKey(x => x.Id);
 

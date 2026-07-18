@@ -30,10 +30,15 @@ public class UnitOfWork : IUnitOfWork
 
     public async Task CommitTransactionAsync()
     {
+        if (_transaction is null)
+        {
+            throw new InvalidOperationException("Nenhuma transação ativa foi iniciada.");
+        }
+
         try
         {
             await SaveChangesAsync();
-            await _transaction?.CommitAsync()!;
+            await _transaction.CommitAsync();
         }
         catch
         {
@@ -49,9 +54,14 @@ public class UnitOfWork : IUnitOfWork
 
     public async Task RollbackTransactionAsync()
     {
+        if (_transaction is null)
+        {
+            throw new InvalidOperationException("Nenhuma transação ativa foi iniciada.");
+        }
+
         try
         {
-            await _transaction?.RollbackAsync()!;
+            await _transaction.RollbackAsync();
         }
         finally
         {
@@ -66,7 +76,5 @@ public class UnitOfWork : IUnitOfWork
         {
             await _transaction.DisposeAsync();
         }
-
-        await _context.DisposeAsync();
     }
 }

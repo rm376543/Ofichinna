@@ -22,11 +22,6 @@ public class Servico : Entity
     /// </summary>
     public decimal Valor { get; private set; }
 
-    /// <summary>
-    /// Indica se o serviço está disponível para uso.
-    /// </summary>
-    public bool Ativo { get; private set; } = true;
-
     private Servico()
     {
     }
@@ -37,12 +32,10 @@ public class Servico : Entity
     /// <param name="nome">Nome do serviço.</param>
     /// <param name="descricao">Descrição do serviço.</param>
     /// <param name="valor">Valor cobrado.</param>
-    /// <param name="ativo">Indica se o serviço inicia ativo.</param>
     public Servico(
         string nome,
         string? descricao,
-        decimal valor,
-        bool ativo)
+        decimal valor)
     {
         if (string.IsNullOrWhiteSpace(nome))
             throw new DomainException("O nome do serviço é obrigatório.");
@@ -53,7 +46,6 @@ public class Servico : Entity
         Nome = nome.Trim();
         Descricao = string.IsNullOrWhiteSpace(descricao) ? null : descricao.Trim();
         Valor = valor;
-        Ativo = ativo;
     }
 
     /// <summary>
@@ -82,11 +74,7 @@ public class Servico : Entity
     /// </summary>
     public void Ativar()
     {
-        if (Ativo)
-            return;
-
-        Ativo = true;
-        AtualizarDataModificacao();
+        Reativar();
     }
 
     /// <summary>
@@ -94,10 +82,9 @@ public class Servico : Entity
     /// </summary>
     public void Desativar()
     {
-        if (!Ativo)
+        if (EstaExcluida())
             return;
 
-        Ativo = false;
-        AtualizarDataModificacao();
+        Excluir();
     }
 }

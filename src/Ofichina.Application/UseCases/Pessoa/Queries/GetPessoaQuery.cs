@@ -9,4 +9,5 @@ namespace Ofichina.Application.UseCases.Pessoas.Queries;
 /// </summary>
 public sealed class GetPessoasQuery : IQuery<Result<IReadOnlyCollection<PessoaResponse>>>
 {
+    public Pagination Pagination { get; init; } = new();
 }

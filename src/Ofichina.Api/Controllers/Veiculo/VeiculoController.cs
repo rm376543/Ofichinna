@@ -1,4 +1,4 @@
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.Abstractions;
@@ -12,7 +12,7 @@ using Ofichina.Contracts.Responses.Veiculo;
 namespace Ofichina.Api.Controllers.Veiculo;
 
 /// <summary>
-    /// Controller responsável pelo CRUD de veículos vinculados a pessoas.
+    /// Controller responsÃ¡vel pelo CRUD de veÃ­culos vinculados a pessoas.
 /// </summary>
 [Authorize]
 [ApiController]
@@ -42,10 +42,10 @@ public sealed class VeiculoController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna todos os veículos cadastrados.
+    /// Retorna todos os veÃ­culos cadastrados.
     /// </summary>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Lista de veículos.</returns>
+    /// <returns>Lista de veÃ­culos.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<VeiculoResponse>>), StatusCodes.Status200OK)]
@@ -53,22 +53,22 @@ public sealed class VeiculoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse<IReadOnlyCollection<VeiculoResponse>>>> BuscarVeiculos(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenção de todos os veículos vinculados a pessoas.");
+        _logger.LogInformation("Iniciando a obtenÃ§Ã£o de todos os veÃ­culos vinculados a pessoas.");
 
-        var result = await _getAllHandler.HandleAsync(new GetVeiculosQuery());
+        var result = await _getAllHandler.HandleAsync(new GetVeiculosQuery(), cancellationToken);
 
         if (!result.IsSuccess)
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os veículos."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel obter os veÃ­culos."));
 
         return Ok(ApiResponse<IReadOnlyCollection<VeiculoResponse>>.SuccessResponse(result.Value ?? []));
     }
 
     /// <summary>
-    /// Retorna um veículo pelo identificador.
+    /// Retorna um veÃ­culo pelo identificador.
     /// </summary>
-    /// <param name="id">Identificador do veículo.</param>
+    /// <param name="id">Identificador do veÃ­culo.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Veículo encontrado ou erro 404.</returns>
+    /// <returns>VeÃ­culo encontrado ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<VeiculoResponse>), StatusCodes.Status200OK)]
@@ -77,22 +77,22 @@ public sealed class VeiculoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<VeiculoResponse>>> BuscarVeiculoPorId(Guid id, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenção do veículo com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a obtenÃ§Ã£o do veÃ­culo com Id: {Id}", id);
 
-        var result = await _getByIdHandler.HandleAsync(new GetVeiculoByIdQuery(id));
+        var result = await _getByIdHandler.HandleAsync(new GetVeiculoByIdQuery(id), cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Veículo não encontrado."));
+            return NotFound(ApiResponse.FailureResponse(result.Error ?? "VeÃ­culo nÃ£o encontrado."));
 
         return Ok(ApiResponse<VeiculoResponse>.SuccessResponse(result.Value));
     }
 
     /// <summary>
-    /// Cria um novo veículo.
+    /// Cria um novo veÃ­culo.
     /// </summary>
-    /// <param name="request">Dados do veículo.</param>
+    /// <param name="request">Dados do veÃ­culo.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Identificador do veículo criado ou erro de validação.</returns>
+    /// <returns>Identificador do veÃ­culo criado ou erro de validaÃ§Ã£o.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
@@ -105,7 +105,7 @@ public sealed class VeiculoController : ControllerBase
         [FromServices] ICommandHandler<CreateVeiculoCommand, Result<Guid>> createHandler,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a criação de um veículo. Placa: {Placa}", request.Placa);
+        _logger.LogInformation("Iniciando a criaÃ§Ã£o de um veÃ­culo. Placa: {Placa}", request.Placa);
 
         var validation = await _createValidator.ValidateAsync(request, cancellationToken);
 
@@ -123,22 +123,22 @@ public sealed class VeiculoController : ControllerBase
             Observacoes = request.Observacoes,
             Hodometro = request.Hodometro,
             Ativo = request.Ativo
-        });
+        }, cancellationToken);
 
         if (!result.IsSuccess)
-            return result.Error == "Pessoa não encontrada."
+            return result.Error == "Pessoa nÃ£o encontrada."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o veículo."));
+                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel criar o veÃ­culo."));
 
-        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Veículo criado com sucesso."));
+        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "VeÃ­culo criado com sucesso."));
     }
 
     /// <summary>
-    /// Atualiza um veículo existente.
+    /// Atualiza um veÃ­culo existente.
     /// </summary>
-    /// <param name="request">Dados atualizados do veículo.</param>
+    /// <param name="request">Dados atualizados do veÃ­culo.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso, erro de validação ou veículo não encontrado.</returns>
+    /// <returns>Mensagem de sucesso, erro de validaÃ§Ã£o ou veÃ­culo nÃ£o encontrado.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPut]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
@@ -151,7 +151,7 @@ public sealed class VeiculoController : ControllerBase
         [FromServices] ICommandHandler<UpdateVeiculoCommand, Result> updateHandler,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualização do veículo com Id: {Id}", request.Id);
+        _logger.LogInformation("Iniciando a atualizaÃ§Ã£o do veÃ­culo com Id: {Id}", request.Id);
 
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
 
@@ -170,22 +170,22 @@ public sealed class VeiculoController : ControllerBase
             Observacoes = request.Observacoes,
             Hodometro = request.Hodometro,
             Ativo = request.Ativo
-        });
+        }, cancellationToken);
 
         if (!result.IsSuccess)
         {
-            return result.Error == "Veículo não encontrado." || result.Error == "Pessoa não encontrada."
+            return result.Error == "VeÃ­culo nÃ£o encontrado." || result.Error == "Pessoa nÃ£o encontrada."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o veículo."));
+                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel atualizar o veÃ­culo."));
         }
 
-        return Ok(ApiResponse.SuccessResponse("Veículo atualizado com sucesso."));
+        return Ok(ApiResponse.SuccessResponse("VeÃ­culo atualizado com sucesso."));
     }
 
     /// <summary>
-    /// Remove logicamente um veículo existente.
+    /// Remove logicamente um veÃ­culo existente.
     /// </summary>
-    /// <param name="id">Identificador do veículo.</param>
+    /// <param name="id">Identificador do veÃ­culo.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -199,13 +199,13 @@ public sealed class VeiculoController : ControllerBase
         [FromServices] ICommandHandler<DeleteVeiculoCommand, Result> deleteHandler,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a remoção do veículo com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a remoÃ§Ã£o do veÃ­culo com Id: {Id}", id);
 
-        var result = await deleteHandler.HandleAsync(new DeleteVeiculoCommand { Id = id });
+        var result = await deleteHandler.HandleAsync(new DeleteVeiculoCommand { Id = id }, cancellationToken);
 
         if (!result.IsSuccess)
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Veículo não encontrado."));
+            return NotFound(ApiResponse.FailureResponse(result.Error ?? "VeÃ­culo nÃ£o encontrado."));
 
-        return Ok(ApiResponse.SuccessResponse("Veículo removido com sucesso."));
+        return Ok(ApiResponse.SuccessResponse("VeÃ­culo removido com sucesso."));
     }
 }

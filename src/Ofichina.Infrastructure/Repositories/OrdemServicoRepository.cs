@@ -8,18 +8,19 @@ namespace Ofichina.Infrastructure.Repositories;
 /// <summary>
 /// Repositório específico para consultas da ordem de serviço com os itens vinculados.
 /// </summary>
-public sealed class OrdemServicoRepository : IOrdemServicoRepository
+public sealed class OrdemServicoRepository : Repository<OrdemServico>, IOrdemServicoRepository
 {
     private readonly ApplicationDbContext _context;
 
     public OrdemServicoRepository(ApplicationDbContext context)
+        : base(context)
     {
         _context = context;
     }
 
-    public async Task<OrdemServico?> GetByIdAsync(Guid id, bool includeItens = false)
+    public async Task<OrdemServico?> GetByIdAsync(Guid id, bool includeItens = false, CancellationToken cancellationToken = default)
     {
-        IQueryable<OrdemServico> query = _context.Set<OrdemServico>();
+        IQueryable<OrdemServico> query = _context.Set<OrdemServico>().AsNoTracking();
 
         if (includeItens)
         {
@@ -28,12 +29,12 @@ public sealed class OrdemServicoRepository : IOrdemServicoRepository
                 .Include(x => x.Pecas);
         }
 
-        return await query.FirstOrDefaultAsync(x => x.Id == id);
+        return await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task<IReadOnlyCollection<OrdemServico>> GetAllAsync(bool includeItens = false)
+    public async Task<IReadOnlyCollection<OrdemServico>> GetAllAsync(bool includeItens = false, CancellationToken cancellationToken = default)
     {
-        IQueryable<OrdemServico> query = _context.Set<OrdemServico>();
+        IQueryable<OrdemServico> query = _context.Set<OrdemServico>().AsNoTracking();
 
         if (includeItens)
         {
@@ -42,6 +43,6 @@ public sealed class OrdemServicoRepository : IOrdemServicoRepository
                 .Include(x => x.Pecas);
         }
 
-        return await query.ToListAsync();
+        return await query.ToListAsync(cancellationToken);
     }
 }

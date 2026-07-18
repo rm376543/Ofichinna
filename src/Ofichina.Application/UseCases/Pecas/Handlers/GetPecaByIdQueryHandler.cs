@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pecas.Queries;
 using Ofichina.Contracts.Common;
@@ -9,7 +9,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Pecas.Handlers;
 
 /// <summary>
-/// Handler para obter peça por Id.
+/// Handler para obter peÃ§a por Id.
 /// </summary>
 public sealed class GetPecaByIdQueryHandler : IQueryHandler<GetPecaByIdQuery, Result<PecaResponse>>
 {
@@ -17,7 +17,7 @@ public sealed class GetPecaByIdQueryHandler : IQueryHandler<GetPecaByIdQuery, Re
     private readonly ILogger<GetPecaByIdQueryHandler> _logger;
 
     /// <summary>
-    /// Inicializa uma nova instância do handler de busca por Id.
+    /// Inicializa uma nova instÃ¢ncia do handler de busca por Id.
     /// </summary>
     public GetPecaByIdQueryHandler(
         IRepository<Peca> pecaRepository,
@@ -28,24 +28,24 @@ public sealed class GetPecaByIdQueryHandler : IQueryHandler<GetPecaByIdQuery, Re
     }
 
     /// <inheritdoc />
-    public async Task<Result<PecaResponse>> HandleAsync(GetPecaByIdQuery query)
+    public async Task<Result<PecaResponse>> HandleAsync(GetPecaByIdQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
-            var peca = await _pecaRepository.GetByIdAsync(query.Id);
+            var peca = await _pecaRepository.GetByIdAsync(query.Id, cancellationToken);
 
             if (peca is null)
-                return Result.Failure<PecaResponse>("Peça não encontrada.");
+                return Result.Failure<PecaResponse>("PeÃ§a nÃ£o encontrada.");
 
             if (peca.EstaExcluida())
-                return Result.Failure<PecaResponse>("Peça não encontrada.");
+                return Result.Failure<PecaResponse>("PeÃ§a nÃ£o encontrada.");
 
             return Result.Success(Mapear(peca));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao obter peça com Id: {PecaId}", query.Id);
-            return Result.Failure<PecaResponse>("Não foi possível obter a peça.");
+            _logger.LogError(ex, "Erro ao obter peÃ§a com Id: {PecaId}", query.Id);
+            return Result.Failure<PecaResponse>("NÃ£o foi possÃ­vel obter a peÃ§a.");
         }
     }
 
@@ -59,7 +59,7 @@ public sealed class GetPecaByIdQueryHandler : IQueryHandler<GetPecaByIdQuery, Re
             Codigo = peca.Codigo,
             Valor = peca.Valor,
             QuantidadeEstoque = peca.QuantidadeEstoque,
-            Ativo = peca.Ativo,
+            Ativo = !peca.EstaExcluida(),
             CreatedAt = peca.CreatedAt,
             UpdatedAt = peca.UpdatedAt,
             DeletedAt = peca.DeletedAt

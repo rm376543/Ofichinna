@@ -1,4 +1,4 @@
-using Ofichina.Contracts.Common;
+﻿using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Autenticacao;
 using Ofichina.Contracts.Requests.Usuario;
 using Ofichina.Contracts.Responses;
@@ -81,11 +81,11 @@ public sealed class AutenticacaoService : IAutenticacaoService
 
         if (usuarioExistente is not null)
         {
-            return Result.Failure<AutenticacaoResponse>("Já existe um usuário cadastrado com este e-mail.");
+            return Result.Failure<AutenticacaoResponse>("JÃ¡ existe um usuÃ¡rio cadastrado com este e-mail.");
         }
 
         var usuario = new Usuario(email, _senhaHasher.GerarHash(request.Senha));
-        await _usuarioRepository.AddAsync(usuario);
+        await _usuarioRepository.AddAsync(usuario, cancellationToken);
         await _unitOfWork.SaveChangesAsync();
 
         var token = await _jwtTokenService.GerarTokenAsync(usuario, [], cancellationToken);

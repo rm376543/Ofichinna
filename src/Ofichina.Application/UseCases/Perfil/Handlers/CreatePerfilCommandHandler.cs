@@ -24,13 +24,13 @@ public sealed class CreatePerfilCommandHandler : ICommandHandler<CreatePerfilCom
         _logger = logger;
     }
 
-    public async Task<Result> HandleAsync(CreatePerfilCommand command)
+    public async Task<Result> HandleAsync(CreatePerfilCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Iniciando criação de perfil: [Nome] {NomePerfil}", command.NomePerfil);
 
-            var existente = await _repository.GetByNomeAsync(command.NomePerfil);
+            var existente = await _repository.GetByNomeAsync(command.NomePerfil, cancellationToken);
 
             if (existente is not null)
             {
@@ -40,7 +40,7 @@ public sealed class CreatePerfilCommandHandler : ICommandHandler<CreatePerfilCom
 
             var perfil = new Perfil(command.NomePerfil, command.Descricao);
 
-            await _repository.AddAsync(perfil);
+            await _repository.AddAsync(perfil, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Perfil criado com sucesso: [PerfilId] {PerfilId}, [Nome] {NomePerfil}", perfil.Id, perfil.NomePerfil);

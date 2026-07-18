@@ -9,4 +9,5 @@ namespace Ofichina.Application.UseCases.Servicos.Queries;
 /// </summary>
 public sealed class GetServicosQuery : IQuery<Result<IReadOnlyCollection<ServicoResponse>>>
 {
+    public Pagination Pagination { get; init; } = new();
 }

@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Contracts.Common;
@@ -10,7 +10,7 @@ using Ofichina.Domain.ValueObjects;
 namespace Ofichina.Application.UseCases.Veiculos.Handlers;
 
 /// <summary>
-/// Handler para atualização de veículo.
+/// Handler para atualizaÃ§Ã£o de veÃ­culo.
 /// </summary>
 public sealed class UpdateVeiculoCommandHandler : ICommandHandler<UpdateVeiculoCommand, Result>
 {
@@ -31,29 +31,29 @@ public sealed class UpdateVeiculoCommandHandler : ICommandHandler<UpdateVeiculoC
         _logger = logger;
     }
 
-    public async Task<Result> HandleAsync(UpdateVeiculoCommand command)
+    public async Task<Result> HandleAsync(UpdateVeiculoCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
-            _logger.LogInformation("Iniciando atualização do veículo. Id: {VeiculoId}", command.Id);
+            _logger.LogInformation("Iniciando atualizaÃ§Ã£o do veÃ­culo. Id: {VeiculoId}", command.Id);
 
             var placa = new Placa(command.Placa);
 
-            var veiculo = await _veiculoRepository.GetByIdAsync(command.Id);
+            var veiculo = await _veiculoRepository.GetByIdAsync(command.Id, cancellationToken);
 
             if (veiculo is null || veiculo.EstaExcluida())
-                return Result.Failure("Veículo não encontrado.");
+                return Result.Failure("VeÃ­culo nÃ£o encontrado.");
 
-            var pessoa = await _pessoaRepository.GetByIdAsync(command.PessoaId);
+            var pessoa = await _pessoaRepository.GetByIdAsync(command.PessoaId, cancellationToken);
 
             if (pessoa is null || pessoa.EstaExcluida())
-                return Result.Failure("Pessoa não encontrada.");
+                return Result.Failure("Pessoa nÃ£o encontrada.");
 
-            var placaDuplicada = (await _veiculoRepository.GetAllWithPessoaAsync())
+            var placaDuplicada = (await _veiculoRepository.GetAllWithPessoaAsync(cancellationToken))
                 .FirstOrDefault(v => v.Id != command.Id && v.Placa.Numero == placa.Numero);
 
             if (placaDuplicada is not null)
-                return Result.Failure("Já existe outro veículo cadastrado com esta placa.");
+                return Result.Failure("JÃ¡ existe outro veÃ­culo cadastrado com esta placa.");
 
             veiculo.AlterarPessoa(command.PessoaId);
             veiculo.AlterarPlaca(placa);
@@ -69,20 +69,20 @@ public sealed class UpdateVeiculoCommandHandler : ICommandHandler<UpdateVeiculoC
             else
                 veiculo.Desativar();
 
-            await _veiculoRepository.UpdateAsync(veiculo);
+            await _veiculoRepository.UpdateAsync(veiculo, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
             return Result.Success();
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domínio ao atualizar veículo.");
+            _logger.LogWarning(ex, "Erro de domÃ­nio ao atualizar veÃ­culo.");
             return Result.Failure(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao atualizar veículo.");
-            return Result.Failure("Não foi possível atualizar o veículo.");
+            _logger.LogError(ex, "Erro ao atualizar veÃ­culo.");
+            return Result.Failure("NÃ£o foi possÃ­vel atualizar o veÃ­culo.");
         }
     }
 }

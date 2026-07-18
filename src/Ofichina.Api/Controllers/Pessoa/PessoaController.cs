@@ -64,7 +64,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         {
             _logger.LogInformation("Iniciando a obtenção de todas as pessoas.");
 
-            var result = await _getAllHandler.HandleAsync(new GetPessoasQuery());
+            var result = await _getAllHandler.HandleAsync(new GetPessoasQuery(), cancellationToken);
 
             if (!result.IsSuccess)
             {
@@ -91,7 +91,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         {
             _logger.LogInformation("Iniciando a obtenção da pessoa com Id: {Id}", id);
 
-            var result = await _getByIdHandler.HandleAsync(new GetPessoaByIdQuery(id));
+            var result = await _getByIdHandler.HandleAsync(new GetPessoaByIdQuery(id), cancellationToken);
 
             if (!result.IsSuccess || result.Value is null)
             {
@@ -140,7 +140,7 @@ namespace Ofichina.Api.Controllers.Pessoa
                 Estado = request.Estado,
                 Cep = request.Cep,
                 UsuarioId = request.UsuarioId
-            });
+            }, cancellationToken);
 
             if (!result.IsSuccess)
             {
@@ -188,7 +188,7 @@ namespace Ofichina.Api.Controllers.Pessoa
                 Cidade = request.Cidade,
                 Estado = request.Estado,
                 Cep = request.Cep
-            });
+            }, cancellationToken);
 
             if (!result.IsSuccess)
             {
@@ -217,7 +217,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         {
             _logger.LogInformation("Iniciando a desativação da pessoa com Id: {Id}", id);
 
-            var result = await _deleteHandler.HandleAsync(new DeletePessoaCommand { Id = id });
+            var result = await _deleteHandler.HandleAsync(new DeletePessoaCommand { Id = id }, cancellationToken);
 
             if (!result.IsSuccess)
             {
@@ -229,3 +229,4 @@ namespace Ofichina.Api.Controllers.Pessoa
         }
     }
 }
+

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Ofichina.Infrastructure.DependencyInjection;
 using Ofichina.Infrastructure.Persistence;
 
 namespace Ofichina.Infrastructure.DependencyInjection;
@@ -28,7 +29,12 @@ public static class DatabaseModule
         }
 
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(connectionString));
+            options.UseSqlServer(connectionString, sqlServerOptions =>
+            {
+                sqlServerOptions.EnableRetryOnFailure();
+                sqlServerOptions.CommandTimeout(60);
+                sqlServerOptions.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+            }));
 
         return services;
     }

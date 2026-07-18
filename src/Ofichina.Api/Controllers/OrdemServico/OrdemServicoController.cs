@@ -1,4 +1,4 @@
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.Abstractions;
@@ -13,7 +13,7 @@ using Ofichina.Contracts.Responses.OrdemServico;
 namespace Ofichina.Api.Controllers.OrdemServico;
 
 /// <summary>
-/// Controller responsável pelo CRUD de ordens de serviço e pelas transições de status.
+/// Controller responsÃ¡vel pelo CRUD de ordens de serviÃ§o e pelas transiÃ§Ãµes de status.
 /// </summary>
 [Authorize]
 [ApiController]
@@ -35,11 +35,11 @@ public sealed class OrdemServicoController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna todas as ordens de serviço cadastradas.
+    /// Retorna todas as ordens de serviÃ§o cadastradas.
     /// </summary>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <param name="getAllHandler">Handler de consulta das ordens de serviço.</param>
-    /// <returns>Lista de ordens de serviço.</returns>
+    /// <param name="getAllHandler">Handler de consulta das ordens de serviÃ§o.</param>
+    /// <returns>Lista de ordens de serviÃ§o.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<OrdemServicoResponse>>), StatusCodes.Status200OK)]
@@ -49,26 +49,26 @@ public sealed class OrdemServicoController : ControllerBase
         [FromServices] IQueryHandler<GetOrdensServicoQuery, Result<IReadOnlyCollection<OrdemServicoResponse>>> getAllHandler,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenção de todas as ordens de serviço.");
+        _logger.LogInformation("Iniciando a obtenÃ§Ã£o de todas as ordens de serviÃ§o.");
 
         var result = await getAllHandler.HandleAsync(new GetOrdensServicoQuery());
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao obter as ordens de serviço: {Erro}", result.Error);
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter as ordens de serviço."));
+            _logger.LogError("Erro ao obter as ordens de serviÃ§o: {Erro}", result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel obter as ordens de serviÃ§o."));
         }
 
         return Ok(ApiResponse<IReadOnlyCollection<OrdemServicoResponse>>.SuccessResponse(result.Value ?? []));
     }
 
     /// <summary>
-    /// Retorna uma ordem de serviço pelo identificador.
+    /// Retorna uma ordem de serviÃ§o pelo identificador.
     /// </summary>
-    /// <param name="id">Identificador da ordem de serviço.</param>
+    /// <param name="id">Identificador da ordem de serviÃ§o.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <param name="getByIdHandler">Handler de consulta por identificador.</param>
-    /// <returns>Ordem de serviço encontrada ou erro 404.</returns>
+    /// <returns>Ordem de serviÃ§o encontrada ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<OrdemServicoResponse>), StatusCodes.Status200OK)]
@@ -80,26 +80,26 @@ public sealed class OrdemServicoController : ControllerBase
         [FromServices] IQueryHandler<GetOrdemServicoByIdQuery, Result<OrdemServicoResponse>> getByIdHandler,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenção da ordem de serviço com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a obtenÃ§Ã£o da ordem de serviÃ§o com Id: {Id}", id);
 
         var result = await getByIdHandler.HandleAsync(new GetOrdemServicoByIdQuery { Id = id });
 
         if (!result.IsSuccess || result.Value is null)
         {
-            _logger.LogError("Ordem de serviço com Id: {Id} não encontrada.", id);
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Ordem de serviço não encontrada."));
+            _logger.LogError("Ordem de serviÃ§o com Id: {Id} nÃ£o encontrada.", id);
+            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Ordem de serviÃ§o nÃ£o encontrada."));
         }
 
         return Ok(ApiResponse<OrdemServicoResponse>.SuccessResponse(result.Value));
     }
 
     /// <summary>
-    /// Cria uma nova ordem de serviço.
+    /// Cria uma nova ordem de serviÃ§o.
     /// </summary>
-    /// <param name="request">Dados da ordem de serviço.</param>
-    /// <param name="createHandler">Handler de criação da ordem de serviço.</param>
+    /// <param name="request">Dados da ordem de serviÃ§o.</param>
+    /// <param name="createHandler">Handler de criaÃ§Ã£o da ordem de serviÃ§o.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Identificador da ordem de serviço criada ou erro de validação.</returns>
+    /// <returns>Identificador da ordem de serviÃ§o criada ou erro de validaÃ§Ã£o.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
@@ -112,12 +112,12 @@ public sealed class OrdemServicoController : ControllerBase
         [FromServices] ICommandHandler<CreateOrdemServicoCommand, Result<Guid>> createHandler,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a criação de uma nova ordem de serviço. PessoaId: {PessoaId}, VeiculoId: {VeiculoId}.", request.PessoaId, request.VeiculoId);
+        _logger.LogInformation("Iniciando a criaÃ§Ã£o de uma nova ordem de serviÃ§o. PessoaId: {PessoaId}, VeiculoId: {VeiculoId}.", request.PessoaId, request.VeiculoId);
 
         var validation = await _createValidator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
         {
-            _logger.LogError("Erro ao validar a criação da ordem de serviço. Erros: {Erros}", string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            _logger.LogError("Erro ao validar a criaÃ§Ã£o da ordem de serviÃ§o. Erros: {Erros}", string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
@@ -135,22 +135,22 @@ public sealed class OrdemServicoController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao criar a ordem de serviço. Erro: {Erro}", result.Error);
-            return result.Error is "Pessoa não encontrada." or "Funcionário não encontrado." or "Veículo não encontrado."
-                ? NotFound(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar a ordem de serviço."))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar a ordem de serviço."));
+            _logger.LogError("Erro ao criar a ordem de serviÃ§o. Erro: {Erro}", result.Error);
+            return result.Error is "Pessoa nÃ£o encontrada." or "FuncionÃ¡rio nÃ£o encontrado." or "VeÃ­culo nÃ£o encontrado."
+                ? NotFound(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel criar a ordem de serviÃ§o."))
+                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel criar a ordem de serviÃ§o."));
         }
 
-        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Ordem de serviço criada com sucesso."));
+        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Ordem de serviÃ§o criada com sucesso."));
     }
 
     /// <summary>
-    /// Atualiza uma ordem de serviço existente.
+    /// Atualiza uma ordem de serviÃ§o existente.
     /// </summary>
-    /// <param name="request">Dados atualizados da ordem de serviço.</param>
-    /// <param name="updateHandler">Handler de atualização da ordem de serviço.</param>
+    /// <param name="request">Dados atualizados da ordem de serviÃ§o.</param>
+    /// <param name="updateHandler">Handler de atualizaÃ§Ã£o da ordem de serviÃ§o.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso, erro de validação ou ordem de serviço não encontrada.</returns>
+    /// <returns>Mensagem de sucesso, erro de validaÃ§Ã£o ou ordem de serviÃ§o nÃ£o encontrada.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPut]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
@@ -163,12 +163,12 @@ public sealed class OrdemServicoController : ControllerBase
         [FromServices] ICommandHandler<UpdateOrdemServicoCommand, Result> updateHandler,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualização da ordem de serviço com Id: {Id}", request.Id);
+        _logger.LogInformation("Iniciando a atualizaÃ§Ã£o da ordem de serviÃ§o com Id: {Id}", request.Id);
 
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
         {
-            _logger.LogError("Erro ao validar a atualização da ordem de serviço com Id: {Id}. Erros: {Erros}", request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            _logger.LogError("Erro ao validar a atualizaÃ§Ã£o da ordem de serviÃ§o com Id: {Id}. Erros: {Erros}", request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
@@ -184,20 +184,20 @@ public sealed class OrdemServicoController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao atualizar a ordem de serviço com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
-            return result.Error == "Ordem de serviço não encontrada."
+            _logger.LogError("Erro ao atualizar a ordem de serviÃ§o com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
+            return result.Error == "Ordem de serviÃ§o nÃ£o encontrada."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a ordem de serviço."));
+                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel atualizar a ordem de serviÃ§o."));
         }
 
-        return Ok(ApiResponse.SuccessResponse("Ordem de serviço atualizada com sucesso."));
+        return Ok(ApiResponse.SuccessResponse("Ordem de serviÃ§o atualizada com sucesso."));
     }
 
     /// <summary>
-    /// Remove logicamente uma ordem de serviço existente.
+    /// Remove logicamente uma ordem de serviÃ§o existente.
     /// </summary>
-    /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="deleteHandler">Handler de remoção da ordem de serviço.</param>
+    /// <param name="id">Identificador da ordem de serviÃ§o.</param>
+    /// <param name="deleteHandler">Handler de remoÃ§Ã£o da ordem de serviÃ§o.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -211,24 +211,24 @@ public sealed class OrdemServicoController : ControllerBase
         [FromServices] ICommandHandler<DeleteOrdemServicoCommand, Result> deleteHandler,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a remoção da ordem de serviço com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a remoÃ§Ã£o da ordem de serviÃ§o com Id: {Id}", id);
 
         var result = await deleteHandler.HandleAsync(new DeleteOrdemServicoCommand { Id = id });
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao remover a ordem de serviço com Id: {Id}. Erro: {Erro}", id, result.Error);
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Ordem de serviço não encontrada."));
+            _logger.LogError("Erro ao remover a ordem de serviÃ§o com Id: {Id}. Erro: {Erro}", id, result.Error);
+            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Ordem de serviÃ§o nÃ£o encontrada."));
         }
 
-        return Ok(ApiResponse.SuccessResponse("Ordem de serviço removida com sucesso."));
+        return Ok(ApiResponse.SuccessResponse("Ordem de serviÃ§o removida com sucesso."));
     }
 
     /// <summary>
-    /// Inicia o diagnóstico da ordem de serviço.
+    /// Inicia o diagnÃ³stico da ordem de serviÃ§o.
     /// </summary>
-    /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="statusHandler">Handler de alteração de status da ordem de serviço.</param>
+    /// <param name="id">Identificador da ordem de serviÃ§o.</param>
+    /// <param name="statusHandler">Handler de alteraÃ§Ã£o de status da ordem de serviÃ§o.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de status.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -242,13 +242,18 @@ public sealed class OrdemServicoController : ControllerBase
         Guid id,
         [FromServices] ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.EmDiagnostico, "Diagnóstico da ordem de serviço iniciado com sucesso.", statusHandler);
+        => AlterarStatusAsync(
+            id,
+            StatusOrdemServico.EmDiagnostico,
+            "DiagnÃ³stico da ordem de serviÃ§o iniciado com sucesso.",
+            statusHandler,
+            cancellationToken);
 
     /// <summary>
-    /// Solicita a aprovação da ordem de serviço.
+    /// Solicita a aprovaÃ§Ã£o da ordem de serviÃ§o.
     /// </summary>
-    /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="statusHandler">Handler de alteração de status da ordem de serviço.</param>
+    /// <param name="id">Identificador da ordem de serviÃ§o.</param>
+    /// <param name="statusHandler">Handler de alteraÃ§Ã£o de status da ordem de serviÃ§o.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de status.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -262,13 +267,18 @@ public sealed class OrdemServicoController : ControllerBase
         Guid id,
         [FromServices] ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.AguardandoAprovacao, "Aprovação da ordem de serviço solicitada com sucesso.", statusHandler);
+        => AlterarStatusAsync(
+            id,
+            StatusOrdemServico.AguardandoAprovacao,
+            "AprovaÃ§Ã£o da ordem de serviÃ§o solicitada com sucesso.",
+            statusHandler,
+            cancellationToken);
 
     /// <summary>
-    /// Aprova a execução da ordem de serviço.
+    /// Aprova a execuÃ§Ã£o da ordem de serviÃ§o.
     /// </summary>
-    /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="statusHandler">Handler de alteração de status da ordem de serviço.</param>
+    /// <param name="id">Identificador da ordem de serviÃ§o.</param>
+    /// <param name="statusHandler">Handler de alteraÃ§Ã£o de status da ordem de serviÃ§o.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de status.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -282,13 +292,18 @@ public sealed class OrdemServicoController : ControllerBase
         Guid id,
         [FromServices] ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.EmExecucao, "Ordem de serviço aprovada com sucesso.", statusHandler);
+        => AlterarStatusAsync(
+            id,
+            StatusOrdemServico.EmExecucao,
+            "Ordem de serviÃ§o aprovada com sucesso.",
+            statusHandler,
+            cancellationToken);
 
     /// <summary>
-    /// Finaliza a ordem de serviço.
+    /// Finaliza a ordem de serviÃ§o.
     /// </summary>
-    /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="statusHandler">Handler de alteração de status da ordem de serviço.</param>
+    /// <param name="id">Identificador da ordem de serviÃ§o.</param>
+    /// <param name="statusHandler">Handler de alteraÃ§Ã£o de status da ordem de serviÃ§o.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de status.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -302,13 +317,18 @@ public sealed class OrdemServicoController : ControllerBase
         Guid id,
         [FromServices] ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.Finalizada, "Ordem de serviço finalizada com sucesso.", statusHandler);
+        => AlterarStatusAsync(
+            id,
+            StatusOrdemServico.Finalizada,
+            "Ordem de serviÃ§o finalizada com sucesso.",
+            statusHandler,
+            cancellationToken);
 
     /// <summary>
-    /// Marca a ordem de serviço como entregue.
+    /// Marca a ordem de serviÃ§o como entregue.
     /// </summary>
-    /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="statusHandler">Handler de alteração de status da ordem de serviço.</param>
+    /// <param name="id">Identificador da ordem de serviÃ§o.</param>
+    /// <param name="statusHandler">Handler de alteraÃ§Ã£o de status da ordem de serviÃ§o.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de status.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -322,13 +342,18 @@ public sealed class OrdemServicoController : ControllerBase
         Guid id,
         [FromServices] ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.Entregue, "Ordem de serviço entregue com sucesso.", statusHandler);
+        => AlterarStatusAsync(
+            id,
+            StatusOrdemServico.Entregue,
+            "Ordem de serviÃ§o entregue com sucesso.",
+            statusHandler,
+            cancellationToken);
 
     /// <summary>
-    /// Cancela a ordem de serviço.
+    /// Cancela a ordem de serviÃ§o.
     /// </summary>
-    /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="statusHandler">Handler de alteração de status da ordem de serviço.</param>
+    /// <param name="id">Identificador da ordem de serviÃ§o.</param>
+    /// <param name="statusHandler">Handler de alteraÃ§Ã£o de status da ordem de serviÃ§o.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de status.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -342,15 +367,21 @@ public sealed class OrdemServicoController : ControllerBase
         Guid id,
         [FromServices] ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.Cancelada, "Ordem de serviço cancelada com sucesso.", statusHandler);
+        => AlterarStatusAsync(
+            id,
+            StatusOrdemServico.Cancelada,
+            "Ordem de serviÃ§o cancelada com sucesso.",
+            statusHandler,
+            cancellationToken);
 
     private async Task<ActionResult<ApiResponse>> AlterarStatusAsync(
         Guid id,
         StatusOrdemServico statusDestino,
         string mensagemSucesso,
-        ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler)
+        ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler,
+        CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a alteração de status da ordem de serviço com Id: {Id} para {StatusDestino}.", id, statusDestino);
+        _logger.LogInformation("Iniciando a alteraÃ§Ã£o de status da ordem de serviÃ§o com Id: {Id} para {StatusDestino}.", id, statusDestino);
 
         var result = await statusHandler.HandleAsync(new AlterarStatusOrdemServicoCommand
         {
@@ -360,12 +391,13 @@ public sealed class OrdemServicoController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao alterar status da ordem de serviço com Id: {Id}. Erro: {Erro}", id, result.Error);
-            return result.Error == "Ordem de serviço não encontrada."
+            _logger.LogError("Erro ao alterar status da ordem de serviÃ§o com Id: {Id}. Erro: {Erro}", id, result.Error);
+            return result.Error == "Ordem de serviÃ§o nÃ£o encontrada."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível alterar o status da ordem de serviço."));
+                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel alterar o status da ordem de serviÃ§o."));
         }
 
         return Ok(ApiResponse.SuccessResponse(mensagemSucesso));
     }
 }
+

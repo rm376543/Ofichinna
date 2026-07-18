@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Veiculos.Queries;
 using Ofichina.Contracts.Common;
@@ -8,7 +8,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Veiculos.Handlers;
 
 /// <summary>
-/// Handler para obter um veículo por Id.
+/// Handler para obter um veÃ­culo por Id.
 /// </summary>
 public sealed class GetVeiculoByIdQueryHandler : IQueryHandler<GetVeiculoByIdQuery, Result<VeiculoResponse>>
 {
@@ -23,21 +23,21 @@ public sealed class GetVeiculoByIdQueryHandler : IQueryHandler<GetVeiculoByIdQue
         _logger = logger;
     }
 
-    public async Task<Result<VeiculoResponse>> HandleAsync(GetVeiculoByIdQuery query)
+    public async Task<Result<VeiculoResponse>> HandleAsync(GetVeiculoByIdQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
-            var veiculo = await _veiculoRepository.GetByIdWithPessoaAsync(query.Id);
+            var veiculo = await _veiculoRepository.GetByIdWithPessoaAsync(query.Id, cancellationToken);
 
             if (veiculo is null || veiculo.EstaExcluida())
-                return Result.Failure<VeiculoResponse>("Veículo não encontrado.");
+                return Result.Failure<VeiculoResponse>("VeÃ­culo nÃ£o encontrado.");
 
             return Result.Success(Mapear(veiculo));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao obter veículo por Id. VeiculoId: {VeiculoId}", query.Id);
-            return Result.Failure<VeiculoResponse>("Não foi possível obter o veículo.");
+            _logger.LogError(ex, "Erro ao obter veÃ­culo por Id. VeiculoId: {VeiculoId}", query.Id);
+            return Result.Failure<VeiculoResponse>("NÃ£o foi possÃ­vel obter o veÃ­culo.");
         }
     }
 
@@ -64,7 +64,7 @@ public sealed class GetVeiculoByIdQueryHandler : IQueryHandler<GetVeiculoByIdQue
             Observacoes = veiculo.Observacoes,
             Hodometro = veiculo.Hodometro.Valor,
             HodometroFormatada = veiculo.Hodometro.ToString(),
-            Ativo = veiculo.Ativo,
+            Ativo = !veiculo.EstaExcluida(),
             CreatedAt = veiculo.CreatedAt,
             UpdatedAt = veiculo.UpdatedAt,
             DeletedAt = veiculo.DeletedAt

@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pecas.Queries;
 using Ofichina.Contracts.Common;
@@ -9,7 +9,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Pecas.Handlers;
 
 /// <summary>
-/// Handler para listar peças.
+/// Handler para listar peÃ§as.
 /// </summary>
 public sealed class GetPecasQueryHandler : IQueryHandler<GetPecasQuery, Result<IReadOnlyCollection<PecaResponse>>>
 {
@@ -17,7 +17,7 @@ public sealed class GetPecasQueryHandler : IQueryHandler<GetPecasQuery, Result<I
     private readonly ILogger<GetPecasQueryHandler> _logger;
 
     /// <summary>
-    /// Inicializa uma nova instância do handler de listagem de peças.
+    /// Inicializa uma nova instÃ¢ncia do handler de listagem de peÃ§as.
     /// </summary>
     public GetPecasQueryHandler(
         IRepository<Peca> pecaRepository,
@@ -28,14 +28,13 @@ public sealed class GetPecasQueryHandler : IQueryHandler<GetPecasQuery, Result<I
     }
 
     /// <inheritdoc />
-    public async Task<Result<IReadOnlyCollection<PecaResponse>>> HandleAsync(GetPecasQuery query)
+    public async Task<Result<IReadOnlyCollection<PecaResponse>>> HandleAsync(GetPecasQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
-            var pecas = await _pecaRepository.GetAllAsync();
+            var pecas = await _pecaRepository.GetPagedAsync(query.Pagination, cancellationToken);
 
-            var resultado = pecas
-                .Where(peca => !peca.EstaExcluida())
+            var resultado = pecas.Items
                 .Select(Mapear)
                 .ToList();
 
@@ -43,8 +42,8 @@ public sealed class GetPecasQueryHandler : IQueryHandler<GetPecasQuery, Result<I
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao listar peças.");
-            return Result.Failure<IReadOnlyCollection<PecaResponse>>("Não foi possível obter as peças.");
+            _logger.LogError(ex, "Erro ao listar peÃ§as.");
+            return Result.Failure<IReadOnlyCollection<PecaResponse>>("NÃ£o foi possÃ­vel obter as peÃ§as.");
         }
     }
 
@@ -58,7 +57,7 @@ public sealed class GetPecasQueryHandler : IQueryHandler<GetPecasQuery, Result<I
             Codigo = peca.Codigo,
             Valor = peca.Valor,
             QuantidadeEstoque = peca.QuantidadeEstoque,
-            Ativo = peca.Ativo,
+            Ativo = !peca.EstaExcluida(),
             CreatedAt = peca.CreatedAt,
             UpdatedAt = peca.UpdatedAt,
             DeletedAt = peca.DeletedAt

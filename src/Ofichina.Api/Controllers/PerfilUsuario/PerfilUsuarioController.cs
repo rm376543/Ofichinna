@@ -96,7 +96,7 @@ public sealed class PerfilUsuarioController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<string>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<string>>>> ObterPerfisAsync(Guid usuarioId)
+    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<string>>>> ObterPerfisAsync(Guid usuarioId, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Consultando perfis do usuário. UsuarioId: {UsuarioId}", usuarioId);
 

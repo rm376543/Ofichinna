@@ -25,8 +25,5 @@ public class ServicoConfiguration : IEntityTypeConfiguration<Servico>
         builder.Property(s => s.Valor)
             .HasColumnType("decimal(10,2)")
             .IsRequired();
-
-        builder.Property(s => s.Ativo)
-            .IsRequired();
     }
 }

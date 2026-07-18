@@ -9,11 +9,15 @@ namespace Ofichina.Application.UseCases.Agendamentos.Commands;
 /// </summary>
 public sealed class CreateAgendamentoCommand : ICommand<Result<AgendamentoResponse>>
 {
+    public Guid PessoaId { get; init; }
+
+    public Guid ConsultorPessoaId { get; init; }
+
     public Guid VeiculoId { get; init; }
 
-    public DateTime DataHoraPreferida { get; init; }
+    public DateOnly DataAgendamento { get; init; }
 
-    public string Motivo { get; init; } = string.Empty;
+    public TimeOnly HorarioAgendamento { get; init; }
 
-    public string? Observacoes { get; init; }
+    public string? Descricao { get; init; }
 }

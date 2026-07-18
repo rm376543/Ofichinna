@@ -13,11 +13,11 @@ namespace Ofichina.Infrastructure.Repositories
             _context = context;
         }
 
-        public Task<Pessoa?> GetByUsuarioIdAsync(Guid usuarioId)
+        public Task<Pessoa?> GetByUsuarioIdAsync(Guid usuarioId, CancellationToken cancellationToken = default)
         {
             return _context.Pessoas
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.UsuarioId == usuarioId && !x.EstaExcluida());
+                .FirstOrDefaultAsync(x => x.UsuarioId == usuarioId, cancellationToken);
         }
     }
 }

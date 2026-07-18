@@ -14,6 +14,6 @@ public sealed class ObterPerfisDoUsuarioQueryHandler
         _perfilService = perfilService;
     }
 
-    public Task<IReadOnlyCollection<string>> HandleAsync(ObterPerfisDoUsuarioQuery query)
+    public Task<IReadOnlyCollection<string>> HandleAsync(ObterPerfisDoUsuarioQuery query, CancellationToken cancellationToken = default)
         => _perfilService.ObterPerfisAsync(query.UsuarioId);
 }

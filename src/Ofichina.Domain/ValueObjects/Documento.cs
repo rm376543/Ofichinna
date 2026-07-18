@@ -1,32 +1,36 @@
-﻿namespace Ofichina.Domain.ValueObjects
+﻿using Ofichina.Domain.Exceptions;
+
+namespace Ofichina.Domain.ValueObjects;
+
+public enum TipoDocumento
 {
-    public enum TipoDocumento
+    CPF = 1,
+    CNPJ = 2
+}
+
+public abstract class Documento : ValueObject
+{
+    public string Numero { get; protected set; } = string.Empty;
+
+    public abstract TipoDocumento Tipo { get; }
+
+    protected Documento()
     {
-        CPF = 1,
-        CNPJ = 2
     }
 
-    public abstract class Documento : ValueObject
+    protected Documento(string numero)
     {
-        public string Numero { get; protected set; } = string.Empty;
+        if (string.IsNullOrWhiteSpace(numero))
+            throw new DomainException("Número do documento é obrigatório.");
 
-        public abstract TipoDocumento Tipo { get; }
-
-        protected Documento()
-        {
-        }
-
-        protected Documento(string numero)
-        {
-            Numero = numero;
-        }
-
-        protected override IEnumerable<object> GetAtomicValues()
-        {
-            yield return Numero;
-            yield return Tipo;
-        }
-
-        public override string ToString() => Numero;
+        Numero = numero.Trim();
     }
+
+    protected override IEnumerable<object> GetAtomicValues()
+    {
+        yield return Numero;
+        yield return Tipo;
+    }
+
+    public override string ToString() => Numero;
 }

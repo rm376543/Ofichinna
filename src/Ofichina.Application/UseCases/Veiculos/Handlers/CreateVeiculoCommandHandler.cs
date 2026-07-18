@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Contracts.Common;
@@ -10,7 +10,7 @@ using Ofichina.Domain.ValueObjects;
 namespace Ofichina.Application.UseCases.Veiculos.Handlers;
 
 /// <summary>
-/// Handler para criação de veículo.
+/// Handler para criaÃ§Ã£o de veÃ­culo.
 /// </summary>
 public sealed class CreateVeiculoCommandHandler : ICommandHandler<CreateVeiculoCommand, Result<Guid>>
 {
@@ -31,24 +31,24 @@ public sealed class CreateVeiculoCommandHandler : ICommandHandler<CreateVeiculoC
         _logger = logger;
     }
 
-    public async Task<Result<Guid>> HandleAsync(CreateVeiculoCommand command)
+    public async Task<Result<Guid>> HandleAsync(CreateVeiculoCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
-            _logger.LogInformation("Iniciando criação de veículo. Placa: {Placa}", command.Placa);
+            _logger.LogInformation("Iniciando criaÃ§Ã£o de veÃ­culo. Placa: {Placa}", command.Placa);
 
             var placa = new Placa(command.Placa);
 
-            var pessoa = await _pessoaRepository.GetByIdAsync(command.PessoaId);
+            var pessoa = await _pessoaRepository.GetByIdAsync(command.PessoaId, cancellationToken);
 
             if (pessoa is null || pessoa.EstaExcluida())
-                return Result.Failure<Guid>("Pessoa não encontrada.");
+                return Result.Failure<Guid>("Pessoa nÃ£o encontrada.");
 
-            var existente = (await _veiculoRepository.GetAllWithPessoaAsync())
+            var existente = (await _veiculoRepository.GetAllWithPessoaAsync(cancellationToken))
                 .FirstOrDefault(v => v.Placa.Numero == placa.Numero);
 
             if (existente is not null)
-                return Result.Failure<Guid>("Já existe um veículo cadastrado com esta placa.");
+                return Result.Failure<Guid>("JÃ¡ existe um veÃ­culo cadastrado com esta placa.");
 
             var veiculo = new Veiculo(
                 command.PessoaId,
@@ -58,23 +58,25 @@ public sealed class CreateVeiculoCommandHandler : ICommandHandler<CreateVeiculoC
                 command.AnoFabricacao,
                 command.Cor ?? string.Empty,
                 command.Observacoes,
-                new Hodometro(command.Hodometro),
-                command.Ativo);
+                new Hodometro(command.Hodometro));
 
-            await _veiculoRepository.AddAsync(veiculo);
+            if (!command.Ativo)
+                veiculo.Desativar();
+
+            await _veiculoRepository.AddAsync(veiculo, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
             return Result.Success(veiculo.Id);
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domínio ao criar veículo.");
+            _logger.LogWarning(ex, "Erro de domÃ­nio ao criar veÃ­culo.");
             return Result.Failure<Guid>(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao criar veículo.");
-            return Result.Failure<Guid>("Não foi possível criar o veículo.");
+            _logger.LogError(ex, "Erro ao criar veÃ­culo.");
+            return Result.Failure<Guid>("NÃ£o foi possÃ­vel criar o veÃ­culo.");
         }
     }
 }

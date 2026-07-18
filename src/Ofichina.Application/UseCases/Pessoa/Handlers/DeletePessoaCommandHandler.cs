@@ -25,13 +25,13 @@ public sealed class DeletePessoaCommandHandler : ICommandHandler<DeletePessoaCom
         _logger = logger;
     }
 
-    public async Task<Result> HandleAsync(DeletePessoaCommand command)
+    public async Task<Result> HandleAsync(DeletePessoaCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Iniciando desativação da pessoa com Id: {PessoaId}.", command.Id);
 
-            var pessoa = await _repository.GetByIdAsync(command.Id);
+            var pessoa = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
             if (pessoa is null || pessoa.EstaExcluida())
             {
@@ -41,7 +41,7 @@ public sealed class DeletePessoaCommandHandler : ICommandHandler<DeletePessoaCom
 
             pessoa.Desativar();
 
-            await _repository.UpdateAsync(pessoa);
+            await _repository.UpdateAsync(pessoa, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Pessoa desativada com sucesso. PessoaId: {PessoaId}", command.Id);
@@ -54,3 +54,4 @@ public sealed class DeletePessoaCommandHandler : ICommandHandler<DeletePessoaCom
         }
     }
 }
+

@@ -34,9 +34,6 @@ public sealed class PecaConfiguration : IEntityTypeConfiguration<Peca>
         builder.Property(p => p.QuantidadeEstoque)
             .IsRequired();
 
-        builder.Property(p => p.Ativo)
-            .IsRequired();
-
         builder.HasIndex(p => p.Codigo)
             .IsUnique();
     }

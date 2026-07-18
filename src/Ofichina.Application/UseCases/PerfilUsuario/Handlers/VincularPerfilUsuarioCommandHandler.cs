@@ -30,20 +30,20 @@ public sealed class VincularPerfilUsuarioCommandHandler : ICommandHandler<Vincul
         _logger = logger;
     }
 
-    public async Task<Result<VincularPerfilUsuarioResponse>> HandleAsync(VincularPerfilUsuarioCommand command)
+    public async Task<Result<VincularPerfilUsuarioResponse>> HandleAsync(VincularPerfilUsuarioCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Iniciando o processo de vinculação do perfil ao usuário. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}", command.UsuarioId, command.PerfilId);
 
-            var usuario = await _usuarioRepository.GetByIdAsync(command.UsuarioId);
+            var usuario = await _usuarioRepository.GetByIdAsync(command.UsuarioId, cancellationToken);
             if (usuario is null)
             {
                 _logger.LogWarning("Usuário não encontrado. UsuarioId: {UsuarioId}", command.UsuarioId);
                 return Result.Failure<VincularPerfilUsuarioResponse>("Usuário não encontrado.");
             }
 
-            var perfil = await _perfilRepository.GetByIdAsync(command.PerfilId);
+            var perfil = await _perfilRepository.GetByIdAsync(command.PerfilId, cancellationToken);
             if (perfil is null)
             {
                 _logger.LogWarning("Perfil não encontrado. PerfilId: {PerfilId}", command.PerfilId);
@@ -57,8 +57,7 @@ public sealed class VincularPerfilUsuarioCommandHandler : ICommandHandler<Vincul
             }
 
             var vinculoExistente = await _usuarioPerfilRepository.GetByUsuarioIdPerfilIdAsync(
-                command.UsuarioId,
-                command.PerfilId);
+                command.UsuarioId, command.PerfilId, cancellationToken);
 
             if (vinculoExistente is not null)
             {
@@ -68,7 +67,7 @@ public sealed class VincularPerfilUsuarioCommandHandler : ICommandHandler<Vincul
 
             var vinculo = new UsuarioPerfil(command.UsuarioId, command.PerfilId);
 
-            await _usuarioPerfilRepository.AddAsync(vinculo);
+            await _usuarioPerfilRepository.AddAsync(vinculo, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Perfil vinculado com sucesso ao usuário. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}", command.UsuarioId, command.PerfilId);

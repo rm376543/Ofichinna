@@ -37,7 +37,7 @@ public sealed class CadastrarUsuarioCommandHandler : ICommandHandler<CadastrarUs
         _logger = logger;
     }
 
-    public async Task<Result<AutenticacaoResponse>> HandleAsync(CadastrarUsuarioCommand command)
+    public async Task<Result<AutenticacaoResponse>> HandleAsync(CadastrarUsuarioCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -55,7 +55,7 @@ public sealed class CadastrarUsuarioCommandHandler : ICommandHandler<CadastrarUs
 
             var usuario = new Usuario(email, _senhaHasher.GerarHash(command.Senha));
 
-            await _usuarioRepository.AddAsync(usuario);
+            await _usuarioRepository.AddAsync(usuario, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
             var perfis = Array.Empty<string>();

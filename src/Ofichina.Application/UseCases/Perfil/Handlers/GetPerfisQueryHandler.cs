@@ -21,15 +21,15 @@ public class GetPerfisQueryHandler : IQueryHandler<GetPerfisQuery, Result<IReadO
         _logger = logger;
     }
 
-    public async Task<Result<IReadOnlyCollection<PerfilResponse>>> HandleAsync(GetPerfisQuery query)
+    public async Task<Result<IReadOnlyCollection<PerfilResponse>>> HandleAsync(GetPerfisQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Iniciando a obtenção de todos os perfis.");
 
-            var perfis = await _repository.GetAllAsync();
+            var perfis = await _repository.GetPagedAsync(query.Pagination, cancellationToken);
 
-            var resultado = perfis
+            var resultado = perfis.Items
                 .Select(perfil => new PerfilResponse
                 {
                     Id = perfil.Id,

@@ -10,10 +10,10 @@ public interface IPerfilRepository : IRepository<Perfil>
     /// <summary>
     /// Busca um perfil pelo nome do perfil.
     /// </summary>
-    Task<Perfil?> GetByNomeAsync(string nomePerfil);
+    Task<Perfil?> GetByNomeAsync(string nomePerfil, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Lista todos os perfis ativos.
     /// </summary>
-    Task<IEnumerable<Perfil>> GetAllAtivosAsync();
+    Task<IEnumerable<Perfil>> GetAllAtivosAsync(CancellationToken cancellationToken = default);
 }

@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Contracts.Common;
@@ -9,7 +9,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 
 /// <summary>
-/// Handler para listar ordens de serviço.
+/// Handler para listar ordens de serviÃ§o.
 /// </summary>
 public sealed class GetOrdensServicoQueryHandler : IQueryHandler<GetOrdensServicoQuery, Result<IReadOnlyCollection<OrdemServicoResponse>>>
 {
@@ -24,14 +24,13 @@ public sealed class GetOrdensServicoQueryHandler : IQueryHandler<GetOrdensServic
         _logger = logger;
     }
 
-    public async Task<Result<IReadOnlyCollection<OrdemServicoResponse>>> HandleAsync(GetOrdensServicoQuery query)
+    public async Task<Result<IReadOnlyCollection<OrdemServicoResponse>>> HandleAsync(GetOrdensServicoQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
-            var ordensServico = await _ordemServicoRepository.GetAllAsync();
+            var ordensServico = await _ordemServicoRepository.GetPagedAsync(query.Pagination, cancellationToken);
 
-            var resultado = ordensServico
-                .Where(ordemServico => !ordemServico.EstaExcluida())
+            var resultado = ordensServico.Items
                 .Select(Mapear)
                 .ToList();
 
@@ -39,8 +38,8 @@ public sealed class GetOrdensServicoQueryHandler : IQueryHandler<GetOrdensServic
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao listar ordens de serviço.");
-            return Result.Failure<IReadOnlyCollection<OrdemServicoResponse>>("Não foi possível obter as ordens de serviço.");
+            _logger.LogError(ex, "Erro ao listar ordens de serviÃ§o.");
+            return Result.Failure<IReadOnlyCollection<OrdemServicoResponse>>("NÃ£o foi possÃ­vel obter as ordens de serviÃ§o.");
         }
     }
 
@@ -63,3 +62,4 @@ public sealed class GetOrdensServicoQueryHandler : IQueryHandler<GetOrdensServic
         };
     }
 }
+

@@ -13,6 +13,9 @@ public class ItemPecaConfiguration : IEntityTypeConfiguration<ItemPeca>
 
         builder.HasKey(i => i.Id);
 
+        builder.Property(i => i.PecaId)
+            .IsRequired();
+
         builder.Property(i => i.OrdemServicoId)
             .IsRequired();
 
@@ -39,5 +42,12 @@ public class ItemPecaConfiguration : IEntityTypeConfiguration<ItemPeca>
             .WithMany()
             .HasForeignKey(i => i.OrdemServicoId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(i => i.Peca)
+            .WithMany()
+            .HasForeignKey(i => i.PecaId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(i => i.PecaId);
     }
 }

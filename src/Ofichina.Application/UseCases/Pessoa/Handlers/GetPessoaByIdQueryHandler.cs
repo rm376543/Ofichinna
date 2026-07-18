@@ -21,13 +21,13 @@ public sealed class GetPessoaByIdQueryHandler : IQueryHandler<GetPessoaByIdQuery
         _logger = logger;
     }
 
-    public async Task<Result<PessoaResponse>> HandleAsync(GetPessoaByIdQuery query)
+    public async Task<Result<PessoaResponse>> HandleAsync(GetPessoaByIdQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Iniciando a obtenção da pessoa com Id: {PessoaId}.", query.Id);
 
-            var pessoa = await _repository.GetByIdAsync(query.Id);
+            var pessoa = await _repository.GetByIdAsync(query.Id, cancellationToken);
 
             if (pessoa is null || pessoa.EstaExcluida())
             {
@@ -66,3 +66,4 @@ public sealed class GetPessoaByIdQueryHandler : IQueryHandler<GetPessoaByIdQuery
         };
     }
 }
+

@@ -21,16 +21,15 @@ public sealed class GetPessoaQueryHandler : IQueryHandler<GetPessoasQuery, Resul
         _logger = logger;
     }
 
-    public async Task<Result<IReadOnlyCollection<PessoaResponse>>> HandleAsync(GetPessoasQuery query)
+    public async Task<Result<IReadOnlyCollection<PessoaResponse>>> HandleAsync(GetPessoasQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
             _logger.LogInformation("Iniciando a obtenção de todas as pessoas.");
 
-            var pessoas = await _repository.GetAllAsync();
+            var pessoas = await _repository.GetPagedAsync(query.Pagination, cancellationToken);
 
-            var resultado = pessoas
-                .Where(pessoa => !pessoa.EstaExcluida())
+            var resultado = pessoas.Items
                 .Select(Mapear)
                 .ToList();
 
@@ -67,3 +66,4 @@ public sealed class GetPessoaQueryHandler : IQueryHandler<GetPessoasQuery, Resul
         };
     }
 }
+

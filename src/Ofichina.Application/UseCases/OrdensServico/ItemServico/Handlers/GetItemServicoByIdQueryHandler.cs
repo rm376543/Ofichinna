@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Queries;
 using Ofichina.Contracts.Common;
@@ -9,7 +9,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.OrdensServico.ItemServico.Handlers;
 
 /// <summary>
-/// Handler para obter um item de serviço por identificador.
+/// Handler para obter um item de serviÃ§o por identificador.
 /// </summary>
 public sealed class GetItemServicoByIdQueryHandler : IQueryHandler<GetItemServicoByIdQuery, Result<ItemServicoResponse>>
 {
@@ -24,24 +24,24 @@ public sealed class GetItemServicoByIdQueryHandler : IQueryHandler<GetItemServic
         _logger = logger;
     }
 
-    public async Task<Result<ItemServicoResponse>> HandleAsync(GetItemServicoByIdQuery query)
+    public async Task<Result<ItemServicoResponse>> HandleAsync(GetItemServicoByIdQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
-            var ordemServico = await _ordemServicoRepository.GetByIdAsync(query.OrdemServicoId, includeItens: true);
+            var ordemServico = await _ordemServicoRepository.GetByIdAsync(query.OrdemServicoId, includeItens: true, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
-                return Result.Failure<ItemServicoResponse>("Ordem de serviço não encontrada.");
+                return Result.Failure<ItemServicoResponse>("Ordem de serviÃ§o nÃ£o encontrada.");
 
             var item = ordemServico.ObterServico(query.Id);
             if (item is null || item.EstaExcluida())
-                return Result.Failure<ItemServicoResponse>("Item de serviço não encontrado.");
+                return Result.Failure<ItemServicoResponse>("Item de serviÃ§o nÃ£o encontrado.");
 
             return Result.Success(Mapear(item));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao obter item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", query.OrdemServicoId, query.Id);
-            return Result.Failure<ItemServicoResponse>("Não foi possível obter o item de serviço.");
+            _logger.LogError(ex, "Erro ao obter item de serviÃ§o. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", query.OrdemServicoId, query.Id);
+            return Result.Failure<ItemServicoResponse>("NÃ£o foi possÃ­vel obter o item de serviÃ§o.");
         }
     }
 
@@ -61,3 +61,4 @@ public sealed class GetItemServicoByIdQueryHandler : IQueryHandler<GetItemServic
         };
     }
 }
+
