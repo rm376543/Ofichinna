@@ -1,4 +1,4 @@
-Ôªøusing FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.Abstractions;
@@ -17,7 +17,7 @@ namespace Ofichina.Api.Controllers.PerfilUsuario;
 public sealed class PerfilUsuarioController : ControllerBase
 {
     private readonly IValidator<VincularPerfilUsuarioRequest> _vincularValidator;
-    private readonly ICommandHandler<VincularPerfilUsuarioCommand, Result<VincularPerfilUsuarioResponse >> _vincularHandler;
+    private readonly ICommandHandler<VincularPerfilUsuarioCommand, Result<VincularPerfilUsuarioResponse>> _vincularHandler;
     private readonly IQueryHandler<ObterPerfisDoUsuarioQuery, IReadOnlyCollection<string>> _obterPerfisHandler;
     private readonly ILogger<PerfilUsuarioController> _logger;
 
@@ -34,14 +34,14 @@ public sealed class PerfilUsuarioController : ControllerBase
     }
 
     /// <summary>
-    /// Vincula um perfil a um usu√°rio existente.
+    /// Vincula um perfil a um usu·rio existente.
     /// </summary>
-    /// <param name="usuarioId">Identificador do usu√°rio.</param>
+    /// <param name="usuarioId">Identificador do usu·rio.</param>
     /// <param name="perfilId">Identificador do perfil.</param>
-    /// <param name="cancellationToken"></param>
+    /// <param name="cancellationToken">Token de cancelamento da operaÁ„o.</param>
     /// <returns>
-    /// Retorna sucesso quando o v√≠nculo √© criado;
-    /// retorna erro quando usu√°rio, perfil ou v√≠nculo j√° existirem.
+    /// Retorna sucesso quando o vÌnculo È criado;
+    /// retorna erro quando usu·rio, perfil ou vÌnculo j· existirem.
     /// </returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPost("{perfilId:guid}")]
@@ -54,7 +54,7 @@ public sealed class PerfilUsuarioController : ControllerBase
         Guid perfilId,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando vincula√ß√£o de perfil. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}", usuarioId, perfilId);
+        _logger.LogInformation("Iniciando vinculaÁ„o de perfil. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}", usuarioId, perfilId);
 
         var request = new VincularPerfilUsuarioRequest
         {
@@ -66,20 +66,20 @@ public sealed class PerfilUsuarioController : ControllerBase
 
         if (!validation.IsValid)
         {
-            _logger.LogWarning("Valida√ß√£o falhou ao vincular perfil. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}, Erros: {Errors}",
+            _logger.LogWarning("ValidaÁ„o falhou ao vincular perfil. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}, Erros: {Errors}",
                 usuarioId, perfilId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
         var result = await _vincularHandler.HandleAsync(new VincularPerfilUsuarioCommand(
             request.UsuarioId,
-            request.PerfilId));
+            request.PerfilId), cancellationToken);
 
         if (!result.IsSuccess)
         {
             _logger.LogError("Falha ao vincular perfil. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}, Erro: {Error}",
                 usuarioId, perfilId, result.Error);
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "N√£o foi poss√≠vel vincular o perfil."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "N„o foi possÌvel vincular o perfil."));
         }
 
         _logger.LogInformation("Perfil vinculado com sucesso. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}", usuarioId, perfilId);
@@ -87,23 +87,25 @@ public sealed class PerfilUsuarioController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna todos os perfis vinculados a um usu√°rio.
+    /// Retorna todos os perfis vinculados a um usu·rio.
     /// </summary>
-    /// <param name="usuarioId">Identificador do usu√°rio.</param>
-    /// <returns>Lista com os c√≥digos dos perfis vinculados ao usu√°rio.</returns>
+    /// <param name="usuarioId">Identificador do usu·rio.</param>
+    /// <returns>Lista com os cÛdigos dos perfis vinculados ao usu·rio.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<string>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<string>>>> ObterPerfisAsync(Guid usuarioId, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<string>>>> ObterPerfisAsync(Guid usuarioId)
     {
-        _logger.LogInformation("Consultando perfis do usu√°rio. UsuarioId: {UsuarioId}", usuarioId);
+        _logger.LogInformation("Consultando perfis do usu·rio. UsuarioId: {UsuarioId}", usuarioId);
 
-        var perfis = await _obterPerfisHandler.HandleAsync(new ObterPerfisDoUsuarioQuery(usuarioId));
+        var perfis = await _obterPerfisHandler.HandleAsync(new ObterPerfisDoUsuarioQuery(usuarioId), HttpContext.RequestAborted);
 
         _logger.LogInformation("Perfis obtidos com sucesso. UsuarioId: {UsuarioId}, Quantidade: {Quantidade}", usuarioId, perfis.Count);
 
         return Ok(ApiResponse<IReadOnlyCollection<string>>.SuccessResponse(perfis));
     }
 }
+
+

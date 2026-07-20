@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.Abstractions;
@@ -12,7 +12,7 @@ using Ofichina.Contracts.Responses.Pecas;
 namespace Ofichina.Api.Controllers.Pecas;
 
 /// <summary>
-/// Controller responsÃ¡vel pelo CRUD de peÃ§as.
+/// Controller responsável pelo CRUD de peças.
 /// </summary>
 [Authorize]
 [ApiController]
@@ -30,7 +30,7 @@ public sealed class PecaController : ControllerBase
 
 #pragma warning disable S107
     /// <summary>
-    /// Inicializa uma nova instÃ¢ncia do controller de peÃ§as.
+    /// Inicializa uma nova instância do controller de peças.
     /// </summary>
     public PecaController(
         IValidator<CreatePecaRequest> createValidator,
@@ -54,10 +54,10 @@ public sealed class PecaController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna todas as peÃ§as cadastradas.
+    /// Retorna todas as peças cadastradas.
     /// </summary>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Lista de peÃ§as.</returns>
+    /// <returns>Lista de peças.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<PecaResponse>>), StatusCodes.Status200OK)]
@@ -65,25 +65,25 @@ public sealed class PecaController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse<IReadOnlyCollection<PecaResponse>>>> BuscarPecas(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenÃ§Ã£o de todas as peÃ§as.");
+        _logger.LogInformation("Iniciando a obtenção de todas as peças.");
 
-        var result = await _getAllHandler.HandleAsync(new GetPecasQuery());
+        var result = await _getAllHandler.HandleAsync(new GetPecasQuery(), cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao obter as peÃ§as: {Erro}", result.Error);
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel obter as peÃ§as."));
+            _logger.LogError("Erro ao obter as peças: {Erro}", result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter as peças."));
         }
 
         return Ok(ApiResponse<IReadOnlyCollection<PecaResponse>>.SuccessResponse(result.Value ?? []));
     }
 
     /// <summary>
-    /// Retorna uma peÃ§a pelo identificador.
+    /// Retorna uma peça pelo identificador.
     /// </summary>
-    /// <param name="id">Identificador da peÃ§a.</param>
+    /// <param name="id">Identificador da peça.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>PeÃ§a encontrada ou erro 404.</returns>
+    /// <returns>Peça encontrada ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PecaResponse>), StatusCodes.Status200OK)]
@@ -92,25 +92,25 @@ public sealed class PecaController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<PecaResponse>>> BuscarPecaPorId(Guid id, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenÃ§Ã£o da peÃ§a com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a obtenção da peça com Id: {Id}", id);
 
-        var result = await _getByIdHandler.HandleAsync(new GetPecaByIdQuery { Id = id });
+        var result = await _getByIdHandler.HandleAsync(new GetPecaByIdQuery { Id = id }, cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
         {
-            _logger.LogError("PeÃ§a com Id: {Id} nÃ£o encontrada.", id);
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "PeÃ§a nÃ£o encontrada."));
+            _logger.LogError("Peça com Id: {Id} não encontrada.", id);
+            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Peça não encontrada."));
         }
 
         return Ok(ApiResponse<PecaResponse>.SuccessResponse(result.Value));
     }
 
     /// <summary>
-    /// Cria uma nova peÃ§a.
+    /// Cria uma nova peça.
     /// </summary>
-    /// <param name="request">Dados da peÃ§a.</param>
+    /// <param name="request">Dados da peça.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Id da peÃ§a criada ou erros de validaÃ§Ã£o.</returns>
+    /// <returns>Id da peça criada ou erros de validação.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
@@ -119,13 +119,13 @@ public sealed class PecaController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse<Guid>>> CriarPeca([FromBody] CreatePecaRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a criaÃ§Ã£o de uma nova peÃ§a. Nome: {Nome}", request.Nome);
+        _logger.LogInformation("Iniciando a criação de uma nova peça. Nome: {Nome}", request.Nome);
 
         var validation = await _createValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
         {
-            _logger.LogError("Erro ao validar a criaÃ§Ã£o da peÃ§a. Erros: {Erros}", string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            _logger.LogError("Erro ao validar a criação da peça. Erros: {Erros}", string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
@@ -137,24 +137,24 @@ public sealed class PecaController : ControllerBase
             Valor = request.Valor,
             QuantidadeEstoque = request.QuantidadeEstoque,
             Ativo = request.Ativo
-        });
+        }, cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao criar a peÃ§a. Erro: {Erro}", result.Error);
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel criar a peÃ§a."));
+            _logger.LogError("Erro ao criar a peça. Erro: {Erro}", result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar a peça."));
         }
 
-        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "PeÃ§a criada com sucesso."));
+        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Peça criada com sucesso."));
     }
 
     /// <summary>
-    /// Atualiza uma peÃ§a existente.
+    /// Atualiza uma peça existente.
     /// </summary>
-    /// <param name="id">Identificador da peÃ§a.</param>
-    /// <param name="request">Dados atualizados da peÃ§a.</param>
+    /// <param name="id">Identificador da peça.</param>
+    /// <param name="request">Dados atualizados da peça.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso, erro de validaÃ§Ã£o ou peÃ§a nÃ£o encontrada.</returns>
+    /// <returns>Mensagem de sucesso, erro de validação ou peça não encontrada.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
@@ -164,7 +164,7 @@ public sealed class PecaController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> AtualizarPeca(Guid id, [FromBody] UpdatePecaRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualizaÃ§Ã£o da peÃ§a com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a atualização da peça com Id: {Id}", id);
 
         request.Id = id;
 
@@ -172,7 +172,7 @@ public sealed class PecaController : ControllerBase
 
         if (!validation.IsValid)
         {
-            _logger.LogError("Erro ao validar a atualizaÃ§Ã£o da peÃ§a com Id: {Id}. Erros: {Erros}", id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            _logger.LogError("Erro ao validar a atualização da peça com Id: {Id}. Erros: {Erros}", id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
@@ -185,23 +185,23 @@ public sealed class PecaController : ControllerBase
             Valor = request.Valor,
             QuantidadeEstoque = request.QuantidadeEstoque,
             Ativo = request.Ativo
-        });
+        }, cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao atualizar a peÃ§a com Id: {Id}. Erro: {Erro}", id, result.Error);
-            return result.Error == "PeÃ§a nÃ£o encontrada."
+            _logger.LogError("Erro ao atualizar a peça com Id: {Id}. Erro: {Erro}", id, result.Error);
+            return result.Error == "Peça não encontrada."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel atualizar a peÃ§a."));
+                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a peça."));
         }
 
-        return Ok(ApiResponse.SuccessResponse("PeÃ§a atualizada com sucesso."));
+        return Ok(ApiResponse.SuccessResponse("Peça atualizada com sucesso."));
     }
 
     /// <summary>
-    /// Desativa e remove logicamente uma peÃ§a existente.
+    /// Desativa e remove logicamente uma peça existente.
     /// </summary>
-    /// <param name="id">Identificador da peÃ§a.</param>
+    /// <param name="id">Identificador da peça.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -212,16 +212,18 @@ public sealed class PecaController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> DeletarPeca(Guid id, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a desativaÃ§Ã£o da peÃ§a com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a desativação da peça com Id: {Id}", id);
 
-        var result = await _deleteHandler.HandleAsync(new DeletePecaCommand { Id = id });
+        var result = await _deleteHandler.HandleAsync(new DeletePecaCommand { Id = id }, cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao desativar a peÃ§a com Id: {Id}. Erro: {Erro}", id, result.Error);
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "PeÃ§a nÃ£o encontrada."));
+            _logger.LogError("Erro ao desativar a peça com Id: {Id}. Erro: {Erro}", id, result.Error);
+            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Peça não encontrada."));
         }
 
-        return Ok(ApiResponse.SuccessResponse("PeÃ§a removida com sucesso."));
+        return Ok(ApiResponse.SuccessResponse("Peça removida com sucesso."));
     }
 }
+
+
