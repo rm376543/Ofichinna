@@ -1,4 +1,4 @@
-﻿using NetArchTest.Rules;
+using NetArchTest.Rules;
 using Ofichina.Contracts.Requests;
 
 namespace Ofichina.ArchitectureTests.Naming;

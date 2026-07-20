@@ -1,4 +1,4 @@
-﻿using NetArchTest.Rules;
+using NetArchTest.Rules;
 using Ofichina.Domain.Entities;
 
 namespace Ofichina.ArchitectureTests.Domain;

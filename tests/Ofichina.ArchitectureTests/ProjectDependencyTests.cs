@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using NetArchTest.Rules;
 using Ofichina.Api.Modules;
 using Ofichina.Application.DependencyInjection;
@@ -87,7 +87,7 @@ public class ProjectDependencyTests
 
             Assert.True(
                 result.IsSuccessful,
-                $"A assembly '{assembly.GetName().Name}' não deve depender de '{forbiddenNamespace}'.");
+                $"A assembly '{assembly.GetName().Name}' n�o deve depender de '{forbiddenNamespace}'.");
         }
     }
 }

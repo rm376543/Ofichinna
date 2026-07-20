@@ -1,6 +1,5 @@
-﻿using NetArchTest.Rules;
+using NetArchTest.Rules;
 using Ofichina.Api.Controllers.Autenticacao;
-using Ofichina.Api.Controllers.Perfis;
 
 namespace Ofichina.ArchitectureTests.Layers;
 

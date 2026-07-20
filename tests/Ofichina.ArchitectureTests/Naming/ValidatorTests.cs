@@ -1,5 +1,4 @@
-﻿using NetArchTest.Rules;
-using Ofichina.Application.Validators;
+using NetArchTest.Rules;
 using Ofichina.Authentication.Validators;
 
 namespace Ofichina.ArchitectureTests.Naming;
