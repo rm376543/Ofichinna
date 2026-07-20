@@ -16,6 +16,11 @@ public class Permissao : Entity
 
     public Permissao(string codigo, string descricao)
     {
+        Atualizar(codigo, descricao);
+    }
+
+    public void Atualizar(string codigo, string descricao)
+    {
         if (string.IsNullOrWhiteSpace(codigo))
             throw new DomainException("O código da permissão deve ser informado.");
 

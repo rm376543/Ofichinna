@@ -5,7 +5,7 @@ using Ofichina.Domain.Common;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Veiculo;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces;
 
 namespace Ofichina.Application.UseCases.Veiculos.Handlers;
 

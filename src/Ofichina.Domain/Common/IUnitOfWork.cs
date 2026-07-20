@@ -1,5 +1,4 @@
-namespace Ofichina.Domain.Interfaces;
-
+namespace Ofichina.Domain.Common;
 /// <summary>
 /// Interface para o padrão Unit of Work.
 /// Gerencia transações e coordena múltiplos repositórios.

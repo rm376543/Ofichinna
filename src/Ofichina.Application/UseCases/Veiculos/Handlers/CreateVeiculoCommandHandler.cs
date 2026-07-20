@@ -4,8 +4,9 @@ using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Domain.ValueObjects;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Veiculos.Handlers;
 

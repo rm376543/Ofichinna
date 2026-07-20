@@ -2,15 +2,15 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Commands;
 using Ofichina.Contracts.Common;
-using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Domain.Common;
+using Ofichina.Application.Abstractions.Interfaces;
 
 namespace Ofichina.Application.UseCases.OrdensServico.ItemServico.Handlers;
 
 /// <summary>
-/// Handler para criaÃ§Ã£o de item de serviÃ§o.
+/// Handler para criacao de item de servico.
 /// </summary>
 public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItemServicoCommand, Result<Guid>>
 {

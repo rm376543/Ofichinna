@@ -1,7 +1,7 @@
 using Ofichina.Domain.Common;
 using Ofichina.Domain.Aggregates;
 
-namespace Ofichina.Domain.Interfaces;
+namespace Ofichina.Application.Abstractions.Interfaces;
 
 public interface IAgendamentoRepository : IRepository<Agendamento>
 {

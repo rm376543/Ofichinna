@@ -7,7 +7,8 @@ using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Authentication.Abstractions;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 

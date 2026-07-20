@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Ofichina.Domain.Common;
 using Ofichina.Domain.Aggregates;
-using Ofichina.Domain.Entities;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Infrastructure.Persistence;
 
 namespace Ofichina.Infrastructure.Repositories;

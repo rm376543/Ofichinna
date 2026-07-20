@@ -2,14 +2,14 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Commands;
 using Ofichina.Contracts.Common;
-using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.OrdensServico.ItemServico.Handlers;
 
 /// <summary>
-/// Handler para atualizaÃ§Ã£o de item de serviÃ§o.
+/// Handler para atualizacao de item de servico.
 /// </summary>
 public sealed class UpdateItemServicoCommandHandler : ICommandHandler<UpdateItemServicoCommand, Result>
 {

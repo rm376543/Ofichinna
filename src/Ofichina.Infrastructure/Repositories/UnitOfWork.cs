@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore.Storage;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Domain.Common;
 using Ofichina.Infrastructure.Persistence;
 
 namespace Ofichina.Infrastructure.Repositories;

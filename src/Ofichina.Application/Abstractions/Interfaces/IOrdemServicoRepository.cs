@@ -1,6 +1,7 @@
 using Ofichina.Domain.Aggregates;
+using Ofichina.Domain.Common;
 
-namespace Ofichina.Domain.Interfaces;
+namespace Ofichina.Application.Abstractions.Interfaces;
 
 /// <summary>
 /// Repositório específico para consultas da ordem de serviço com seus itens.

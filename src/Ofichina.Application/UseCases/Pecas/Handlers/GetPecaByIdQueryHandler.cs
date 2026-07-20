@@ -4,7 +4,7 @@ using Ofichina.Application.UseCases.Pecas.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Pecas;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Pecas.Handlers;
 

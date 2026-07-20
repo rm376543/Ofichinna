@@ -7,8 +7,8 @@ using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Enums;
 using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Interfaces;
 using Ofichina.Domain.ValueObjects;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Autenticacao.Handlers;
 
