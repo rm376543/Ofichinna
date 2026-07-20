@@ -1,7 +1,7 @@
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Queries;
 using Ofichina.Contracts.Common;
@@ -21,15 +21,18 @@ public sealed class ItemServicoController : ControllerBase
 {
     private readonly IValidator<CreateItemServicoRequest> _createValidator;
     private readonly IValidator<UpdateItemServicoRequest> _updateValidator;
+    private readonly IMediator _mediator;
     private readonly ILogger<ItemServicoController> _logger;
 
     public ItemServicoController(
         IValidator<CreateItemServicoRequest> createValidator,
         IValidator<UpdateItemServicoRequest> updateValidator,
+        IMediator mediator,
         ILogger<ItemServicoController> logger)
     {
         _createValidator = createValidator;
         _updateValidator = updateValidator;
+        _mediator = mediator;
         _logger = logger;
     }
 
@@ -48,12 +51,11 @@ public sealed class ItemServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<IReadOnlyCollection<ItemServicoResponse>>>> BuscarItensServico(
         Guid ordemServicoId,
-        [FromServices] IQueryHandler<GetItemServicosByOrdemServicoQuery, Result<IReadOnlyCollection<ItemServicoResponse>>> handler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção dos itens de serviço da ordem. OrdemServicoId: {OrdemServicoId}.", ordemServicoId);
 
-        var result = await handler.HandleAsync(new GetItemServicosByOrdemServicoQuery
+        var result = await _mediator.Send(new GetItemServicosByOrdemServicoQuery
         {
             OrdemServicoId = ordemServicoId
         }, cancellationToken);
@@ -84,12 +86,11 @@ public sealed class ItemServicoController : ControllerBase
     public async Task<ActionResult<ApiResponse<ItemServicoResponse>>> BuscarItemServicoPorId(
         Guid ordemServicoId,
         Guid id,
-        [FromServices] IQueryHandler<GetItemServicoByIdQuery, Result<ItemServicoResponse>> handler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", ordemServicoId, id);
 
-        var result = await handler.HandleAsync(new GetItemServicoByIdQuery
+        var result = await _mediator.Send(new GetItemServicoByIdQuery
         {
             OrdemServicoId = ordemServicoId,
             Id = id
@@ -122,7 +123,6 @@ public sealed class ItemServicoController : ControllerBase
     public async Task<ActionResult<ApiResponse<Guid>>> CriarItemServico(
         Guid ordemServicoId,
         [FromBody] CreateItemServicoRequest request,
-        [FromServices] ICommandHandler<CreateItemServicoCommand, Result<Guid>> handler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a criação de item de serviço. OrdemServicoId: {OrdemServicoId}, ServicoId: {ServicoId}.", ordemServicoId, request.ServicoId);
@@ -134,7 +134,7 @@ public sealed class ItemServicoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await handler.HandleAsync(new CreateItemServicoCommand
+        var result = await _mediator.Send(new CreateItemServicoCommand
         {
             OrdemServicoId = ordemServicoId,
             ServicoId = request.ServicoId
@@ -171,7 +171,6 @@ public sealed class ItemServicoController : ControllerBase
         Guid ordemServicoId,
         Guid id,
         [FromBody] UpdateItemServicoRequest request,
-        [FromServices] ICommandHandler<UpdateItemServicoCommand, Result> handler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a atualização do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", ordemServicoId, id);
@@ -185,7 +184,7 @@ public sealed class ItemServicoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await handler.HandleAsync(new UpdateItemServicoCommand
+        var result = await _mediator.Send(new UpdateItemServicoCommand
         {
             OrdemServicoId = ordemServicoId,
             Id = id,
@@ -221,12 +220,11 @@ public sealed class ItemServicoController : ControllerBase
     public async Task<ActionResult<ApiResponse>> RemoverItemServico(
         Guid ordemServicoId,
         Guid id,
-        [FromServices] ICommandHandler<DeleteItemServicoCommand, Result> handler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a remoção do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", ordemServicoId, id);
 
-        var result = await handler.HandleAsync(new DeleteItemServicoCommand
+        var result = await _mediator.Send(new DeleteItemServicoCommand
         {
             OrdemServicoId = ordemServicoId,
             Id = id

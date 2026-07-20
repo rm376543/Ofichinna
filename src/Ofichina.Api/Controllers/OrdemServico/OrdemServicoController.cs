@@ -1,7 +1,7 @@
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Contracts.Common;
@@ -22,15 +22,18 @@ public sealed class OrdemServicoController : ControllerBase
 {
     private readonly IValidator<CreateOrdemServicoRequest> _createValidator;
     private readonly IValidator<UpdateOrdemServicoRequest> _updateValidator;
+    private readonly IMediator _mediator;
     private readonly ILogger<OrdemServicoController> _logger;
 
     public OrdemServicoController(
         IValidator<CreateOrdemServicoRequest> createValidator,
         IValidator<UpdateOrdemServicoRequest> updateValidator,
+        IMediator mediator,
         ILogger<OrdemServicoController> logger)
     {
         _createValidator = createValidator;
         _updateValidator = updateValidator;
+        _mediator = mediator;
         _logger = logger;
     }
 
@@ -46,12 +49,11 @@ public sealed class OrdemServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse<IReadOnlyCollection<OrdemServicoResponse>>>> BuscarOrdensServico(
-        [FromServices] IQueryHandler<GetOrdensServicoQuery, Result<IReadOnlyCollection<OrdemServicoResponse>>> getAllHandler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção de todas as ordens de serviço.");
 
-        var result = await getAllHandler.HandleAsync(new GetOrdensServicoQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetOrdensServicoQuery(), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -77,12 +79,11 @@ public sealed class OrdemServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<OrdemServicoResponse>>> BuscarOrdemServicoPorId(
         Guid id,
-        [FromServices] IQueryHandler<GetOrdemServicoByIdQuery, Result<OrdemServicoResponse>> getByIdHandler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção da ordem de serviço com Id: {Id}", id);
 
-        var result = await getByIdHandler.HandleAsync(new GetOrdemServicoByIdQuery { Id = id }, cancellationToken);
+        var result = await _mediator.Send(new GetOrdemServicoByIdQuery { Id = id }, cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
         {
@@ -109,7 +110,6 @@ public sealed class OrdemServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<Guid>>> CriarOrdemServico(
         [FromBody] CreateOrdemServicoRequest request,
-        [FromServices] ICommandHandler<CreateOrdemServicoCommand, Result<Guid>> createHandler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a criação de uma nova ordem de serviço. PessoaId: {PessoaId}, VeiculoId: {VeiculoId}.", request.PessoaId, request.VeiculoId);
@@ -121,7 +121,7 @@ public sealed class OrdemServicoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await createHandler.HandleAsync(new CreateOrdemServicoCommand
+        var result = await _mediator.Send(new CreateOrdemServicoCommand
         {
             PessoaId = request.PessoaId,
             VeiculoId = request.VeiculoId,
@@ -160,7 +160,6 @@ public sealed class OrdemServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> AtualizarOrdemServico(
         [FromBody] UpdateOrdemServicoRequest request,
-        [FromServices] ICommandHandler<UpdateOrdemServicoCommand, Result> updateHandler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a atualização da ordem de serviço com Id: {Id}", request.Id);
@@ -172,7 +171,7 @@ public sealed class OrdemServicoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await updateHandler.HandleAsync(new UpdateOrdemServicoCommand
+        var result = await _mediator.Send(new UpdateOrdemServicoCommand
         {
             Id = request.Id,
             FuncionarioId = request.FuncionarioId,
@@ -208,12 +207,11 @@ public sealed class OrdemServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> RemoverOrdemServico(
         Guid id,
-        [FromServices] ICommandHandler<DeleteOrdemServicoCommand, Result> deleteHandler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a remoção da ordem de serviço com Id: {Id}", id);
 
-        var result = await deleteHandler.HandleAsync(new DeleteOrdemServicoCommand { Id = id }, cancellationToken);
+        var result = await _mediator.Send(new DeleteOrdemServicoCommand { Id = id }, cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -240,9 +238,8 @@ public sealed class OrdemServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public Task<ActionResult<ApiResponse>> IniciarDiagnostico(
         Guid id,
-        [FromServices] ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.EmDiagnostico, "Diagnóstico da ordem de serviço iniciado com sucesso.", statusHandler, cancellationToken);
+        => AlterarStatusAsync(id, StatusOrdemServico.EmDiagnostico, "Diagnóstico da ordem de serviço iniciado com sucesso.", cancellationToken);
 
     /// <summary>
     /// Solicita a aprovação da ordem de serviço.
@@ -260,9 +257,8 @@ public sealed class OrdemServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public Task<ActionResult<ApiResponse>> SolicitarAprovacao(
         Guid id,
-        [FromServices] ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.AguardandoAprovacao, "Aprovação da ordem de serviço solicitada com sucesso.", statusHandler, cancellationToken);
+        => AlterarStatusAsync(id, StatusOrdemServico.AguardandoAprovacao, "Aprovação da ordem de serviço solicitada com sucesso.", cancellationToken);
 
     /// <summary>
     /// Aprova a execução da ordem de serviço.
@@ -280,9 +276,8 @@ public sealed class OrdemServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public Task<ActionResult<ApiResponse>> AprovarOrdemServico(
         Guid id,
-        [FromServices] ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.EmExecucao, "Ordem de serviço aprovada com sucesso.", statusHandler, cancellationToken);
+        => AlterarStatusAsync(id, StatusOrdemServico.EmExecucao, "Ordem de serviço aprovada com sucesso.", cancellationToken);
 
     /// <summary>
     /// Finaliza a ordem de serviço.
@@ -300,9 +295,8 @@ public sealed class OrdemServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public Task<ActionResult<ApiResponse>> FinalizarOrdemServico(
         Guid id,
-        [FromServices] ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.Finalizada, "Ordem de serviço finalizada com sucesso.", statusHandler, cancellationToken);
+        => AlterarStatusAsync(id, StatusOrdemServico.Finalizada, "Ordem de serviço finalizada com sucesso.", cancellationToken);
 
     /// <summary>
     /// Marca a ordem de serviço como entregue.
@@ -320,9 +314,8 @@ public sealed class OrdemServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public Task<ActionResult<ApiResponse>> EntregarOrdemServico(
         Guid id,
-        [FromServices] ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.Entregue, "Ordem de serviço entregue com sucesso.", statusHandler, cancellationToken);
+        => AlterarStatusAsync(id, StatusOrdemServico.Entregue, "Ordem de serviço entregue com sucesso.", cancellationToken);
 
     /// <summary>
     /// Cancela a ordem de serviço.
@@ -340,20 +333,18 @@ public sealed class OrdemServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public Task<ActionResult<ApiResponse>> CancelarOrdemServico(
         Guid id,
-        [FromServices] ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.Cancelada, "Ordem de serviço cancelada com sucesso.", statusHandler, cancellationToken);
+        => AlterarStatusAsync(id, StatusOrdemServico.Cancelada, "Ordem de serviço cancelada com sucesso.", cancellationToken);
 
     private async Task<ActionResult<ApiResponse>> AlterarStatusAsync(
         Guid id,
         StatusOrdemServico statusDestino,
         string mensagemSucesso,
-        ICommandHandler<AlterarStatusOrdemServicoCommand, Result> statusHandler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a alteração de status da ordem de serviço com Id: {Id} para {StatusDestino}.", id, statusDestino);
 
-        var result = await statusHandler.HandleAsync(new AlterarStatusOrdemServicoCommand
+        var result = await _mediator.Send(new AlterarStatusOrdemServicoCommand
         {
             Id = id,
             StatusDestino = statusDestino

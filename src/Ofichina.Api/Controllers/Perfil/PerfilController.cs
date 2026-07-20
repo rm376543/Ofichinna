@@ -1,7 +1,7 @@
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Perfis.Commands;
 using Ofichina.Application.UseCases.Perfis.Queries;
 using Ofichina.Contracts.Requests.Perfil;
@@ -20,32 +20,20 @@ public sealed class PerfisController : ControllerBase
 {
     private readonly IValidator<CreatePerfilRequest> _createValidator;
     private readonly IValidator<UpdatePerfilRequest> _updateValidator;
-    private readonly ICommandHandler<CreatePerfilCommand, Result> _createHandler;
-    private readonly ICommandHandler<UpdatePerfilCommand, Result> _updateHandler;
-    private readonly ICommandHandler<DeletePerfilCommand, Result> _deleteHandler;
-    private readonly IQueryHandler<GetPerfisQuery, Result<IReadOnlyCollection<PerfilResponse>>> _getAllHandler;
-    private readonly IQueryHandler<GetPerfilByIdQuery, Result<PerfilResponse>> _getByIdHandler;
+    private readonly IMediator _mediator;
     private readonly ILogger<PerfisController> _logger;
 
 #pragma warning disable S107
     public PerfisController(
         IValidator<CreatePerfilRequest> createValidator,
         IValidator<UpdatePerfilRequest> updateValidator,
-        ICommandHandler<CreatePerfilCommand, Result> createHandler,
-        ICommandHandler<UpdatePerfilCommand, Result> updateHandler,
-        ICommandHandler<DeletePerfilCommand, Result> deleteHandler,
-        IQueryHandler<GetPerfisQuery, Result<IReadOnlyCollection<PerfilResponse>>> getAllHandler,
-        IQueryHandler<GetPerfilByIdQuery, Result<PerfilResponse>> getByIdHandler,
+        IMediator mediator,
         ILogger<PerfisController> logger)
 #pragma warning restore S107
     {
         _createValidator = createValidator;
         _updateValidator = updateValidator;
-        _createHandler = createHandler;
-        _updateHandler = updateHandler;
-        _deleteHandler = deleteHandler;
-        _getAllHandler = getAllHandler;
-        _getByIdHandler = getByIdHandler;
+        _mediator = mediator;
         _logger = logger;
     }
 
@@ -63,7 +51,7 @@ public sealed class PerfisController : ControllerBase
     CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção de todos os perfis.");
-        var result = await _getAllHandler.HandleAsync(new GetPerfisQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetPerfisQuery(), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -92,7 +80,7 @@ public sealed class PerfisController : ControllerBase
     CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção do perfil com Id: {Id}", id);
-        var result = await _getByIdHandler.HandleAsync(new GetPerfilByIdQuery(id), cancellationToken);
+        var result = await _mediator.Send(new GetPerfilByIdQuery(id), cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
         {
@@ -133,7 +121,7 @@ public sealed class PerfisController : ControllerBase
             request.NomePerfil,
             request.Descricao);
 
-        await _createHandler.HandleAsync(command, cancellationToken);
+        await _mediator.Send(command, cancellationToken);
 
         _logger.LogInformation("Perfil criado com sucesso, Nome: {NomePerfil}", request.NomePerfil);
         return StatusCode(
@@ -166,7 +154,7 @@ public sealed class PerfisController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _updateHandler.HandleAsync(new UpdatePerfilCommand(
+        var result = await _mediator.Send(new UpdatePerfilCommand(
             request.Id,
             request.NomePerfil,
             request.Descricao), cancellationToken);
@@ -200,7 +188,7 @@ public sealed class PerfisController : ControllerBase
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a desativação do perfil com Id: {Id}", id);
-        var result = await _deleteHandler.HandleAsync(new DeletePerfilCommand(id), cancellationToken);
+        var result = await _mediator.Send(new DeletePerfilCommand(id), cancellationToken);
 
         if (!result.IsSuccess)
         {

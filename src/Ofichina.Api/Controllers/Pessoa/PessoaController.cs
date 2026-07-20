@@ -1,7 +1,7 @@
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pessoas.Commands;
 using Ofichina.Application.UseCases.Pessoas.Queries;
 using Ofichina.Contracts.Common;
@@ -21,31 +21,19 @@ namespace Ofichina.Api.Controllers.Pessoa
     {
         private readonly IValidator<CreatePessoaRequest> _createValidator;
         private readonly IValidator<UpdatePessoaRequest> _updateValidator;
-        private readonly ICommandHandler<CreatePessoaCommand, Result<Guid>> _createHandler;
-        private readonly ICommandHandler<UpdatePessoaCommand, Result> _updateHandler;
-        private readonly ICommandHandler<DeletePessoaCommand, Result> _deleteHandler;
-        private readonly IQueryHandler<GetPessoasQuery, Result<IReadOnlyCollection<PessoaResponse>>> _getAllHandler;
-        private readonly IQueryHandler<GetPessoaByIdQuery, Result<PessoaResponse>> _getByIdHandler;
+        private readonly IMediator _mediator;
         private readonly ILogger<PessoaController> _logger;
 #pragma warning disable S107
         public PessoaController(
             IValidator<CreatePessoaRequest> createValidator,
             IValidator<UpdatePessoaRequest> updateValidator,
-            ICommandHandler<CreatePessoaCommand, Result<Guid>> createHandler,
-            ICommandHandler<UpdatePessoaCommand, Result> updateHandler,
-            ICommandHandler<DeletePessoaCommand, Result> deleteHandler,
-            IQueryHandler<GetPessoasQuery, Result<IReadOnlyCollection<PessoaResponse>>> getAllHandler,
-            IQueryHandler<GetPessoaByIdQuery, Result<PessoaResponse>> getByIdHandler,
+            IMediator mediator,
             ILogger<PessoaController> logger)
 #pragma warning restore S107
         {
             _createValidator = createValidator;
             _updateValidator = updateValidator;
-            _createHandler = createHandler;
-            _updateHandler = updateHandler;
-            _deleteHandler = deleteHandler;
-            _getAllHandler = getAllHandler;
-            _getByIdHandler = getByIdHandler;
+            _mediator = mediator;
             _logger = logger;
         }
 
@@ -64,7 +52,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         {
             _logger.LogInformation("Iniciando a obtenção de todas as pessoas.");
 
-            var result = await _getAllHandler.HandleAsync(new GetPessoasQuery(), cancellationToken);
+            var result = await _mediator.Send(new GetPessoasQuery(), cancellationToken);
 
             if (!result.IsSuccess)
             {
@@ -91,7 +79,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         {
             _logger.LogInformation("Iniciando a obtenção da pessoa com Id: {Id}", id);
 
-            var result = await _getByIdHandler.HandleAsync(new GetPessoaByIdQuery(id), cancellationToken);
+            var result = await _mediator.Send(new GetPessoaByIdQuery(id), cancellationToken);
 
             if (!result.IsSuccess || result.Value is null)
             {
@@ -127,7 +115,7 @@ namespace Ofichina.Api.Controllers.Pessoa
                 return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
             }
 
-            var result = await _createHandler.HandleAsync(new CreatePessoaCommand
+            var result = await _mediator.Send(new CreatePessoaCommand
             {
                 Nome = request.Nome,
                 Documento = request.Documento,
@@ -176,7 +164,7 @@ namespace Ofichina.Api.Controllers.Pessoa
                 return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
             }
 
-            var result = await _updateHandler.HandleAsync(new UpdatePessoaCommand
+            var result = await _mediator.Send(new UpdatePessoaCommand
             {
                 Id = request.Id,
                 Nome = request.Nome,
@@ -217,7 +205,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         {
             _logger.LogInformation("Iniciando a desativação da pessoa com Id: {Id}", id);
 
-            var result = await _deleteHandler.HandleAsync(new DeletePessoaCommand { Id = id }, cancellationToken);
+            var result = await _mediator.Send(new DeletePessoaCommand { Id = id }, cancellationToken);
 
             if (!result.IsSuccess)
             {
