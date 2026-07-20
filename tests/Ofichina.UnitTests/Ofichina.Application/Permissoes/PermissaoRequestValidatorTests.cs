@@ -1,6 +1,5 @@
-using Ofichina.Application.Validators.Permissao;
-using Ofichina.Contracts.Requests.Permissao;
-using Ofichina.Domain.Entities;
+using Ofichina.Application.Validators.Permissoes;
+using Ofichina.Contracts.Requests.Permissoes;
 
 namespace Ofichina.UnitTests.Application.Permissoes;
 

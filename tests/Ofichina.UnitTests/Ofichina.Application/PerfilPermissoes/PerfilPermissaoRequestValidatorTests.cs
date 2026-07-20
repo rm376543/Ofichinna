@@ -1,5 +1,5 @@
-using Ofichina.Application.Validators.PerfilPermissao;
-using Ofichina.Contracts.Requests.PerfilPermissao;
+using Ofichina.Application.Validators.PerfilPermissoes;
+using Ofichina.Contracts.Requests.PerfilPermissoes;
 
 namespace Ofichina.UnitTests.Application.PerfisPermissoes;
 

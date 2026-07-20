@@ -17,7 +17,9 @@ namespace Ofichina.Api.Controllers.ItemServico;
 [Authorize]
 [ApiController]
 [Route("api/ordens-servico/{ordemServicoId:guid}/itens-servico")]
+#pragma warning disable S6960
 public sealed class ItemServicoController : ControllerBase
+#pragma warning restore S6960
 {
     private readonly IValidator<CreateItemServicoRequest> _createValidator;
     private readonly IValidator<UpdateItemServicoRequest> _updateValidator;
@@ -40,7 +42,6 @@ public sealed class ItemServicoController : ControllerBase
     /// Retorna todos os itens de serviço de uma ordem de serviço.
     /// </summary>
     /// <param name="ordemServicoId">Identificador da ordem de serviço.</param>
-    /// <param name="handler">Handler de consulta dos itens de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de itens de serviço da ordem.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -74,7 +75,6 @@ public sealed class ItemServicoController : ControllerBase
     /// </summary>
     /// <param name="ordemServicoId">Identificador da ordem de serviço.</param>
     /// <param name="id">Identificador do item de serviço.</param>
-    /// <param name="handler">Handler de consulta do item de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Item de serviço encontrado ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -110,7 +110,6 @@ public sealed class ItemServicoController : ControllerBase
     /// </summary>
     /// <param name="ordemServicoId">Identificador da ordem de serviço.</param>
     /// <param name="request">Dados do item de serviço.</param>
-    /// <param name="handler">Handler de criação do item de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Identificador do item criado ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -157,7 +156,6 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="ordemServicoId">Identificador da ordem de serviço.</param>
     /// <param name="id">Identificador do item de serviço.</param>
     /// <param name="request">Dados atualizados do item de serviço.</param>
-    /// <param name="handler">Handler de atualização do item de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso, erro de validação ou item não encontrado.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -208,7 +206,6 @@ public sealed class ItemServicoController : ControllerBase
     /// </summary>
     /// <param name="ordemServicoId">Identificador da ordem de serviço.</param>
     /// <param name="id">Identificador do item de serviço.</param>
-    /// <param name="handler">Handler de remoção do item de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]

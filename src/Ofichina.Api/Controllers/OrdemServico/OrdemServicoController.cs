@@ -18,7 +18,9 @@ namespace Ofichina.Api.Controllers.OrdemServico;
 [Authorize]
 [ApiController]
 [Route("api/ordens-servico")]
+#pragma warning disable S6960
 public sealed class OrdemServicoController : ControllerBase
+#pragma warning restore S6960
 {
     private readonly IValidator<CreateOrdemServicoRequest> _createValidator;
     private readonly IValidator<UpdateOrdemServicoRequest> _updateValidator;
@@ -41,7 +43,6 @@ public sealed class OrdemServicoController : ControllerBase
     /// Retorna todas as ordens de serviço cadastradas.
     /// </summary>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <param name="getAllHandler">Handler de consulta das ordens de serviço.</param>
     /// <returns>Lista de ordens de serviço.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet]
@@ -69,7 +70,6 @@ public sealed class OrdemServicoController : ControllerBase
     /// </summary>
     /// <param name="id">Identificador da ordem de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <param name="getByIdHandler">Handler de consulta por identificador.</param>
     /// <returns>Ordem de serviço encontrada ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet("{id:guid}")]
@@ -98,7 +98,6 @@ public sealed class OrdemServicoController : ControllerBase
     /// Cria uma nova ordem de serviço.
     /// </summary>
     /// <param name="request">Dados da ordem de serviço.</param>
-    /// <param name="createHandler">Handler de criação da ordem de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Identificador da ordem de serviço criada ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -148,7 +147,6 @@ public sealed class OrdemServicoController : ControllerBase
     /// Atualiza uma ordem de serviço existente.
     /// </summary>
     /// <param name="request">Dados atualizados da ordem de serviço.</param>
-    /// <param name="updateHandler">Handler de atualização da ordem de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso, erro de validação ou ordem de serviço não encontrada.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -196,7 +194,6 @@ public sealed class OrdemServicoController : ControllerBase
     /// Remove logicamente uma ordem de serviço existente.
     /// </summary>
     /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="deleteHandler">Handler de remoção da ordem de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -226,7 +223,6 @@ public sealed class OrdemServicoController : ControllerBase
     /// Inicia o diagnóstico da ordem de serviço.
     /// </summary>
     /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="statusHandler">Handler de alteração de status da ordem de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de status.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -245,7 +241,6 @@ public sealed class OrdemServicoController : ControllerBase
     /// Solicita a aprovação da ordem de serviço.
     /// </summary>
     /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="statusHandler">Handler de alteração de status da ordem de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de status.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -264,7 +259,6 @@ public sealed class OrdemServicoController : ControllerBase
     /// Aprova a execução da ordem de serviço.
     /// </summary>
     /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="statusHandler">Handler de alteração de status da ordem de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de status.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -283,7 +277,6 @@ public sealed class OrdemServicoController : ControllerBase
     /// Finaliza a ordem de serviço.
     /// </summary>
     /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="statusHandler">Handler de alteração de status da ordem de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de status.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -302,7 +295,6 @@ public sealed class OrdemServicoController : ControllerBase
     /// Marca a ordem de serviço como entregue.
     /// </summary>
     /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="statusHandler">Handler de alteração de status da ordem de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de status.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -321,7 +313,6 @@ public sealed class OrdemServicoController : ControllerBase
     /// Cancela a ordem de serviço.
     /// </summary>
     /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="statusHandler">Handler de alteração de status da ordem de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de status.</returns>
     [Authorize(Roles = "ADMIN")]
