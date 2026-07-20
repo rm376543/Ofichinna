@@ -4,7 +4,7 @@ using Ofichina.Application.UseCases.Servicos.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Servicos;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Servicos.Handlers;
 

@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Ofichina.Domain.Interfaces;
-using Ofichina.Infrastructure.Repositories;
+using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Authentication.Abstractions;
+using Ofichina.Domain.Common;
+using Ofichina.Infrastructure.Repositories;
 
 namespace Ofichina.Infrastructure.DependencyInjection;
 
@@ -29,6 +30,10 @@ public static class RepositoryModule
 
         services.AddScoped<IPerfilRepository, PerfilRepository>();
 
+        services.AddScoped<IPermissaoRepository, PermissaoRepository>();
+
+        services.AddScoped<IPerfilPermissaoRepository, PerfilPermissaoRepository>();
+
         services.AddScoped<IPerfilUsuarioRepository, PerfilUsuarioRepository>();
 
         services.AddScoped<IPessoaRepository, PessoaRepository>();
@@ -40,7 +45,9 @@ public static class RepositoryModule
         services.AddScoped<IAgendamentoRepository, AgendamentoRepository>();
 
         services.AddScoped<IDiaDisponibilidadeRepository, DiaDisponibilidadeRepository>();
+
         services.AddScoped<IHorarioDisponibilidadeRepository, HorarioDisponibilidadeRepository>();
+
         services.AddScoped<IHorarioConsultorRepository, HorarioConsultorRepository>();
 
         return services;

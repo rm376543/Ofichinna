@@ -3,7 +3,8 @@ using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.PerfilUsuario.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.PerfilUsuario;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.PerfilUsuario.Handlers;
 

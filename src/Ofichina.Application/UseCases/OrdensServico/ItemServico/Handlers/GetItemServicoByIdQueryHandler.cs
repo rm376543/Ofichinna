@@ -3,13 +3,12 @@ using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.OrdemServico;
-using Ofichina.Domain.Aggregates;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces;
 
 namespace Ofichina.Application.UseCases.OrdensServico.ItemServico.Handlers;
 
 /// <summary>
-/// Handler para obter um item de serviÃ§o por identificador.
+/// Handler para obter um item de servico por identificador.
 /// </summary>
 public sealed class GetItemServicoByIdQueryHandler : IQueryHandler<GetItemServicoByIdQuery, Result<ItemServicoResponse>>
 {

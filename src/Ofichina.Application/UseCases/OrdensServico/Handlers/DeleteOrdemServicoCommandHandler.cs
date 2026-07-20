@@ -3,7 +3,7 @@ using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Aggregates;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 

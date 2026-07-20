@@ -1,6 +1,7 @@
+using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 
-namespace Ofichina.Domain.Interfaces;
+namespace Ofichina.Application.Abstractions.Interfaces;
 
 public interface IDiaDisponibilidadeRepository : IRepository<DiaDisponibilidade>
 {

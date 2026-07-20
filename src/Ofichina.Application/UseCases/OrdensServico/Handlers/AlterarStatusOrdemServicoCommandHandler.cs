@@ -5,7 +5,7 @@ using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Enums;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 

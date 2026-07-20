@@ -1,7 +1,6 @@
-using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 
-namespace Ofichina.Domain.Interfaces;
+namespace Ofichina.Domain.Common;
 
 /// <summary>
 /// Interface genérica para repositórios.

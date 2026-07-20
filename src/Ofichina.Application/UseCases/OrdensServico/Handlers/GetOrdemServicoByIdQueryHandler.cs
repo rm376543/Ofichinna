@@ -4,7 +4,7 @@ using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.OrdemServico;
 using Ofichina.Domain.Aggregates;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 

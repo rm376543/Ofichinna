@@ -3,8 +3,9 @@ using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pessoas.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Domain.ValueObjects;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Pessoas.Handlers;
 

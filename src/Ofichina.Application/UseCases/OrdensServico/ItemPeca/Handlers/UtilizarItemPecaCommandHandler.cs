@@ -2,15 +2,15 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.ItemPeca.Commands;
 using Ofichina.Contracts.Common;
-using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Domain.Common;
+using Ofichina.Application.Abstractions.Interfaces;
 
 namespace Ofichina.Application.UseCases.OrdensServico.ItemPeca.Handlers;
 
 /// <summary>
-/// Handler para utilizaÃ§Ã£o de item de peÃ§a em ordem de serviÃ§o.
+/// Handler para utilizacao de item de peca em ordem de servico.
 /// </summary>
 public sealed class UtilizarItemPecaCommandHandler : ICommandHandler<UtilizarItemPecaCommand, Result>
 {

@@ -2,7 +2,8 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Perfis.Commands;
 using Ofichina.Contracts.Common;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Perfis.Handlers;
 

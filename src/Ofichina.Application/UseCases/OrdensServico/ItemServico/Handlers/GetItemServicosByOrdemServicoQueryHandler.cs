@@ -3,13 +3,12 @@ using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.OrdemServico;
-using Ofichina.Domain.Aggregates;
-using Ofichina.Domain.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces;
 
 namespace Ofichina.Application.UseCases.OrdensServico.ItemServico.Handlers;
 
 /// <summary>
-/// Handler para listar os itens de serviÃ§o de uma ordem de serviÃ§o.
+/// Handler para listar os itens de servico de uma ordem de servico.
 /// </summary>
 public sealed class GetItemServicosByOrdemServicoQueryHandler : IQueryHandler<GetItemServicosByOrdemServicoQuery, Result<IReadOnlyCollection<ItemServicoResponse>>>
 {

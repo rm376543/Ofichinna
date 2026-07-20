@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Ofichina.Application\Ofichina.Application.csproj" />
     <ProjectReference Include="..\Ofichina.Authentication\Ofichina.Authentication.csproj" />
     <ProjectReference Include="..\Ofichina.Contracts\Ofichina.Contracts.csproj" />
     <ProjectReference Include="..\Ofichina.Domain\Ofichina.Domain.csproj" />
