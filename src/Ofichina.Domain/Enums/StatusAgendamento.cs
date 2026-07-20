@@ -5,8 +5,9 @@ namespace Ofichina.Domain.Enums;
 /// </summary>
 public enum StatusAgendamento
 {
-    Solicitado = 1,
+    Agendado = 1,
     Confirmado = 2,
-    Cancelado = 3,
-    Concluido = 4
+    EmAndamento = 3,
+    Concluido = 4,
+    Cancelado = 5
 }

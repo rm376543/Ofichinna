@@ -4,7 +4,6 @@ using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Agendamento;
 using Ofichina.Domain.Aggregates;
-using Ofichina.Authentication.Abstractions;
 using Ofichina.Domain.Interfaces;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
@@ -37,10 +36,9 @@ public sealed class GetAgendamentosQueryHandler : IQueryHandler<GetAgendamentosQ
             if (pessoa is null || pessoa.EstaExcluida())
                 return Result.Failure<IReadOnlyCollection<AgendamentoResponse>>("Pessoa não encontrada.");
 
-            var agendamentos = await _agendamentoRepository.GetAllAsync(cancellationToken);
+            var paged = await _agendamentoRepository.GetPagedByClientePessoaAsync(query.PessoaId, query.Pagination, cancellationToken);
 
-            var resultado = agendamentos
-                .Where(x => !x.EstaExcluida() && x.ClientePessoaId == query.PessoaId)
+            var resultado = paged.Items
                 .Select(Mapear)
                 .ToList();
 
@@ -59,10 +57,15 @@ public sealed class GetAgendamentosQueryHandler : IQueryHandler<GetAgendamentosQ
         {
             Id = agendamento.Id,
             ClientePessoaId = agendamento.ClientePessoaId,
+            ClienteNome = agendamento.Cliente.Nome,
+            DiaDisponibilidadeId = agendamento.DiaDisponibilidadeId,
+            HorarioConsultorId = agendamento.HorarioConsultorId,
             ConsultorPessoaId = agendamento.ConsultorPessoaId,
+            ConsultorNome = agendamento.HorarioConsultor.Pessoa.Nome,
             VeiculoId = agendamento.VeiculoId,
-            DataAgendamento = agendamento.DataAgendamento,
-            HorarioAgendamento = agendamento.HorarioAgendamento,
+            VeiculoPlaca = agendamento.Veiculo.Placa.Numero,
+            VeiculoDescricao = $"{agendamento.Veiculo.Marca} {agendamento.Veiculo.Modelo} {agendamento.Veiculo.AnoFabricacao}",
+            Status = agendamento.Status.ToString(),
             Descricao = agendamento.Descricao,
             CreatedAt = agendamento.CreatedAt,
             UpdatedAt = agendamento.UpdatedAt,

@@ -53,6 +53,26 @@ public class ApplicationDbContext : DbContext
     public DbSet<Agendamento> Agendamentos { get; set; } = null!;
 
     /// <summary>
+    /// DbSet para dias de disponibilidade.
+    /// </summary>
+    public DbSet<DiaDisponibilidade> DiasDisponibilidade { get; set; } = null!;
+
+    /// <summary>
+    /// DbSet para horários de disponibilidade.
+    /// </summary>
+    public DbSet<HorarioDisponibilidade> HorariosDisponibilidade { get; set; } = null!;
+
+    /// <summary>
+    /// DbSet para vínculos entre dias e horários disponíveis.
+    /// </summary>
+    public DbSet<DiaHorarioDisponibilidade> DiasHorariosDisponibilidade { get; set; } = null!;
+
+    /// <summary>
+    /// DbSet para vínculos entre horários disponíveis e consultores.
+    /// </summary>
+    public DbSet<HorarioConsultor> HorariosConsultores { get; set; } = null!;
+
+    /// <summary>
     /// DbSet para itens de serviço da ordem.
     /// </summary>
     public DbSet<ItemServico> ItensServico { get; set; } = null!;
