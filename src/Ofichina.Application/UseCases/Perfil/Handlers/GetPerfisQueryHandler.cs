@@ -1,4 +1,4 @@
-ï»¿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Perfis.Queries;
 using Ofichina.Contracts.Common;
@@ -25,7 +25,7 @@ public class GetPerfisQueryHandler : IQueryHandler<GetPerfisQuery, Result<IReadO
     {
         try
         {
-            _logger.LogInformation("Iniciando a obtenÃ§Ã£o de todos os perfis.");
+            _logger.LogInformation("Iniciando a obtenção de todos os perfis.");
 
             var perfis = await _repository.GetPagedAsync(query.Pagination, cancellationToken);
 
@@ -48,7 +48,7 @@ public class GetPerfisQueryHandler : IQueryHandler<GetPerfisQuery, Result<IReadO
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao obter todos os perfis.");
-            return Result.Failure<IReadOnlyCollection<PerfilResponse>>("NÃ£o foi possÃ­vel obter os perfis.");
+            return Result.Failure<IReadOnlyCollection<PerfilResponse>>("Não foi possível obter os perfis.");
         }
     }
 }

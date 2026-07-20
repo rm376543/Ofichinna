@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Veiculos.Queries;
 using Ofichina.Contracts.Common;
@@ -8,7 +8,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Veiculos.Handlers;
 
 /// <summary>
-/// Handler para listar veÃ­culos.
+/// Handler para listar veículos.
 /// </summary>
 public sealed class GetVeiculosQueryHandler : IQueryHandler<GetVeiculosQuery, Result<IReadOnlyCollection<VeiculoResponse>>>
 {
@@ -37,8 +37,8 @@ public sealed class GetVeiculosQueryHandler : IQueryHandler<GetVeiculosQuery, Re
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao listar veÃ­culos.");
-            return Result.Failure<IReadOnlyCollection<VeiculoResponse>>("NÃ£o foi possÃ­vel obter os veÃ­culos.");
+            _logger.LogError(ex, "Erro ao listar veículos.");
+            return Result.Failure<IReadOnlyCollection<VeiculoResponse>>("Não foi possível obter os veículos.");
         }
     }
 
@@ -72,3 +72,7 @@ public sealed class GetVeiculosQueryHandler : IQueryHandler<GetVeiculosQuery, Re
         };
     }
 }
+
+
+
+

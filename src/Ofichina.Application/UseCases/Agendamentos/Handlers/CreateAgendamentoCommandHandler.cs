@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Agendamentos.Commands;
 using Ofichina.Contracts.Common;
@@ -11,7 +11,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 
 /// <summary>
-/// Handler para criaÃ§Ã£o de agendamento.
+/// Handler para criação de agendamento.
 /// </summary>
 public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgendamentoCommand, Result<AgendamentoResponse>>
 {
@@ -42,22 +42,22 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
     {
         try
         {
-            _logger.LogInformation("Iniciando a criaÃ§Ã£o de agendamento para a pessoa {PessoaId}.", command.PessoaId);
+            _logger.LogInformation("Iniciando a criação de agendamento para a pessoa {PessoaId}.", command.PessoaId);
 
             var pessoa = await _pessoaRepository.GetByIdAsync(command.PessoaId, cancellationToken);
             if (pessoa is null || pessoa.EstaExcluida())
-                return Result.Failure<AgendamentoResponse>("Pessoa nÃ£o encontrada.");
+                return Result.Failure<AgendamentoResponse>("Pessoa não encontrada.");
 
             var veiculo = await _veiculoRepository.GetByIdWithPessoaAsync(command.VeiculoId, cancellationToken);
             if (veiculo is null || veiculo.EstaExcluida())
-                return Result.Failure<AgendamentoResponse>("VeÃ­culo nÃ£o encontrado.");
+                return Result.Failure<AgendamentoResponse>("Veículo não encontrado.");
 
             if (veiculo.PessoaId != pessoa.Id)
-                return Result.Failure<AgendamentoResponse>("O veÃ­culo informado nÃ£o pertence ao usuÃ¡rio autenticado.");
+                return Result.Failure<AgendamentoResponse>("O veículo informado não pertence ao usuário autenticado.");
 
             var consultor = await _pessoaRepository.GetByIdAsync(command.ConsultorPessoaId, cancellationToken);
             if (consultor is null || consultor.EstaExcluida())
-                return Result.Failure<AgendamentoResponse>("Consultor nÃ£o encontrado.");
+                return Result.Failure<AgendamentoResponse>("Consultor não encontrado.");
 
             var agendamentoExistente = (await _agendamentoRepository.GetAllAsync(cancellationToken))
                 .FirstOrDefault(x =>
@@ -67,7 +67,7 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
                     x.HorarioAgendamento == command.HorarioAgendamento);
 
             if (agendamentoExistente is not null)
-                return Result.Failure<AgendamentoResponse>("JÃ¡ existe um agendamento para este horÃ¡rio.");
+                return Result.Failure<AgendamentoResponse>("Já existe um agendamento para este horário.");
 
             var veiculoConflito = (await _agendamentoRepository.GetAllAsync(cancellationToken))
                 .FirstOrDefault(x =>
@@ -77,7 +77,7 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
                     x.HorarioAgendamento == command.HorarioAgendamento);
 
             if (veiculoConflito is not null)
-                return Result.Failure<AgendamentoResponse>("JÃ¡ existe um agendamento para este veÃ­culo neste horÃ¡rio.");
+                return Result.Failure<AgendamentoResponse>("Já existe um agendamento para este veículo neste horário.");
 
             var agendamento = new Agendamento(
                 command.PessoaId,
@@ -96,13 +96,13 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domÃ­nio ao criar agendamento.");
+            _logger.LogWarning(ex, "Erro de domínio ao criar agendamento.");
             return Result.Failure<AgendamentoResponse>(ex.Message);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro inesperado ao criar agendamento.");
-            return Result.Failure<AgendamentoResponse>("NÃ£o foi possÃ­vel criar o agendamento.");
+            return Result.Failure<AgendamentoResponse>("Não foi possível criar o agendamento.");
         }
     }
 
@@ -123,3 +123,5 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
         };
     }
 }
+
+

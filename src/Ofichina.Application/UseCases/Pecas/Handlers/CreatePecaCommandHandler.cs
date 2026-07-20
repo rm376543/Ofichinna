@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pecas.Commands;
 using Ofichina.Contracts.Common;
@@ -9,7 +9,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Pecas.Handlers;
 
 /// <summary>
-/// Handler para criaÃ§Ã£o de peÃ§a.
+/// Handler para criação de peça.
 /// </summary>
 public sealed class CreatePecaCommandHandler : ICommandHandler<CreatePecaCommand, Result<Guid>>
 {
@@ -18,7 +18,7 @@ public sealed class CreatePecaCommandHandler : ICommandHandler<CreatePecaCommand
     private readonly ILogger<CreatePecaCommandHandler> _logger;
 
     /// <summary>
-    /// Inicializa uma nova instÃ¢ncia do handler de criaÃ§Ã£o de peÃ§a.
+    /// Inicializa uma nova instância do handler de criação de peça.
     /// </summary>
     public CreatePecaCommandHandler(
         IRepository<Peca> pecaRepository,
@@ -52,13 +52,13 @@ public sealed class CreatePecaCommandHandler : ICommandHandler<CreatePecaCommand
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domÃ­nio ao criar peÃ§a.");
+            _logger.LogWarning(ex, "Erro de domínio ao criar peça.");
             return Result.Failure<Guid>(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao criar peÃ§a.");
-            return Result.Failure<Guid>("NÃ£o foi possÃ­vel criar a peÃ§a.");
+            _logger.LogError(ex, "Erro ao criar peça.");
+            return Result.Failure<Guid>("Não foi possível criar a peça.");
         }
     }
 }

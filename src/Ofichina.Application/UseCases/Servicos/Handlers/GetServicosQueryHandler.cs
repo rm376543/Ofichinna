@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Servicos.Queries;
 using Ofichina.Contracts.Common;
@@ -9,7 +9,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Servicos.Handlers;
 
 /// <summary>
-/// Handler para listar serviÃ§os.
+/// Handler para listar serviços.
 /// </summary>
 public sealed class GetServicosQueryHandler : IQueryHandler<GetServicosQuery, Result<IReadOnlyCollection<ServicoResponse>>>
 {
@@ -38,8 +38,8 @@ public sealed class GetServicosQueryHandler : IQueryHandler<GetServicosQuery, Re
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao listar serviÃ§os.");
-            return Result.Failure<IReadOnlyCollection<ServicoResponse>>("NÃ£o foi possÃ­vel obter os serviÃ§os.");
+            _logger.LogError(ex, "Erro ao listar serviços.");
+            return Result.Failure<IReadOnlyCollection<ServicoResponse>>("Não foi possível obter os serviços.");
         }
     }
 

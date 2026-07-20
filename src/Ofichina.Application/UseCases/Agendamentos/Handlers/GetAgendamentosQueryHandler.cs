@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts.Common;
@@ -10,24 +10,21 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 
 /// <summary>
-/// Handler para listar agendamentos do usuÃ¡rio autenticado.
+/// Handler para listar agendamentos do usuário autenticado.
 /// </summary>
 public sealed class GetAgendamentosQueryHandler : IQueryHandler<GetAgendamentosQuery, Result<IReadOnlyCollection<AgendamentoResponse>>>
 {
     private readonly IAgendamentoRepository _agendamentoRepository;
     private readonly IPessoaRepository _pessoaRepository;
-    private readonly IUsuarioAtualService _usuarioAtualService;
     private readonly ILogger<GetAgendamentosQueryHandler> _logger;
 
     public GetAgendamentosQueryHandler(
         IAgendamentoRepository agendamentoRepository,
         IPessoaRepository pessoaRepository,
-        IUsuarioAtualService usuarioAtualService,
         ILogger<GetAgendamentosQueryHandler> logger)
     {
         _agendamentoRepository = agendamentoRepository;
         _pessoaRepository = pessoaRepository;
-        _usuarioAtualService = usuarioAtualService;
         _logger = logger;
     }
 
@@ -38,7 +35,7 @@ public sealed class GetAgendamentosQueryHandler : IQueryHandler<GetAgendamentosQ
             var pessoa = await _pessoaRepository.GetByIdAsync(query.PessoaId, cancellationToken);
 
             if (pessoa is null || pessoa.EstaExcluida())
-                return Result.Failure<IReadOnlyCollection<AgendamentoResponse>>("Pessoa nÃ£o encontrada.");
+                return Result.Failure<IReadOnlyCollection<AgendamentoResponse>>("Pessoa não encontrada.");
 
             var agendamentos = await _agendamentoRepository.GetAllAsync(cancellationToken);
 
@@ -52,7 +49,7 @@ public sealed class GetAgendamentosQueryHandler : IQueryHandler<GetAgendamentosQ
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao listar agendamentos.");
-            return Result.Failure<IReadOnlyCollection<AgendamentoResponse>>("NÃ£o foi possÃ­vel obter os agendamentos.");
+            return Result.Failure<IReadOnlyCollection<AgendamentoResponse>>("Não foi possível obter os agendamentos.");
         }
     }
 

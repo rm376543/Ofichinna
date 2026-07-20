@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pecas.Queries;
 using Ofichina.Contracts.Common;
@@ -9,7 +9,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Pecas.Handlers;
 
 /// <summary>
-/// Handler para obter peÃ§a por Id.
+/// Handler para obter peça por Id.
 /// </summary>
 public sealed class GetPecaByIdQueryHandler : IQueryHandler<GetPecaByIdQuery, Result<PecaResponse>>
 {
@@ -17,7 +17,7 @@ public sealed class GetPecaByIdQueryHandler : IQueryHandler<GetPecaByIdQuery, Re
     private readonly ILogger<GetPecaByIdQueryHandler> _logger;
 
     /// <summary>
-    /// Inicializa uma nova instÃ¢ncia do handler de busca por Id.
+    /// Inicializa uma nova instância do handler de busca por Id.
     /// </summary>
     public GetPecaByIdQueryHandler(
         IRepository<Peca> pecaRepository,
@@ -35,17 +35,17 @@ public sealed class GetPecaByIdQueryHandler : IQueryHandler<GetPecaByIdQuery, Re
             var peca = await _pecaRepository.GetByIdAsync(query.Id, cancellationToken);
 
             if (peca is null)
-                return Result.Failure<PecaResponse>("PeÃ§a nÃ£o encontrada.");
+                return Result.Failure<PecaResponse>("Peça não encontrada.");
 
             if (peca.EstaExcluida())
-                return Result.Failure<PecaResponse>("PeÃ§a nÃ£o encontrada.");
+                return Result.Failure<PecaResponse>("Peça não encontrada.");
 
             return Result.Success(Mapear(peca));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao obter peÃ§a com Id: {PecaId}", query.Id);
-            return Result.Failure<PecaResponse>("NÃ£o foi possÃ­vel obter a peÃ§a.");
+            _logger.LogError(ex, "Erro ao obter peça com Id: {PecaId}", query.Id);
+            return Result.Failure<PecaResponse>("Não foi possível obter a peça.");
         }
     }
 

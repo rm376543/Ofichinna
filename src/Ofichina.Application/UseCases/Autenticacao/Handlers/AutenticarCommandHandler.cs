@@ -39,23 +39,23 @@ public sealed class AutenticarCommandHandler : ICommandHandler<AutenticarCommand
 
             Email email = new(command.Email);
 
-            var usuario = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email.Value);
+            var usuario = await _usuarioAutenticacaoRepository.ObterPorEmailAsync(email.Value, cancellationToken);
 
             if (usuario is null || !usuario.EstaAtivo())
             {
                 _logger.LogWarning("Usuário não encontrado ou está inativo. Email: {Email}", command.Email);
-                return Result.Failure<AutenticacaoResponse>("Verifique os dados digitados");
+                return Result.Failure<AutenticacaoResponse>("Verifique os dados fornecidos.");
             }
 
             if (!_senhaHasher.Verificar(command.Senha, usuario.SenhaHash))
             {
                 _logger.LogWarning("Credenciais inválidas para o email: {Email}", command.Email);
-                return Result.Failure<AutenticacaoResponse>("Credenciais Invalidas");
+                return Result.Failure<AutenticacaoResponse>("Credenciais inv\u00E1lidas.");
             }
 
-            var perfis = await _perfilService.ObterPerfisAsync(usuario.Id);
-            var permissoes = await _perfilService.ObterPermissoesAsync(usuario.Id);
-            var token = await _jwtTokenService.GerarTokenAsync(usuario, perfis);
+            var perfis = await _perfilService.ObterPerfisAsync(usuario.Id, cancellationToken);
+            var permissoes = await _perfilService.ObterPermissoesAsync(usuario.Id, cancellationToken);
+            var token = await _jwtTokenService.GerarTokenAsync(usuario, perfis, cancellationToken);
 
             _logger.LogInformation("Autenticação bem-sucedida para o email: {Email}", command.Email);
 
