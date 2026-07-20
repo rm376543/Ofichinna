@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Veiculos.Queries;
+using Ofichina.Domain.Common;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Veiculo;
 using Ofichina.Domain.Interfaces;
@@ -8,7 +10,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Veiculos.Handlers;
 
 /// <summary>
-/// Handler para obter um veÃ­culo por Id.
+/// Handler para obter um veículo por Id.
 /// </summary>
 public sealed class GetVeiculoByIdQueryHandler : IQueryHandler<GetVeiculoByIdQuery, Result<VeiculoResponse>>
 {
@@ -30,14 +32,14 @@ public sealed class GetVeiculoByIdQueryHandler : IQueryHandler<GetVeiculoByIdQue
             var veiculo = await _veiculoRepository.GetByIdWithPessoaAsync(query.Id, cancellationToken);
 
             if (veiculo is null || veiculo.EstaExcluida())
-                return Result.Failure<VeiculoResponse>("VeÃ­culo nÃ£o encontrado.");
+                return Result.Failure<VeiculoResponse>("Veículo não encontrado.");
 
             return Result.Success(Mapear(veiculo));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao obter veÃ­culo por Id. VeiculoId: {VeiculoId}", query.Id);
-            return Result.Failure<VeiculoResponse>("NÃ£o foi possÃ­vel obter o veÃ­culo.");
+            _logger.LogError(ex, "Erro ao obter veículo por Id. VeiculoId: {VeiculoId}", query.Id);
+            return Result.Failure<VeiculoResponse>("Não foi possível obter o veículo.");
         }
     }
 
@@ -71,3 +73,5 @@ public sealed class GetVeiculoByIdQueryHandler : IQueryHandler<GetVeiculoByIdQue
         };
     }
 }
+
+

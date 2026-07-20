@@ -1,4 +1,4 @@
-Ôªøusing FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.Abstractions;
@@ -12,7 +12,7 @@ using Ofichina.Contracts.Responses.Pessoa;
 namespace Ofichina.Api.Controllers.Pessoa
 {
     /// <summary>
-    /// Controller respons√°vel pelo CRUD de pessoas.
+    /// Controller respons·vel pelo CRUD de pessoas.
     /// </summary>
     [Authorize]
     [ApiController]
@@ -62,14 +62,14 @@ namespace Ofichina.Api.Controllers.Pessoa
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<IReadOnlyCollection<PessoaResponse>>>> BuscarPessoas(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Iniciando a obten√ß√£o de todas as pessoas.");
+            _logger.LogInformation("Iniciando a obtenÁ„o de todas as pessoas.");
 
             var result = await _getAllHandler.HandleAsync(new GetPessoasQuery(), cancellationToken);
 
             if (!result.IsSuccess)
             {
                 _logger.LogError("Erro ao obter as pessoas: {Erro}", result.Error);
-                return BadRequest(ApiResponse.FailureResponse(result.Error ?? "N√£o foi poss√≠vel obter as pessoas."));
+                return BadRequest(ApiResponse.FailureResponse(result.Error ?? "N„o foi possÌvel obter as pessoas."));
             }
 
             return Ok(ApiResponse<IReadOnlyCollection<PessoaResponse>>.SuccessResponse(result.Value ?? []));
@@ -89,14 +89,14 @@ namespace Ofichina.Api.Controllers.Pessoa
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ApiResponse<PessoaResponse>>> BuscarPessoaPorId(Guid id, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Iniciando a obten√ß√£o da pessoa com Id: {Id}", id);
+            _logger.LogInformation("Iniciando a obtenÁ„o da pessoa com Id: {Id}", id);
 
             var result = await _getByIdHandler.HandleAsync(new GetPessoaByIdQuery(id), cancellationToken);
 
             if (!result.IsSuccess || result.Value is null)
             {
-                _logger.LogError("Pessoa com Id: {Id} n√£o encontrada.", id);
-                return NotFound(ApiResponse.FailureResponse(result.Error ?? "Pessoa n√£o encontrada."));
+                _logger.LogError("Pessoa com Id: {Id} n„o encontrada.", id);
+                return NotFound(ApiResponse.FailureResponse(result.Error ?? "Pessoa n„o encontrada."));
             }
 
             return Ok(ApiResponse<PessoaResponse>.SuccessResponse(result.Value));
@@ -107,7 +107,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         /// </summary>
         /// <param name="request">Dados da pessoa.</param>
         /// <param name="cancellationToken">Token de cancelamento.</param>
-        /// <returns>Mensagem de sucesso ou erro de valida√ß√£o.</returns>
+        /// <returns>Mensagem de sucesso ou erro de validaÁ„o.</returns>
         //[Authorize(Policy = UserPolicyEnum.Escrever)]
         [Authorize(Roles = "ADMIN")]
         [HttpPost]
@@ -117,13 +117,13 @@ namespace Ofichina.Api.Controllers.Pessoa
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<Guid>>> CriarPessoa([FromBody] CreatePessoaRequest request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Iniciando a cria√ß√£o de uma nova pessoa. Nome: {Nome}", request.Nome);
+            _logger.LogInformation("Iniciando a criaÁ„o de uma nova pessoa. Nome: {Nome}", request.Nome);
 
             var validation = await _createValidator.ValidateAsync(request, cancellationToken);
 
             if (!validation.IsValid)
             {
-                _logger.LogError("Erro ao validar a cria√ß√£o da pessoa. Erros: {Erros}", string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+                _logger.LogError("Erro ao validar a criaÁ„o da pessoa. Erros: {Erros}", string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
                 return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
             }
 
@@ -145,7 +145,7 @@ namespace Ofichina.Api.Controllers.Pessoa
             if (!result.IsSuccess)
             {
                 _logger.LogError("Erro ao criar a pessoa. Erro: {Erro}", result.Error);
-                return BadRequest(ApiResponse.FailureResponse(result.Error ?? "N√£o foi poss√≠vel criar a pessoa."));
+                return BadRequest(ApiResponse.FailureResponse(result.Error ?? "N„o foi possÌvel criar a pessoa."));
             }
 
             return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Pessoa criada com sucesso."));
@@ -156,7 +156,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         /// </summary>
         /// <param name="request">Dados atualizados da pessoa.</param>
         /// <param name="cancellationToken">Token de cancelamento.</param>
-        /// <returns>Mensagem de sucesso, erro de valida√ß√£o ou pessoa n√£o encontrada.</returns>
+        /// <returns>Mensagem de sucesso, erro de validaÁ„o ou pessoa n„o encontrada.</returns>
         [Authorize(Roles = "ADMIN")]
         [HttpPut]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
@@ -166,13 +166,13 @@ namespace Ofichina.Api.Controllers.Pessoa
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ApiResponse>> AtualizarPessoa([FromBody] UpdatePessoaRequest request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Iniciando a atualiza√ß√£o da pessoa com Id: {Id}", request.Id);
+            _logger.LogInformation("Iniciando a atualizaÁ„o da pessoa com Id: {Id}", request.Id);
 
             var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
 
             if (!validation.IsValid)
             {
-                _logger.LogError("Erro ao validar a atualiza√ß√£o da pessoa com Id: {Id}. Erros: {Erros}", request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+                _logger.LogError("Erro ao validar a atualizaÁ„o da pessoa com Id: {Id}. Erros: {Erros}", request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
                 return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
             }
 
@@ -193,9 +193,9 @@ namespace Ofichina.Api.Controllers.Pessoa
             if (!result.IsSuccess)
             {
                 _logger.LogError("Erro ao atualizar a pessoa com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
-                return result.Error == "Pessoa n√£o encontrada."
+                return result.Error == "Pessoa n„o encontrada."
                     ? NotFound(ApiResponse.FailureResponse(result.Error))
-                    : BadRequest(ApiResponse.FailureResponse(result.Error ?? "N√£o foi poss√≠vel atualizar a pessoa."));
+                    : BadRequest(ApiResponse.FailureResponse(result.Error ?? "N„o foi possÌvel atualizar a pessoa."));
             }
 
             return Ok(ApiResponse.SuccessResponse("Pessoa atualizada com sucesso."));
@@ -215,18 +215,20 @@ namespace Ofichina.Api.Controllers.Pessoa
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ApiResponse>> DeletarPessoa(Guid id, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Iniciando a desativa√ß√£o da pessoa com Id: {Id}", id);
+            _logger.LogInformation("Iniciando a desativaÁ„o da pessoa com Id: {Id}", id);
 
             var result = await _deleteHandler.HandleAsync(new DeletePessoaCommand { Id = id }, cancellationToken);
 
             if (!result.IsSuccess)
             {
                 _logger.LogError("Erro ao desativar a pessoa com Id: {Id}. Erro: {Erro}", id, result.Error);
-                return NotFound(ApiResponse.FailureResponse(result.Error ?? "Pessoa n√£o encontrada."));
+                return NotFound(ApiResponse.FailureResponse(result.Error ?? "Pessoa n„o encontrada."));
             }
 
             return Ok(ApiResponse.SuccessResponse("Pessoa desativada com sucesso."));
         }
     }
 }
+
+
 

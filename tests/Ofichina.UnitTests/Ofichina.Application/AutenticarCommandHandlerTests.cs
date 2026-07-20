@@ -1,4 +1,4 @@
-﻿using Ofichina.Application.UseCases.Autenticacao.Commands;
+using Ofichina.Application.UseCases.Autenticacao.Commands;
 using Ofichina.Application.UseCases.Autenticacao.Handlers;
 using Ofichina.Authentication.Abstractions;
 using Ofichina.Contracts.Common;
@@ -118,7 +118,7 @@ public class AutenticarCommandHandlerTests
 
         public Task<IReadOnlyCollection<string>> ObterPermissoesAsync(Guid usuarioId, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return Task.FromResult<IReadOnlyCollection<string>>([]);
         }
 
         public Task<bool> PossuiPermissaoAsync(Guid usuarioId, string permissao, CancellationToken cancellationToken = default)

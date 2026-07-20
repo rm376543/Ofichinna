@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pecas.Commands;
 using Ofichina.Contracts.Common;
@@ -8,7 +8,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Pecas.Handlers;
 
 /// <summary>
-/// Handler para exclusÃ£o lÃ³gica de peÃ§a.
+/// Handler para exclusão lógica de peça.
 /// </summary>
 public sealed class DeletePecaCommandHandler : ICommandHandler<DeletePecaCommand, Result>
 {
@@ -17,7 +17,7 @@ public sealed class DeletePecaCommandHandler : ICommandHandler<DeletePecaCommand
     private readonly ILogger<DeletePecaCommandHandler> _logger;
 
     /// <summary>
-    /// Inicializa uma nova instÃ¢ncia do handler de exclusÃ£o de peÃ§a.
+    /// Inicializa uma nova instância do handler de exclusão de peça.
     /// </summary>
     public DeletePecaCommandHandler(
         IRepository<Peca> pecaRepository,
@@ -37,7 +37,7 @@ public sealed class DeletePecaCommandHandler : ICommandHandler<DeletePecaCommand
             var peca = await _pecaRepository.GetByIdAsync(command.Id, cancellationToken);
 
             if (peca is null || peca.EstaExcluida())
-                return Result.Failure("PeÃ§a nÃ£o encontrada.");
+                return Result.Failure("Peça não encontrada.");
 
             peca.Desativar();
 
@@ -48,8 +48,8 @@ public sealed class DeletePecaCommandHandler : ICommandHandler<DeletePecaCommand
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao remover peÃ§a. PecaId: {PecaId}", command.Id);
-            return Result.Failure("NÃ£o foi possÃ­vel remover a peÃ§a.");
+            _logger.LogError(ex, "Erro ao remover peça. PecaId: {PecaId}", command.Id);
+            return Result.Failure("Não foi possível remover a peça.");
         }
     }
 }

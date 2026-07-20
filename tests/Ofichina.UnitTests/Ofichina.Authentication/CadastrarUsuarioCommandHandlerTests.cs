@@ -1,11 +1,11 @@
 using Ofichina.Authentication.Abstractions;
 using Ofichina.Authentication.Services;
-using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Usuario;
 using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Interfaces;
 using Ofichina.Domain.ValueObjects;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.UnitTests.Autenticacao;
 
@@ -82,12 +82,21 @@ public sealed class CadastrarUsuarioCommandHandlerTests
 
         public Task<Usuario?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) => Task.FromResult(_usuarios.FirstOrDefault(x => x.Id == id));
 
+        public Task UpdateAsync(Usuario entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
+
         public Task<PagedResult<Usuario>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(new PagedResult<Usuario>(_usuarios, _usuarios.Count, 1, Math.Max(_usuarios.Count, 1)));
-        }
+            var pageNumber = pagination.PageNumber > 0 ? pagination.PageNumber : 1;
+            var pageSize = pagination.PageSize > 0 ? pagination.PageSize : 10;
 
-        public Task UpdateAsync(Usuario entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
+            var items = _usuarios
+                .OrderBy(x => x.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return Task.FromResult(new PagedResult<Usuario>(items, _usuarios.Count, pageNumber, pageSize));
+        }
 
         public Task HardDeleteAsync(Usuario entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
     }

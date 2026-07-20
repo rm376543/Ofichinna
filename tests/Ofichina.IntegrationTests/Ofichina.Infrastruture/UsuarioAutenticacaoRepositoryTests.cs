@@ -1,4 +1,4 @@
-﻿using Ofichina.Domain.Entities;
+using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
 using Ofichina.Infrastructure.Repositories;
 

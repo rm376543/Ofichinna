@@ -1,4 +1,4 @@
-Ôªøusing FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.Abstractions;
@@ -62,13 +62,13 @@ public sealed class PerfisController : ControllerBase
     public async Task<ActionResult<ApiResponse<IReadOnlyCollection<PerfilResponse>>>> GetAllAsync(
     CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obten√ß√£o de todos os perfis.");
-        var result = await _getAllHandler.HandleAsync(new GetPerfisQuery());
+        _logger.LogInformation("Iniciando a obtenÁ„o de todos os perfis.");
+        var result = await _getAllHandler.HandleAsync(new GetPerfisQuery(), cancellationToken);
 
         if (!result.IsSuccess)
         {
             _logger.LogError("Erro ao obter os perfis: {Error}", result.Error);
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "N√£o foi poss√≠vel obter os perfis."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "N„o foi possÌvel obter os perfis."));
         }
 
         _logger.LogInformation("Perfis obtidos com sucesso. Total de perfis: {Count}", result.Value?.Count ?? 0);
@@ -80,7 +80,7 @@ public sealed class PerfisController : ControllerBase
     /// </summary>
     /// <param name="id">Identificador do perfil.</param>
     /// <param name="cancellationToken"></param>
-    /// <returns>Perfil encontrado ou erro 404 quando n√£o existir.</returns>
+    /// <returns>Perfil encontrado ou erro 404 quando n„o existir.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PerfilResponse>), StatusCodes.Status200OK)]
@@ -91,13 +91,13 @@ public sealed class PerfisController : ControllerBase
     Guid id,
     CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obten√ß√£o do perfil com Id: {Id}", id);
-        var result = await _getByIdHandler.HandleAsync(new GetPerfilByIdQuery(id));
+        _logger.LogInformation("Iniciando a obtenÁ„o do perfil com Id: {Id}", id);
+        var result = await _getByIdHandler.HandleAsync(new GetPerfilByIdQuery(id), cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
         {
-            _logger.LogError("Perfil com Id: {Id} n√£o encontrado.", id);
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Perfil n√£o encontrado."));
+            _logger.LogError("Perfil com Id: {Id} n„o encontrado.", id);
+            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Perfil n„o encontrado."));
         }
 
         _logger.LogInformation("Perfil com Id: {Id} obtido com sucesso.", id);
@@ -109,7 +109,7 @@ public sealed class PerfisController : ControllerBase
     /// </summary>
     /// <param name="request">Dados do perfil a ser criado.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Id do perfil criado ou erro de valida√ß√£o.</returns>
+    /// <returns>Id do perfil criado ou erro de validaÁ„o.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
@@ -120,12 +120,12 @@ public sealed class PerfisController : ControllerBase
         [FromBody] CreatePerfilRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a cria√ß√£o de um novo perfil com Nome: {NomePerfil}", request.NomePerfil);
+        _logger.LogInformation("Iniciando a criaÁ„o de um novo perfil com Nome: {NomePerfil}", request.NomePerfil);
         var validation = await _createValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
         {
-            _logger.LogError("Erro ao validar a cria√ß√£o do perfil com Nome: {NomePerfil}. Erros: {Erros}", request.NomePerfil, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            _logger.LogError("Erro ao validar a criaÁ„o do perfil com Nome: {NomePerfil}. Erros: {Erros}", request.NomePerfil, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
@@ -133,7 +133,7 @@ public sealed class PerfisController : ControllerBase
             request.NomePerfil,
             request.Descricao);
 
-        await _createHandler.HandleAsync(command);
+        await _createHandler.HandleAsync(command, cancellationToken);
 
         _logger.LogInformation("Perfil criado com sucesso, Nome: {NomePerfil}", request.NomePerfil);
         return StatusCode(
@@ -146,7 +146,7 @@ public sealed class PerfisController : ControllerBase
     /// </summary>
     /// <param name="request">Dados atualizados do perfil.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso, erro de valida√ß√£o ou perfil n√£o encontrado.</returns>
+    /// <returns>Mensagem de sucesso, erro de validaÁ„o ou perfil n„o encontrado.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPut]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
@@ -157,26 +157,26 @@ public sealed class PerfisController : ControllerBase
         [FromBody] UpdatePerfilRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualiza√ß√£o do perfil com Id: {Id}", request.Id);
+        _logger.LogInformation("Iniciando a atualizaÁ„o do perfil com Id: {Id}", request.Id);
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
         {
-            _logger.LogError("Erro ao validar a atualiza√ß√£o do perfil com Id: {Id}. Erros: {Erros}", request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            _logger.LogError("Erro ao validar a atualizaÁ„o do perfil com Id: {Id}. Erros: {Erros}", request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
         var result = await _updateHandler.HandleAsync(new UpdatePerfilCommand(
             request.Id,
             request.NomePerfil,
-            request.Descricao));
+            request.Descricao), cancellationToken);
 
         if (!result.IsSuccess)
         {
             _logger.LogError("Erro ao atualizar o perfil com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
-            return result.Error == "Perfil n√£o encontrado."
+            return result.Error == "Perfil n„o encontrado."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "N√£o foi poss√≠vel atualizar o perfil."));
+                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "N„o foi possÌvel atualizar o perfil."));
         }
 
         _logger.LogInformation("Perfil com Id: {Id} atualizado com sucesso.", request.Id);
@@ -199,16 +199,18 @@ public sealed class PerfisController : ControllerBase
         Guid id,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a desativa√ß√£o do perfil com Id: {Id}", id);
-        var result = await _deleteHandler.HandleAsync(new DeletePerfilCommand(id));
+        _logger.LogInformation("Iniciando a desativaÁ„o do perfil com Id: {Id}", id);
+        var result = await _deleteHandler.HandleAsync(new DeletePerfilCommand(id), cancellationToken);
 
         if (!result.IsSuccess)
         {
             _logger.LogError("Erro ao desativar o perfil com Id: {Id}. Erro: {Erro}", id, result.Error);
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Perfil n√£o encontrado."));
+            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Perfil n„o encontrado."));
         }
 
         _logger.LogInformation("Perfil com Id: {Id} desativado com sucesso.", id);
         return Ok(ApiResponse.SuccessResponse("Perfil desativado com sucesso."));
     }
 }
+
+

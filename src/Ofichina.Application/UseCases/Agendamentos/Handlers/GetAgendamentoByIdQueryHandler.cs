@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts.Common;
@@ -38,20 +38,20 @@ public sealed class GetAgendamentoByIdQueryHandler : IQueryHandler<GetAgendament
             var pessoa = await _pessoaRepository.GetByIdAsync(query.PessoaId, cancellationToken);
 
             if (pessoa is null || pessoa.EstaExcluida())
-                return Result.Failure<AgendamentoResponse>("Pessoa nÃ£o encontrada.");
+                return Result.Failure<AgendamentoResponse>("Pessoa não encontrada.");
 
             var agendamento = (await _agendamentoRepository.GetAllAsync(cancellationToken))
                 .FirstOrDefault(x => !x.EstaExcluida() && x.Id == query.Id && x.ClientePessoaId == query.PessoaId);
 
             if (agendamento is null)
-                return Result.Failure<AgendamentoResponse>("Agendamento nÃ£o encontrado.");
+                return Result.Failure<AgendamentoResponse>("Agendamento não encontrado.");
 
             return Result.Success(Mapear(agendamento));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao obter agendamento por Id. AgendamentoId: {AgendamentoId}", query.Id);
-            return Result.Failure<AgendamentoResponse>("NÃ£o foi possÃ­vel obter o agendamento.");
+            return Result.Failure<AgendamentoResponse>("Não foi possível obter o agendamento.");
         }
     }
 
@@ -72,3 +72,5 @@ public sealed class GetAgendamentoByIdQueryHandler : IQueryHandler<GetAgendament
         };
     }
 }
+
+

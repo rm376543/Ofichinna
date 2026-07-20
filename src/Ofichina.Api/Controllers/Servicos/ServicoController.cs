@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.Abstractions;
@@ -12,7 +12,7 @@ using Ofichina.Contracts.Responses.Servicos;
 namespace Ofichina.Api.Controllers.Servicos;
 
 /// <summary>
-/// Controller responsÃ¡vel pelo CRUD de serviÃ§os.
+/// Controller responsável pelo CRUD de serviços.
 /// </summary>
 [Authorize]
 [ApiController]
@@ -34,7 +34,7 @@ public sealed class ServicoController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna todos os serviÃ§os cadastrados.
+    /// Retorna todos os serviços cadastrados.
     /// </summary>
     [Authorize(Roles = "ADMIN")]
     [HttpGet]
@@ -45,18 +45,18 @@ public sealed class ServicoController : ControllerBase
         [FromServices] IQueryHandler<GetServicosQuery, Result<IReadOnlyCollection<ServicoResponse>>> handler,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenÃ§Ã£o de todos os serviÃ§os.");
+        _logger.LogInformation("Iniciando a obtenção de todos os serviços.");
 
-        var result = await handler.HandleAsync(new GetServicosQuery());
+        var result = await handler.HandleAsync(new GetServicosQuery(), cancellationToken);
 
         if (!result.IsSuccess)
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel obter os serviÃ§os."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os serviços."));
 
         return Ok(ApiResponse<IReadOnlyCollection<ServicoResponse>>.SuccessResponse(result.Value ?? []));
     }
 
     /// <summary>
-    /// Retorna um serviÃ§o pelo identificador.
+    /// Retorna um serviço pelo identificador.
     /// </summary>
     [Authorize(Roles = "ADMIN")]
     [HttpGet("{id:guid}")]
@@ -69,18 +69,18 @@ public sealed class ServicoController : ControllerBase
         [FromServices] IQueryHandler<GetServicoByIdQuery, Result<ServicoResponse>> handler,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenÃ§Ã£o do serviÃ§o com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a obtenção do serviço com Id: {Id}", id);
 
-        var result = await handler.HandleAsync(new GetServicoByIdQuery { Id = id });
+        var result = await handler.HandleAsync(new GetServicoByIdQuery { Id = id }, cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "ServiÃ§o nÃ£o encontrado."));
+            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Serviço não encontrado."));
 
         return Ok(ApiResponse<ServicoResponse>.SuccessResponse(result.Value));
     }
 
     /// <summary>
-    /// Cria um novo serviÃ§o.
+    /// Cria um novo serviço.
     /// </summary>
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
@@ -93,7 +93,7 @@ public sealed class ServicoController : ControllerBase
         [FromServices] ICommandHandler<CreateServicoCommand, Result<Guid>> handler,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a criaÃ§Ã£o de um serviÃ§o. Nome: {Nome}", request.Nome);
+        _logger.LogInformation("Iniciando a criação de um serviço. Nome: {Nome}", request.Nome);
 
         var validation = await _createValidator.ValidateAsync(request, cancellationToken);
 
@@ -106,16 +106,16 @@ public sealed class ServicoController : ControllerBase
             Descricao = request.Descricao,
             Valor = request.Valor,
             Ativo = request.Ativo
-        });
+        }, cancellationToken);
 
         if (!result.IsSuccess)
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel criar o serviÃ§o."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o serviço."));
 
-        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "ServiÃ§o criado com sucesso."));
+        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Serviço criado com sucesso."));
     }
 
     /// <summary>
-    /// Atualiza um serviÃ§o existente.
+    /// Atualiza um serviço existente.
     /// </summary>
     [Authorize(Roles = "ADMIN")]
     [HttpPut("{id:guid}")]
@@ -130,7 +130,7 @@ public sealed class ServicoController : ControllerBase
         [FromServices] ICommandHandler<UpdateServicoCommand, Result> handler,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualizaÃ§Ã£o do serviÃ§o com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a atualização do serviço com Id: {Id}", id);
 
         request.Id = id;
 
@@ -146,18 +146,18 @@ public sealed class ServicoController : ControllerBase
             Descricao = request.Descricao,
             Valor = request.Valor,
             Ativo = request.Ativo
-        });
+        }, cancellationToken);
 
         if (!result.IsSuccess)
-            return result.Error == "ServiÃ§o nÃ£o encontrado."
+            return result.Error == "Serviço não encontrado."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel atualizar o serviÃ§o."));
+                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o serviço."));
 
-        return Ok(ApiResponse.SuccessResponse("ServiÃ§o atualizado com sucesso."));
+        return Ok(ApiResponse.SuccessResponse("Serviço atualizado com sucesso."));
     }
 
     /// <summary>
-    /// Remove logicamente um serviÃ§o.
+    /// Remove logicamente um serviço.
     /// </summary>
     [Authorize(Roles = "ADMIN")]
     [HttpDelete("{id:guid}")]
@@ -170,13 +170,15 @@ public sealed class ServicoController : ControllerBase
         [FromServices] ICommandHandler<DeleteServicoCommand, Result> handler,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a remoÃ§Ã£o do serviÃ§o com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a remoção do serviço com Id: {Id}", id);
 
-        var result = await handler.HandleAsync(new DeleteServicoCommand { Id = id });
+        var result = await handler.HandleAsync(new DeleteServicoCommand { Id = id }, cancellationToken);
 
         if (!result.IsSuccess)
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "ServiÃ§o nÃ£o encontrado."));
+            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Serviço não encontrado."));
 
-        return Ok(ApiResponse.SuccessResponse("ServiÃ§o removido com sucesso."));
+        return Ok(ApiResponse.SuccessResponse("Serviço removido com sucesso."));
     }
 }
+
+

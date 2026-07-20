@@ -1,4 +1,4 @@
-﻿using NetArchTest.Rules;
+using NetArchTest.Rules;
 using Ofichina.Application.UseCases.Autenticacao.Handlers;
 
 namespace Ofichina.ArchitectureTests.Naming;

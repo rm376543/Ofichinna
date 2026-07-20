@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.Abstractions;
@@ -37,7 +37,7 @@ public sealed class AgendamentoController : ControllerBase
     }
 
     /// <summary>
-    /// Lista os agendamentos de uma pessoa especÃ­fica.
+    /// Lista os agendamentos de uma pessoa específica.
     /// </summary>
     [HttpGet("pessoa/{pessoaId:guid}")]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<AgendamentoResponse>>), StatusCodes.Status200OK)]
@@ -48,16 +48,16 @@ public sealed class AgendamentoController : ControllerBase
     {
         _logger.LogInformation("Iniciando a listagem de agendamentos da pessoa {PessoaId}.", pessoaId);
 
-        var result = await _getAllHandler.HandleAsync(new GetAgendamentosQuery(pessoaId));
+        var result = await _getAllHandler.HandleAsync(new GetAgendamentosQuery(pessoaId), cancellationToken);
 
         if (!result.IsSuccess)
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel obter os agendamentos."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os agendamentos."));
 
         return Ok(ApiResponse<IReadOnlyCollection<AgendamentoResponse>>.SuccessResponse(result.Value ?? []));
     }
 
     /// <summary>
-    /// ObtÃ©m um agendamento pelo identificador.
+    /// Obtém um agendamento pelo identificador.
     /// </summary>
     [HttpGet("pessoa/{pessoaId:guid}/agendamento/{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<AgendamentoResponse>), StatusCodes.Status200OK)]
@@ -66,18 +66,18 @@ public sealed class AgendamentoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<AgendamentoResponse>>> ObterPorIdAsync(Guid pessoaId, Guid id, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenÃ§Ã£o do agendamento {Id} da pessoa {PessoaId}.", id, pessoaId);
+        _logger.LogInformation("Iniciando a obtenção do agendamento {Id} da pessoa {PessoaId}.", id, pessoaId);
 
-        var result = await _getByIdHandler.HandleAsync(new GetAgendamentoByIdQuery(pessoaId, id));
+        var result = await _getByIdHandler.HandleAsync(new GetAgendamentoByIdQuery(pessoaId, id), cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Agendamento nÃ£o encontrado."));
+            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Agendamento não encontrado."));
 
         return Ok(ApiResponse<AgendamentoResponse>.SuccessResponse(result.Value));
     }
 
     /// <summary>
-    /// Cria um novo agendamento para uma pessoa especÃ­fica.
+    /// Cria um novo agendamento para uma pessoa específica.
     /// </summary>
     [HttpPost("pessoa/{pessoaId:guid}")]
     [ProducesResponseType(typeof(ApiResponse<AgendamentoResponse>), StatusCodes.Status201Created)]
@@ -91,7 +91,7 @@ public sealed class AgendamentoController : ControllerBase
         [FromBody] CreateAgendamentoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a criaÃ§Ã£o de agendamento para a pessoa {PessoaId} com o consultor {ConsultorPessoaId} em {DataAgendamento} {HorarioAgendamento}.", pessoaId, request.ConsultorPessoaId, request.DataAgendamento, request.HorarioAgendamento);
+        _logger.LogInformation("Iniciando a criação de agendamento para a pessoa {PessoaId} com o consultor {ConsultorPessoaId} em {DataAgendamento} {HorarioAgendamento}.", pessoaId, request.ConsultorPessoaId, request.DataAgendamento, request.HorarioAgendamento);
 
         var validation = await _validator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
@@ -105,11 +105,11 @@ public sealed class AgendamentoController : ControllerBase
             DataAgendamento = request.DataAgendamento,
             HorarioAgendamento = request.HorarioAgendamento,
             Descricao = request.Descricao
-        });
+        }, cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
         {
-            var error = result.Error ?? "NÃ£o foi possÃ­vel criar o agendamento.";
+            var error = result.Error ?? "Não foi possível criar o agendamento.";
 
             _logger.LogWarning("Falha ao criar agendamento. PessoaId: {PessoaId}, ConsultorPessoaId: {ConsultorPessoaId}, DataAgendamento: {DataAgendamento}, HorarioAgendamento: {HorarioAgendamento}, Erro: {Erro}", pessoaId, request.ConsultorPessoaId, request.DataAgendamento, request.HorarioAgendamento, error);
 
@@ -123,3 +123,5 @@ public sealed class AgendamentoController : ControllerBase
             ApiResponse<AgendamentoResponse>.SuccessResponse(result.Value, "Agendamento criado com sucesso."));
     }
 }
+
+

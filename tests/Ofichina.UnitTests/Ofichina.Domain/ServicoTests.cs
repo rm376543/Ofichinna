@@ -14,7 +14,7 @@ public sealed class ServicoTests
         Assert.Equal("Troca de óleo", servico.Nome);
         Assert.Equal("Substituição completa do óleo", servico.Descricao);
         Assert.Equal(149.90m, servico.Valor);
-        Assert.Null(servico.DeletedAt);
+        Assert.False(servico.EstaExcluida());
         Assert.True(servico.CreatedAt <= DateTime.UtcNow);
     }
 

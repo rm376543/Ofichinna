@@ -1,4 +1,4 @@
-ï»¿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pessoas.Queries;
 using Ofichina.Contracts.Common;
@@ -25,7 +25,7 @@ public sealed class GetPessoaQueryHandler : IQueryHandler<GetPessoasQuery, Resul
     {
         try
         {
-            _logger.LogInformation("Iniciando a obtenÃ§Ã£o de todas as pessoas.");
+            _logger.LogInformation("Iniciando a obtenção de todas as pessoas.");
 
             var pessoas = await _repository.GetPagedAsync(query.Pagination, cancellationToken);
 
@@ -40,7 +40,7 @@ public sealed class GetPessoaQueryHandler : IQueryHandler<GetPessoasQuery, Resul
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao obter todas as pessoas.");
-            return Result.Failure<IReadOnlyCollection<PessoaResponse>>("NÃ£o foi possÃ­vel obter as pessoas.");
+            return Result.Failure<IReadOnlyCollection<PessoaResponse>>("Não foi possível obter as pessoas.");
         }
     }
 

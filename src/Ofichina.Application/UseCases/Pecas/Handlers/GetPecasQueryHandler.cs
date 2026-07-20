@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pecas.Queries;
 using Ofichina.Contracts.Common;
@@ -9,7 +9,7 @@ using Ofichina.Domain.Interfaces;
 namespace Ofichina.Application.UseCases.Pecas.Handlers;
 
 /// <summary>
-/// Handler para listar peÃ§as.
+/// Handler para listar peças.
 /// </summary>
 public sealed class GetPecasQueryHandler : IQueryHandler<GetPecasQuery, Result<IReadOnlyCollection<PecaResponse>>>
 {
@@ -17,7 +17,7 @@ public sealed class GetPecasQueryHandler : IQueryHandler<GetPecasQuery, Result<I
     private readonly ILogger<GetPecasQueryHandler> _logger;
 
     /// <summary>
-    /// Inicializa uma nova instÃ¢ncia do handler de listagem de peÃ§as.
+    /// Inicializa uma nova instância do handler de listagem de peças.
     /// </summary>
     public GetPecasQueryHandler(
         IRepository<Peca> pecaRepository,
@@ -42,8 +42,8 @@ public sealed class GetPecasQueryHandler : IQueryHandler<GetPecasQuery, Result<I
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao listar peÃ§as.");
-            return Result.Failure<IReadOnlyCollection<PecaResponse>>("NÃ£o foi possÃ­vel obter as peÃ§as.");
+            _logger.LogError(ex, "Erro ao listar peças.");
+            return Result.Failure<IReadOnlyCollection<PecaResponse>>("Não foi possível obter as peças.");
         }
     }
 

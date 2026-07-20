@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.Abstractions;
@@ -39,7 +39,7 @@ public sealed class AuthController : ControllerBase
     /// </summary>
     /// <param name="request">Dados para criar o usuario do cliente.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso, erro de validaÃ§Ã£o ou erro ao concluir cadastro.</returns>
+    /// <returns>Mensagem de sucesso, erro de validação ou erro ao concluir cadastro.</returns>
     [AllowAnonymous]
     [HttpPost("login")]
     [ProducesResponseType(typeof(ApiResponse<AutenticacaoResponse>), StatusCodes.Status200OK)]
@@ -56,28 +56,28 @@ public sealed class AuthController : ControllerBase
         if (!validation.IsValid)
         {
             _logger.LogWarning(
-                "ValidaÃ§Ã£o invÃ¡lida no login. Email: {Email}, Erros: {Errors}",
+                "Validação inválida no login. Email: {Email}, Erros: {Errors}",
                 request.Email,
                 string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
 
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _loginHandler.HandleAsync(new AutenticarCommand(request.Email, request.Senha));
+        var result = await _loginHandler.HandleAsync(new AutenticarCommand(request.Email, request.Senha), cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
         {
             _logger.LogWarning(
                 "Login negado. Email: {Email}, Motivo: {Reason}",
                 request.Email,
-                result.Error ?? "Credenciais invÃ¡lidas.");
+                result.Error ?? "Credenciais inválidas.");
 
-            return Unauthorized(ApiResponse.FailureResponse(result.Error ?? "Credenciais invÃ¡lidas."));
+            return Unauthorized(ApiResponse.FailureResponse(result.Error ?? "Credenciais inválidas."));
         }
 
         _logger.LogInformation("Login realizado com sucesso. Email: {Email}", request.Email);
 
-        return Ok(ApiResponse<AutenticacaoResponse>.SuccessResponse(result.Value, "AutenticaÃ§Ã£o realizada com sucesso."));
+        return Ok(ApiResponse<AutenticacaoResponse>.SuccessResponse(result.Value, "Autenticação realizada com sucesso."));
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ public sealed class AuthController : ControllerBase
     /// </summary>
     /// <param name="request">Dados para criar o usuario do cliente.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso, erro de validaÃ§Ã£o ou erro ao concluir cadastro.</returns>
+    /// <returns>Mensagem de sucesso, erro de validação ou erro ao concluir cadastro.</returns>
     [AllowAnonymous]
     [HttpPost("register")]
     [ProducesResponseType(typeof(ApiResponse<AutenticacaoResponse>), StatusCodes.Status201Created)]
@@ -94,14 +94,14 @@ public sealed class AuthController : ControllerBase
         [FromBody] CadastrarUsuarioRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando cadastro de usuÃ¡rio. Email: {Email}", request.Email);
+        _logger.LogInformation("Iniciando cadastro de usuário. Email: {Email}", request.Email);
 
         var validation = await _registerValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
         {
             _logger.LogWarning(
-                "ValidaÃ§Ã£o invÃ¡lida no cadastro. Email: {Email}, Erros: {Errors}",
+                "Validação inválida no cadastro. Email: {Email}, Erros: {Errors}",
                 request.Email,
                 string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
 
@@ -109,16 +109,17 @@ public sealed class AuthController : ControllerBase
         }
 
         var result = await _registerHandler.HandleAsync(
-            new CadastrarUsuarioCommand(request.Email, request.Senha));
+            new CadastrarUsuarioCommand(request.Email, request.Senha),
+            cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
         {
             _logger.LogWarning(
-                "Cadastro nÃ£o concluÃ­do. Email: {Email}, Motivo: {Reason}",
+                "Cadastro não concluído. Email: {Email}, Motivo: {Reason}",
                 request.Email,
-                result.Error ?? "NÃ£o foi possÃ­vel concluir o cadastro.");
+                result.Error ?? "Não foi possível concluir o cadastro.");
 
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "NÃ£o foi possÃ­vel concluir o cadastro."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível concluir o cadastro."));
         }
 
         _logger.LogInformation("Cadastro realizado com sucesso. Email: {Email}", request.Email);
@@ -128,3 +129,5 @@ public sealed class AuthController : ControllerBase
             ApiResponse<AutenticacaoResponse>.SuccessResponse(result.Value, "Cadastro realizado com sucesso."));
     }
 }
+
+
