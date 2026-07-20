@@ -9,7 +9,7 @@ namespace Ofichina.Application.DependencyInjection;
 /// Ordem de carregamento:
 /// 1. ApplicationModule (este)
 ///    - ValidationModule (validações)
-///    - HandlersModule (handlers CQRS)
+///    - HandlersModule (handlers via MediatR)
 ///    - ServicesModule (serviços da aplicação)
 /// 2. InfrastructureModule
 ///    - DatabaseModule (EF Core, DbContext)
