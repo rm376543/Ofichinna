@@ -1,5 +1,5 @@
 using Ofichina.Domain.Entities;
-using Ofichina.Contracts.Common;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Domain.Interfaces;
 

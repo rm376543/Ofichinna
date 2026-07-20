@@ -1,4 +1,4 @@
-using Ofichina.Contracts.Common;
+using Ofichina.Domain.Common;
 using Ofichina.Domain.Aggregates;
 
 namespace Ofichina.Domain.Interfaces;
