@@ -1,4 +1,4 @@
-﻿using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Autenticacao;
 using Ofichina.Contracts.Requests.Usuario;
 using Ofichina.Contracts.Responses;
@@ -46,12 +46,12 @@ public sealed class AutenticacaoService : IAutenticacaoService
 
         if (usuario is null || !usuario.EstaAtivo())
         {
-            return Result.Failure<AutenticacaoResponse>("Credenciais inválidas.");
+            return Result.Failure<AutenticacaoResponse>("Credenciais inv\u00E1lidas.");
         }
 
         if (!_senhaHasher.Verificar(request.Senha, usuario.SenhaHash))
         {
-            return Result.Failure<AutenticacaoResponse>("Credenciais inválidas.");
+            return Result.Failure<AutenticacaoResponse>("Credenciais inv\u00E1lidas.");
         }
 
         var perfis = await _perfilService.ObterPerfisAsync(usuario.Id, cancellationToken);
@@ -81,7 +81,7 @@ public sealed class AutenticacaoService : IAutenticacaoService
 
         if (usuarioExistente is not null)
         {
-            return Result.Failure<AutenticacaoResponse>("JÃ¡ existe um usuÃ¡rio cadastrado com este e-mail.");
+            return Result.Failure<AutenticacaoResponse>("J\u00E1 existe um usu\u00E1rio cadastrado com este e-mail.");
         }
 
         var usuario = new Usuario(email, _senhaHasher.GerarHash(request.Senha));
