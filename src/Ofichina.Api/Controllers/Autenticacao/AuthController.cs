@@ -1,7 +1,7 @@
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Autenticacao.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Autenticacao;
@@ -16,21 +16,18 @@ public sealed class AuthController : ControllerBase
 {
     private readonly IValidator<AutenticacaoRequest> _loginValidator;
     private readonly IValidator<CadastrarUsuarioRequest> _registerValidator;
-    private readonly ICommandHandler<AutenticarCommand, Result<AutenticacaoResponse>> _loginHandler;
-    private readonly ICommandHandler<CadastrarUsuarioCommand, Result<AutenticacaoResponse>> _registerHandler;
+    private readonly IMediator _mediator;
     private readonly ILogger<AuthController> _logger;
 
     public AuthController(
         IValidator<AutenticacaoRequest> loginValidator,
         IValidator<CadastrarUsuarioRequest> registerValidator,
-        ICommandHandler<AutenticarCommand, Result<AutenticacaoResponse>> loginHandler,
-        ICommandHandler<CadastrarUsuarioCommand, Result<AutenticacaoResponse>> registerHandler,
+        IMediator mediator,
         ILogger<AuthController> logger)
     {
         _loginValidator = loginValidator;
         _registerValidator = registerValidator;
-        _loginHandler = loginHandler;
-        _registerHandler = registerHandler;
+        _mediator = mediator;
         _logger = logger;
     }
 
@@ -63,7 +60,7 @@ public sealed class AuthController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _loginHandler.HandleAsync(new AutenticarCommand(request.Email, request.Senha), cancellationToken);
+        var result = await _mediator.Send(new AutenticarCommand(request.Email, request.Senha), cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
         {
@@ -108,7 +105,7 @@ public sealed class AuthController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _registerHandler.HandleAsync(
+        var result = await _mediator.Send(
             new CadastrarUsuarioCommand(request.Email, request.Senha),
             cancellationToken);
 

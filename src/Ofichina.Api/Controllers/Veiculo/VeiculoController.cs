@@ -1,7 +1,7 @@
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Application.UseCases.Veiculos.Queries;
 using Ofichina.Contracts.Common;
@@ -21,23 +21,20 @@ public sealed class VeiculoController : ControllerBase
 {
     private readonly IValidator<CreateVeiculoRequest> _createValidator;
     private readonly IValidator<UpdateVeiculoRequest> _updateValidator;
-    private readonly IQueryHandler<GetVeiculosQuery, Result<IReadOnlyCollection<VeiculoResponse>>> _getAllHandler;
-    private readonly IQueryHandler<GetVeiculoByIdQuery, Result<VeiculoResponse>> _getByIdHandler;
+    private readonly IMediator _mediator;
     private readonly ILogger<VeiculoController> _logger;
 
 #pragma warning disable S107
     public VeiculoController(
         IValidator<CreateVeiculoRequest> createValidator,
         IValidator<UpdateVeiculoRequest> updateValidator,
-        IQueryHandler<GetVeiculosQuery, Result<IReadOnlyCollection<VeiculoResponse>>> getAllHandler,
-        IQueryHandler<GetVeiculoByIdQuery, Result<VeiculoResponse>> getByIdHandler,
+        IMediator mediator,
         ILogger<VeiculoController> logger)
 #pragma warning restore S107
     {
         _createValidator = createValidator;
         _updateValidator = updateValidator;
-        _getAllHandler = getAllHandler;
-        _getByIdHandler = getByIdHandler;
+        _mediator = mediator;
         _logger = logger;
     }
 
@@ -55,7 +52,7 @@ public sealed class VeiculoController : ControllerBase
     {
         _logger.LogInformation("Iniciando a obtenção de todos os veículos vinculados a pessoas.");
 
-        var result = await _getAllHandler.HandleAsync(new GetVeiculosQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetVeiculosQuery(), cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os veículos."));
@@ -79,7 +76,7 @@ public sealed class VeiculoController : ControllerBase
     {
         _logger.LogInformation("Iniciando a obtenção do veículo com Id: {Id}", id);
 
-        var result = await _getByIdHandler.HandleAsync(new GetVeiculoByIdQuery(id), cancellationToken);
+        var result = await _mediator.Send(new GetVeiculoByIdQuery(id), cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Veículo não encontrado."));
@@ -102,7 +99,6 @@ public sealed class VeiculoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<Guid>>> CriarVeiculo(
         [FromBody] CreateVeiculoRequest request,
-        [FromServices] ICommandHandler<CreateVeiculoCommand, Result<Guid>> createHandler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a criação de um veículo. Placa: {Placa}", request.Placa);
@@ -112,7 +108,7 @@ public sealed class VeiculoController : ControllerBase
         if (!validation.IsValid)
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
 
-        var result = await createHandler.HandleAsync(new CreateVeiculoCommand
+        var result = await _mediator.Send(new CreateVeiculoCommand
         {
             PessoaId = request.PessoaId,
             Placa = request.Placa,
@@ -148,7 +144,6 @@ public sealed class VeiculoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> AtualizarVeiculo(
         [FromBody] UpdateVeiculoRequest request,
-        [FromServices] ICommandHandler<UpdateVeiculoCommand, Result> updateHandler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a atualização do veículo com Id: {Id}", request.Id);
@@ -158,7 +153,7 @@ public sealed class VeiculoController : ControllerBase
         if (!validation.IsValid)
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
 
-        var result = await updateHandler.HandleAsync(new UpdateVeiculoCommand
+        var result = await _mediator.Send(new UpdateVeiculoCommand
         {
             Id = request.Id,
             PessoaId = request.PessoaId,
@@ -196,12 +191,11 @@ public sealed class VeiculoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> RemoverVeiculo(
         Guid id,
-        [FromServices] ICommandHandler<DeleteVeiculoCommand, Result> deleteHandler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a remoção do veículo com Id: {Id}", id);
 
-        var result = await deleteHandler.HandleAsync(new DeleteVeiculoCommand { Id = id }, cancellationToken);
+        var result = await _mediator.Send(new DeleteVeiculoCommand { Id = id }, cancellationToken);
 
         if (!result.IsSuccess)
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Veículo não encontrado."));

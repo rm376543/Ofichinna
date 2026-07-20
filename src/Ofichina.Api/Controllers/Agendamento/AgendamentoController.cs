@@ -1,7 +1,7 @@
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Agendamentos.Commands;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts.Common;
@@ -17,22 +17,16 @@ namespace Ofichina.Api.Controllers.Agendamento;
 public sealed class AgendamentoController : ControllerBase
 {
     private readonly IValidator<CreateAgendamentoRequest> _validator;
-    private readonly ICommandHandler<CreateAgendamentoCommand, Result<AgendamentoResponse>> _createHandler;
-    private readonly IQueryHandler<GetAgendamentosQuery, Result<IReadOnlyCollection<AgendamentoResponse>>> _getAllHandler;
-    private readonly IQueryHandler<GetAgendamentoByIdQuery, Result<AgendamentoResponse>> _getByIdHandler;
+    private readonly IMediator _mediator;
     private readonly ILogger<AgendamentoController> _logger;
 
     public AgendamentoController(
         IValidator<CreateAgendamentoRequest> validator,
-        ICommandHandler<CreateAgendamentoCommand, Result<AgendamentoResponse>> createHandler,
-        IQueryHandler<GetAgendamentosQuery, Result<IReadOnlyCollection<AgendamentoResponse>>> getAllHandler,
-        IQueryHandler<GetAgendamentoByIdQuery, Result<AgendamentoResponse>> getByIdHandler,
+        IMediator mediator,
         ILogger<AgendamentoController> logger)
     {
         _validator = validator;
-        _createHandler = createHandler;
-        _getAllHandler = getAllHandler;
-        _getByIdHandler = getByIdHandler;
+        _mediator = mediator;
         _logger = logger;
     }
 
@@ -48,7 +42,7 @@ public sealed class AgendamentoController : ControllerBase
     {
         _logger.LogInformation("Iniciando a listagem de agendamentos da pessoa {PessoaId}.", pessoaId);
 
-        var result = await _getAllHandler.HandleAsync(new GetAgendamentosQuery(pessoaId), cancellationToken);
+        var result = await _mediator.Send(new GetAgendamentosQuery(pessoaId), cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os agendamentos."));
@@ -68,7 +62,7 @@ public sealed class AgendamentoController : ControllerBase
     {
         _logger.LogInformation("Iniciando a obtenção do agendamento {Id} da pessoa {PessoaId}.", id, pessoaId);
 
-        var result = await _getByIdHandler.HandleAsync(new GetAgendamentoByIdQuery(pessoaId, id), cancellationToken);
+        var result = await _mediator.Send(new GetAgendamentoByIdQuery(pessoaId, id), cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Agendamento não encontrado."));
@@ -97,7 +91,7 @@ public sealed class AgendamentoController : ControllerBase
         if (!validation.IsValid)
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
 
-        var result = await _createHandler.HandleAsync(new CreateAgendamentoCommand
+        var result = await _mediator.Send(new CreateAgendamentoCommand
         {
             PessoaId = pessoaId,
             ConsultorPessoaId = request.ConsultorPessoaId,

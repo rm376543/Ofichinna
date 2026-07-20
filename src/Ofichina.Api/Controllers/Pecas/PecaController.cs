@@ -1,7 +1,7 @@
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pecas.Commands;
 using Ofichina.Application.UseCases.Pecas.Queries;
 using Ofichina.Contracts.Common;
@@ -21,11 +21,7 @@ public sealed class PecaController : ControllerBase
 {
     private readonly IValidator<CreatePecaRequest> _createValidator;
     private readonly IValidator<UpdatePecaRequest> _updateValidator;
-    private readonly ICommandHandler<CreatePecaCommand, Result<Guid>> _createHandler;
-    private readonly ICommandHandler<UpdatePecaCommand, Result> _updateHandler;
-    private readonly ICommandHandler<DeletePecaCommand, Result> _deleteHandler;
-    private readonly IQueryHandler<GetPecasQuery, Result<IReadOnlyCollection<PecaResponse>>> _getAllHandler;
-    private readonly IQueryHandler<GetPecaByIdQuery, Result<PecaResponse>> _getByIdHandler;
+    private readonly IMediator _mediator;
     private readonly ILogger<PecaController> _logger;
 
 #pragma warning disable S107
@@ -35,21 +31,13 @@ public sealed class PecaController : ControllerBase
     public PecaController(
         IValidator<CreatePecaRequest> createValidator,
         IValidator<UpdatePecaRequest> updateValidator,
-        ICommandHandler<CreatePecaCommand, Result<Guid>> createHandler,
-        ICommandHandler<UpdatePecaCommand, Result> updateHandler,
-        ICommandHandler<DeletePecaCommand, Result> deleteHandler,
-        IQueryHandler<GetPecasQuery, Result<IReadOnlyCollection<PecaResponse>>> getAllHandler,
-        IQueryHandler<GetPecaByIdQuery, Result<PecaResponse>> getByIdHandler,
+        IMediator mediator,
         ILogger<PecaController> logger)
 #pragma warning restore S107
     {
         _createValidator = createValidator;
         _updateValidator = updateValidator;
-        _createHandler = createHandler;
-        _updateHandler = updateHandler;
-        _deleteHandler = deleteHandler;
-        _getAllHandler = getAllHandler;
-        _getByIdHandler = getByIdHandler;
+        _mediator = mediator;
         _logger = logger;
     }
 
@@ -67,7 +55,7 @@ public sealed class PecaController : ControllerBase
     {
         _logger.LogInformation("Iniciando a obtenção de todas as peças.");
 
-        var result = await _getAllHandler.HandleAsync(new GetPecasQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetPecasQuery(), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -94,7 +82,7 @@ public sealed class PecaController : ControllerBase
     {
         _logger.LogInformation("Iniciando a obtenção da peça com Id: {Id}", id);
 
-        var result = await _getByIdHandler.HandleAsync(new GetPecaByIdQuery { Id = id }, cancellationToken);
+        var result = await _mediator.Send(new GetPecaByIdQuery { Id = id }, cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
         {
@@ -129,7 +117,7 @@ public sealed class PecaController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _createHandler.HandleAsync(new CreatePecaCommand
+        var result = await _mediator.Send(new CreatePecaCommand
         {
             Nome = request.Nome,
             Descricao = request.Descricao,
@@ -176,7 +164,7 @@ public sealed class PecaController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _updateHandler.HandleAsync(new UpdatePecaCommand
+        var result = await _mediator.Send(new UpdatePecaCommand
         {
             Id = id,
             Nome = request.Nome,
@@ -214,7 +202,7 @@ public sealed class PecaController : ControllerBase
     {
         _logger.LogInformation("Iniciando a desativação da peça com Id: {Id}", id);
 
-        var result = await _deleteHandler.HandleAsync(new DeletePecaCommand { Id = id }, cancellationToken);
+        var result = await _mediator.Send(new DeletePecaCommand { Id = id }, cancellationToken);
 
         if (!result.IsSuccess)
         {

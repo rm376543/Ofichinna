@@ -1,7 +1,7 @@
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.PerfilUsuario.Commands;
 using Ofichina.Application.UseCases.PerfilUsuario.Queries;
 using Ofichina.Contracts.Common;
@@ -17,19 +17,16 @@ namespace Ofichina.Api.Controllers.PerfilUsuario;
 public sealed class PerfilUsuarioController : ControllerBase
 {
     private readonly IValidator<VincularPerfilUsuarioRequest> _vincularValidator;
-    private readonly ICommandHandler<VincularPerfilUsuarioCommand, Result<VincularPerfilUsuarioResponse>> _vincularHandler;
-    private readonly IQueryHandler<ObterPerfisDoUsuarioQuery, IReadOnlyCollection<string>> _obterPerfisHandler;
+    private readonly IMediator _mediator;
     private readonly ILogger<PerfilUsuarioController> _logger;
 
     public PerfilUsuarioController(
         IValidator<VincularPerfilUsuarioRequest> vincularValidator,
-        ICommandHandler<VincularPerfilUsuarioCommand, Result<VincularPerfilUsuarioResponse>> vincularHandler,
-        IQueryHandler<ObterPerfisDoUsuarioQuery, IReadOnlyCollection<string>> obterPerfisHandler,
+        IMediator mediator,
         ILogger<PerfilUsuarioController> logger)
     {
         _vincularValidator = vincularValidator;
-        _vincularHandler = vincularHandler;
-        _obterPerfisHandler = obterPerfisHandler;
+        _mediator = mediator;
         _logger = logger;
     }
 
@@ -71,7 +68,7 @@ public sealed class PerfilUsuarioController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _vincularHandler.HandleAsync(new VincularPerfilUsuarioCommand(
+        var result = await _mediator.Send(new VincularPerfilUsuarioCommand(
             request.UsuarioId,
             request.PerfilId), cancellationToken);
 
@@ -100,7 +97,7 @@ public sealed class PerfilUsuarioController : ControllerBase
     {
         _logger.LogInformation("Consultando perfis do usuário. UsuarioId: {UsuarioId}", usuarioId);
 
-        var perfis = await _obterPerfisHandler.HandleAsync(new ObterPerfisDoUsuarioQuery(usuarioId), HttpContext.RequestAborted);
+        var perfis = await _mediator.Send(new ObterPerfisDoUsuarioQuery(usuarioId), HttpContext.RequestAborted);
 
         _logger.LogInformation("Perfis obtidos com sucesso. UsuarioId: {UsuarioId}, Quantidade: {Quantidade}", usuarioId, perfis.Count);
 

@@ -1,7 +1,7 @@
 using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Servicos.Commands;
 using Ofichina.Application.UseCases.Servicos.Queries;
 using Ofichina.Contracts.Common;
@@ -21,15 +21,18 @@ public sealed class ServicoController : ControllerBase
 {
     private readonly IValidator<CreateServicoRequest> _createValidator;
     private readonly IValidator<UpdateServicoRequest> _updateValidator;
+    private readonly IMediator _mediator;
     private readonly ILogger<ServicoController> _logger;
 
     public ServicoController(
         IValidator<CreateServicoRequest> createValidator,
         IValidator<UpdateServicoRequest> updateValidator,
+        IMediator mediator,
         ILogger<ServicoController> logger)
     {
         _createValidator = createValidator;
         _updateValidator = updateValidator;
+        _mediator = mediator;
         _logger = logger;
     }
 
@@ -42,12 +45,11 @@ public sealed class ServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse<IReadOnlyCollection<ServicoResponse>>>> BuscarServicos(
-        [FromServices] IQueryHandler<GetServicosQuery, Result<IReadOnlyCollection<ServicoResponse>>> handler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção de todos os serviços.");
 
-        var result = await handler.HandleAsync(new GetServicosQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetServicosQuery(), cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os serviços."));
@@ -66,12 +68,11 @@ public sealed class ServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<ServicoResponse>>> BuscarServicoPorId(
         Guid id,
-        [FromServices] IQueryHandler<GetServicoByIdQuery, Result<ServicoResponse>> handler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção do serviço com Id: {Id}", id);
 
-        var result = await handler.HandleAsync(new GetServicoByIdQuery { Id = id }, cancellationToken);
+        var result = await _mediator.Send(new GetServicoByIdQuery { Id = id }, cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Serviço não encontrado."));
@@ -90,7 +91,6 @@ public sealed class ServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse<Guid>>> CriarServico(
         [FromBody] CreateServicoRequest request,
-        [FromServices] ICommandHandler<CreateServicoCommand, Result<Guid>> handler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a criação de um serviço. Nome: {Nome}", request.Nome);
@@ -100,7 +100,7 @@ public sealed class ServicoController : ControllerBase
         if (!validation.IsValid)
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
 
-        var result = await handler.HandleAsync(new CreateServicoCommand
+        var result = await _mediator.Send(new CreateServicoCommand
         {
             Nome = request.Nome,
             Descricao = request.Descricao,
@@ -127,7 +127,6 @@ public sealed class ServicoController : ControllerBase
     public async Task<ActionResult<ApiResponse>> AtualizarServico(
         Guid id,
         [FromBody] UpdateServicoRequest request,
-        [FromServices] ICommandHandler<UpdateServicoCommand, Result> handler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a atualização do serviço com Id: {Id}", id);
@@ -139,7 +138,7 @@ public sealed class ServicoController : ControllerBase
         if (!validation.IsValid)
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
 
-        var result = await handler.HandleAsync(new UpdateServicoCommand
+        var result = await _mediator.Send(new UpdateServicoCommand
         {
             Id = id,
             Nome = request.Nome,
@@ -167,12 +166,11 @@ public sealed class ServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> RemoverServico(
         Guid id,
-        [FromServices] ICommandHandler<DeleteServicoCommand, Result> handler,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a remoção do serviço com Id: {Id}", id);
 
-        var result = await handler.HandleAsync(new DeleteServicoCommand { Id = id }, cancellationToken);
+        var result = await _mediator.Send(new DeleteServicoCommand { Id = id }, cancellationToken);
 
         if (!result.IsSuccess)
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Serviço não encontrado."));
