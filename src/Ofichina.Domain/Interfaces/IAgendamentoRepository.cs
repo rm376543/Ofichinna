@@ -9,7 +9,7 @@ public interface IAgendamentoRepository : IRepository<Agendamento>
 
     Task<Agendamento?> GetByIdAndPessoaAsync(Guid agendamentoId, Guid pessoaId, CancellationToken cancellationToken = default);
 
-    Task<bool> ExisteConflitoConsultorAsync(Guid consultorPessoaId, DateOnly dataAgendamento, TimeOnly horarioAgendamento, CancellationToken cancellationToken = default);
+    Task<bool> ExisteConflitoConsultorAsync(Guid horarioConsultorId, CancellationToken cancellationToken = default);
 
-    Task<bool> ExisteConflitoVeiculoAsync(Guid veiculoId, DateOnly dataAgendamento, TimeOnly horarioAgendamento, CancellationToken cancellationToken = default);
+    Task<bool> ExisteConflitoVeiculoAsync(Guid veiculoId, Guid diaDisponibilidadeId, Guid horarioConsultorId, CancellationToken cancellationToken = default);
 }

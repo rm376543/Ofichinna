@@ -9,13 +9,23 @@ public sealed class AgendamentoResponse
 
     public Guid ClientePessoaId { get; set; }
 
+    public string ClienteNome { get; set; } = string.Empty;
+
+    public Guid DiaDisponibilidadeId { get; set; }
+
+    public Guid HorarioConsultorId { get; set; }
+
     public Guid ConsultorPessoaId { get; set; }
+
+    public string ConsultorNome { get; set; } = string.Empty;
 
     public Guid VeiculoId { get; set; }
 
-    public DateOnly DataAgendamento { get; set; }
+    public string VeiculoPlaca { get; set; } = string.Empty;
 
-    public TimeOnly HorarioAgendamento { get; set; }
+    public string VeiculoDescricao { get; set; } = string.Empty;
+
+    public string Status { get; set; } = string.Empty;
 
     public string? Descricao { get; set; }
 

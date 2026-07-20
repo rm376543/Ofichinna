@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Ofichina.Domain.Common;
 using Ofichina.Domain.Aggregates;
+using Ofichina.Domain.Entities;
 using Ofichina.Domain.Interfaces;
 using Ofichina.Infrastructure.Persistence;
 
@@ -25,8 +26,14 @@ public sealed class AgendamentoRepository : Repository<Agendamento>, IAgendament
         var query = _context.Agendamentos
             .AsNoTracking()
             .Where(x => x.DeletedAt == null && x.ClientePessoaId == pessoaId)
-            .OrderBy(x => x.DataAgendamento)
-            .ThenBy(x => x.HorarioAgendamento)
+            .Include(x => x.Cliente)
+            .Include(x => x.Consultor)
+            .Include(x => x.Veiculo)
+            .Include(x => x.DiaDisponibilidade)
+            .Include(x => x.HorarioConsultor)
+                .ThenInclude(x => x.Pessoa)
+            .OrderBy(x => x.DiaDisponibilidade.Data)
+            .ThenBy(x => x.HorarioConsultor.HorarioDisponibilidade.Hora)
             .ThenBy(x => x.Id);
 
         var totalCount = await query.CountAsync(cancellationToken);
@@ -42,20 +49,26 @@ public sealed class AgendamentoRepository : Repository<Agendamento>, IAgendament
     {
         return await _context.Agendamentos
             .AsNoTracking()
+            .Include(x => x.Cliente)
+            .Include(x => x.Consultor)
+            .Include(x => x.Veiculo)
+            .Include(x => x.DiaDisponibilidade)
+            .Include(x => x.HorarioConsultor)
+                .ThenInclude(x => x.Pessoa)
             .FirstOrDefaultAsync(x => x.Id == agendamentoId && x.ClientePessoaId == pessoaId && x.DeletedAt == null, cancellationToken);
     }
 
-    public async Task<bool> ExisteConflitoConsultorAsync(Guid consultorPessoaId, DateOnly dataAgendamento, TimeOnly horarioAgendamento, CancellationToken cancellationToken = default)
+    public async Task<bool> ExisteConflitoConsultorAsync(Guid horarioConsultorId, CancellationToken cancellationToken = default)
     {
         return await _context.Agendamentos
             .AsNoTracking()
-            .AnyAsync(x => x.DeletedAt == null && x.ConsultorPessoaId == consultorPessoaId && x.DataAgendamento == dataAgendamento && x.HorarioAgendamento == horarioAgendamento, cancellationToken);
+            .AnyAsync(x => x.DeletedAt == null && x.HorarioConsultorId == horarioConsultorId, cancellationToken);
     }
 
-    public async Task<bool> ExisteConflitoVeiculoAsync(Guid veiculoId, DateOnly dataAgendamento, TimeOnly horarioAgendamento, CancellationToken cancellationToken = default)
+    public async Task<bool> ExisteConflitoVeiculoAsync(Guid veiculoId, Guid diaDisponibilidadeId, Guid horarioConsultorId, CancellationToken cancellationToken = default)
     {
         return await _context.Agendamentos
             .AsNoTracking()
-            .AnyAsync(x => x.DeletedAt == null && x.VeiculoId == veiculoId && x.DataAgendamento == dataAgendamento && x.HorarioAgendamento == horarioAgendamento, cancellationToken);
+            .AnyAsync(x => x.DeletedAt == null && x.VeiculoId == veiculoId && x.DiaDisponibilidadeId == diaDisponibilidadeId && x.HorarioConsultorId == horarioConsultorId, cancellationToken);
     }
 }

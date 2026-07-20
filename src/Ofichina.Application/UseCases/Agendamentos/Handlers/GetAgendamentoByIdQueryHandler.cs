@@ -4,7 +4,6 @@ using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Agendamento;
 using Ofichina.Domain.Aggregates;
-using Ofichina.Authentication.Abstractions;
 using Ofichina.Domain.Interfaces;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
@@ -16,18 +15,15 @@ public sealed class GetAgendamentoByIdQueryHandler : IQueryHandler<GetAgendament
 {
     private readonly IAgendamentoRepository _agendamentoRepository;
     private readonly IPessoaRepository _pessoaRepository;
-    private readonly IUsuarioAtualService _usuarioAtualService;
     private readonly ILogger<GetAgendamentoByIdQueryHandler> _logger;
 
     public GetAgendamentoByIdQueryHandler(
         IAgendamentoRepository agendamentoRepository,
         IPessoaRepository pessoaRepository,
-        IUsuarioAtualService usuarioAtualService,
         ILogger<GetAgendamentoByIdQueryHandler> logger)
     {
         _agendamentoRepository = agendamentoRepository;
         _pessoaRepository = pessoaRepository;
-        _usuarioAtualService = usuarioAtualService;
         _logger = logger;
     }
 
@@ -40,8 +36,7 @@ public sealed class GetAgendamentoByIdQueryHandler : IQueryHandler<GetAgendament
             if (pessoa is null || pessoa.EstaExcluida())
                 return Result.Failure<AgendamentoResponse>("Pessoa não encontrada.");
 
-            var agendamento = (await _agendamentoRepository.GetAllAsync(cancellationToken))
-                .FirstOrDefault(x => !x.EstaExcluida() && x.Id == query.Id && x.ClientePessoaId == query.PessoaId);
+            var agendamento = await _agendamentoRepository.GetByIdAndPessoaAsync(query.Id, query.PessoaId, cancellationToken);
 
             if (agendamento is null)
                 return Result.Failure<AgendamentoResponse>("Agendamento não encontrado.");
@@ -61,10 +56,15 @@ public sealed class GetAgendamentoByIdQueryHandler : IQueryHandler<GetAgendament
         {
             Id = agendamento.Id,
             ClientePessoaId = agendamento.ClientePessoaId,
+            ClienteNome = agendamento.Cliente.Nome,
+            DiaDisponibilidadeId = agendamento.DiaDisponibilidadeId,
+            HorarioConsultorId = agendamento.HorarioConsultorId,
             ConsultorPessoaId = agendamento.ConsultorPessoaId,
+            ConsultorNome = agendamento.HorarioConsultor.Pessoa.Nome,
             VeiculoId = agendamento.VeiculoId,
-            DataAgendamento = agendamento.DataAgendamento,
-            HorarioAgendamento = agendamento.HorarioAgendamento,
+            VeiculoPlaca = agendamento.Veiculo.Placa.Numero,
+            VeiculoDescricao = $"{agendamento.Veiculo.Marca} {agendamento.Veiculo.Modelo} {agendamento.Veiculo.AnoFabricacao}",
+            Status = agendamento.Status.ToString(),
             Descricao = agendamento.Descricao,
             CreatedAt = agendamento.CreatedAt,
             UpdatedAt = agendamento.UpdatedAt,

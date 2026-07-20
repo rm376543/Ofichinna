@@ -6,6 +6,7 @@ using Ofichina.Contracts.Responses.Agendamento;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Authentication.Abstractions;
+using Ofichina.Domain.Entities;
 using Ofichina.Domain.Interfaces;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
@@ -18,22 +19,33 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
     private readonly IAgendamentoRepository _agendamentoRepository;
     private readonly IPessoaRepository _pessoaRepository;
     private readonly IVeiculoRepository _veiculoRepository;
-    private readonly IUsuarioAtualService _usuarioAtualService;
+    private readonly IDiaDisponibilidadeRepository _diaDisponibilidadeRepository;
+    private readonly IHorarioDisponibilidadeRepository _horarioDisponibilidadeRepository;
+    private readonly IHorarioConsultorRepository _horarioConsultorRepository;
+    private readonly IPerfilAutorizacaoService _perfilAutorizacaoService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateAgendamentoCommandHandler> _logger;
 
+#pragma warning disable S107
     public CreateAgendamentoCommandHandler(
         IAgendamentoRepository agendamentoRepository,
         IPessoaRepository pessoaRepository,
         IVeiculoRepository veiculoRepository,
-        IUsuarioAtualService usuarioAtualService,
+        IDiaDisponibilidadeRepository diaDisponibilidadeRepository,
+        IHorarioDisponibilidadeRepository horarioDisponibilidadeRepository,
+        IHorarioConsultorRepository horarioConsultorRepository,
+        IPerfilAutorizacaoService perfilAutorizacaoService,
         IUnitOfWork unitOfWork,
         ILogger<CreateAgendamentoCommandHandler> logger)
+#pragma warning restore S107
     {
         _agendamentoRepository = agendamentoRepository;
         _pessoaRepository = pessoaRepository;
         _veiculoRepository = veiculoRepository;
-        _usuarioAtualService = usuarioAtualService;
+        _diaDisponibilidadeRepository = diaDisponibilidadeRepository;
+        _horarioDisponibilidadeRepository = horarioDisponibilidadeRepository;
+        _horarioConsultorRepository = horarioConsultorRepository;
+        _perfilAutorizacaoService = perfilAutorizacaoService;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -55,36 +67,40 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
             if (veiculo.PessoaId != pessoa.Id)
                 return Result.Failure<AgendamentoResponse>("O veículo informado não pertence ao usuário autenticado.");
 
-            var consultor = await _pessoaRepository.GetByIdAsync(command.ConsultorPessoaId, cancellationToken);
+            var dia = await _diaDisponibilidadeRepository.GetByIdAsync(command.DiaDisponibilidadeId, cancellationToken);
+            if (dia is null || dia.EstaExcluida())
+                return Result.Failure<AgendamentoResponse>("Dia de disponibilidade não encontrado.");
+
+            var horarioConsultor = await _horarioConsultorRepository.GetByIdAsync(command.HorarioConsultorId, cancellationToken);
+            if (horarioConsultor is null || horarioConsultor.EstaExcluida())
+                return Result.Failure<AgendamentoResponse>("Horário do consultor não encontrado.");
+
+            var horariosDoDia = await _horarioDisponibilidadeRepository.GetHorariosPorDiaAsync(command.DiaDisponibilidadeId, cancellationToken);
+            var horarioPertenceAoDia = horariosDoDia.Any(x => x.Id == horarioConsultor.HorarioDisponibilidadeId);
+
+            if (!horarioPertenceAoDia)
+                return Result.Failure<AgendamentoResponse>("O horário informado não pertence ao dia selecionado.");
+
+            var consultor = await _pessoaRepository.GetByIdAsync(horarioConsultor.PessoaId, cancellationToken);
             if (consultor is null || consultor.EstaExcluida())
                 return Result.Failure<AgendamentoResponse>("Consultor não encontrado.");
 
-            var agendamentoExistente = (await _agendamentoRepository.GetAllAsync(cancellationToken))
-                .FirstOrDefault(x =>
-                    !x.EstaExcluida() &&
-                    x.ConsultorPessoaId == command.ConsultorPessoaId &&
-                    x.DataAgendamento == command.DataAgendamento &&
-                    x.HorarioAgendamento == command.HorarioAgendamento);
+            var possuiPerfilConsultor = await _perfilAutorizacaoService.PossuiPerfilAsync(consultor.UsuarioId, "CONSULTOR", cancellationToken);
+            if (!possuiPerfilConsultor)
+                return Result.Failure<AgendamentoResponse>("A pessoa informada não possui perfil de consultor.");
 
-            if (agendamentoExistente is not null)
+            if (await _agendamentoRepository.ExisteConflitoConsultorAsync(command.HorarioConsultorId, cancellationToken))
                 return Result.Failure<AgendamentoResponse>("Já existe um agendamento para este horário.");
 
-            var veiculoConflito = (await _agendamentoRepository.GetAllAsync(cancellationToken))
-                .FirstOrDefault(x =>
-                    !x.EstaExcluida() &&
-                    x.VeiculoId == command.VeiculoId &&
-                    x.DataAgendamento == command.DataAgendamento &&
-                    x.HorarioAgendamento == command.HorarioAgendamento);
-
-            if (veiculoConflito is not null)
+            if (await _agendamentoRepository.ExisteConflitoVeiculoAsync(command.VeiculoId, command.DiaDisponibilidadeId, command.HorarioConsultorId, cancellationToken))
                 return Result.Failure<AgendamentoResponse>("Já existe um agendamento para este veículo neste horário.");
 
             var agendamento = new Agendamento(
                 command.PessoaId,
-                command.ConsultorPessoaId,
+                command.DiaDisponibilidadeId,
+                command.HorarioConsultorId,
+                consultor.Id,
                 command.VeiculoId,
-                command.DataAgendamento,
-                command.HorarioAgendamento,
                 command.Descricao);
 
             await _agendamentoRepository.AddAsync(agendamento, cancellationToken);
@@ -92,7 +108,7 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
 
             _logger.LogInformation("Agendamento criado com sucesso. AgendamentoId: {AgendamentoId}", agendamento.Id);
 
-            return Result.Success(Mapear(agendamento));
+            return Result.Success(Mapear(agendamento, pessoa, consultor, veiculo));
         }
         catch (DomainException ex)
         {
@@ -106,16 +122,25 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
         }
     }
 
-    private static AgendamentoResponse Mapear(Agendamento agendamento)
+    private static AgendamentoResponse Mapear(
+        Agendamento agendamento,
+        Pessoa pessoa,
+        Pessoa consultor,
+        Veiculo veiculo)
     {
         return new AgendamentoResponse
         {
             Id = agendamento.Id,
             ClientePessoaId = agendamento.ClientePessoaId,
+            ClienteNome = pessoa.Nome,
+            DiaDisponibilidadeId = agendamento.DiaDisponibilidadeId,
+            HorarioConsultorId = agendamento.HorarioConsultorId,
             ConsultorPessoaId = agendamento.ConsultorPessoaId,
+            ConsultorNome = consultor.Nome,
             VeiculoId = agendamento.VeiculoId,
-            DataAgendamento = agendamento.DataAgendamento,
-            HorarioAgendamento = agendamento.HorarioAgendamento,
+            VeiculoPlaca = veiculo.Placa.Numero,
+            VeiculoDescricao = $"{veiculo.Marca} {veiculo.Modelo} {veiculo.AnoFabricacao}",
+            Status = agendamento.Status.ToString(),
             Descricao = agendamento.Descricao,
             CreatedAt = agendamento.CreatedAt,
             UpdatedAt = agendamento.UpdatedAt,

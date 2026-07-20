@@ -39,6 +39,10 @@ public static class RepositoryModule
 
         services.AddScoped<IAgendamentoRepository, AgendamentoRepository>();
 
+        services.AddScoped<IDiaDisponibilidadeRepository, DiaDisponibilidadeRepository>();
+        services.AddScoped<IHorarioDisponibilidadeRepository, HorarioDisponibilidadeRepository>();
+        services.AddScoped<IHorarioConsultorRepository, HorarioConsultorRepository>();
+
         return services;
     }
 }

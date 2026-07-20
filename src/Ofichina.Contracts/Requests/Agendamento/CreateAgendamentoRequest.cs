@@ -8,24 +8,19 @@ namespace Ofichina.Contracts.Requests.Agendamento;
 public sealed class CreateAgendamentoRequest : CreateRequest
 {
     /// <summary>
-    /// Identificador da pessoa consultora.
+    /// Identificador do dia disponível selecionado.
     /// </summary>
-    public Guid ConsultorPessoaId { get; init; }
+    public Guid DiaDisponibilidadeId { get; init; }
+
+    /// <summary>
+    /// Identificador do vínculo entre horário e consultor selecionado.
+    /// </summary>
+    public Guid HorarioConsultorId { get; init; }
 
     /// <summary>
     /// Identificador do veículo a ser atendido.
     /// </summary>
     public Guid VeiculoId { get; init; }
-
-    /// <summary>
-    /// Data do agendamento.
-    /// </summary>
-    public DateOnly DataAgendamento { get; init; }
-
-    /// <summary>
-    /// Horário do agendamento.
-    /// </summary>
-    public TimeOnly HorarioAgendamento { get; init; }
 
     /// <summary>
     /// Descrição opcional do agendamento.

@@ -85,7 +85,7 @@ public sealed class AgendamentoController : ControllerBase
         [FromBody] CreateAgendamentoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a criação de agendamento para a pessoa {PessoaId} com o consultor {ConsultorPessoaId} em {DataAgendamento} {HorarioAgendamento}.", pessoaId, request.ConsultorPessoaId, request.DataAgendamento, request.HorarioAgendamento);
+        _logger.LogInformation("Iniciando a criação de agendamento para a pessoa {PessoaId} no dia {DiaDisponibilidadeId} e horário {HorarioConsultorId}.", pessoaId, request.DiaDisponibilidadeId, request.HorarioConsultorId);
 
         var validation = await _validator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
@@ -94,10 +94,9 @@ public sealed class AgendamentoController : ControllerBase
         var result = await _mediator.Send(new CreateAgendamentoCommand
         {
             PessoaId = pessoaId,
-            ConsultorPessoaId = request.ConsultorPessoaId,
+            DiaDisponibilidadeId = request.DiaDisponibilidadeId,
+            HorarioConsultorId = request.HorarioConsultorId,
             VeiculoId = request.VeiculoId,
-            DataAgendamento = request.DataAgendamento,
-            HorarioAgendamento = request.HorarioAgendamento,
             Descricao = request.Descricao
         }, cancellationToken);
 
@@ -105,7 +104,7 @@ public sealed class AgendamentoController : ControllerBase
         {
             var error = result.Error ?? "Não foi possível criar o agendamento.";
 
-            _logger.LogWarning("Falha ao criar agendamento. PessoaId: {PessoaId}, ConsultorPessoaId: {ConsultorPessoaId}, DataAgendamento: {DataAgendamento}, HorarioAgendamento: {HorarioAgendamento}, Erro: {Erro}", pessoaId, request.ConsultorPessoaId, request.DataAgendamento, request.HorarioAgendamento, error);
+            _logger.LogWarning("Falha ao criar agendamento. PessoaId: {PessoaId}, DiaDisponibilidadeId: {DiaDisponibilidadeId}, HorarioConsultorId: {HorarioConsultorId}, Erro: {Erro}", pessoaId, request.DiaDisponibilidadeId, request.HorarioConsultorId, error);
 
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Falha ao criar agendamento."));
 
