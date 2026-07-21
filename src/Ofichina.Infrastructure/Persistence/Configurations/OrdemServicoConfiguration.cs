@@ -24,9 +24,6 @@ public class OrdemServicoConfiguration : IEntityTypeConfiguration<OrdemServico>
         builder.Navigation(x => x.Servicos)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        builder.Navigation(x => x.Pecas)
-            .UsePropertyAccessMode(PropertyAccessMode.Field);
-
         builder.HasOne<Pessoa>()
             .WithMany()
             .HasForeignKey(x => x.PessoaId)
@@ -43,11 +40,6 @@ public class OrdemServicoConfiguration : IEntityTypeConfiguration<OrdemServico>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(x => x.Servicos)
-            .WithOne()
-            .HasForeignKey(x => x.OrdemServicoId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasMany(x => x.Pecas)
             .WithOne()
             .HasForeignKey(x => x.OrdemServicoId)
             .OnDelete(DeleteBehavior.Cascade);

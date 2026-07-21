@@ -30,6 +30,14 @@ public class ItemServicoConfiguration : IEntityTypeConfiguration<ItemServico>
         // Propriedade calculada no domínio
         builder.Ignore(i => i.ValorTotal);
 
+        builder.HasMany(x => x.Pecas)
+            .WithOne()
+            .HasForeignKey(i => i.ItemServicoId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Navigation(x => x.Pecas)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+
         builder.HasOne<OrdemServico>()
             .WithMany()
             .HasForeignKey(i => i.OrdemServicoId)
