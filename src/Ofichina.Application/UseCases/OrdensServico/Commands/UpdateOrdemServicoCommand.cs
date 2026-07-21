@@ -34,8 +34,4 @@ public sealed class UpdateOrdemServicoCommand : ICommand<Result>
     /// </summary>
     public ICollection<UpdateOrdemServicoItemServicoRequest> Servicos { get; init; } = [];
 
-    /// <summary>
-    /// Peças previstas para a ordem de serviço.
-    /// </summary>
-    public ICollection<UpdateOrdemServicoItemPecaRequest> Pecas { get; init; } = [];
 }

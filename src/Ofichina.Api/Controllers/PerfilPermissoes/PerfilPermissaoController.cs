@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.PerfilPermissoes.Commands;
 using Ofichina.Application.UseCases.PerfilPermissoes.Queries;
-using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.PerfilPermissoes;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.PerfilPermissoes;

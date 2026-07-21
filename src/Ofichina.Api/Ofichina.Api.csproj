@@ -29,7 +29,6 @@
 
 	<ItemGroup>
 		<Folder Include="Controllers\ItemServico\" />
-		<Folder Include="Controllers\ItemPeca\" />
 		<Folder Include="Controllers\Pessoa\" />
 		<Folder Include="Controllers\Orcamento\" />
 		<Folder Include="Controllers\Servicos\" />

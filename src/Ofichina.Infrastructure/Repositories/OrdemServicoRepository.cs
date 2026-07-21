@@ -18,15 +18,18 @@ public sealed class OrdemServicoRepository : Repository<OrdemServico>, IOrdemSer
         _context = context;
     }
 
-    public async Task<OrdemServico?> GetByIdAsync(Guid id, bool includeItens = false, CancellationToken cancellationToken = default)
+    public async Task<OrdemServico?> GetByIdAsync(Guid id, bool includeItens = false, CancellationToken cancellationToken = default, bool tracking = false)
     {
-        IQueryable<OrdemServico> query = _context.Set<OrdemServico>().AsNoTracking();
+        IQueryable<OrdemServico> query = _context.Set<OrdemServico>();
+
+        if (!tracking)
+            query = query.AsNoTracking();
 
         if (includeItens)
         {
             query = query
                 .Include(x => x.Servicos)
-                .Include(x => x.Pecas);
+                    .ThenInclude(s => s.Pecas);
         }
 
         return await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
@@ -40,7 +43,7 @@ public sealed class OrdemServicoRepository : Repository<OrdemServico>, IOrdemSer
         {
             query = query
                 .Include(x => x.Servicos)
-                .Include(x => x.Pecas);
+                    .ThenInclude(s => s.Pecas);
         }
 
         return await query.ToListAsync(cancellationToken);

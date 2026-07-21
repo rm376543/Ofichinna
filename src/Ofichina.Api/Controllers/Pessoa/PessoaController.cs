@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Pessoas.Commands;
 using Ofichina.Application.UseCases.Pessoas.Queries;
-using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Pessoa;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Pessoa;

@@ -11,4 +11,9 @@ public sealed class CreateOrdemServicoItemServicoRequest : CreateRequest
     /// Serviço cadastrado.
     /// </summary>
     public Guid ServicoId { get; init; }
+
+    /// <summary>
+    /// Peças associadas ao serviço.
+    /// </summary>
+    public ICollection<CreateOrdemServicoPecaRequest> Pecas { get; init; } = [];
 }

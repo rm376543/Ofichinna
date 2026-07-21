@@ -9,6 +9,8 @@ namespace Ofichina.Domain.Entities;
 /// </summary>
 public class ItemServico : Entity
 {
+    private readonly List<PecaServico> _pecas = [];
+
     /// <summary>
     /// Identificador do serviço cadastrado vinculado ao item.
     /// </summary>
@@ -33,10 +35,17 @@ public class ItemServico : Entity
 
 
     /// <summary>
-    /// Valor total do serviço.
-    /// Para serviços sem quantidade, corresponde ao próprio valor informado.
+    /// Peças adicionadas ao serviço.
     /// </summary>
-    public decimal ValorTotal => Valor;
+    public IReadOnlyCollection<PecaServico> Pecas => _pecas.AsReadOnly();
+
+
+    /// <summary>
+    /// Valor total do serviço.
+    /// Corresponde ao valor do serviço mais o valor total das peças não excluídas.
+    /// </summary>
+    public decimal ValorTotal => 
+        Valor + _pecas.Where(x => !x.EstaExcluida()).Sum(x => x.ValorTotal);
 
 
     /// <summary>
@@ -103,6 +112,8 @@ public class ItemServico : Entity
         string descricao,
         decimal valor)
     {
+        ValidarNaoExcluido();
+
         if (string.IsNullOrWhiteSpace(descricao))
             throw new DomainException(
                 "Descrição obrigatória.");
@@ -117,5 +128,129 @@ public class ItemServico : Entity
         Valor = valor;
 
         AtualizarDataModificacao();
+    }
+
+
+    /// <summary>
+    /// Atualiza o vínculo e os dados do serviço catalogado.
+    /// </summary>
+    public void AtualizarServico(
+        Guid servicoId,
+        string descricao,
+        decimal valor)
+    {
+        if (servicoId == Guid.Empty)
+            throw new DomainException("Serviço obrigatório.");
+
+        ValidarNaoExcluido();
+
+        ServicoId = servicoId;
+        AtualizarDados(descricao, valor);
+    }
+
+
+    /// <summary>
+    /// Adiciona uma peça ao serviço.
+    /// </summary>
+    public void AdicionarPeca(
+        Guid pecaId,
+        string descricao,
+        int quantidade,
+        decimal valorUnitario)
+    {
+        ValidarNaoExcluido();
+
+        if (_pecas.Any(x => x.PecaId == pecaId && !x.EstaExcluida()))
+            throw new DomainException("A peça já foi adicionada ao serviço.");
+
+        var item = new PecaServico(
+            Id,
+            pecaId,
+            descricao,
+            quantidade,
+            valorUnitario);
+
+        _pecas.Add(item);
+
+        AtualizarDataModificacao();
+    }
+
+
+    /// <summary>
+    /// Atualiza uma peça vinculada ao serviço.
+    /// </summary>
+    public void AtualizarPeca(
+        Guid pecaServicoId,
+        Guid pecaId,
+        string descricao,
+        int quantidade,
+        decimal valorUnitario)
+    {
+        var peca = _pecas.FirstOrDefault(x => x.Id == pecaServicoId);
+
+        if (peca is null)
+            throw new DomainException("Peça não encontrada.");
+
+        if (peca.EstaExcluida())
+            throw new DomainException("Peça não encontrada.");
+
+        peca.AtualizarDados(pecaId, descricao, quantidade, valorUnitario);
+
+        AtualizarDataModificacao();
+    }
+
+
+    /// <summary>
+    /// Remove uma peça do serviço.
+    /// </summary>
+    public void RemoverPeca(Guid pecaServicoId)
+    {
+        var peca = _pecas.FirstOrDefault(x => x.Id == pecaServicoId);
+
+        if (peca is null)
+            throw new DomainException("Peça não encontrada.");
+
+        if (peca.EstaExcluida())
+            throw new DomainException("Peça não encontrada.");
+
+        peca.ValidarRemocao();
+        peca.Excluir();
+
+        AtualizarDataModificacao();
+    }
+
+
+    /// <summary>
+    /// Marca uma peça como utilizada.
+    /// </summary>
+    public void UtilizarPeca(Guid pecaServicoId)
+    {
+        var peca = _pecas.FirstOrDefault(x => x.Id == pecaServicoId);
+
+        if (peca is null)
+            throw new DomainException("Peça não encontrada.");
+
+        if (peca.EstaExcluida())
+            throw new DomainException("Não é possível utilizar uma peça removida.");
+
+        peca.MarcarComoUtilizada();
+
+        AtualizarDataModificacao();
+    }
+
+
+    /// <summary>
+    /// Obtém uma peça pelo identificador.
+    /// </summary>
+    public PecaServico? ObterPeca(Guid pecaServicoId)
+    {
+        return _pecas.FirstOrDefault(x => x.Id == pecaServicoId);
+    }
+
+
+    private void ValidarNaoExcluido()
+    {
+        if (EstaExcluida())
+            throw new DomainException("Não é possível alterar um item de serviço removido.");
     }
 }

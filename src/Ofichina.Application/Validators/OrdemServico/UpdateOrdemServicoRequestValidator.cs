@@ -26,8 +26,5 @@ public sealed class UpdateOrdemServicoRequestValidator : AbstractValidator<Updat
 
         RuleForEach(x => x.Servicos)
             .SetValidator(new UpdateOrdemServicoItemServicoRequestValidator());
-
-        RuleForEach(x => x.Pecas)
-            .SetValidator(new UpdateOrdemServicoItemPecaRequestValidator());
     }
 }

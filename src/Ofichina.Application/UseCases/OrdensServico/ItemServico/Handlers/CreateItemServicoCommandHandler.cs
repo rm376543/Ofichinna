@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Commands;
 using Ofichina.Contracts.Common;
@@ -35,35 +35,35 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
     {
         try
         {
-            _logger.LogInformation("Iniciando criaÃ§Ã£o de item de serviÃ§o. OrdemServicoId: {OrdemServicoId}, ServicoId: {ServicoId}.", command.OrdemServicoId, command.ServicoId);
+            _logger.LogInformation("Iniciando criação de item de serviço. OrdemServicoId: {OrdemServicoId}, ServicoId: {ServicoId}.", command.OrdemServicoId, command.ServicoId);
 
             var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.OrdemServicoId, includeItens: true, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
-                return Result.Failure<Guid>("Ordem de serviÃ§o nÃ£o encontrada.");
+                return Result.Failure<Guid>("Ordem de serviço não encontrada.");
 
             var servico = await _servicoRepository.GetByIdAsync(command.ServicoId, cancellationToken);
             if (servico is null)
-                return Result.Failure<Guid>("ServiÃ§o nÃ£o encontrado.");
+                return Result.Failure<Guid>("Serviço não encontrado.");
 
             if (servico.EstaExcluida())
-                return Result.Failure<Guid>("ServiÃ§o inativo.");
+                return Result.Failure<Guid>("Serviço inativo.");
 
             var item = ordemServico.AdicionarServico(command.ServicoId, servico.Nome, servico.Valor);
 
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation("Item de serviÃ§o criado com sucesso. OrdemServicoId: {OrdemServicoId}, ServicoId: {ServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.ServicoId, item.Id);
+            _logger.LogInformation("Item de serviço criado com sucesso. OrdemServicoId: {OrdemServicoId}, ServicoId: {ServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.ServicoId, item.Id);
             return Result.Success(item.Id);
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domÃ­nio ao criar item de serviÃ§o. OrdemServicoId: {OrdemServicoId}, ServicoId: {ServicoId}.", command.OrdemServicoId, command.ServicoId);
+            _logger.LogWarning(ex, "Erro de domínio ao criar item de serviço. OrdemServicoId: {OrdemServicoId}, ServicoId: {ServicoId}.", command.OrdemServicoId, command.ServicoId);
             return Result.Failure<Guid>(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao criar item de serviÃ§o. OrdemServicoId: {OrdemServicoId}, ServicoId: {ServicoId}.", command.OrdemServicoId, command.ServicoId);
-            return Result.Failure<Guid>("NÃ£o foi possÃ­vel criar o item de serviÃ§o.");
+            _logger.LogError(ex, "Erro inesperado ao criar item de serviço. OrdemServicoId: {OrdemServicoId}, ServicoId: {ServicoId}.", command.OrdemServicoId, command.ServicoId);
+            return Result.Failure<Guid>("Não foi possível criar o item de serviço.");
         }
     }
 }

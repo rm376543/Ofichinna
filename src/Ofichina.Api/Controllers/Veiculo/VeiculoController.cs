@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Application.UseCases.Veiculos.Queries;
-using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Requests.Veiculo;
 using Ofichina.Contracts.Responses.Veiculo;

@@ -1,5 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.OrdemServico;
@@ -9,15 +10,15 @@ using Ofichina.Domain.Common;
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 
 /// <summary>
-/// Handler para obter uma ordem de serviÃ§o por identificador.
+/// Handler para obter uma ordem de serviço por identificador.
 /// </summary>
 public sealed class GetOrdemServicoByIdQueryHandler : IQueryHandler<GetOrdemServicoByIdQuery, Result<OrdemServicoResponse>>
 {
-    private readonly IRepository<OrdemServico> _ordemServicoRepository;
+    private readonly IOrdemServicoRepository _ordemServicoRepository;
     private readonly ILogger<GetOrdemServicoByIdQueryHandler> _logger;
 
     public GetOrdemServicoByIdQueryHandler(
-        IRepository<OrdemServico> ordemServicoRepository,
+        IOrdemServicoRepository ordemServicoRepository,
         ILogger<GetOrdemServicoByIdQueryHandler> logger)
     {
         _ordemServicoRepository = ordemServicoRepository;
@@ -28,17 +29,17 @@ public sealed class GetOrdemServicoByIdQueryHandler : IQueryHandler<GetOrdemServ
     {
         try
         {
-            var ordemServico = await _ordemServicoRepository.GetByIdAsync(query.Id, cancellationToken);
+            var ordemServico = await _ordemServicoRepository.GetByIdAsync(query.Id, includeItens: true, cancellationToken);
 
             if (ordemServico is null || ordemServico.EstaExcluida())
-                return Result.Failure<OrdemServicoResponse>("Ordem de serviÃ§o nÃ£o encontrada.");
+                return Result.Failure<OrdemServicoResponse>("Ordem de serviço não encontrada.");
 
             return Result.Success(Mapear(ordemServico));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao obter ordem de serviÃ§o por identificador. OrdemServicoId: {OrdemServicoId}", query.Id);
-            return Result.Failure<OrdemServicoResponse>("NÃ£o foi possÃ­vel obter a ordem de serviÃ§o.");
+            _logger.LogError(ex, "Erro ao obter ordem de serviço por identificador. OrdemServicoId: {OrdemServicoId}", query.Id);
+            return Result.Failure<OrdemServicoResponse>("Não foi possível obter a ordem de serviço.");
         }
     }
 
@@ -55,9 +56,52 @@ public sealed class GetOrdemServicoByIdQueryHandler : IQueryHandler<GetOrdemServ
             DataFinalizacao = ordemServico.DataFinalizacao,
             Observacao = ordemServico.Observacao,
             ValorTotal = ordemServico.ValorTotal,
+            Servicos = ordemServico.Servicos
+                .Where(item => !item.EstaExcluida())
+                .Select(MapearServico)
+                .ToList(),
             CreatedAt = ordemServico.CreatedAt,
             UpdatedAt = ordemServico.UpdatedAt,
             DeletedAt = ordemServico.DeletedAt
+        };
+    }
+
+    private static ItemServicoResponse MapearServico(Ofichina.Domain.Entities.ItemServico item)
+    {
+        return new ItemServicoResponse
+        {
+            Id = item.Id,
+            ServicoId = item.ServicoId,
+            OrdemServicoId = item.OrdemServicoId,
+            Descricao = item.Descricao,
+            Valor = item.Valor,
+            ValorTotal = item.ValorTotal,
+            Pecas = item.Pecas
+                .Where(peca => !peca.EstaExcluida())
+                .Select(MapearPeca)
+                .ToList(),
+            CreatedAt = item.CreatedAt,
+            UpdatedAt = item.UpdatedAt,
+            DeletedAt = item.DeletedAt
+        };
+    }
+
+    private static OrdemServicoPecaResponse MapearPeca(Ofichina.Domain.Entities.PecaServico peca)
+    {
+        return new OrdemServicoPecaResponse
+        {
+            Id = peca.Id,
+            PecaId = peca.PecaId,
+            ItemServicoId = peca.ItemServicoId,
+            Descricao = peca.Descricao,
+            Quantidade = peca.Quantidade,
+            ValorUnitario = peca.ValorUnitario,
+            ValorTotal = peca.ValorTotal,
+            Utilizada = peca.Utilizada,
+            DataUtilizacao = peca.DataUtilizacao,
+            CreatedAt = peca.CreatedAt,
+            UpdatedAt = peca.UpdatedAt,
+            DeletedAt = peca.DeletedAt
         };
     }
 }

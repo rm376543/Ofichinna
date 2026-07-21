@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Queries;
 using Ofichina.Contracts.Common;
@@ -29,18 +29,18 @@ public sealed class GetItemServicoByIdQueryHandler : IQueryHandler<GetItemServic
         {
             var ordemServico = await _ordemServicoRepository.GetByIdAsync(query.OrdemServicoId, includeItens: true, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
-                return Result.Failure<ItemServicoResponse>("Ordem de serviÃ§o nÃ£o encontrada.");
+                return Result.Failure<ItemServicoResponse>("Ordem de serviço não encontrada.");
 
             var item = ordemServico.ObterServico(query.Id);
             if (item is null || item.EstaExcluida())
-                return Result.Failure<ItemServicoResponse>("Item de serviÃ§o nÃ£o encontrado.");
+                return Result.Failure<ItemServicoResponse>("Item de serviço não encontrado.");
 
             return Result.Success(Mapear(item));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao obter item de serviÃ§o. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", query.OrdemServicoId, query.Id);
-            return Result.Failure<ItemServicoResponse>("NÃ£o foi possÃ­vel obter o item de serviÃ§o.");
+            _logger.LogError(ex, "Erro ao obter item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", query.OrdemServicoId, query.Id);
+            return Result.Failure<ItemServicoResponse>("Não foi possível obter o item de serviço.");
         }
     }
 
@@ -54,6 +54,24 @@ public sealed class GetItemServicoByIdQueryHandler : IQueryHandler<GetItemServic
             Descricao = item.Descricao,
             Valor = item.Valor,
             ValorTotal = item.ValorTotal,
+            Pecas = item.Pecas
+                .Where(peca => !peca.EstaExcluida())
+                .Select(peca => new OrdemServicoPecaResponse
+                {
+                    Id = peca.Id,
+                    PecaId = peca.PecaId,
+                    ItemServicoId = peca.ItemServicoId,
+                    Descricao = peca.Descricao,
+                    Quantidade = peca.Quantidade,
+                    ValorUnitario = peca.ValorUnitario,
+                    ValorTotal = peca.ValorTotal,
+                    Utilizada = peca.Utilizada,
+                    DataUtilizacao = peca.DataUtilizacao,
+                    CreatedAt = peca.CreatedAt,
+                    UpdatedAt = peca.UpdatedAt,
+                    DeletedAt = peca.DeletedAt
+                })
+                .ToList(),
             CreatedAt = item.CreatedAt,
             UpdatedAt = item.UpdatedAt,
             DeletedAt = item.DeletedAt

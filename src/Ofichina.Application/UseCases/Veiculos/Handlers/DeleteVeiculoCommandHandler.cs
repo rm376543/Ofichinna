@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Contracts.Common;
@@ -33,7 +33,7 @@ public sealed class DeleteVeiculoCommandHandler : ICommandHandler<DeleteVeiculoC
             var veiculo = await _veiculoRepository.GetByIdAsync(command.Id, cancellationToken);
 
             if (veiculo is null || veiculo.EstaExcluida())
-                return Result.Failure("VeÃ­culo nÃ£o encontrado.");
+                return Result.Failure("Veículo não encontrado.");
 
             veiculo.Desativar();
 
@@ -44,8 +44,8 @@ public sealed class DeleteVeiculoCommandHandler : ICommandHandler<DeleteVeiculoC
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao remover veÃ­culo. VeiculoId: {VeiculoId}", command.Id);
-            return Result.Failure("NÃ£o foi possÃ­vel remover o veÃ­culo.");
+            _logger.LogError(ex, "Erro ao remover veículo. VeiculoId: {VeiculoId}", command.Id);
+            return Result.Failure("Não foi possível remover o veículo.");
         }
     }
 }

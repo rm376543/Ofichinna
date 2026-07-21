@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Servicos.Commands;
 using Ofichina.Contracts.Common;
@@ -9,7 +9,7 @@ using Ofichina.Domain.Common;
 namespace Ofichina.Application.UseCases.Servicos.Handlers;
 
 /// <summary>
-/// Handler para atualizaÃ§Ã£o de serviÃ§o.
+/// Handler para atualização de serviço.
 /// </summary>
 public sealed class UpdateServicoCommandHandler : ICommandHandler<UpdateServicoCommand, Result>
 {
@@ -34,7 +34,7 @@ public sealed class UpdateServicoCommandHandler : ICommandHandler<UpdateServicoC
             var servico = await _servicoRepository.GetByIdAsync(command.Id, cancellationToken);
 
             if (servico is null || servico.EstaExcluida())
-                return Result.Failure("ServiÃ§o nÃ£o encontrado.");
+                return Result.Failure("Serviço não encontrado.");
 
             servico.AtualizarDados(command.Nome, command.Descricao, command.Valor);
 
@@ -50,13 +50,13 @@ public sealed class UpdateServicoCommandHandler : ICommandHandler<UpdateServicoC
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domÃ­nio ao atualizar serviÃ§o.");
+            _logger.LogWarning(ex, "Erro de domínio ao atualizar serviço.");
             return Result.Failure(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao atualizar serviÃ§o.");
-            return Result.Failure("NÃ£o foi possÃ­vel atualizar o serviÃ§o.");
+            _logger.LogError(ex, "Erro ao atualizar serviço.");
+            return Result.Failure("Não foi possível atualizar o serviço.");
         }
     }
 }

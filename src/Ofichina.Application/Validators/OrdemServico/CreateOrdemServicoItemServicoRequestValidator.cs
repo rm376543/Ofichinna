@@ -12,5 +12,8 @@ public sealed class CreateOrdemServicoItemServicoRequestValidator : AbstractVali
     {
         RuleFor(x => x.ServicoId)
             .NotEmpty().WithMessage("O identificador do serviço é obrigatório.");
+
+        RuleForEach(x => x.Pecas)
+            .SetValidator(new CreateOrdemServicoPecaRequestValidator());
     }
 }

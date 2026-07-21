@@ -17,7 +17,7 @@ public interface IRepository<TEntity> where TEntity : Entity
     /// <summary>
     /// Busca uma entidade por seu Id.
     /// </summary>
-    Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool tracking = false);
 
     /// <summary>
     /// Obtém todas as entidades.

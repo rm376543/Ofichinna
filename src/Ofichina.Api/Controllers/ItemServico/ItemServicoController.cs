@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Queries;
-using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.OrdemServico;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.OrdemServico;

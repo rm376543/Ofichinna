@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Pecas.Commands;
 using Ofichina.Application.UseCases.Pecas.Queries;
-using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Pecas;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Pecas;

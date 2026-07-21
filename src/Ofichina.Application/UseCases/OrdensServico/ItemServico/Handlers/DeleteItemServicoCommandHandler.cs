@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Commands;
 using Ofichina.Contracts.Common;
@@ -31,28 +31,28 @@ public sealed class DeleteItemServicoCommandHandler : ICommandHandler<DeleteItem
     {
         try
         {
-            _logger.LogInformation("Iniciando remoÃ§Ã£o de item de serviÃ§o. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.Id);
+            _logger.LogInformation("Iniciando remoção de item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.Id);
 
             var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.OrdemServicoId, includeItens: true, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
-                return Result.Failure("Ordem de serviÃ§o nÃ£o encontrada.");
+                return Result.Failure("Ordem de serviço não encontrada.");
 
             ordemServico.RemoverServico(command.Id);
 
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation("Item de serviÃ§o removido com sucesso. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.Id);
+            _logger.LogInformation("Item de serviço removido com sucesso. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.Id);
             return Result.Success();
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domÃ­nio ao remover item de serviÃ§o. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.Id);
+            _logger.LogWarning(ex, "Erro de domínio ao remover item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.Id);
             return Result.Failure(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao remover item de serviÃ§o. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.Id);
-            return Result.Failure("NÃ£o foi possÃ­vel remover o item de serviÃ§o.");
+            _logger.LogError(ex, "Erro inesperado ao remover item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.Id);
+            return Result.Failure("Não foi possível remover o item de serviço.");
         }
     }
 }

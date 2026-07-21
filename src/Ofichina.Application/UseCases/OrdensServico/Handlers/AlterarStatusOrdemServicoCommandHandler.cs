@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Contracts.Common;
@@ -10,7 +10,7 @@ using Ofichina.Domain.Common;
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 
 /// <summary>
-/// Handler para alteraÃ§Ã£o de status da ordem de serviÃ§o.
+/// Handler para alteração de status da ordem de serviço.
 /// </summary>
 public sealed class AlterarStatusOrdemServicoCommandHandler : ICommandHandler<AlterarStatusOrdemServicoCommand, Result>
 {
@@ -32,29 +32,29 @@ public sealed class AlterarStatusOrdemServicoCommandHandler : ICommandHandler<Al
     {
         try
         {
-            _logger.LogInformation("Iniciando alteraÃ§Ã£o de status da ordem de serviÃ§o. OrdemServicoId: {OrdemServicoId}, StatusDestino: {StatusDestino}.", command.Id, command.StatusDestino);
+            _logger.LogInformation("Iniciando alteração de status da ordem de serviço. OrdemServicoId: {OrdemServicoId}, StatusDestino: {StatusDestino}.", command.Id, command.StatusDestino);
 
             var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.Id, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
-                return Result.Failure("Ordem de serviÃ§o nÃ£o encontrada.");
+                return Result.Failure("Ordem de serviço não encontrada.");
 
             AlterarStatus(ordemServico, MapearStatus(command.StatusDestino));
 
             await _ordemServicoRepository.UpdateAsync(ordemServico, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation("Status da ordem de serviÃ§o alterado com sucesso. OrdemServicoId: {OrdemServicoId}, StatusDestino: {StatusDestino}.", command.Id, command.StatusDestino);
+            _logger.LogInformation("Status da ordem de serviço alterado com sucesso. OrdemServicoId: {OrdemServicoId}, StatusDestino: {StatusDestino}.", command.Id, command.StatusDestino);
             return Result.Success();
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domÃ­nio ao alterar status da ordem de serviÃ§o. OrdemServicoId: {OrdemServicoId}, StatusDestino: {StatusDestino}.", command.Id, command.StatusDestino);
+            _logger.LogWarning(ex, "Erro de domínio ao alterar status da ordem de serviço. OrdemServicoId: {OrdemServicoId}, StatusDestino: {StatusDestino}.", command.Id, command.StatusDestino);
             return Result.Failure(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao alterar status da ordem de serviÃ§o. OrdemServicoId: {OrdemServicoId}, StatusDestino: {StatusDestino}.", command.Id, command.StatusDestino);
-            return Result.Failure("NÃ£o foi possÃ­vel alterar o status da ordem de serviÃ§o.");
+            _logger.LogError(ex, "Erro inesperado ao alterar status da ordem de serviço. OrdemServicoId: {OrdemServicoId}, StatusDestino: {StatusDestino}.", command.Id, command.StatusDestino);
+            return Result.Failure("Não foi possível alterar o status da ordem de serviço.");
         }
     }
 
@@ -81,7 +81,7 @@ public sealed class AlterarStatusOrdemServicoCommandHandler : ICommandHandler<Al
                 ordemServico.Cancelar();
                 break;
             default:
-                throw new DomainException("Status de destino invÃ¡lido.");
+                throw new DomainException("Status de destino inválido.");
         }
     }
 
@@ -96,7 +96,7 @@ public sealed class AlterarStatusOrdemServicoCommandHandler : ICommandHandler<Al
             StatusOrdemServico.Finalizada => StatusOrdemServico.Finalizada,
             StatusOrdemServico.Entregue => StatusOrdemServico.Entregue,
             StatusOrdemServico.Cancelada => StatusOrdemServico.Cancelada,
-            _ => throw new DomainException("Status de destino invÃ¡lido.")
+            _ => throw new DomainException("Status de destino inválido.")
         };
     }
 }
