@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Agendamentos.Commands;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
-using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Agendamento;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Agendamento;

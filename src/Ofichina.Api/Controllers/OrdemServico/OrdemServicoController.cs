@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
-using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Enums;
 using Ofichina.Contracts.Requests.OrdemServico;
 using Ofichina.Contracts.Responses;
@@ -128,8 +127,7 @@ public sealed class OrdemServicoController : ControllerBase
             HodometroEntrada = request.HodometroEntrada,
             ProblemaRelatado = request.ProblemaRelatado,
             Observacoes = request.Observacoes,
-            Servicos = request.Servicos,
-            Pecas = request.Pecas
+            Servicos = request.Servicos
         }, cancellationToken);
 
         if (!result.IsSuccess)
@@ -175,8 +173,7 @@ public sealed class OrdemServicoController : ControllerBase
             FuncionarioId = request.FuncionarioId,
             ProblemaRelatado = request.ProblemaRelatado,
             Observacoes = request.Observacoes,
-            Servicos = request.Servicos,
-            Pecas = request.Pecas
+            Servicos = request.Servicos
         }, cancellationToken);
 
         if (!result.IsSuccess)
