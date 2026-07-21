@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.ItemServico.Queries;
 using Ofichina.Contracts.Common;
@@ -29,7 +29,7 @@ public sealed class GetItemServicosByOrdemServicoQueryHandler : IQueryHandler<Ge
         {
             var ordemServico = await _ordemServicoRepository.GetByIdAsync(query.OrdemServicoId, includeItens: true, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
-                return Result.Failure<IReadOnlyCollection<ItemServicoResponse>>("Ordem de serviÃ§o nÃ£o encontrada.");
+                return Result.Failure<IReadOnlyCollection<ItemServicoResponse>>("Ordem de serviço não encontrada.");
 
             var resultado = ordemServico.Servicos
                 .Where(item => !item.EstaExcluida())
@@ -40,8 +40,8 @@ public sealed class GetItemServicosByOrdemServicoQueryHandler : IQueryHandler<Ge
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao listar itens de serviÃ§o. OrdemServicoId: {OrdemServicoId}.", query.OrdemServicoId);
-            return Result.Failure<IReadOnlyCollection<ItemServicoResponse>>("NÃ£o foi possÃ­vel obter os itens de serviÃ§o.");
+            _logger.LogError(ex, "Erro ao listar itens de serviço. OrdemServicoId: {OrdemServicoId}.", query.OrdemServicoId);
+            return Result.Failure<IReadOnlyCollection<ItemServicoResponse>>("Não foi possível obter os itens de serviço.");
         }
     }
 
@@ -55,9 +55,32 @@ public sealed class GetItemServicosByOrdemServicoQueryHandler : IQueryHandler<Ge
             Descricao = item.Descricao,
             Valor = item.Valor,
             ValorTotal = item.ValorTotal,
+            Pecas = item.Pecas
+                .Where(peca => !peca.EstaExcluida())
+                .Select(MapearPeca)
+                .ToList(),
             CreatedAt = item.CreatedAt,
             UpdatedAt = item.UpdatedAt,
             DeletedAt = item.DeletedAt
+        };
+    }
+
+    private static OrdemServicoPecaResponse MapearPeca(Ofichina.Domain.Entities.PecaServico peca)
+    {
+        return new OrdemServicoPecaResponse
+        {
+            Id = peca.Id,
+            PecaId = peca.PecaId,
+            ItemServicoId = peca.ItemServicoId,
+            Descricao = peca.Descricao,
+            Quantidade = peca.Quantidade,
+            ValorUnitario = peca.ValorUnitario,
+            ValorTotal = peca.ValorTotal,
+            Utilizada = peca.Utilizada,
+            DataUtilizacao = peca.DataUtilizacao,
+            CreatedAt = peca.CreatedAt,
+            UpdatedAt = peca.UpdatedAt,
+            DeletedAt = peca.DeletedAt
         };
     }
 }

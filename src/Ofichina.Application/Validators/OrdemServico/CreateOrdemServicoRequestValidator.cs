@@ -32,8 +32,5 @@ public sealed class CreateOrdemServicoRequestValidator : AbstractValidator<Creat
 
         RuleForEach(x => x.Servicos)
             .SetValidator(new CreateOrdemServicoItemServicoRequestValidator());
-
-        RuleForEach(x => x.Pecas)
-            .SetValidator(new CreateOrdemServicoItemPecaRequestValidator());
     }
 }

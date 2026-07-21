@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Servicos.Queries;
 using Ofichina.Contracts.Common;
@@ -9,7 +9,7 @@ using Ofichina.Domain.Common;
 namespace Ofichina.Application.UseCases.Servicos.Handlers;
 
 /// <summary>
-/// Handler para obter um serviÃ§o por identificador.
+/// Handler para obter um serviço por identificador.
 /// </summary>
 public sealed class GetServicoByIdQueryHandler : IQueryHandler<GetServicoByIdQuery, Result<ServicoResponse>>
 {
@@ -31,14 +31,14 @@ public sealed class GetServicoByIdQueryHandler : IQueryHandler<GetServicoByIdQue
             var servico = await _servicoRepository.GetByIdAsync(query.Id, cancellationToken);
 
             if (servico is null || servico.EstaExcluida())
-                return Result.Failure<ServicoResponse>("ServiÃ§o nÃ£o encontrado.");
+                return Result.Failure<ServicoResponse>("Serviço não encontrado.");
 
             return Result.Success(Mapear(servico));
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao obter serviÃ§o por Id. ServicoId: {ServicoId}", query.Id);
-            return Result.Failure<ServicoResponse>("NÃ£o foi possÃ­vel obter o serviÃ§o.");
+            _logger.LogError(ex, "Erro ao obter serviço por Id. ServicoId: {ServicoId}", query.Id);
+            return Result.Failure<ServicoResponse>("Não foi possível obter o serviço.");
         }
     }
 

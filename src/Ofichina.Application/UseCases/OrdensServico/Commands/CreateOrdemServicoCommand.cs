@@ -44,8 +44,4 @@ public sealed class CreateOrdemServicoCommand : ICommand<Result<Guid>>
     /// </summary>
     public ICollection<CreateOrdemServicoItemServicoRequest> Servicos { get; init; } = [];
 
-    /// <summary>
-    /// Peças previstas para a ordem de serviço.
-    /// </summary>
-    public ICollection<CreateOrdemServicoItemPecaRequest> Pecas { get; init; } = [];
 }

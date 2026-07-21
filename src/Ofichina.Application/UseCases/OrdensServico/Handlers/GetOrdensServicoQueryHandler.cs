@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.OrdemServico;
@@ -13,11 +14,11 @@ namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 /// </summary>
 public sealed class GetOrdensServicoQueryHandler : IQueryHandler<GetOrdensServicoQuery, Result<IReadOnlyCollection<OrdemServicoResponse>>>
 {
-    private readonly IRepository<OrdemServico> _ordemServicoRepository;
+    private readonly IOrdemServicoRepository _ordemServicoRepository;
     private readonly ILogger<GetOrdensServicoQueryHandler> _logger;
 
     public GetOrdensServicoQueryHandler(
-        IRepository<OrdemServico> ordemServicoRepository,
+        IOrdemServicoRepository ordemServicoRepository,
         ILogger<GetOrdensServicoQueryHandler> logger)
     {
         _ordemServicoRepository = ordemServicoRepository;
@@ -28,9 +29,11 @@ public sealed class GetOrdensServicoQueryHandler : IQueryHandler<GetOrdensServic
     {
         try
         {
-            var ordensServico = await _ordemServicoRepository.GetPagedAsync(query.Pagination, cancellationToken);
+            var ordensServico = await _ordemServicoRepository.GetAllAsync(includeItens: true, cancellationToken);
 
-            var resultado = ordensServico.Items
+            var resultado = ordensServico
+                .Skip(query.Pagination.GetSkip())
+                .Take(query.Pagination.PageSize)
                 .Select(Mapear)
                 .ToList();
 
@@ -56,6 +59,39 @@ public sealed class GetOrdensServicoQueryHandler : IQueryHandler<GetOrdensServic
             DataFinalizacao = ordemServico.DataFinalizacao,
             Observacao = ordemServico.Observacao,
             ValorTotal = ordemServico.ValorTotal,
+            Servicos = ordemServico.Servicos
+                .Where(item => !item.EstaExcluida())
+                .Select(item => new ItemServicoResponse
+                {
+                    Id = item.Id,
+                    ServicoId = item.ServicoId,
+                    OrdemServicoId = item.OrdemServicoId,
+                    Descricao = item.Descricao,
+                    Valor = item.Valor,
+                    ValorTotal = item.ValorTotal,
+                    Pecas = item.Pecas
+                        .Where(peca => !peca.EstaExcluida())
+                        .Select(peca => new OrdemServicoPecaResponse
+                        {
+                            Id = peca.Id,
+                            PecaId = peca.PecaId,
+                            ItemServicoId = peca.ItemServicoId,
+                            Descricao = peca.Descricao,
+                            Quantidade = peca.Quantidade,
+                            ValorUnitario = peca.ValorUnitario,
+                            ValorTotal = peca.ValorTotal,
+                            Utilizada = peca.Utilizada,
+                            DataUtilizacao = peca.DataUtilizacao,
+                            CreatedAt = peca.CreatedAt,
+                            UpdatedAt = peca.UpdatedAt,
+                            DeletedAt = peca.DeletedAt
+                        })
+                        .ToList(),
+                    CreatedAt = item.CreatedAt,
+                    UpdatedAt = item.UpdatedAt,
+                    DeletedAt = item.DeletedAt
+                })
+                .ToList(),
             CreatedAt = ordemServico.CreatedAt,
             UpdatedAt = ordemServico.UpdatedAt,
             DeletedAt = ordemServico.DeletedAt

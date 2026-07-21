@@ -4,11 +4,11 @@ using Ofichina.Contracts.Requests.OrdemServico;
 namespace Ofichina.Application.Validators.OrdemServico;
 
 /// <summary>
-/// Validador para atualização de item de peça da ordem de serviço.
+/// Validador para peça incluída na ordem de serviço.
 /// </summary>
-public sealed class UpdateOrdemServicoItemPecaRequestValidator : AbstractValidator<UpdateOrdemServicoItemPecaRequest>
+public sealed class CreateOrdemServicoPecaRequestValidator : AbstractValidator<CreateOrdemServicoPecaRequest>
 {
-    public UpdateOrdemServicoItemPecaRequestValidator()
+    public CreateOrdemServicoPecaRequestValidator()
     {
         RuleFor(x => x.PecaId)
             .NotEmpty().WithMessage("O identificador da peça é obrigatório.");

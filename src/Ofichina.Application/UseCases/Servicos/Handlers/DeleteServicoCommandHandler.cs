@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Servicos.Commands;
 using Ofichina.Contracts.Common;
@@ -8,7 +8,7 @@ using Ofichina.Domain.Common;
 namespace Ofichina.Application.UseCases.Servicos.Handlers;
 
 /// <summary>
-/// Handler para exclusÃ£o lÃ³gica de serviÃ§o.
+/// Handler para exclusão lógica de serviço.
 /// </summary>
 public sealed class DeleteServicoCommandHandler : ICommandHandler<DeleteServicoCommand, Result>
 {
@@ -33,7 +33,7 @@ public sealed class DeleteServicoCommandHandler : ICommandHandler<DeleteServicoC
             var servico = await _servicoRepository.GetByIdAsync(command.Id, cancellationToken);
 
             if (servico is null || servico.EstaExcluida())
-                return Result.Failure("ServiÃ§o nÃ£o encontrado.");
+                return Result.Failure("Serviço não encontrado.");
 
             servico.Desativar();
             servico.Excluir();
@@ -45,8 +45,8 @@ public sealed class DeleteServicoCommandHandler : ICommandHandler<DeleteServicoC
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao remover serviÃ§o. ServicoId: {ServicoId}", command.Id);
-            return Result.Failure("NÃ£o foi possÃ­vel remover o serviÃ§o.");
+            _logger.LogError(ex, "Erro ao remover serviço. ServicoId: {ServicoId}", command.Id);
+            return Result.Failure("Não foi possível remover o serviço.");
         }
     }
 }

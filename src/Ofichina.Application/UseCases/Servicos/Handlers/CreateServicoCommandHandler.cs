@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Servicos.Commands;
 using Ofichina.Contracts.Common;
@@ -9,7 +9,7 @@ using Ofichina.Domain.Common;
 namespace Ofichina.Application.UseCases.Servicos.Handlers;
 
 /// <summary>
-/// Handler para criaÃ§Ã£o de serviÃ§o.
+/// Handler para criação de serviço.
 /// </summary>
 public sealed class CreateServicoCommandHandler : ICommandHandler<CreateServicoCommand, Result<Guid>>
 {
@@ -43,13 +43,13 @@ public sealed class CreateServicoCommandHandler : ICommandHandler<CreateServicoC
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domÃ­nio ao criar serviÃ§o.");
+            _logger.LogWarning(ex, "Erro de domínio ao criar serviço.");
             return Result.Failure<Guid>(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao criar serviÃ§o.");
-            return Result.Failure<Guid>("NÃ£o foi possÃ­vel criar o serviÃ§o.");
+            _logger.LogError(ex, "Erro ao criar serviço.");
+            return Result.Failure<Guid>("Não foi possível criar o serviço.");
         }
     }
 }

@@ -20,4 +20,8 @@
     <ProjectReference Include="..\Ofichina.Contracts\Ofichina.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\OrdensServico\ItemPeca\Handlers\" />
+  </ItemGroup>
+
 </Project>

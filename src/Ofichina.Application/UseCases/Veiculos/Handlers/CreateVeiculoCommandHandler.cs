@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Contracts.Common;
@@ -11,7 +11,7 @@ using Ofichina.Domain.Common;
 namespace Ofichina.Application.UseCases.Veiculos.Handlers;
 
 /// <summary>
-/// Handler para criaÃ§Ã£o de veÃ­culo.
+/// Handler para criação de veículo.
 /// </summary>
 public sealed class CreateVeiculoCommandHandler : ICommandHandler<CreateVeiculoCommand, Result<Guid>>
 {
@@ -36,20 +36,20 @@ public sealed class CreateVeiculoCommandHandler : ICommandHandler<CreateVeiculoC
     {
         try
         {
-            _logger.LogInformation("Iniciando criaÃ§Ã£o de veÃ­culo. Placa: {Placa}", command.Placa);
+            _logger.LogInformation("Iniciando criação de veículo. Placa: {Placa}", command.Placa);
 
             var placa = new Placa(command.Placa);
 
             var pessoa = await _pessoaRepository.GetByIdAsync(command.PessoaId, cancellationToken);
 
             if (pessoa is null || pessoa.EstaExcluida())
-                return Result.Failure<Guid>("Pessoa nÃ£o encontrada.");
+                return Result.Failure<Guid>("Pessoa não encontrada.");
 
             var existente = (await _veiculoRepository.GetAllWithPessoaAsync(cancellationToken))
                 .FirstOrDefault(v => v.Placa.Numero == placa.Numero);
 
             if (existente is not null)
-                return Result.Failure<Guid>("JÃ¡ existe um veÃ­culo cadastrado com esta placa.");
+                return Result.Failure<Guid>("Já existe um veículo cadastrado com esta placa.");
 
             var veiculo = new Veiculo(
                 command.PessoaId,
@@ -71,13 +71,13 @@ public sealed class CreateVeiculoCommandHandler : ICommandHandler<CreateVeiculoC
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domÃ­nio ao criar veÃ­culo.");
+            _logger.LogWarning(ex, "Erro de domínio ao criar veículo.");
             return Result.Failure<Guid>(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao criar veÃ­culo.");
-            return Result.Failure<Guid>("NÃ£o foi possÃ­vel criar o veÃ­culo.");
+            _logger.LogError(ex, "Erro ao criar veículo.");
+            return Result.Failure<Guid>("Não foi possível criar o veículo.");
         }
     }
 }
