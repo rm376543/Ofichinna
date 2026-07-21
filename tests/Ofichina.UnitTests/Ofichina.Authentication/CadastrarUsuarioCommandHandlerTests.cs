@@ -80,7 +80,7 @@ public sealed class CadastrarUsuarioCommandHandlerTests
 
         public Task<IEnumerable<Usuario>> GetAllAsync(CancellationToken cancellationToken = default) => Task.FromResult<IEnumerable<Usuario>>(_usuarios);
 
-        public Task<Usuario?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) => Task.FromResult(_usuarios.FirstOrDefault(x => x.Id == id));
+        public Task<Usuario?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool tracking = false) => Task.FromResult(_usuarios.FirstOrDefault(x => x.Id == id));
 
         public Task UpdateAsync(Usuario entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
