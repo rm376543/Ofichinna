@@ -14,8 +14,6 @@ public class OrdemServico : Entity
 {
     private readonly List<ItemServico> _servicos = [];
 
-    private readonly List<ItemPeca> _pecas = [];
-
 
     /// <summary>
     /// Pessoa relacionada à ordem de serviço.
@@ -67,19 +65,11 @@ public class OrdemServico : Entity
 
 
     /// <summary>
-    /// Peças adicionadas na ordem.
-    /// </summary>
-    public IReadOnlyCollection<ItemPeca> Pecas =>
-        _pecas.AsReadOnly();
-
-
-    /// <summary>
     /// Valor total da ordem de serviço.
-    /// Calculado através dos serviços e peças.
+    /// Calculado através dos serviços e suas peças.
     /// </summary>
     public decimal ValorTotal =>
-        _servicos.Where(x => !x.EstaExcluida()).Sum(x => x.ValorTotal) +
-        _pecas.Where(x => !x.EstaExcluida()).Sum(x => x.ValorTotal);
+        _servicos.Where(x => !x.EstaExcluida()).Sum(x => x.ValorTotal);
 
 
     /// <summary>
@@ -227,6 +217,10 @@ public class OrdemServico : Entity
             throw new DomainException(
                 "Serviço não encontrado.");
 
+        if (item.EstaExcluida())
+            throw new DomainException(
+                "Serviço não encontrado.");
+
 
         item.AtualizarDados(
             descricao,
@@ -251,6 +245,10 @@ public class OrdemServico : Entity
             throw new DomainException(
                 "Serviço não encontrado.");
 
+        if (item.EstaExcluida())
+            throw new DomainException(
+                "Serviço não encontrado.");
+
 
         item.Excluir();
 
@@ -268,9 +266,10 @@ public class OrdemServico : Entity
 
 
     /// <summary>
-    /// Adiciona uma peça na ordem de serviço.
+    /// Adiciona uma peça a um serviço da ordem de serviço.
     /// </summary>
     public void AdicionarPeca(
+        Guid itemServicoId,
         Guid pecaId,
         string descricao,
         int quantidade,
@@ -278,71 +277,50 @@ public class OrdemServico : Entity
     {
         ValidarAlteracaoItens();
 
-        if (_pecas.Any(x => x.PecaId == pecaId && !x.EstaExcluida()))
-            throw new DomainException("A peça já foi adicionada à ordem de serviço.");
+        var servico = ObterServico(itemServicoId);
 
-        var item = new ItemPeca(
-            Id,
-            pecaId,
-            descricao,
-            quantidade,
-            valorUnitario);
+        if (servico is null)
+            throw new DomainException("Serviço não encontrado.");
 
-
-        _pecas.Add(item);
+        servico.AdicionarPeca(pecaId, descricao, quantidade, valorUnitario);
 
         AtualizarDataModificacao();
     }
 
 
     /// <summary>
-    /// Remove uma peça da ordem de serviço.
+    /// Remove uma peça de um serviço da ordem de serviço.
     /// </summary>
-    public void RemoverPeca(Guid itemPecaId)
+    public void RemoverPeca(Guid itemServicoId, Guid itemPecaId)
     {
         ValidarAlteracaoItens();
 
-        var peca = _pecas
-            .FirstOrDefault(x => x.Id == itemPecaId);
+        var servico = ObterServico(itemServicoId);
 
+        if (servico is null)
+            throw new DomainException("Serviço não encontrado.");
 
-        if (peca is null)
-            throw new DomainException(
-                "Peça não encontrada.");
-
-
-        peca.ValidarRemocao();
-
-        peca.Excluir();
+        servico.RemoverPeca(itemPecaId);
 
         AtualizarDataModificacao();
     }
 
 
     /// <summary>
-    /// Marca uma peça como utilizada no veículo.
+    /// Marca uma peça de um serviço como utilizada no veículo.
     /// </summary>
-    public void UtilizarPeca(Guid itemPecaId)
+    public void UtilizarPeca(Guid itemServicoId, Guid itemPecaId)
     {
         if (Status != StatusOrdemServico.EmExecucao)
             throw new DomainException(
                 "Peças somente podem ser utilizadas durante a execução da OS.");
 
+        var servico = ObterServico(itemServicoId);
 
-        var peca = _pecas
-            .FirstOrDefault(x => x.Id == itemPecaId);
+        if (servico is null)
+            throw new DomainException("Serviço não encontrado.");
 
-
-        if (peca is null)
-            throw new DomainException(
-                "Peça não encontrada.");
-
-        if (peca.EstaExcluida())
-            throw new DomainException(
-                "Não é possível utilizar uma peça removida da ordem de serviço.");
-
-
-        peca.MarcarComoUtilizada();
+        servico.UtilizarPeca(itemPecaId);
 
         AtualizarDataModificacao();
     }
@@ -358,7 +336,13 @@ public class OrdemServico : Entity
                 "A OS precisa estar em execução para ser finalizada.");
 
 
-        if (_pecas.Where(x => !x.EstaExcluida()).Any(x => !x.Utilizada))
+        var pecasPendentes = _servicos
+            .Where(x => !x.EstaExcluida())
+            .SelectMany(s => s.Pecas)
+            .Where(x => !x.EstaExcluida() && !x.Utilizada)
+            .Any();
+
+        if (pecasPendentes)
             throw new DomainException(
                 "Existem peças pendentes de utilização.");
 
