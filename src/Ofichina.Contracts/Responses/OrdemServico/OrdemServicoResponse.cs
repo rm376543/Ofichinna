@@ -51,6 +51,11 @@ public sealed class OrdemServicoResponse
     public decimal ValorTotal { get; set; }
 
     /// <summary>
+    /// Serviços vinculados à ordem de serviço.
+    /// </summary>
+    public ICollection<ItemServicoResponse> Servicos { get; set; } = [];
+
+    /// <summary>
     /// Data de criação do registro.
     /// </summary>
     public DateTime CreatedAt { get; set; }

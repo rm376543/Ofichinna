@@ -1,11 +1,11 @@
-﻿using Ofichina.Contracts.Requests;
+using Ofichina.Contracts.Requests;
 
 namespace Ofichina.Contracts.Requests.OrdemServico;
 
 /// <summary>
 /// Peça atualizada na ordem de serviço.
 /// </summary>
-public sealed class UpdateOrdemServicoItemPecaRequest : UpdateRequest
+public sealed class UpdateOrdemServicoPecaRequest : UpdateRequest
 {
     /// <summary>
     /// Peça cadastrada.
@@ -15,5 +15,5 @@ public sealed class UpdateOrdemServicoItemPecaRequest : UpdateRequest
     /// <summary>
     /// Quantidade.
     /// </summary>
-    public decimal Quantidade { get; init; }
+    public int Quantidade { get; init; }
 }

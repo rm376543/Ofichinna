@@ -27,10 +27,4 @@ public sealed class UpdateOrdemServicoRequest : UpdateRequest
     /// </summary>
     public ICollection<UpdateOrdemServicoItemServicoRequest> Servicos { get; init; }
         = [];
-
-    /// <summary>
-    /// Peças previstas na ordem.
-    /// </summary>
-    public ICollection<UpdateOrdemServicoItemPecaRequest> Pecas { get; init; }
-        = [];
 }

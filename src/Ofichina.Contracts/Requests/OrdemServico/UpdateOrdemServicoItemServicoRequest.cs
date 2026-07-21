@@ -11,4 +11,9 @@ public sealed class UpdateOrdemServicoItemServicoRequest : UpdateRequest
     /// Serviço cadastrado.
     /// </summary>
     public Guid ServicoId { get; init; }
+
+    /// <summary>
+    /// Peças associadas ao serviço.
+    /// </summary>
+    public ICollection<UpdateOrdemServicoPecaRequest> Pecas { get; init; } = [];
 }

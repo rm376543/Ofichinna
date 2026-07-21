@@ -1,44 +1,54 @@
 namespace Ofichina.Contracts.Responses.OrdemServico;
 
 /// <summary>
-/// Resposta com os dados de um item de serviço vinculado à ordem de serviço.
+/// Resposta com os dados de uma peça vinculada a um serviço da ordem de serviço.
 /// </summary>
-public sealed class ItemServicoResponse
+public sealed class OrdemServicoPecaResponse
 {
     /// <summary>
-    /// Identificador do item de serviço.
+    /// Identificador da peça vinculada ao serviço.
     /// </summary>
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Identificador do serviço cadastrado vinculado ao item.
+    /// Identificador da peça cadastrada.
     /// </summary>
-    public Guid ServicoId { get; set; }
+    public Guid PecaId { get; set; }
 
     /// <summary>
-    /// Identificador da ordem de serviço à qual o item pertence.
+    /// Identificador do item de serviço ao qual a peça pertence.
     /// </summary>
-    public Guid OrdemServicoId { get; set; }
+    public Guid ItemServicoId { get; set; }
 
     /// <summary>
-    /// Descrição do serviço.
+    /// Descrição da peça.
     /// </summary>
     public string Descricao { get; set; } = string.Empty;
 
     /// <summary>
-    /// Valor do serviço.
+    /// Quantidade utilizada ou prevista.
     /// </summary>
-    public decimal Valor { get; set; }
+    public int Quantidade { get; set; }
 
     /// <summary>
-    /// Valor total do item de serviço.
+    /// Valor unitário da peça.
+    /// </summary>
+    public decimal ValorUnitario { get; set; }
+
+    /// <summary>
+    /// Valor total da peça.
     /// </summary>
     public decimal ValorTotal { get; set; }
 
     /// <summary>
-    /// Peças vinculadas ao item de serviço.
+    /// Indica se a peça já foi utilizada.
     /// </summary>
-    public ICollection<OrdemServicoPecaResponse> Pecas { get; set; } = [];
+    public bool Utilizada { get; set; }
+
+    /// <summary>
+    /// Data em que a peça foi utilizada.
+    /// </summary>
+    public DateTime? DataUtilizacao { get; set; }
 
     /// <summary>
     /// Data de criação do registro.

@@ -41,9 +41,4 @@ public sealed class CreateOrdemServicoRequest : CreateRequest
     /// Serviços inicialmente previstos na ordem.
     /// </summary>
     public ICollection<CreateOrdemServicoItemServicoRequest> Servicos { get; init; } = [];
-
-    /// <summary>
-    /// Peças inicialmente previstas na ordem.
-    /// </summary>
-    public ICollection<CreateOrdemServicoItemPecaRequest> Pecas { get; init; } = [];
 }
