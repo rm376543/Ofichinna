@@ -14,6 +14,14 @@ public interface IVeiculoRepository : IRepository<Veiculo>
     Task<Veiculo?> GetByIdWithPessoaAsync(Guid id, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Obtém todos os veículos de uma pessoa pelo identificador da pessoa, incluindo a pessoa vinculada.
+    /// </summary>
+    Task<PagedResult<Veiculo>> GetVeiclesPagedByPessoaIdAsync(
+        Guid pessoaId,
+        Pagination pagination,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Lista todos os veículos, incluindo a pessoa vinculada.
     /// </summary>
     Task<IEnumerable<Veiculo>> GetAllWithPessoaAsync(CancellationToken cancellationToken = default);

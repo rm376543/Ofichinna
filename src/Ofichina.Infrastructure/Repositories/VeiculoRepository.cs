@@ -55,4 +55,28 @@ public class VeiculoRepository : Repository<Veiculo>, IVeiculoRepository
 
         return new PagedResult<Veiculo>(items, totalCount, pageNumber, pageSize);
     }
+
+    public async Task<PagedResult<Veiculo>> GetVeiclesPagedByPessoaIdAsync(
+        Guid pessoaId,
+        Pagination pagination,
+        CancellationToken cancellationToken = default)
+    {
+        var pageNumber = pagination.PageNumber > 0 ? pagination.PageNumber : 1;
+        var pageSize = pagination.PageSize > 0 ? pagination.PageSize : 10;
+
+        var query = _context.Set<Veiculo>()
+            .AsNoTracking()
+            .Include(x => x.Pessoa)
+            .Where(x => x.PessoaId == pessoaId && x.DeletedAt == null)
+            .OrderBy(x => x.CreatedAt)
+            .ThenBy(x => x.Id);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<Veiculo>(items, totalCount, pageNumber, pageSize);
+    }
 }
