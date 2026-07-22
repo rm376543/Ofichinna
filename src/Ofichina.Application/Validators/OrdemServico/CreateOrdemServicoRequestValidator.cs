@@ -30,7 +30,5 @@ public sealed class CreateOrdemServicoRequestValidator : AbstractValidator<Creat
             .MaximumLength(1000).WithMessage("As observações não podem exceder 1000 caracteres.")
             .When(x => !string.IsNullOrWhiteSpace(x.Observacoes));
 
-        RuleForEach(x => x.Servicos)
-            .SetValidator(new CreateOrdemServicoItemServicoRequestValidator());
     }
 }

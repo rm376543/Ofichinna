@@ -6,7 +6,6 @@ using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.Common;
-using DomainPeca = Ofichina.Domain.Entities.Peca;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 
@@ -18,8 +17,6 @@ public sealed class CreateOrdemServicoCommandHandler : ICommandHandler<CreateOrd
     private readonly IRepository<OrdemServico> _ordemServicoRepository;
     private readonly IRepository<Pessoa> _pessoaRepository;
     private readonly IRepository<Veiculo> _veiculoRepository;
-    private readonly IRepository<Servico> _servicoRepository;
-    private readonly IRepository<DomainPeca> _pecaRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateOrdemServicoCommandHandler> _logger;
 
@@ -27,16 +24,12 @@ public sealed class CreateOrdemServicoCommandHandler : ICommandHandler<CreateOrd
         IRepository<OrdemServico> ordemServicoRepository,
         IRepository<Pessoa> pessoaRepository,
         IRepository<Veiculo> veiculoRepository,
-        IRepository<Servico> servicoRepository,
-        IRepository<DomainPeca> pecaRepository,
         IUnitOfWork unitOfWork,
         ILogger<CreateOrdemServicoCommandHandler> logger)
     {
         _ordemServicoRepository = ordemServicoRepository;
         _pessoaRepository = pessoaRepository;
         _veiculoRepository = veiculoRepository;
-        _servicoRepository = servicoRepository;
-        _pecaRepository = pecaRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -63,25 +56,9 @@ public sealed class CreateOrdemServicoCommandHandler : ICommandHandler<CreateOrd
                 command.PessoaId,
                 command.VeiculoId,
                 command.FuncionarioId,
+                command.HodometroEntrada,
+                command.ProblemaRelatado,
                 command.Observacoes);
-
-            foreach (var itemServicoRequest in command.Servicos)
-            {
-                var servico = await _servicoRepository.GetByIdAsync(itemServicoRequest.ServicoId, cancellationToken);
-                if (servico is null || servico.EstaExcluida())
-                    return Result.Failure<Guid>("Serviço não encontrado.");
-
-                var itemServico = ordemServico.AdicionarServico(servico.Id, servico.Nome, servico.Valor);
-
-                foreach (var pecaRequest in itemServicoRequest.Pecas)
-                {
-                    var peca = await _pecaRepository.GetByIdAsync(pecaRequest.PecaId, cancellationToken);
-                    if (peca is null || peca.EstaExcluida())
-                        return Result.Failure<Guid>("Peça não encontrada.");
-
-                    itemServico.AdicionarPeca(peca.Id, peca.Nome, pecaRequest.Quantidade, peca.Valor);
-                }
-            }
 
             await _ordemServicoRepository.AddAsync(ordemServico, cancellationToken);
             await _unitOfWork.SaveChangesAsync();

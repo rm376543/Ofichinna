@@ -34,6 +34,18 @@ public class OrdemServico : Entity
 
 
     /// <summary>
+    /// Hodômetro de entrada do veículo na ordem de serviço.
+    /// </summary>
+    public int HodometroEntrada { get; private set; }
+
+
+    /// <summary>
+    /// Problema relatado na abertura da ordem de serviço.
+    /// </summary>
+    public string ProblemaRelatado { get; private set; } = string.Empty;
+
+
+    /// <summary>
     /// Status atual da ordem de serviço.
     /// </summary>
     public StatusOrdemServico Status { get; private set; }
@@ -88,6 +100,21 @@ public class OrdemServico : Entity
         Guid veiculoId,
         Guid funcionarioId,
         string? observacao)
+        : this(pessoaId, veiculoId, funcionarioId, 0, string.Empty, observacao)
+    {
+    }
+
+
+    /// <summary>
+    /// Cria uma nova ordem de serviço.
+    /// </summary>
+    public OrdemServico(
+        Guid pessoaId,
+        Guid veiculoId,
+        Guid funcionarioId,
+        int hodometroEntrada,
+        string problemaRelatado,
+        string? observacao)
     {
         if (pessoaId == Guid.Empty)
             throw new DomainException("Pessoa obrigatória.");
@@ -98,10 +125,18 @@ public class OrdemServico : Entity
         if (funcionarioId == Guid.Empty)
             throw new DomainException("Funcionário obrigatório.");
 
+        if (hodometroEntrada < 0)
+            throw new DomainException("A quilometragem não pode ser negativa.");
+
+        if (string.IsNullOrWhiteSpace(problemaRelatado))
+            throw new DomainException("Problema relatado obrigatório.");
+
 
         PessoaId = pessoaId;
         VeiculoId = veiculoId;
         FuncionarioId = funcionarioId;
+        HodometroEntrada = hodometroEntrada;
+        ProblemaRelatado = problemaRelatado;
 
         Observacao = observacao;
 
@@ -112,17 +147,37 @@ public class OrdemServico : Entity
 
 
     /// <summary>
-    /// Atualiza os dados do atendimento da ordem de serviço.
+    /// Atualiza os dados da ordem de serviço.
     /// </summary>
-    public void AtualizarAtendimento(
+    public void AtualizarDados(
+        Guid pessoaId,
+        Guid veiculoId,
         Guid funcionarioId,
+        int hodometroEntrada,
+        string problemaRelatado,
         string? observacao)
     {
+        if (pessoaId == Guid.Empty)
+            throw new DomainException("Pessoa obrigatória.");
+
+        if (veiculoId == Guid.Empty)
+            throw new DomainException("Veículo obrigatório.");
+
         if (funcionarioId == Guid.Empty)
             throw new DomainException("Funcionário obrigatório.");
 
+        if (hodometroEntrada < 0)
+            throw new DomainException("A quilometragem não pode ser negativa.");
 
+        if (string.IsNullOrWhiteSpace(problemaRelatado))
+            throw new DomainException("Problema relatado obrigatório.");
+
+
+        PessoaId = pessoaId;
+        VeiculoId = veiculoId;
         FuncionarioId = funcionarioId;
+        HodometroEntrada = hodometroEntrada;
+        ProblemaRelatado = problemaRelatado;
         Observacao = observacao;
 
         AtualizarDataModificacao();

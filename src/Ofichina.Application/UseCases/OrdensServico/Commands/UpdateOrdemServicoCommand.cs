@@ -1,6 +1,5 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Requests.OrdemServico;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Commands;
 
@@ -15,9 +14,24 @@ public sealed class UpdateOrdemServicoCommand : ICommand<Result>
     public Guid Id { get; init; }
 
     /// <summary>
+    /// Identificador da pessoa vinculada.
+    /// </summary>
+    public Guid PessoaId { get; init; }
+
+    /// <summary>
+    /// Identificador do veículo vinculado.
+    /// </summary>
+    public Guid VeiculoId { get; init; }
+
+    /// <summary>
     /// Identificador do funcionário responsável.
     /// </summary>
     public Guid FuncionarioId { get; init; }
+
+    /// <summary>
+    /// Hodômetro de entrada do veículo.
+    /// </summary>
+    public int HodometroEntrada { get; init; }
 
     /// <summary>
     /// Problema relatado atualizado.
@@ -28,10 +42,5 @@ public sealed class UpdateOrdemServicoCommand : ICommand<Result>
     /// Observações atualizadas da ordem de serviço.
     /// </summary>
     public string? Observacoes { get; init; }
-
-    /// <summary>
-    /// Serviços previstos para a ordem de serviço.
-    /// </summary>
-    public ICollection<UpdateOrdemServicoItemServicoRequest> Servicos { get; init; } = [];
 
 }
