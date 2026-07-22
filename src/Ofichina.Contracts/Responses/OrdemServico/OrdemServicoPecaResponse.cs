@@ -16,9 +16,14 @@ public sealed class OrdemServicoPecaResponse
     public Guid PecaId { get; set; }
 
     /// <summary>
-    /// Identificador do item de serviço ao qual a peça pertence.
+    /// Identificador do item de serviço no contexto da ordem.
     /// </summary>
     public Guid ItemServicoId { get; set; }
+
+    /// <summary>
+    /// Identificador do serviço cadastrado ao qual a peça pertence.
+    /// </summary>
+    public Guid ServicoId { get; set; }
 
     /// <summary>
     /// Descrição da peça.

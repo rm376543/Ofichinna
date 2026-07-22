@@ -1,5 +1,5 @@
 using FluentValidation;
-using Ofichina.Contracts.Requests.OrdemServico;
+using Ofichina.Contracts.Requests.ItemServico;
 
 namespace Ofichina.Application.Validators.OrdemServico;
 
@@ -13,11 +13,7 @@ public sealed class UpdateItemServicoRequestValidator : AbstractValidator<Update
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("O identificador do item de serviço é obrigatório.");
 
-        RuleFor(x => x.Descricao)
-            .NotEmpty().WithMessage("A descrição do serviço é obrigatória.")
-            .MaximumLength(200).WithMessage("A descrição do serviço não pode exceder 200 caracteres.");
-
-        RuleFor(x => x.Valor)
-            .GreaterThan(0).WithMessage("O valor do serviço deve ser maior que zero.");
+        RuleFor(x => x.PecaServicoId)
+            .NotEmpty().WithMessage("O identificador da peça de serviço é obrigatório.");
     }
 }

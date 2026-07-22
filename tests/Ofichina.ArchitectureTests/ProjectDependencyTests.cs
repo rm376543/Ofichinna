@@ -2,7 +2,7 @@ using System.Reflection;
 using NetArchTest.Rules;
 using Ofichina.Api.Modules;
 using Ofichina.Application.DependencyInjection;
-using Ofichina.Authentication;
+using Ofichina.Authentication.DependencyInjection;
 using Ofichina.Bootstrap;
 using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Entities;
