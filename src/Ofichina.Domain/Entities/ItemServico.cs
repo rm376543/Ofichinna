@@ -1,4 +1,5 @@
-﻿using Ofichina.Domain.Exceptions;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Domain.Entities;
 
@@ -9,12 +10,21 @@ namespace Ofichina.Domain.Entities;
 /// </summary>
 public class ItemServico : Entity
 {
-    private readonly List<PecaServico> _pecas = [];
+    /// <summary>
+    /// Navegação para a peça de serviço vinculada ao item.
+    /// </summary>
+    public PecaServico? PecaServico { get; private set; }
 
     /// <summary>
-    /// Identificador do serviço cadastrado vinculado ao item.
+    /// Identificador da peça de serviço vinculada ao item.
     /// </summary>
-    public Guid ServicoId { get; private set; } = Guid.Empty;
+    public Guid PecaServicoId { get; private set; } = Guid.Empty;
+
+    /// <summary>
+    /// Identificador do vínculo da peça de serviço.
+    /// </summary>
+    [NotMapped]
+    public Guid ServicoId => PecaServicoId;
 
     /// <summary>
     /// Identificador da ordem de serviço à qual o serviço pertence.
@@ -22,30 +32,32 @@ public class ItemServico : Entity
     public Guid OrdemServicoId { get; private set; } = Guid.Empty;
 
     /// <summary>
-    /// Descrição do serviço no momento da inclusão na ordem de serviço.
-    /// Mantém o histórico mesmo que o cadastro original seja alterado.
+    /// Descrição da peça de serviço vinculada.
     /// </summary>
-    public string Descricao { get; private set; } = string.Empty;
+    [NotMapped]
+    public string Descricao => PecaServico?.Peca?.Nome ?? string.Empty;
 
 
     /// <summary>
-    /// Valor cobrado pelo serviço.
+    /// Valor da peça de serviço vinculada.
     /// </summary>
-    public decimal Valor { get; private set; } = 0;
+    [NotMapped]
+    public decimal Valor => PecaServico?.Peca?.Valor ?? 0;
 
 
     /// <summary>
-    /// Peças adicionadas ao serviço.
+    /// Peça de serviço vinculada ao item.
     /// </summary>
-    public IReadOnlyCollection<PecaServico> Pecas => _pecas.AsReadOnly();
+    [NotMapped]
+    public IReadOnlyCollection<PecaServico> Pecas => PecaServico is null ? [] : [PecaServico];
 
 
     /// <summary>
-    /// Valor total do serviço.
-    /// Corresponde ao valor do serviço mais o valor total das peças não excluídas.
+    /// Valor total da peça de serviço vinculada.
     /// </summary>
+    [NotMapped]
     public decimal ValorTotal => 
-        Valor + _pecas.Where(x => !x.EstaExcluida()).Sum(x => x.ValorTotal);
+        PecaServico?.ValorTotal ?? 0;
 
 
     /// <summary>
@@ -64,68 +76,44 @@ public class ItemServico : Entity
     /// <param name="ordemServicoId">
     /// Identificador da ordem de serviço.
     /// </param>
-    /// <param name="descricao">
-    /// Descrição do serviço.
-    /// </param>
-    /// <param name="valor">
-    /// Valor cobrado pelo serviço.
-    /// </param>
     internal ItemServico(
-        Guid servicoId,
         Guid ordemServicoId,
-        string descricao,
-        decimal valor)
+        Guid pecaServicoId)
     {
-        if (servicoId == Guid.Empty)
-            throw new DomainException(
-                "Serviço obrigatório.");
-
-
         if (ordemServicoId == Guid.Empty)
             throw new DomainException(
                 "Ordem de serviço obrigatória.");
 
+        if (pecaServicoId == Guid.Empty)
+            throw new DomainException("Peça de serviço obrigatória.");
 
-        if (string.IsNullOrWhiteSpace(descricao))
-            throw new DomainException(
-                "Descrição obrigatória.");
-
-
-        if (valor <= 0)
-            throw new DomainException(
-                "Valor inválido.");
-
-
-        ServicoId = servicoId;
+        PecaServicoId = pecaServicoId;
         OrdemServicoId = ordemServicoId;
-        Descricao = descricao.Trim();
-        Valor = valor;
+    }
+
+
+    /// <summary>
+    /// Cria um item de serviço vinculado a uma ordem de serviço.
+    /// </summary>
+    public static ItemServico Criar(
+        Guid ordemServicoId,
+        Guid pecaServicoId)
+    {
+        return new ItemServico(ordemServicoId, pecaServicoId);
     }
 
 
     /// <summary>
     /// Atualiza os dados do serviço vinculado à ordem.
     /// </summary>
-    /// <param name="descricao">Nova descrição do serviço.</param>
-    /// <param name="valor">Novo valor do serviço.</param>
-    public void AtualizarDados(
-        string descricao,
-        decimal valor)
+    public void AtualizarDados(Guid pecaServicoId)
     {
         ValidarNaoExcluido();
 
-        if (string.IsNullOrWhiteSpace(descricao))
-            throw new DomainException(
-                "Descrição obrigatória.");
+        if (pecaServicoId == Guid.Empty)
+            throw new DomainException("Peça de serviço obrigatória.");
 
-
-        if (valor <= 0)
-            throw new DomainException(
-                "Valor inválido.");
-
-
-        Descricao = descricao.Trim();
-        Valor = valor;
+        PecaServicoId = pecaServicoId;
 
         AtualizarDataModificacao();
     }
@@ -134,89 +122,59 @@ public class ItemServico : Entity
     /// <summary>
     /// Atualiza o vínculo e os dados do serviço catalogado.
     /// </summary>
-    public void AtualizarServico(
-        Guid servicoId,
-        string descricao,
-        decimal valor)
+    public void AtualizarServico(Guid pecaServicoId)
     {
-        if (servicoId == Guid.Empty)
-            throw new DomainException("Serviço obrigatório.");
+        if (pecaServicoId == Guid.Empty)
+            throw new DomainException("Peça de serviço obrigatória.");
 
         ValidarNaoExcluido();
 
-        ServicoId = servicoId;
-        AtualizarDados(descricao, valor);
-    }
-
-
-    /// <summary>
-    /// Adiciona uma peça ao serviço.
-    /// </summary>
-    public void AdicionarPeca(
-        Guid pecaId,
-        string descricao,
-        int quantidade,
-        decimal valorUnitario)
-    {
-        ValidarNaoExcluido();
-
-        if (_pecas.Any(x => x.PecaId == pecaId && !x.EstaExcluida()))
-            throw new DomainException("A peça já foi adicionada ao serviço.");
-
-        var item = new PecaServico(
-            Id,
-            pecaId,
-            descricao,
-            quantidade,
-            valorUnitario);
-
-        _pecas.Add(item);
-
+        PecaServicoId = pecaServicoId;
         AtualizarDataModificacao();
     }
 
 
     /// <summary>
-    /// Atualiza uma peça vinculada ao serviço.
+    /// Adiciona uma peça ao serviço associado ao item.
+    /// </summary>
+    public void AdicionarPeca(
+        Guid pecaId,
+        int quantidade)
+    {
+        if (PecaServico is null)
+            throw new DomainException("Peça de serviço não encontrada.");
+
+        PecaServico.AtualizarDados(pecaId, quantidade);
+    }
+
+
+    /// <summary>
+    /// Atualiza uma peça vinculada ao serviço associado ao item.
     /// </summary>
     public void AtualizarPeca(
         Guid pecaServicoId,
         Guid pecaId,
-        string descricao,
-        int quantidade,
-        decimal valorUnitario)
+        int quantidade)
     {
-        var peca = _pecas.FirstOrDefault(x => x.Id == pecaServicoId);
+        if (PecaServico is null)
+            throw new DomainException("Peça de serviço não encontrada.");
 
-        if (peca is null)
-            throw new DomainException("Peça não encontrada.");
-
-        if (peca.EstaExcluida())
-            throw new DomainException("Peça não encontrada.");
-
-        peca.AtualizarDados(pecaId, descricao, quantidade, valorUnitario);
-
-        AtualizarDataModificacao();
+        PecaServico.AtualizarDados(pecaId, quantidade);
     }
 
 
     /// <summary>
-    /// Remove uma peça do serviço.
+    /// Remove uma peça do serviço associado ao item.
     /// </summary>
     public void RemoverPeca(Guid pecaServicoId)
     {
-        var peca = _pecas.FirstOrDefault(x => x.Id == pecaServicoId);
+        if (PecaServico is null)
+            throw new DomainException("Peça de serviço não encontrada.");
 
-        if (peca is null)
-            throw new DomainException("Peça não encontrada.");
+        if (PecaServicoId != pecaServicoId)
+            throw new DomainException("Peça de serviço não encontrada.");
 
-        if (peca.EstaExcluida())
-            throw new DomainException("Peça não encontrada.");
-
-        peca.ValidarRemocao();
-        peca.Excluir();
-
-        AtualizarDataModificacao();
+        Excluir();
     }
 
 
@@ -225,26 +183,22 @@ public class ItemServico : Entity
     /// </summary>
     public void UtilizarPeca(Guid pecaServicoId)
     {
-        var peca = _pecas.FirstOrDefault(x => x.Id == pecaServicoId);
+        if (PecaServico is null)
+            throw new DomainException("Peça de serviço não encontrada.");
 
-        if (peca is null)
-            throw new DomainException("Peça não encontrada.");
+        if (PecaServicoId != pecaServicoId)
+            throw new DomainException("Peça de serviço não encontrada.");
 
-        if (peca.EstaExcluida())
-            throw new DomainException("Não é possível utilizar uma peça removida.");
-
-        peca.MarcarComoUtilizada();
-
-        AtualizarDataModificacao();
+        PecaServico.MarcarComoUtilizada();
     }
 
 
     /// <summary>
-    /// Obtém uma peça pelo identificador.
+    /// Obtém uma peça vinculada ao serviço associado ao item.
     /// </summary>
     public PecaServico? ObterPeca(Guid pecaServicoId)
     {
-        return _pecas.FirstOrDefault(x => x.Id == pecaServicoId);
+        return PecaServico is not null && PecaServicoId == pecaServicoId ? PecaServico : null;
     }
 
 

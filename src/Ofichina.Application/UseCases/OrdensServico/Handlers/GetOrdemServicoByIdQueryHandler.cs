@@ -6,6 +6,7 @@ using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.OrdemServico;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Common;
+using Ofichina.Domain.Entities;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 
@@ -15,13 +16,16 @@ namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 public sealed class GetOrdemServicoByIdQueryHandler : IQueryHandler<GetOrdemServicoByIdQuery, Result<OrdemServicoResponse>>
 {
     private readonly IOrdemServicoRepository _ordemServicoRepository;
+    private readonly IServicoRepository _servicoRepository;
     private readonly ILogger<GetOrdemServicoByIdQueryHandler> _logger;
 
     public GetOrdemServicoByIdQueryHandler(
         IOrdemServicoRepository ordemServicoRepository,
+        IServicoRepository servicoRepository,
         ILogger<GetOrdemServicoByIdQueryHandler> logger)
     {
         _ordemServicoRepository = ordemServicoRepository;
+        _servicoRepository = servicoRepository;
         _logger = logger;
     }
 
@@ -34,7 +38,9 @@ public sealed class GetOrdemServicoByIdQueryHandler : IQueryHandler<GetOrdemServ
             if (ordemServico is null || ordemServico.EstaExcluida())
                 return Result.Failure<OrdemServicoResponse>("Ordem de serviço não encontrada.");
 
-            return Result.Success(Mapear(ordemServico));
+            var servicosPorId = await CarregarServicosAsync(ordemServico.Servicos, cancellationToken);
+
+            return Result.Success(Mapear(ordemServico, servicosPorId));
         }
         catch (Exception ex)
         {
@@ -43,7 +49,30 @@ public sealed class GetOrdemServicoByIdQueryHandler : IQueryHandler<GetOrdemServ
         }
     }
 
-    private static OrdemServicoResponse Mapear(OrdemServico ordemServico)
+    private async Task<Dictionary<Guid, Servico>> CarregarServicosAsync(
+        IEnumerable<Ofichina.Domain.Entities.ItemServico> itens,
+        CancellationToken cancellationToken)
+    {
+        var ids = itens
+            .Where(item => item.PecaServico is not null)
+            .Select(item => item.PecaServico!.ServicoId)
+            .Distinct()
+            .ToList();
+
+        var resultados = await Task.WhenAll(ids.Select(async id =>
+        {
+            var servico = await _servicoRepository.GetByIdAsync(id, includePecas: true, cancellationToken);
+            return (id, servico);
+        }));
+
+        return resultados
+            .Where(x => x.servico is not null && !x.servico.EstaExcluida())
+            .ToDictionary(x => x.id, x => x.servico!);
+    }
+
+    private static OrdemServicoResponse Mapear(
+        OrdemServico ordemServico,
+        IReadOnlyDictionary<Guid, Servico> servicosPorId)
     {
         return new OrdemServicoResponse
         {
@@ -60,7 +89,7 @@ public sealed class GetOrdemServicoByIdQueryHandler : IQueryHandler<GetOrdemServ
             ValorTotal = ordemServico.ValorTotal,
             Servicos = ordemServico.Servicos
                 .Where(item => !item.EstaExcluida())
-                .Select(MapearServico)
+                .Select(item => MapearServico(item, servicosPorId))
                 .ToList(),
             CreatedAt = ordemServico.CreatedAt,
             UpdatedAt = ordemServico.UpdatedAt,
@@ -68,8 +97,14 @@ public sealed class GetOrdemServicoByIdQueryHandler : IQueryHandler<GetOrdemServ
         };
     }
 
-    private static ItemServicoResponse MapearServico(Ofichina.Domain.Entities.ItemServico item)
+    private static ItemServicoResponse MapearServico(
+        Ofichina.Domain.Entities.ItemServico item,
+        IReadOnlyDictionary<Guid, Servico> servicosPorId)
     {
+        var servico = item.PecaServico is null
+            ? null
+            : servicosPorId.GetValueOrDefault(item.PecaServico.ServicoId);
+
         return new ItemServicoResponse
         {
             Id = item.Id,
@@ -78,23 +113,24 @@ public sealed class GetOrdemServicoByIdQueryHandler : IQueryHandler<GetOrdemServ
             Descricao = item.Descricao,
             Valor = item.Valor,
             ValorTotal = item.ValorTotal,
-            Pecas = item.Pecas
+            Pecas = servico?.Pecas
                 .Where(peca => !peca.EstaExcluida())
-                .Select(MapearPeca)
-                .ToList(),
+                .Select(peca => MapearPeca(item.Id, peca))
+                .ToList() ?? [],
             CreatedAt = item.CreatedAt,
             UpdatedAt = item.UpdatedAt,
             DeletedAt = item.DeletedAt
         };
     }
 
-    private static OrdemServicoPecaResponse MapearPeca(Ofichina.Domain.Entities.PecaServico peca)
+    private static OrdemServicoPecaResponse MapearPeca(Guid itemServicoId, Ofichina.Domain.Entities.PecaServico peca)
     {
         return new OrdemServicoPecaResponse
         {
             Id = peca.Id,
             PecaId = peca.PecaId,
-            ItemServicoId = peca.ItemServicoId,
+            ItemServicoId = itemServicoId,
+            ServicoId = peca.ServicoId,
             Descricao = peca.Descricao,
             Quantidade = peca.Quantidade,
             ValorUnitario = peca.ValorUnitario,

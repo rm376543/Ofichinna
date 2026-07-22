@@ -9,6 +9,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Controllers\Orcamento\**" />
+	  <Content Remove="Controllers\Orcamento\**" />
+	  <EmbeddedResource Remove="Controllers\Orcamento\**" />
+	  <None Remove="Controllers\Orcamento\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="DotNetEnv" Version="3.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.9" />
@@ -30,8 +37,6 @@
 	<ItemGroup>
 		<Folder Include="Controllers\ItemServico\" />
 		<Folder Include="Controllers\Pessoa\" />
-		<Folder Include="Controllers\Orcamento\" />
-		<Folder Include="Controllers\Servicos\" />
 		<Folder Include="logs\" />
 	</ItemGroup>
 

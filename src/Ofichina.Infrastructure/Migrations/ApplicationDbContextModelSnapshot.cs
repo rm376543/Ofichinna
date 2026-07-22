@@ -261,28 +261,20 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
                     b.Property<Guid>("OrdemServicoId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ServicoId")
+                    b.Property<Guid>("PecaServicoId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("Valor")
-                        .HasColumnType("decimal(10,2)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("OrdemServicoId");
 
-                    b.HasIndex("ServicoId");
+                    b.HasIndex("PecaServicoId");
 
                     b.ToTable("ItensServico", (string)null);
                 });
@@ -345,18 +337,14 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ItemServicoId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("PecaId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("ServicoId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -364,16 +352,17 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Property<bool>("Utilizada")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("ValorUnitario")
-                        .HasColumnType("decimal(18,2)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ItemServicoId");
 
                     b.HasIndex("PecaId");
 
-                    b.ToTable("PecaServico");
+                    b.HasIndex("ServicoId");
+
+                    b.HasIndex("ServicoId", "PecaId")
+                        .IsUnique()
+                        .HasFilter("[DeletedAt] IS NULL");
+
+                    b.ToTable("PecaServico", (string)null);
                 });
 
             modelBuilder.Entity("Ofichina.Domain.Entities.Perfil", b =>
@@ -774,28 +763,32 @@ namespace Ofichina.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Ofichina.Domain.Entities.Servico", null)
+                    b.HasOne("Ofichina.Domain.Entities.PecaServico", "PecaServico")
                         .WithMany()
-                        .HasForeignKey("ServicoId")
+                        .HasForeignKey("PecaServicoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("PecaServico");
                 });
 
             modelBuilder.Entity("Ofichina.Domain.Entities.PecaServico", b =>
                 {
-                    b.HasOne("Ofichina.Domain.Entities.ItemServico", null)
-                        .WithMany("Pecas")
-                        .HasForeignKey("ItemServicoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Ofichina.Domain.Entities.Peca", "Peca")
                         .WithMany()
                         .HasForeignKey("PecaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Ofichina.Domain.Entities.Servico", "Servico")
+                        .WithMany("Pecas")
+                        .HasForeignKey("ServicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Peca");
+
+                    b.Navigation("Servico");
                 });
 
             modelBuilder.Entity("Ofichina.Domain.Entities.PerfilPermissao", b =>
@@ -933,11 +926,6 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Navigation("Dias");
                 });
 
-            modelBuilder.Entity("Ofichina.Domain.Entities.ItemServico", b =>
-                {
-                    b.Navigation("Pecas");
-                });
-
             modelBuilder.Entity("Ofichina.Domain.Entities.Perfil", b =>
                 {
                     b.Navigation("PerfisPermissoes");
@@ -953,6 +941,11 @@ namespace Ofichina.Infrastructure.Migrations
             modelBuilder.Entity("Ofichina.Domain.Entities.Pessoa", b =>
                 {
                     b.Navigation("Veiculos");
+                });
+
+            modelBuilder.Entity("Ofichina.Domain.Entities.Servico", b =>
+                {
+                    b.Navigation("Pecas");
                 });
 
             modelBuilder.Entity("Ofichina.Domain.Entities.Usuario", b =>

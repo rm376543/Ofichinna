@@ -1,5 +1,5 @@
 using FluentValidation;
-using Ofichina.Contracts.Requests.OrdemServico;
+using Ofichina.Contracts.Requests.ItemServico;
 
 namespace Ofichina.Application.Validators.OrdemServico;
 
@@ -10,7 +10,10 @@ public sealed class CreateItemServicoRequestValidator : AbstractValidator<Create
 {
     public CreateItemServicoRequestValidator()
     {
-        RuleFor(x => x.ServicoId)
-            .NotEmpty().WithMessage("O identificador do serviço é obrigatório.");
+        RuleFor(x => x.OrdemServicoId)
+            .NotEmpty().WithMessage("O identificador da ordem de serviço é obrigatório.");
+
+        RuleFor(x => x.PecaServicoId)
+            .NotEmpty().WithMessage("O identificador da peça de serviço é obrigatório.");
     }
 }

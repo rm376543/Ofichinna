@@ -16,36 +16,22 @@ public class ItemServicoConfiguration : IEntityTypeConfiguration<ItemServico>
         builder.Property(i => i.OrdemServicoId)
             .IsRequired();
 
-        builder.Property(i => i.ServicoId)
+        builder.Property(i => i.PecaServicoId)
             .IsRequired();
 
-        builder.Property(i => i.Descricao)
-            .HasMaxLength(200)
-            .IsRequired();
-
-        builder.Property(i => i.Valor)
-            .HasColumnType("decimal(10,2)")
-            .IsRequired();
-
-        // Propriedade calculada no domínio
+        builder.Ignore(i => i.Descricao);
+        builder.Ignore(i => i.Valor);
         builder.Ignore(i => i.ValorTotal);
+        builder.Ignore(i => i.Pecas);
 
-        builder.HasMany(x => x.Pecas)
-            .WithOne()
-            .HasForeignKey(i => i.ItemServicoId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.Navigation(x => x.Pecas)
-            .UsePropertyAccessMode(PropertyAccessMode.Field);
+        builder.HasOne(i => i.PecaServico)
+            .WithMany()
+            .HasForeignKey(i => i.PecaServicoId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne<OrdemServico>()
             .WithMany()
             .HasForeignKey(i => i.OrdemServicoId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne<Servico>()
-            .WithMany()
-            .HasForeignKey(i => i.ServicoId)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }
