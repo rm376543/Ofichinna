@@ -1,7 +1,5 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Requests.OrdemServico;
-
 namespace Ofichina.Application.UseCases.OrdensServico.Commands;
 
 /// <summary>
@@ -38,10 +36,5 @@ public sealed class CreateOrdemServicoCommand : ICommand<Result<Guid>>
     /// Observações iniciais da ordem de serviço.
     /// </summary>
     public string? Observacoes { get; init; }
-
-    /// <summary>
-    /// Serviços previstos para a ordem de serviço.
-    /// </summary>
-    public ICollection<CreateOrdemServicoItemServicoRequest> Servicos { get; init; } = [];
 
 }

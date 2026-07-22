@@ -26,6 +26,16 @@ public sealed class OrdemServicoResponse
     public Guid FuncionarioId { get; set; }
 
     /// <summary>
+    /// Hodômetro de entrada do veículo.
+    /// </summary>
+    public int HodometroEntrada { get; set; }
+
+    /// <summary>
+    /// Problema relatado na abertura da ordem de serviço.
+    /// </summary>
+    public string ProblemaRelatado { get; set; } = string.Empty;
+
+    /// <summary>
     /// Status atual da ordem de serviço.
     /// </summary>
     public string Status { get; set; } = string.Empty;

@@ -2,12 +2,10 @@ using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Requests.OrdemServico;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.Common;
-using DomainPeca = Ofichina.Domain.Entities.Peca;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 
@@ -17,21 +15,21 @@ namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 public sealed class UpdateOrdemServicoCommandHandler : ICommandHandler<UpdateOrdemServicoCommand, Result>
 {
     private readonly IRepository<OrdemServico> _ordemServicoRepository;
-    private readonly IRepository<Servico> _servicoRepository;
-    private readonly IRepository<DomainPeca> _pecaRepository;
+    private readonly IRepository<Pessoa> _pessoaRepository;
+    private readonly IRepository<Veiculo> _veiculoRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UpdateOrdemServicoCommandHandler> _logger;
 
     public UpdateOrdemServicoCommandHandler(
         IRepository<OrdemServico> ordemServicoRepository,
-        IRepository<Servico> servicoRepository,
-        IRepository<DomainPeca> pecaRepository,
+        IRepository<Pessoa> pessoaRepository,
+        IRepository<Veiculo> veiculoRepository,
         IUnitOfWork unitOfWork,
         ILogger<UpdateOrdemServicoCommandHandler> logger)
     {
         _ordemServicoRepository = ordemServicoRepository;
-        _servicoRepository = servicoRepository;
-        _pecaRepository = pecaRepository;
+        _pessoaRepository = pessoaRepository;
+        _veiculoRepository = veiculoRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -46,7 +44,25 @@ public sealed class UpdateOrdemServicoCommandHandler : ICommandHandler<UpdateOrd
             if (ordemServico is null || ordemServico.EstaExcluida())
                 return Result.Failure("Ordem de serviço não encontrada.");
 
-            ordemServico.AtualizarAtendimento(command.FuncionarioId, command.Observacoes);
+            var pessoa = await _pessoaRepository.GetByIdAsync(command.PessoaId, cancellationToken);
+            if (pessoa is null || pessoa.EstaExcluida())
+                return Result.Failure("Pessoa não encontrada.");
+
+            var funcionario = await _pessoaRepository.GetByIdAsync(command.FuncionarioId, cancellationToken);
+            if (funcionario is null || funcionario.EstaExcluida())
+                return Result.Failure("Funcionário não encontrado.");
+
+            var veiculo = await _veiculoRepository.GetByIdAsync(command.VeiculoId, cancellationToken);
+            if (veiculo is null || veiculo.EstaExcluida())
+                return Result.Failure("Veículo não encontrado.");
+
+            ordemServico.AtualizarDados(
+                command.PessoaId,
+                command.VeiculoId,
+                command.FuncionarioId,
+                command.HodometroEntrada,
+                command.ProblemaRelatado,
+                command.Observacoes);
 
             await _ordemServicoRepository.UpdateAsync(ordemServico, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
@@ -63,70 +79,6 @@ public sealed class UpdateOrdemServicoCommandHandler : ICommandHandler<UpdateOrd
         {
             _logger.LogError(ex, "Erro inesperado ao atualizar ordem de serviço. OrdemServicoId: {OrdemServicoId}", command.Id);
             return Result.Failure("Não foi possível atualizar a ordem de serviço.");
-        }
-    }
-
-    private async Task ReconciliarServicos(
-        OrdemServico ordemServico,
-        ICollection<UpdateOrdemServicoItemServicoRequest> servicos,
-        CancellationToken cancellationToken)
-    {
-        var servicosExistentes = ordemServico.Servicos
-            .Where(x => !x.EstaExcluida())
-            .ToDictionary(x => x.Id, x => x);
-
-        foreach (var existente in servicosExistentes.Values)
-        {
-            if (!servicos.Any(x => x.Id == existente.Id))
-                existente.Excluir();
-        }
-
-        foreach (var itemServicoRequest in servicos)
-        {
-            var servico = await _servicoRepository.GetByIdAsync(itemServicoRequest.ServicoId, cancellationToken);
-            if (servico is null || servico.EstaExcluida())
-                throw new DomainException("Serviço não encontrado.");
-
-            if (itemServicoRequest.Id != Guid.Empty && servicosExistentes.TryGetValue(itemServicoRequest.Id, out var itemServico))
-            {
-                itemServico.AtualizarServico(servico.Id, servico.Nome, servico.Valor);
-                await ReconciliarPecasAsync(itemServico, itemServicoRequest.Pecas, cancellationToken);
-                continue;
-            }
-
-            var novoServico = ordemServico.AdicionarServico(servico.Id, servico.Nome, servico.Valor);
-            await ReconciliarPecasAsync(novoServico, itemServicoRequest.Pecas, cancellationToken);
-        }
-    }
-
-    private async Task ReconciliarPecasAsync(
-        Ofichina.Domain.Entities.ItemServico itemServico,
-        ICollection<UpdateOrdemServicoPecaRequest> pecas,
-        CancellationToken cancellationToken)
-    {
-        var pecasExistentes = itemServico.Pecas
-            .Where(x => !x.EstaExcluida())
-            .ToDictionary(x => x.Id, x => x);
-
-        foreach (var existente in pecasExistentes.Values)
-        {
-            if (!pecas.Any(x => x.Id == existente.Id))
-                itemServico.RemoverPeca(existente.Id);
-        }
-
-        foreach (var pecaRequest in pecas)
-        {
-            var pecaCatalogo = await _pecaRepository.GetByIdAsync(pecaRequest.PecaId, cancellationToken);
-            if (pecaCatalogo is null || pecaCatalogo.EstaExcluida())
-                throw new DomainException("Peça não encontrada.");
-
-            if (pecaRequest.Id != Guid.Empty && pecasExistentes.ContainsKey(pecaRequest.Id))
-            {
-                itemServico.AtualizarPeca(pecaRequest.Id, pecaCatalogo.Id, pecaCatalogo.Nome, pecaRequest.Quantidade, pecaCatalogo.Valor);
-                continue;
-            }
-
-            itemServico.AdicionarPeca(pecaCatalogo.Id, pecaCatalogo.Nome, pecaRequest.Quantidade, pecaCatalogo.Valor);
         }
     }
 }

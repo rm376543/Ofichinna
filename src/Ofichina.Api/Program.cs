@@ -29,9 +29,7 @@ builder.Services.AddSwaggerModule();
 // Adiciona todos os serviços de infraestrutura e demais
 builder.Services.AddBootstrapMiddleware(builder.Configuration);
 
-var app = builder.Build();
-
-// Registrar middleware de Correlation ID (deve ser um dos primeiros)
+var app = builder.Build();// Registrar middleware de Correlation ID (deve ser um dos primeiros)
 app.UseCorrelationId();
 app.UseMiddleware<ApiExceptionMiddleware>();
 

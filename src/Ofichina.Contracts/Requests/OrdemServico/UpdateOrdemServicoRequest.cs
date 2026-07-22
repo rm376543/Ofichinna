@@ -8,12 +8,27 @@ namespace Ofichina.Contracts.Requests.OrdemServico;
 public sealed class UpdateOrdemServicoRequest : UpdateRequest
 {
     /// <summary>
+    /// Pessoa proprietária do veículo.
+    /// </summary>
+    public Guid PessoaId { get; init; }
+
+    /// <summary>
+    /// Veículo que receberá o atendimento.
+    /// </summary>
+    public Guid VeiculoId { get; init; }
+
+    /// <summary>
     /// Funcionário responsável pelo atendimento.
     /// </summary>
     public Guid FuncionarioId { get; init; }
 
     /// <summary>
-    /// Descrição atualizada do problema relatado pelo cliente.
+    /// Hodometro atual do veículo na entrada.
+    /// </summary>
+    public int HodometroEntrada { get; init; }
+
+    /// <summary>
+    /// Descrição do problema informado pela pessoa.
     /// </summary>
     public string ProblemaRelatado { get; init; } = string.Empty;
 
@@ -21,10 +36,4 @@ public sealed class UpdateOrdemServicoRequest : UpdateRequest
     /// Observações da ordem de serviço.
     /// </summary>
     public string? Observacoes { get; init; }
-
-    /// <summary>
-    /// Serviços previstos na ordem.
-    /// </summary>
-    public ICollection<UpdateOrdemServicoItemServicoRequest> Servicos { get; init; }
-        = [];
 }

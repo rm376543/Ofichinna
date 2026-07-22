@@ -54,6 +54,8 @@ public sealed class GetOrdensServicoQueryHandler : IQueryHandler<GetOrdensServic
             PessoaId = ordemServico.PessoaId,
             VeiculoId = ordemServico.VeiculoId,
             FuncionarioId = ordemServico.FuncionarioId,
+            HodometroEntrada = ordemServico.HodometroEntrada,
+            ProblemaRelatado = ordemServico.ProblemaRelatado,
             Status = ordemServico.Status.ToString(),
             DataAbertura = ordemServico.DataAbertura,
             DataFinalizacao = ordemServico.DataFinalizacao,

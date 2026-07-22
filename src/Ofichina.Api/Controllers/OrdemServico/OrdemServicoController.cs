@@ -126,8 +126,7 @@ public sealed class OrdemServicoController : ControllerBase
             FuncionarioId = request.FuncionarioId,
             HodometroEntrada = request.HodometroEntrada,
             ProblemaRelatado = request.ProblemaRelatado,
-            Observacoes = request.Observacoes,
-            Servicos = request.Servicos
+            Observacoes = request.Observacoes
         }, cancellationToken);
 
         if (!result.IsSuccess)
@@ -170,16 +169,18 @@ public sealed class OrdemServicoController : ControllerBase
         var result = await _mediator.Send(new UpdateOrdemServicoCommand
         {
             Id = request.Id,
+            PessoaId = request.PessoaId,
+            VeiculoId = request.VeiculoId,
             FuncionarioId = request.FuncionarioId,
+            HodometroEntrada = request.HodometroEntrada,
             ProblemaRelatado = request.ProblemaRelatado,
-            Observacoes = request.Observacoes,
-            Servicos = request.Servicos
+            Observacoes = request.Observacoes
         }, cancellationToken);
 
         if (!result.IsSuccess)
         {
             _logger.LogError("Erro ao atualizar a ordem de serviço com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
-            return result.Error == "Ordem de serviço não encontrada."
+            return result.Error is "Ordem de serviço não encontrada." or "Pessoa não encontrada." or "Funcionário não encontrado." or "Veículo não encontrado."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
                 : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a ordem de serviço."));
         }

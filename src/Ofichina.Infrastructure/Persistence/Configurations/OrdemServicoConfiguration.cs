@@ -16,6 +16,8 @@ public class OrdemServicoConfiguration : IEntityTypeConfiguration<OrdemServico>
         builder.Property(x => x.PessoaId).IsRequired();
         builder.Property(x => x.VeiculoId).IsRequired();
         builder.Property(x => x.FuncionarioId).IsRequired();
+        builder.Property(x => x.HodometroEntrada).IsRequired();
+        builder.Property(x => x.ProblemaRelatado).IsRequired().HasMaxLength(500);
         builder.Property(x => x.Status).IsRequired();
         builder.Property(x => x.DataAbertura).IsRequired();
         builder.Property(x => x.DataFinalizacao);
