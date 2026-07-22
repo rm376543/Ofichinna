@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Application.UseCases.Veiculos.Queries;
-using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Requests.Veiculo;
+using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Veiculo;
 
 namespace Ofichina.Api.Controllers.Veiculo;
@@ -35,6 +35,41 @@ public sealed class VeiculoController : ControllerBase
         _updateValidator = updateValidator;
         _mediator = mediator;
         _logger = logger;
+    }
+
+    /// <summary>
+    /// Retorna todos os veículos cadastrados.
+    /// </summary>
+    /// <param name="clienteId">Identificador do cliente.</param>
+    /// <param name="pageNumber">Número da página.</param>
+    /// <param name="pageSize">Tamanho da página.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Lista de veículos.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpGet("cliente/{clienteId:guid}")]
+    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<VeiculoListResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<VeiculoResponse>>>> BuscarVeiculosPorClienteId(
+        Guid clienteId,
+        [FromQuery] int pageNumber,
+        [FromQuery] int pageSize,
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Iniciando a obtenção de todos os veículos vinculados a uma pessoa.");
+
+        var result = await _mediator.Send(
+            new GetVeiculosByPessoaIdQuery(clienteId, pageNumber, pageSize),
+            cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Falha ao obter os veículos vinculados a uma pessoa. Erro: {Error}", result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os veículos."));
+        }
+
+        _logger.LogInformation("Pesquisa de veículos do usuario {ClienteId} concluída com sucesso.", clienteId);
+        return Ok(ApiResponse<PagedResponse<VeiculoListResponse>>.SuccessResponse(result.Value ?? new PagedResponse<VeiculoListResponse>()));
     }
 
     /// <summary>

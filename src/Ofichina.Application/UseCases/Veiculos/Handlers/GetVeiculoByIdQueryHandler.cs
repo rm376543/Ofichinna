@@ -1,11 +1,10 @@
 using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Veiculos.Queries;
-using Ofichina.Domain.Common;
-using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Veiculo;
 using Ofichina.Application.Abstractions.Interfaces;
+using Ofichina.Domain.Entities;
 
 namespace Ofichina.Application.UseCases.Veiculos.Handlers;
 
@@ -43,7 +42,7 @@ public sealed class GetVeiculoByIdQueryHandler : IQueryHandler<GetVeiculoByIdQue
         }
     }
 
-    private static VeiculoResponse Mapear(Domain.Entities.Veiculo veiculo)
+    private static VeiculoResponse Mapear(Veiculo veiculo)
     {
         return new VeiculoResponse
         {
