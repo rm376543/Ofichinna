@@ -15,15 +15,16 @@ namespace Ofichina.Api.Controllers.Pecas;
 /// </summary>
 [Authorize]
 [ApiController]
-[Route("api/pecas")]
+[Route("api/peca")]
+#pragma warning disable S6960
 public sealed class PecaController : ControllerBase
+#pragma warning restore S6960
 {
     private readonly IValidator<CreatePecaRequest> _createValidator;
     private readonly IValidator<UpdatePecaRequest> _updateValidator;
     private readonly IMediator _mediator;
     private readonly ILogger<PecaController> _logger;
 
-#pragma warning disable S107
     /// <summary>
     /// Inicializa uma nova instância do controller de peças.
     /// </summary>
@@ -32,7 +33,6 @@ public sealed class PecaController : ControllerBase
         IValidator<UpdatePecaRequest> updateValidator,
         IMediator mediator,
         ILogger<PecaController> logger)
-#pragma warning restore S107
     {
         _createValidator = createValidator;
         _updateValidator = updateValidator;

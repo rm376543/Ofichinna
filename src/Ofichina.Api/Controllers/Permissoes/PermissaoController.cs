@@ -13,7 +13,9 @@ namespace Ofichina.Api.Controllers.Permissoes;
 [Authorize]
 [ApiController]
 [Route("api/permissao")]
+#pragma warning disable S6960
 public sealed class PermissaoController : ControllerBase
+#pragma warning restore S6960
 {
     private readonly IValidator<CreatePermissaoRequest> _createValidator;
     private readonly IValidator<UpdatePermissaoRequest> _updateValidator;

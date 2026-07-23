@@ -16,7 +16,9 @@ namespace Ofichina.Api.Controllers.Veiculo;
 [Authorize]
 [ApiController]
 [Route("api/veiculos")]
+#pragma warning disable S6960
 public sealed class VeiculoController : ControllerBase
+#pragma warning restore S6960
 {
     private readonly IValidator<CreateVeiculoRequest> _createValidator;
     private readonly IValidator<UpdateVeiculoRequest> _updateValidator;

@@ -16,7 +16,9 @@ namespace Ofichina.Api.Controllers.Pessoa
     [Authorize]
     [ApiController]
     [Route("api/pessoa")]
+#pragma warning disable S6960
     public sealed class PessoaController : ControllerBase
+#pragma warning restore S6960
     {
         private readonly IValidator<CreatePessoaRequest> _createValidator;
         private readonly IValidator<UpdatePessoaRequest> _updateValidator;
