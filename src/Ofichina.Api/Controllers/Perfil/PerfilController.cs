@@ -22,13 +22,11 @@ public sealed class PerfisController : ControllerBase
     private readonly IMediator _mediator;
     private readonly ILogger<PerfisController> _logger;
 
-#pragma warning disable S107
     public PerfisController(
         IValidator<CreatePerfilRequest> createValidator,
         IValidator<UpdatePerfilRequest> updateValidator,
         IMediator mediator,
         ILogger<PerfisController> logger)
-#pragma warning restore S107
     {
         _createValidator = createValidator;
         _updateValidator = updateValidator;

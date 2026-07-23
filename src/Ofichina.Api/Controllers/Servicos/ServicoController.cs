@@ -16,7 +16,9 @@ namespace Ofichina.Api.Controllers.Servicos;
 [Authorize]
 [ApiController]
 [Route("api/servicos")]
+#pragma warning disable S6960
 public sealed class ServicoController : ControllerBase
+#pragma warning restore S6960
 {
     private readonly IValidator<CreateServicoRequest> _createValidator;
     private readonly IValidator<UpdateServicoRequest> _updateValidator;

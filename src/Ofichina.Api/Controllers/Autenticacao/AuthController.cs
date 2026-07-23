@@ -11,7 +11,9 @@ namespace Ofichina.Api.Controllers.Autenticacao;
 
 [ApiController]
 [Route("api/auth")]
+#pragma warning disable S6960
 public sealed class AuthController : ControllerBase
+#pragma warning restore S6960
 {
     private readonly IValidator<AutenticacaoRequest> _loginValidator;
     private readonly IValidator<CadastrarUsuarioRequest> _registerValidator;

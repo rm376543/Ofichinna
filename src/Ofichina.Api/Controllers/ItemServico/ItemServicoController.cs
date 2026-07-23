@@ -15,7 +15,7 @@ namespace Ofichina.Api.Controllers.ItensServico;
 /// </summary>
 [Authorize]
 [ApiController]
-[Route("api/itens-servico")]
+[Route("api/item-servico")]
 #pragma warning disable S6960
 public sealed class ItemServicoController : ControllerBase
 #pragma warning restore S6960
@@ -161,8 +161,6 @@ public sealed class ItemServicoController : ControllerBase
     /// <summary>
     /// Atualiza um item de serviço vinculado à ordem de serviço.
     /// </summary>
-    /// <param name="ordemServicoId">Identificador da ordem de serviço.</param>
-    /// <param name="id">Identificador do item de serviço.</param>
     /// <param name="request">Dados atualizados do item de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso, erro de validação ou item não encontrado.</returns>
@@ -204,11 +202,13 @@ public sealed class ItemServicoController : ControllerBase
         if (!result.IsSuccess)
         {
             _logger.LogWarning("Falha ao atualizar item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erro: {Erro}", request.OrdemServicoId, request.ItemServicoId, result.Error);
+#pragma warning disable S3358
             return result.Error == "Ordem de serviço não encontrada." || result.Error == "Item de serviço não encontrado." || result.Error == "Peça de serviço não encontrada."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
                 : result.Error == "Remova ou desative as peças do serviço atual antes de alterar o serviço do item."
                     ? Conflict(ApiResponse.FailureResponse(result.Error))
                 : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o item de serviço."));
+#pragma warning restore S3358
         }
 
         return Ok(ApiResponse.SuccessResponse("Item de serviço atualizado com sucesso."));

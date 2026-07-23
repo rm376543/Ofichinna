@@ -16,7 +16,7 @@ namespace Ofichina.Api.Controllers.OrdensServico;
 /// </summary>
 [Authorize]
 [ApiController]
-[Route("api/ordens-servico")]
+[Route("api/ordem-servico")]
 #pragma warning disable S6960
 public sealed class OrdemServicoController : ControllerBase
 #pragma warning restore S6960

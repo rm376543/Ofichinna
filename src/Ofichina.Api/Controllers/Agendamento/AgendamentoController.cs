@@ -12,7 +12,7 @@ namespace Ofichina.Api.Controllers.Agendamento;
 
 [Authorize]
 [ApiController]
-[Route("api/agendamentos")]
+[Route("api/agendamento")]
 public sealed class AgendamentoController : ControllerBase
 {
     private readonly IValidator<CreateAgendamentoRequest> _validator;
