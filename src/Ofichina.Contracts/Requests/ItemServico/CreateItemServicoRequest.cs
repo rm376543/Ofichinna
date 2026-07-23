@@ -1,4 +1,4 @@
-namespace Ofichina.Contracts.Requests.ItemServico;
+namespace Ofichina.Contracts.Requests.ItensServico;
 
 /// <summary>
 /// Dados necessários para criação de um item de serviço na ordem de serviço.
@@ -11,7 +11,16 @@ public sealed class CreateItemServicoRequest : CreateRequest
     public Guid OrdemServicoId { get; init; }
 
     /// <summary>
-    /// Identificador da peça vinculada ao serviço.
+    /// Peças vinculadas ao item.
     /// </summary>
-    public Guid PecaServicoId { get; init; }
+    public IReadOnlyCollection<CreateItemServicoPecaRequest> Pecas { get; init; } = [];
+}
+
+/// <summary>
+/// Peça vinculada ao item de serviço.
+/// </summary>
+public sealed class CreateItemServicoPecaRequest
+{
+    public Guid ServicoPecaId { get; init; }
+    public int Quantidade { get; init; }
 }

@@ -1,7 +1,7 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
 
-namespace Ofichina.Application.UseCases.ItemServico.Commands;
+namespace Ofichina.Application.UseCases.ItensServico.Commands;
 
 /// <summary>
 /// Comando para remoção de um item de serviço de uma ordem de serviço.

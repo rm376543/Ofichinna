@@ -1,4 +1,4 @@
-﻿namespace Ofichina.Contracts.Requests.ItemServico
+﻿namespace Ofichina.Contracts.Requests.ItensServico
 {
     /// <summary>
     /// Dados necessários para exclusão de um item de serviço na ordem de serviço.

@@ -1,14 +1,13 @@
 using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.UseCases.OrdensServico.Peca.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Common;
-using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Application.Abstractions.Interfaces;
-using DomainPeca = Ofichina.Domain.Entities.Peca;
+using Ofichina.Application.UseCases.OrdensServico.Commands;
+using Ofichina.Domain.Entities;
 
-namespace Ofichina.Application.UseCases.OrdensServico.Peca.Handlers;
+namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 
 /// <summary>
 /// Handler para utilização de peça vinculada a um serviço da ordem de serviço.
@@ -16,13 +15,13 @@ namespace Ofichina.Application.UseCases.OrdensServico.Peca.Handlers;
 public sealed class UtilizarPecaCommandHandler : ICommandHandler<UtilizarPecaCommand, Result>
 {
     private readonly IOrdemServicoRepository _ordemServicoRepository;
-    private readonly IRepository<DomainPeca> _pecaRepository;
+    private readonly IRepository<Peca> _pecaRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UtilizarPecaCommandHandler> _logger;
 
     public UtilizarPecaCommandHandler(
         IOrdemServicoRepository ordemServicoRepository,
-        IRepository<DomainPeca> pecaRepository,
+        IRepository<Peca> pecaRepository,
         IUnitOfWork unitOfWork,
         ILogger<UtilizarPecaCommandHandler> logger)
     {

@@ -1,7 +1,7 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
 
-namespace Ofichina.Application.UseCases.OrdensServico.Peca.Commands;
+namespace Ofichina.Application.UseCases.OrdensServico.Commands;
 
 /// <summary>
 /// Comando para marcar uma peça vinculada ao serviço como utilizada na ordem de serviço.

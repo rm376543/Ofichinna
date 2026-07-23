@@ -1,8 +1,8 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses.OrdemServico;
+using Ofichina.Contracts.Responses.ItensServico;
 
-namespace Ofichina.Application.UseCases.ItemServico.Queries;
+namespace Ofichina.Application.UseCases.ItensServico.Queries;
 
 /// <summary>
 /// Query para obter um item de serviço por identificador.

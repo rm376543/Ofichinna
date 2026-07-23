@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Contracts.Enums;
-using Ofichina.Contracts.Requests.OrdemServico;
+using Ofichina.Contracts.Requests.OrdensServico;
 using Ofichina.Contracts.Responses;
-using Ofichina.Contracts.Responses.OrdemServico;
+using Ofichina.Contracts.Responses.OrdensServico;
 
-namespace Ofichina.Api.Controllers.OrdemServico;
+namespace Ofichina.Api.Controllers.OrdensServico;
 
 /// <summary>
 /// Controller responsável pelo CRUD de ordens de serviço e pelas transições de status.

@@ -8,7 +8,7 @@ using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Servicos;
 using Ofichina.Application.UseCases.ServicosPecas.Commands;
 
-namespace Ofichina.IntegrationTests.Api.Controllers.Servicos.Pecas;
+namespace Ofichina.IntegrationTests.Ofichina.Api.ServicosPecas;
 
 public sealed class ServicoPecaControllerTests
 {

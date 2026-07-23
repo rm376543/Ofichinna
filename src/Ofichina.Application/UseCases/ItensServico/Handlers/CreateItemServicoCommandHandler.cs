@@ -5,10 +5,10 @@ using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.Common;
 using Ofichina.Application.Abstractions.Interfaces;
-using Ofichina.Application.UseCases.ItemServico.Commands;
+using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Domain.Enums;
 
-namespace Ofichina.Application.UseCases.ItemServico.Handlers;
+namespace Ofichina.Application.UseCases.ItensServico.Handlers;
 
 /// <summary>
 /// Handler para criacao de item de servico.
@@ -17,14 +17,14 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
 {
     private readonly IOrdemServicoRepository _ordemServicoRepository;
     private readonly IItemServicoRepository _itemServicoRepository;
-    private readonly IRepository<PecaServico> _pecaServicoRepository;
+    private readonly IRepository<ServicoPeca> _pecaServicoRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateItemServicoCommandHandler> _logger;
 
     public CreateItemServicoCommandHandler(
         IOrdemServicoRepository ordemServicoRepository,
         IItemServicoRepository itemServicoRepository,
-        IRepository<PecaServico> pecaServicoRepository,
+        IRepository<ServicoPeca> pecaServicoRepository,
         IUnitOfWork unitOfWork,
         ILogger<CreateItemServicoCommandHandler> logger)
     {
@@ -39,7 +39,7 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
     {
         try
         {
-            _logger.LogInformation("Iniciando criação de item de serviço. OrdemServicoId: {OrdemServicoId}, PecaServicoId: {PecaServicoId}.", command.OrdemServicoId, command.PecaServicoId);
+            _logger.LogInformation("Iniciando criação de item de serviço. OrdemServicoId: {OrdemServicoId}.", command.OrdemServicoId);
 
             var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.OrdemServicoId, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
@@ -48,25 +48,39 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
             if (ordemServico.Status != StatusOrdemServico.Recebida && ordemServico.Status != StatusOrdemServico.EmDiagnostico)
                 return Result.Failure<Guid>("Não é possível alterar itens nesta etapa da OS.");
 
-            var pecaServico = await _pecaServicoRepository.GetByIdAsync(command.PecaServicoId, cancellationToken, tracking: true);
-            if (pecaServico is null || pecaServico.EstaExcluida())
-                return Result.Failure<Guid>("Peça de serviço não encontrada.");
+            var pecas = new List<ServicoPeca>();
+            foreach (var pecaCommand in command.Pecas)
+            {
+                var pecaServico = await _pecaServicoRepository.GetByIdAsync(pecaCommand.ServicoPecaId, cancellationToken, tracking: true);
+                if (pecaServico is null || pecaServico.EstaExcluida())
+                    return Result.Failure<Guid>("Peça de serviço não encontrada.");
 
-            var item = await _itemServicoRepository.AdicionarAsync(command.OrdemServicoId, pecaServico.Id, cancellationToken);
+                pecas.Add(pecaServico);
+            }
+
+            var item = new ItemServico(command.OrdemServicoId);
+            foreach (var pecaCommand in command.Pecas)
+            {
+                var peca = pecas.First(x => x.Id == pecaCommand.ServicoPecaId);
+                var quantidade = pecaCommand.Quantidade;
+                item.AdicionarPeca(peca, quantidade);
+            }
+
+            await _itemServicoRepository.AddAsync(item, cancellationToken);
 
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation("Item de serviço criado com sucesso. OrdemServicoId: {OrdemServicoId}, PecaServicoId: {PecaServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.PecaServicoId, item.Id);
+            _logger.LogInformation("Item de serviço criado com sucesso. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, item.Id);
             return Result.Success(item.Id);
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domínio ao criar item de serviço. OrdemServicoId: {OrdemServicoId}, PecaServicoId: {PecaServicoId}.", command.OrdemServicoId, command.PecaServicoId);
+            _logger.LogWarning(ex, "Erro de domínio ao criar item de serviço. OrdemServicoId: {OrdemServicoId}.", command.OrdemServicoId);
             return Result.Failure<Guid>(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao criar item de serviço. OrdemServicoId: {OrdemServicoId}, PecaServicoId: {PecaServicoId}.", command.OrdemServicoId, command.PecaServicoId);
+            _logger.LogError(ex, "Erro inesperado ao criar item de serviço. OrdemServicoId: {OrdemServicoId}.", command.OrdemServicoId);
             return Result.Failure<Guid>("Não foi possível criar o item de serviço.");
         }
     }

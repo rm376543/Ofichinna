@@ -1,4 +1,6 @@
-namespace Ofichina.Contracts.Responses.OrdemServico;
+using Ofichina.Contracts.Responses.OrdensServico;
+
+namespace Ofichina.Contracts.Responses.ItensServico;
 
 /// <summary>
 /// Resposta com os dados de um item de serviço vinculado à ordem de serviço.

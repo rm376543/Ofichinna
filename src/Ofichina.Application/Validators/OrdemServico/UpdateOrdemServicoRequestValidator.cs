@@ -1,7 +1,7 @@
 using FluentValidation;
-using Ofichina.Contracts.Requests.OrdemServico;
+using Ofichina.Contracts.Requests.OrdensServico;
 
-namespace Ofichina.Application.Validators.OrdemServico;
+namespace Ofichina.Application.Validators.OrdensServico;
 
 /// <summary>
 /// Validador para atualização de ordem de serviço.

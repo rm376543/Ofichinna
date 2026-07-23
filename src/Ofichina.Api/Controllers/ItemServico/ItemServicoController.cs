@@ -2,13 +2,13 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Ofichina.Application.UseCases.ItemServico.Commands;
-using Ofichina.Application.UseCases.ItemServico.Queries;
-using Ofichina.Contracts.Requests.ItemServico;
+using Ofichina.Application.UseCases.ItensServico.Commands;
+using Ofichina.Application.UseCases.ItensServico.Queries;
+using Ofichina.Contracts.Requests.ItensServico;
 using Ofichina.Contracts.Responses;
-using Ofichina.Contracts.Responses.OrdemServico;
+using Ofichina.Contracts.Responses.ItensServico;
 
-namespace Ofichina.Api.Controllers.ItemServico;
+namespace Ofichina.Api.Controllers.ItensServico;
 
 /// <summary>
 /// Controller responsável pelo CRUD de itens de serviço vinculados à ordem de serviço.
@@ -44,7 +44,7 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de itens de serviço da ordem.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet("buscarItensServico")]
+    [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<ItemServicoResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -77,7 +77,7 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Item de serviço encontrado ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet("buscarItensServicoPorId")]
+    [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<ItemServicoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -128,7 +128,7 @@ public sealed class ItemServicoController : ControllerBase
         CreateItemServicoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a criação de item de serviço. OrdemServicoId: {OrdemServicoId}, PecaServicoId: {PecaServicoId}.", request.OrdemServicoId, request.PecaServicoId);
+        _logger.LogInformation("Iniciando a criação de item de serviço. OrdemServicoId: {OrdemServicoId}.", request.OrdemServicoId);
 
         var validation = await _createValidator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
@@ -140,12 +140,16 @@ public sealed class ItemServicoController : ControllerBase
         var result = await _mediator.Send(new CreateItemServicoCommand
         {
             OrdemServicoId = request.OrdemServicoId,
-            PecaServicoId = request.PecaServicoId
+            Pecas = request.Pecas.Select(x => new CreateItemServicoPecaCommand
+            {
+                ServicoPecaId = x.ServicoPecaId,
+                Quantidade = x.Quantidade
+            }).ToList()
         }, cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Falha ao criar item de serviço. OrdemServicoId: {OrdemServicoId}, PecaServicoId: {PecaServicoId}. Erro: {Erro}", request.OrdemServicoId, request.PecaServicoId, result.Error);
+            _logger.LogWarning("Falha ao criar item de serviço. OrdemServicoId: {OrdemServicoId}. Erro: {Erro}", request.OrdemServicoId, result.Error);
             return result.Error == "Ordem de serviço não encontrada." || result.Error == "Peça de serviço não encontrada."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
                 : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o item de serviço."));
@@ -163,7 +167,7 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso, erro de validação ou item não encontrado.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut("atualizaItemServicoPorId")]
+    [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -190,7 +194,11 @@ public sealed class ItemServicoController : ControllerBase
         {
             OrdemServicoId = request.OrdemServicoId,
             Id = request.ItemServicoId,
-            PecaServicoId = request.PecaServicoId
+            Pecas = request.Pecas.Select(x => new UpdateItemServicoPecaCommand
+            {
+                ServicoPecaId = x.PecaServicoId,
+                Quantidade = x.Quantidade
+            }).ToList()
         }, cancellationToken);
 
         if (!result.IsSuccess)
@@ -213,7 +221,7 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpDelete("remover-item-servico")]
+    [HttpDelete("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]

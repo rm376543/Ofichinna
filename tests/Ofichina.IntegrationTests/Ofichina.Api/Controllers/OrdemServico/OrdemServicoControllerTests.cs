@@ -3,15 +3,13 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
-using Ofichina.Api.Controllers.OrdemServico;
+using Ofichina.Api.Controllers.OrdensServico;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
-using Ofichina.Application.Validators.OrdemServico;
+using Ofichina.Application.Validators.OrdensServico;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Enums;
-using Ofichina.Contracts.Requests.OrdemServico;
-using Ofichina.Contracts.Responses.OrdemServico;
+using Ofichina.Contracts.Requests.OrdensServico;
 
-namespace Ofichina.IntegrationTests.Api.Controllers.OrdemServico;
+namespace Ofichina.IntegrationTests.Api.Controllers.OrdensServico;
 
 public sealed class OrdemServicoControllerTests
 {

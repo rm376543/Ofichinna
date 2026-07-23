@@ -1,6 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses.OrdemServico;
+using Ofichina.Contracts.Responses.OrdensServico;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Queries;
 

@@ -34,10 +34,8 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
         if (includeRelacionados)
         {
             query = query
-                .Include(x => x.PecaServico)
-                    .ThenInclude(ps => ps.Peca)
-                .Include(x => x.PecaServico)
-                    .ThenInclude(ps => ps.Servico);
+                .Include(x => x.Pecas)
+                    .ThenInclude(x => x.Peca);
         }
 
         return await query.FirstOrDefaultAsync(
@@ -45,20 +43,14 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
             cancellationToken);
     }
 
-    public async Task<ItemServico?> GetByOrdemServicoIdAndPecaServicoIdAsync(
+    public async Task<ItemServico?> GetByOrdemServicoIdAndServicoPecaIdAsync(
         Guid ordemServicoId,
         Guid pecaServicoId,
         CancellationToken cancellationToken = default,
         bool tracking = false)
     {
-        IQueryable<ItemServico> query = _context.Set<ItemServico>();
-
-        if (!tracking)
-            query = query.AsNoTracking();
-
-        return await query.FirstOrDefaultAsync(
-            x => x.OrdemServicoId == ordemServicoId && x.PecaServicoId == pecaServicoId,
-            cancellationToken);
+        // Método obsoleto - manter para compatibilidade mas retornar null pois não há mais ServicoPecaId único
+        return null;
     }
 
     public async Task<IReadOnlyCollection<ItemServico>> GetByOrdemServicoIdAsync(
@@ -75,10 +67,8 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
         if (includeRelacionados)
         {
             query = query
-                .Include(x => x.PecaServico)
-                    .ThenInclude(ps => ps.Peca)
-                .Include(x => x.PecaServico)
-                    .ThenInclude(ps => ps.Servico);
+                .Include(x => x.Pecas)
+                    .ThenInclude(x => x.Peca);
         }
 
         return await query
@@ -91,12 +81,8 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
         Guid pecaServicoId,
         CancellationToken cancellationToken = default)
     {
-        var existente = await GetByOrdemServicoIdAndPecaServicoIdAsync(ordemServicoId, pecaServicoId, cancellationToken, tracking: true);
-
-        if (existente is not null && !existente.EstaExcluida())
-            throw new DomainException("A peça de serviço já foi adicionada à ordem de serviço.");
-
-        var item = ItemServico.Criar(ordemServicoId, pecaServicoId);
+        // Método obsoleto - criar item vazio e deixar handler adicionar peças
+        var item = ItemServico.Criar(ordemServicoId);
         await AddAsync(item, cancellationToken);
 
         return item;

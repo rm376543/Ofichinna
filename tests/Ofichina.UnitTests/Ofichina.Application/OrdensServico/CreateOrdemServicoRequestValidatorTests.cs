@@ -1,7 +1,7 @@
-using Ofichina.Application.Validators.OrdemServico;
-using Ofichina.Contracts.Requests.OrdemServico;
+using Ofichina.Application.Validators.OrdensServico;
+using Ofichina.Contracts.Requests.OrdensServico;
 
-namespace Ofichina.UnitTests.Application.OrdemServico;
+namespace Ofichina.UnitTests.Application.OrdensServico;
 
 public sealed class CreateOrdemServicoRequestValidatorTests
 {

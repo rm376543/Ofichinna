@@ -5,13 +5,13 @@ using Ofichina.Domain.Entities;
 namespace Ofichina.Infrastructure.Persistence.Configurations;
 
 /// <summary>
-/// Configuração EF Core para a entidade <see cref="PecaServico"/>.
+/// Configuração EF Core para a entidade <see cref="ServicoPeca"/>.
 /// </summary>
-public sealed class PecaServicoConfiguration : IEntityTypeConfiguration<PecaServico>
+public sealed class ServicoPecaConfiguration : IEntityTypeConfiguration<ServicoPeca>
 {
-    public void Configure(EntityTypeBuilder<PecaServico> builder)
+    public void Configure(EntityTypeBuilder<ServicoPeca> builder)
     {
-        builder.ToTable("PecaServico");
+        builder.ToTable("ServicosPecas");
 
         builder.HasKey(x => x.Id);
 
@@ -20,6 +20,9 @@ public sealed class PecaServicoConfiguration : IEntityTypeConfiguration<PecaServ
 
         builder.Property(x => x.ServicoId)
             .IsRequired();
+
+        builder.Property(x => x.ItemServicoId)
+            .IsRequired(false);
 
         builder.Property(x => x.Quantidade)
             .IsRequired();
@@ -36,6 +39,8 @@ public sealed class PecaServicoConfiguration : IEntityTypeConfiguration<PecaServ
         builder.HasIndex(x => x.ServicoId);
 
         builder.HasIndex(x => x.PecaId);
+
+        builder.HasIndex(x => x.ItemServicoId);
 
         builder.HasOne(x => x.Peca)
             .WithMany()

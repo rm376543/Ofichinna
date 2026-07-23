@@ -1,14 +1,15 @@
 using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses.OrdemServico;
+using Ofichina.Contracts.Responses.OrdensServico;
 using Ofichina.Application.Abstractions.Interfaces;
-using Ofichina.Application.UseCases.ItemServico.Queries;
+using Ofichina.Application.UseCases.ItensServico.Queries;
+using Ofichina.Contracts.Responses.ItensServico;
 
-namespace Ofichina.Application.UseCases.ItemServico.Handlers;
+namespace Ofichina.Application.UseCases.ItensServico.Handlers;
 
 /// <summary>
-/// Handler para obter um item de servico por identificador.
+/// Handler para obter um item de serviço por identificador.
 /// </summary>
 public sealed class GetItemServicoByIdQueryHandler : IQueryHandler<GetItemServicoByIdQuery, Result<ItemServicoResponse>>
 {
@@ -49,19 +50,15 @@ public sealed class GetItemServicoByIdQueryHandler : IQueryHandler<GetItemServic
 
     private static ItemServicoResponse Mapear(Domain.Entities.ItemServico item)
     {
-        var pecaServico = item.PecaServico;
-        var servico = pecaServico?.Servico;
-
         return new ItemServicoResponse
         {
             Id = item.Id,
-            ServicoId = item.PecaServicoId,
+            ServicoId = Guid.Empty,  // Não há mais vínculo direto com serviço
             OrdemServicoId = item.OrdemServicoId,
-            Descricao = pecaServico?.Peca?.Nome ?? string.Empty,
-            Valor = pecaServico?.Peca?.Valor ?? 0,
+            Descricao = item.Descricao,
+            Valor = item.Valor,
             ValorTotal = item.ValorTotal,
-            Pecas = servico?.Pecas
-                .Where(peca => !peca.EstaExcluida())
+            Pecas = item.Pecas
                 .Select(peca => new OrdemServicoPecaResponse
                 {
                     Id = peca.Id,
@@ -73,12 +70,9 @@ public sealed class GetItemServicoByIdQueryHandler : IQueryHandler<GetItemServic
                     ValorUnitario = peca.Peca?.Valor ?? 0,
                     ValorTotal = peca.ValorTotal,
                     Utilizada = peca.Utilizada,
-                    DataUtilizacao = peca.DataUtilizacao,
-                    CreatedAt = peca.CreatedAt,
-                    UpdatedAt = peca.UpdatedAt,
-                    DeletedAt = peca.DeletedAt
+                    DataUtilizacao = peca.DataUtilizacao
                 })
-                .ToList() ?? [],
+                .ToList(),
             CreatedAt = item.CreatedAt,
             UpdatedAt = item.UpdatedAt,
             DeletedAt = item.DeletedAt

@@ -83,17 +83,18 @@ public sealed class ServicosPecasController : ControllerBase
         [FromRoute] Guid pecaServicoId,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a desativação da peça do serviço. ServicoId: {ServicoId}, PecaServicoId: {PecaServicoId}.", servicoId, pecaServicoId);
+        _logger.LogInformation("Iniciando a desativação da peça do serviço. ServicoId: {ServicoId}, ServicoPecaId: {ServicoPecaId}.", servicoId, pecaServicoId);
 
         var result = await _mediator.Send(new DeleteServicoPecaCommand
         {
             ServicoId = servicoId,
-            PecaServicoId = pecaServicoId
+            ServicoPecaId = pecaServicoId
+
         }, cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Falha ao desativar peça do serviço. ServicoId: {ServicoId}, PecaServicoId: {PecaServicoId}. Erro: {Erro}", servicoId, pecaServicoId, result.Error);
+            _logger.LogWarning("Falha ao desativar peça do serviço. ServicoId: {ServicoId}, ServicoPecaId: {ServicoPecaId}. Erro: {Erro}", servicoId, pecaServicoId, result.Error);
             return MapError(result.Error, "Não foi possível desativar a peça do serviço.");
         }
 

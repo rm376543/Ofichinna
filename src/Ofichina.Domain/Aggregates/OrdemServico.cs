@@ -229,16 +229,11 @@ public class OrdemServico : Entity
     /// <summary>
     /// Adiciona um serviço na ordem de serviço.
     /// </summary>
-    public ItemServico AdicionarServico(
-        Guid pecaServicoId)
+    public ItemServico AdicionarServico()
     {
         ValidarAlteracaoItens();
 
-        if (_servicos.Any(x => x.PecaServicoId == pecaServicoId && !x.EstaExcluida()))
-            throw new DomainException("A peça de serviço já foi adicionada à ordem de serviço.");
-
-        var item = new ItemServico(Id, pecaServicoId);
-
+        var item = new ItemServico(Id);
 
         _servicos.Add(item);
 
@@ -253,7 +248,8 @@ public class OrdemServico : Entity
     /// </summary>
     public void AtualizarServico(
         Guid itemServicoId,
-        Guid pecaServicoId)
+        Guid pecaId,
+        int quantidade)
     {
         ValidarAlteracaoItens();
 
@@ -270,7 +266,16 @@ public class OrdemServico : Entity
                 "Serviço não encontrado.");
 
 
-        item.AtualizarDados(pecaServicoId);
+        // Para manter compatibilidade, assume que já existe uma peça e atualiza a primeira
+        var pecaExistente = item.Pecas.FirstOrDefault();
+        if (pecaExistente is not null)
+        {
+            item.AtualizarPeca(pecaExistente.Id, pecaId, quantidade);
+        }
+        else
+        {
+            item.AdicionarPeca(pecaId, quantidade);
+        }
 
         AtualizarDataModificacao();
     }
@@ -311,6 +316,7 @@ public class OrdemServico : Entity
     }
 
 
+
     /// <summary>
     /// Adiciona uma peça a um serviço da ordem de serviço.
     /// </summary>
@@ -326,13 +332,11 @@ public class OrdemServico : Entity
         if (servico is null)
             throw new DomainException("Serviço não encontrado.");
 
-        if (servico.PecaServico is null)
-            throw new DomainException("Peça de serviço não encontrada.");
-
-        servico.PecaServico.AtualizarDados(pecaId, quantidade);
+        servico.AdicionarPeca(pecaId, quantidade);
 
         AtualizarDataModificacao();
     }
+
 
 
     /// <summary>
@@ -347,16 +351,11 @@ public class OrdemServico : Entity
         if (servico is null)
             throw new DomainException("Serviço não encontrado.");
 
-        if (servico.PecaServico is null)
-            throw new DomainException("Peça de serviço não encontrada.");
-
-        if (servico.PecaServicoId != itemPecaId)
-            throw new DomainException("Peça de serviço não encontrada.");
-
-        servico.Excluir();
+        servico.RemoverPeca(itemPecaId);
 
         AtualizarDataModificacao();
     }
+
 
 
     /// <summary>
@@ -373,13 +372,7 @@ public class OrdemServico : Entity
         if (servico is null)
             throw new DomainException("Serviço não encontrado.");
 
-        if (servico.PecaServico is null)
-            throw new DomainException("Peça de serviço não encontrada.");
-
-        if (servico.PecaServicoId != itemPecaId)
-            throw new DomainException("Peça de serviço não encontrada.");
-
-        servico.PecaServico.MarcarComoUtilizada();
+        servico.UtilizarPeca(itemPecaId);
 
         AtualizarDataModificacao();
     }
