@@ -7,7 +7,7 @@ namespace Ofichina.Domain.Entities;
 /// </summary>
 public class Servico : Entity
 {
-    private readonly List<PecaServico> _pecas = [];
+    private readonly List<ServicoPeca> _pecas = [];
 
     /// <summary>
     /// Nome do serviço.
@@ -27,7 +27,7 @@ public class Servico : Entity
     /// <summary>
     /// Peças vinculadas ao serviço.
     /// </summary>
-    public IReadOnlyCollection<PecaServico> Pecas => _pecas.AsReadOnly();
+    public IReadOnlyCollection<ServicoPeca> Pecas => _pecas.AsReadOnly();
 
     private Servico()
     {
@@ -111,7 +111,7 @@ public class Servico : Entity
         if (_pecas.Any(x => x.PecaId == pecaId && !x.EstaExcluida()))
             throw new DomainException("A peça já foi adicionada ao serviço.");
 
-        _pecas.Add(new PecaServico(Id, pecaId, quantidade));
+        _pecas.Add(new ServicoPeca(Id, pecaId, quantidade));
         AtualizarDataModificacao();
     }
 
@@ -188,7 +188,7 @@ public class Servico : Entity
     /// <summary>
     /// Obtém uma peça vinculada ao serviço.
     /// </summary>
-    public PecaServico? ObterPeca(Guid pecaServicoId)
+    public ServicoPeca? ObterPeca(Guid pecaServicoId)
     {
         return _pecas.FirstOrDefault(x => x.Id == pecaServicoId);
     }

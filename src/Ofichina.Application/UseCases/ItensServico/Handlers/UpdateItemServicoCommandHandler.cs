@@ -1,14 +1,14 @@
 using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Interfaces;
-using Ofichina.Application.UseCases.ItemServico.Commands;
+using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 
-namespace Ofichina.Application.UseCases.ItemServico.Handlers;
+namespace Ofichina.Application.UseCases.ItensServico.Handlers;
 
 /// <summary>
 /// Handler para atualizacao de item de servico.
@@ -17,14 +17,14 @@ public sealed class UpdateItemServicoCommandHandler : ICommandHandler<UpdateItem
 {
     private readonly IOrdemServicoRepository _ordemServicoRepository;
     private readonly IItemServicoRepository _itemServicoRepository;
-    private readonly IRepository<PecaServico> _pecaServicoRepository;
+    private readonly IRepository<ServicoPeca> _pecaServicoRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UpdateItemServicoCommandHandler> _logger;
 
     public UpdateItemServicoCommandHandler(
         IOrdemServicoRepository ordemServicoRepository,
         IItemServicoRepository itemServicoRepository,
-        IRepository<PecaServico> pecaServicoRepository,
+        IRepository<ServicoPeca> pecaServicoRepository,
         IUnitOfWork unitOfWork,
         ILogger<UpdateItemServicoCommandHandler> logger)
     {
@@ -39,7 +39,7 @@ public sealed class UpdateItemServicoCommandHandler : ICommandHandler<UpdateItem
     {
         try
         {
-            _logger.LogInformation("Iniciando atualização de item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}, PecaServicoId: {PecaServicoId}.", command.OrdemServicoId, command.Id, command.PecaServicoId);
+            _logger.LogInformation("Iniciando atualização de item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.Id);
 
             var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.OrdemServicoId, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
@@ -52,32 +52,31 @@ public sealed class UpdateItemServicoCommandHandler : ICommandHandler<UpdateItem
             if (item is null || item.EstaExcluida())
                 return Result.Failure("Item de serviço não encontrado.");
 
-            var pecaServicoAtual = item.PecaServico;
-            if (pecaServicoAtual is null || pecaServicoAtual.EstaExcluida())
-                return Result.Failure("Peça de serviço não encontrada.");
+            List<ServicoPeca> novasPecas = new();
+            foreach (var pecaCommand in command.Pecas)
+            {
+                ServicoPeca? pecaServico = await _pecaServicoRepository.GetByIdAsync(pecaCommand.ServicoPecaId, cancellationToken, tracking: true);
+                if (pecaServico is null || pecaServico.EstaExcluida())
+                    return Result.Failure("Peça de serviço não encontrada.");
 
-            if (command.PecaServicoId == item.PecaServicoId)
-                return Result.Success();
+                novasPecas.Add(pecaServico);
+            }
 
-            var novaPecaServico = await _pecaServicoRepository.GetByIdAsync(command.PecaServicoId, cancellationToken, tracking: true);
-            if (novaPecaServico is null || novaPecaServico.EstaExcluida())
-                return Result.Failure("Peça de serviço não encontrada.");
-
-            item.AtualizarServico(novaPecaServico.Id);
+            item.SubstituirPecas(novasPecas);
 
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation("Item de serviço atualizado com sucesso. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}, PecaServicoId: {PecaServicoId}.", command.OrdemServicoId, command.Id, command.PecaServicoId);
+            _logger.LogInformation("Item de serviço atualizado com sucesso. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.Id);
             return Result.Success();
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domínio ao atualizar item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}, PecaServicoId: {PecaServicoId}.", command.OrdemServicoId, command.Id, command.PecaServicoId);
+            _logger.LogWarning(ex, "Erro de domínio ao atualizar item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.Id);
             return Result.Failure(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao atualizar item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}, PecaServicoId: {PecaServicoId}.", command.OrdemServicoId, command.Id, command.PecaServicoId);
+            _logger.LogError(ex, "Erro inesperado ao atualizar item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.Id);
             return Result.Failure("Não foi possível atualizar o item de serviço.");
         }
     }

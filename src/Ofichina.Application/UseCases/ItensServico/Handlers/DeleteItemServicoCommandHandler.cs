@@ -4,10 +4,10 @@ using Ofichina.Contracts.Common;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Domain.Common;
-using Ofichina.Application.UseCases.ItemServico.Commands;
+using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Domain.Enums;
 
-namespace Ofichina.Application.UseCases.ItemServico.Handlers;
+namespace Ofichina.Application.UseCases.ItensServico.Handlers;
 
 /// <summary>
 /// Handler para remocao logica de item de servico.

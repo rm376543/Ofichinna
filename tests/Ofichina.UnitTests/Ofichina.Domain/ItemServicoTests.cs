@@ -11,13 +11,11 @@ public sealed class ItemServicoTests
     public void Deve_Criar_ItemServico_Com_Vinculo_Informado()
     {
         var ordemServico = CriarOrdemServico();
-        var pecaServicoId = Guid.NewGuid();
 
-        var itemServico = ordemServico.AdicionarServico(pecaServicoId);
+        var itemServico = ordemServico.AdicionarServico();
 
         Assert.NotEqual(Guid.Empty, itemServico.Id);
-        Assert.Equal(pecaServicoId, itemServico.PecaServicoId);
-        Assert.Equal(pecaServicoId, itemServico.ServicoId);
+        Assert.Equal(Guid.Empty, itemServico.ServicoId);
         Assert.Equal(ordemServico.Id, itemServico.OrdemServicoId);
         Assert.Equal(string.Empty, itemServico.Descricao);
         Assert.Equal(0m, itemServico.Valor);
@@ -30,11 +28,10 @@ public sealed class ItemServicoTests
     public void Deve_Atualizar_Timestamp_Ao_Adicionar_Peca()
     {
         var ordemServico = CriarOrdemServico();
-        var itemServico = ordemServico.AdicionarServico(Guid.NewGuid());
-        var pecaServico = CriarPecaServico(Guid.NewGuid(), Guid.NewGuid(), 1, "Filtro de óleo", 25m);
-        DefinirPecaServico(itemServico, pecaServico);
+        var itemServico = ordemServico.AdicionarServico();
+        var pecaServico = CriarServicoPeca(Guid.NewGuid(), Guid.NewGuid(), 1, "Filtro de óleo", 25m);
 
-        itemServico.AdicionarPeca(pecaServico.PecaId, 2);
+        itemServico.AdicionarPeca(pecaServico, 2);
 
         Assert.NotNull(itemServico.UpdatedAt);
         Assert.Single(itemServico.Pecas);
@@ -42,16 +39,17 @@ public sealed class ItemServicoTests
     }
 
     [Fact]
-    public void Deve_Atualizar_Vinculo_Da_PecaServico()
+    public void Deve_Atualizar_Vinculo_Da_ServicoPeca()
     {
         var ordemServico = CriarOrdemServico();
-        var itemServico = ordemServico.AdicionarServico(Guid.NewGuid());
+        var itemServico = ordemServico.AdicionarServico();
 
-        var novoPecaServicoId = Guid.NewGuid();
+        var servicoPeca = CriarServicoPeca(Guid.NewGuid(), Guid.NewGuid(), 1, "Filtro", 20m);
+        itemServico.AdicionarPeca(servicoPeca, 1);
 
-        itemServico.AtualizarServico(novoPecaServicoId);
+        itemServico.AtualizarServico(servicoPeca.Id);
 
-        Assert.Equal(novoPecaServicoId, itemServico.PecaServicoId);
+        Assert.Equal(servicoPeca.Id, itemServico.ServicoPecaId);
         Assert.NotNull(itemServico.UpdatedAt);
     }
 
@@ -59,12 +57,12 @@ public sealed class ItemServicoTests
     public void Deve_Impedir_Alteracao_De_Item_Excluido()
     {
         var ordemServico = CriarOrdemServico();
-        var itemServico = ordemServico.AdicionarServico(Guid.NewGuid());
+        var itemServico = ordemServico.AdicionarServico();
 
         itemServico.Excluir();
 
         var exception = Assert.Throws<DomainException>(() =>
-            itemServico.AtualizarDados(Guid.NewGuid()));
+        itemServico.AtualizarServico(Guid.NewGuid()));
 
         Assert.Equal("Não é possível alterar um item de serviço removido.", exception.Message);
     }
@@ -73,9 +71,8 @@ public sealed class ItemServicoTests
     public void Deve_Remover_Item_Ao_Remover_Peca()
     {
         var ordemServico = CriarOrdemServico();
-        var itemServico = ordemServico.AdicionarServico(Guid.NewGuid());
-        var pecaServico = CriarPecaServico(Guid.NewGuid(), Guid.NewGuid(), 1, "Velas", 40m);
-        DefinirPecaServico(itemServico, pecaServico);
+        var itemServico = ordemServico.AdicionarServico();
+        var pecaServico = CriarServicoPeca(Guid.NewGuid(), Guid.NewGuid(), 1, "Velas", 40m);
 
         itemServico.RemoverPeca(pecaServico.Id);
 
@@ -93,10 +90,10 @@ public sealed class ItemServicoTests
             null);
     }
 
-    private static PecaServico CriarPecaServico(Guid servicoId, Guid pecaId, int quantidade, string nomePeca, decimal valorPeca)
+    private static ServicoPeca CriarServicoPeca(Guid servicoId, Guid pecaId, int quantidade, string nomePeca, decimal valorPeca)
     {
-        var pecaServico = (PecaServico)Activator.CreateInstance(
-            typeof(PecaServico),
+        var pecaServico = (ServicoPeca)Activator.CreateInstance(
+            typeof(ServicoPeca),
             BindingFlags.Instance | BindingFlags.NonPublic,
             binder: null,
             args: [servicoId, pecaId, quantidade],
@@ -106,17 +103,10 @@ public sealed class ItemServicoTests
         return pecaServico;
     }
 
-    private static void DefinirPecaServico(ItemServico itemServico, PecaServico pecaServico)
+    private static void DefinirPeca(ServicoPeca pecaServico, Peca peca)
     {
-        typeof(ItemServico)
-            .GetProperty(nameof(ItemServico.PecaServico), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!
-            .SetValue(itemServico, pecaServico);
-    }
-
-    private static void DefinirPeca(PecaServico pecaServico, Peca peca)
-    {
-        typeof(PecaServico)
-            .GetProperty(nameof(PecaServico.Peca), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!
+        typeof(ServicoPeca)
+            .GetProperty(nameof(ServicoPeca.Peca), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!
             .SetValue(pecaServico, peca);
     }
 }

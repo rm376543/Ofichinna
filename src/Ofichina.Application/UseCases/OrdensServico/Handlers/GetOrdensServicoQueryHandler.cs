@@ -3,9 +3,9 @@ using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses.OrdemServico;
+using Ofichina.Contracts.Responses.ItensServico;
+using Ofichina.Contracts.Responses.OrdensServico;
 using Ofichina.Domain.Aggregates;
-using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
@@ -52,26 +52,11 @@ public sealed class GetOrdensServicoQueryHandler : IQueryHandler<GetOrdensServic
         }
     }
 
-    private async Task<Dictionary<Guid, Servico>> CarregarServicosAsync(
+    private Task<Dictionary<Guid, Servico>> CarregarServicosAsync(
         IEnumerable<OrdemServico> ordensServico,
         CancellationToken cancellationToken)
     {
-        var ids = ordensServico
-            .SelectMany(o => o.Servicos)
-            .Where(item => item.PecaServico is not null)
-            .Select(item => item.PecaServico!.ServicoId)
-            .Distinct()
-            .ToList();
-
-        var resultados = await Task.WhenAll(ids.Select(async id =>
-        {
-            var servico = await _servicoRepository.GetByIdAsync(id, includePecas: true, cancellationToken);
-            return (id, servico);
-        }));
-
-        return resultados
-            .Where(x => x.servico is not null && !x.servico.EstaExcluida())
-            .ToDictionary(x => x.id, x => x.servico!);
+        return Task.FromResult(new Dictionary<Guid, Servico>());
     }
 
     private static OrdemServicoResponse Mapear(
@@ -102,23 +87,18 @@ public sealed class GetOrdensServicoQueryHandler : IQueryHandler<GetOrdensServic
     }
 
     private static ItemServicoResponse MapearServico(
-        Ofichina.Domain.Entities.ItemServico item,
+        ItemServico item,
         IReadOnlyDictionary<Guid, Servico> servicosPorId)
     {
-        var servico = item.PecaServico is null
-            ? null
-            : servicosPorId.GetValueOrDefault(item.PecaServico.ServicoId);
-
         return new ItemServicoResponse
         {
             Id = item.Id,
-            ServicoId = item.ServicoId,
+            ServicoId = Guid.Empty,
             OrdemServicoId = item.OrdemServicoId,
             Descricao = item.Descricao,
             Valor = item.Valor,
             ValorTotal = item.ValorTotal,
-            Pecas = servico?.Pecas
-                .Where(peca => !peca.EstaExcluida())
+            Pecas = item.Pecas
                 .Select(peca => new OrdemServicoPecaResponse
                 {
                     Id = peca.Id,
@@ -130,12 +110,9 @@ public sealed class GetOrdensServicoQueryHandler : IQueryHandler<GetOrdensServic
                     ValorUnitario = peca.ValorUnitario,
                     ValorTotal = peca.ValorTotal,
                     Utilizada = peca.Utilizada,
-                    DataUtilizacao = peca.DataUtilizacao,
-                    CreatedAt = peca.CreatedAt,
-                    UpdatedAt = peca.UpdatedAt,
-                    DeletedAt = peca.DeletedAt
+                    DataUtilizacao = peca.DataUtilizacao
                 })
-                .ToList() ?? [],
+                .ToList(),
             CreatedAt = item.CreatedAt,
             UpdatedAt = item.UpdatedAt,
             DeletedAt = item.DeletedAt

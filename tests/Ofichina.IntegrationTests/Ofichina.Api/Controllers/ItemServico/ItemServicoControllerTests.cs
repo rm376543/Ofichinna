@@ -1,20 +1,19 @@
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
-using Ofichina.Api.Controllers.ItemServico;
-using Ofichina.Application.UseCases.ItemServico.Commands;
-using Ofichina.Application.Validators.OrdemServico;
+using Ofichina.Api.Controllers.ItensServico;
+using Ofichina.Application.UseCases.ItensServico.Commands;
+using Ofichina.Application.Validators.OrdensServico;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Requests.ItemServico;
+using Ofichina.Contracts.Requests.ItensServico;
 
-namespace Ofichina.IntegrationTests.Api.Controllers.ItemServico;
+namespace Ofichina.IntegrationTests.Api.Controllers.ItensServico;
 
 public sealed class ItemServicoControllerTests
 {
     [Fact]
-    public async Task AtualizarItemServico_Deve_RetornarNotFound_Quando_PecaServicoNaoForEncontrada()
+    public async Task AtualizarItemServico_Deve_RetornarNotFound_Quando_ServicoPecaNaoForEncontrada()
     {
         var mediator = new FakeMediator
         {
@@ -24,7 +23,7 @@ public sealed class ItemServicoControllerTests
         var controller = CriarController(mediator);
         var request = new UpdateItemServicoRequest
         {
-            PecaServicoId = Guid.NewGuid()
+            Pecas = [new UpdateItemServicoPecaRequest { PecaServicoId = Guid.NewGuid(), Quantidade = 1 }]
         };
 
         var result = await controller.AtualizarItemServico(request, CancellationToken.None);
@@ -45,7 +44,7 @@ public sealed class ItemServicoControllerTests
         var controller = CriarController(mediator);
         var request = new UpdateItemServicoRequest
         {
-            PecaServicoId = Guid.NewGuid()
+            Pecas = [new UpdateItemServicoPecaRequest { PecaServicoId = Guid.NewGuid(), Quantidade = 1 }]
         };
 
         var result = await controller.AtualizarItemServico(request, CancellationToken.None);
@@ -61,7 +60,7 @@ public sealed class ItemServicoControllerTests
         var controller = CriarController(mediator);
         var request = new UpdateItemServicoRequest
         {
-            PecaServicoId = Guid.Empty
+            Pecas = [new UpdateItemServicoPecaRequest { PecaServicoId = Guid.Empty, Quantidade = 1 }]
         };
 
         var result = await controller.AtualizarItemServico(request, CancellationToken.None);

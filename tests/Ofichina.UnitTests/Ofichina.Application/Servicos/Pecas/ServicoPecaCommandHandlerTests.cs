@@ -20,7 +20,7 @@ public sealed class ServicoPecaCommandHandlerTests
         var result = await handler.HandleAsync(new DeleteServicoPecaCommand
         {
             ServicoId = servico.Id,
-            PecaServicoId = pecaId
+            ServicoPecaId = pecaId
         });
 
         Assert.True(result.IsSuccess);
@@ -57,7 +57,7 @@ public sealed class ServicoPecaCommandHandlerTests
         var result = await handler.HandleAsync(new DeleteServicoPecaCommand
         {
             ServicoId = servico.Id,
-            PecaServicoId = peca.Id
+            ServicoPecaId = peca.Id
         });
 
         Assert.False(result.IsSuccess);
@@ -92,7 +92,7 @@ public sealed class ServicoPecaCommandHandlerTests
         var result = await handler.HandleAsync(new DeleteServicoPecaCommand
         {
             ServicoId = Guid.NewGuid(),
-            PecaServicoId = servico.Pecas.Single().Id
+            ServicoPecaId = servico.Pecas.Single().Id
         });
 
         Assert.False(result.IsSuccess);

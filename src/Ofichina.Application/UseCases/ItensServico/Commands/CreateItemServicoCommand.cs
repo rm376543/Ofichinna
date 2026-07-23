@@ -1,7 +1,7 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
 
-namespace Ofichina.Application.UseCases.ItemServico.Commands;
+namespace Ofichina.Application.UseCases.ItensServico.Commands;
 
 /// <summary>
 /// Comando para criação de um item de serviço em uma ordem de serviço.
@@ -14,7 +14,16 @@ public sealed class CreateItemServicoCommand : ICommand<Result<Guid>>
     public Guid OrdemServicoId { get; init; }
 
     /// <summary>
-    /// Identificador da peça de serviço vinculada.
+    /// Peças vinculadas ao item.
     /// </summary>
-    public Guid PecaServicoId { get; init; }
+    public IReadOnlyCollection<CreateItemServicoPecaCommand> Pecas { get; init; } = [];
+}
+
+/// <summary>
+/// Dados de uma peça informada na criação do item.
+/// </summary>
+public sealed class CreateItemServicoPecaCommand
+{
+    public Guid ServicoPecaId { get; init; }
+    public int Quantidade { get; init; }
 }

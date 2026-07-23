@@ -1,7 +1,7 @@
 using FluentValidation;
-using Ofichina.Contracts.Requests.ItemServico;
+using Ofichina.Contracts.Requests.ItensServico;
 
-namespace Ofichina.Application.Validators.OrdemServico;
+namespace Ofichina.Application.Validators.OrdensServico;
 
 /// <summary>
 /// Validador para atualização de item de serviço da ordem de serviço.
@@ -13,7 +13,7 @@ public sealed class UpdateItemServicoRequestValidator : AbstractValidator<Update
         RuleFor(x => x.Id)
             .NotEmpty().WithMessage("O identificador do item de serviço é obrigatório.");
 
-        RuleFor(x => x.PecaServicoId)
-            .NotEmpty().WithMessage("O identificador da peça de serviço é obrigatório.");
+        RuleFor(x => x.Pecas)
+            .NotEmpty().WithMessage("Informe ao menos uma peça para o item de serviço.");
     }
 }

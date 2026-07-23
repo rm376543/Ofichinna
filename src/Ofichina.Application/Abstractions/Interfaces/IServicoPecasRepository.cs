@@ -6,12 +6,12 @@ namespace Ofichina.Application.Abstractions.Interfaces;
 /// <summary>
 /// Repositório específico para persistência das peças vinculadas a serviços.
 /// </summary>
-public interface IServicoPecasRepository : IRepository<PecaServico>
+public interface IServicoPecasRepository : IRepository<ServicoPeca>
 {
     /// <summary>
     /// Obtém um vínculo entre serviço e peça.
     /// </summary>
-    Task<PecaServico?> GetByServicoIdAndPecaIdAsync(
+    Task<ServicoPeca?> GetByServicoIdAndPecaIdAsync(
         Guid servicoId,
         Guid pecaId,
         CancellationToken cancellationToken = default,
@@ -20,7 +20,7 @@ public interface IServicoPecasRepository : IRepository<PecaServico>
     /// <summary>
     /// Obtém todas as peças vinculadas a um serviço.
     /// </summary>
-    Task<IReadOnlyCollection<PecaServico>> GetByServicoIdAsync(
+    Task<IReadOnlyCollection<ServicoPeca>> GetByServicoIdAsync(
         Guid servicoId,
         CancellationToken cancellationToken = default,
         bool includePeca = false,
@@ -29,7 +29,7 @@ public interface IServicoPecasRepository : IRepository<PecaServico>
     /// <summary>
     /// Adiciona uma peça a um serviço.
     /// </summary>
-    Task<PecaServico> AdicionarAsync(
+    Task<ServicoPeca> AdicionarAsync(
         Guid servicoId,
         Guid pecaId,
         int quantidade,

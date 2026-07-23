@@ -85,7 +85,7 @@ public class ApplicationDbContext : DbContext
     /// <summary>
     /// DbSet para peças vinculadas aos serviços.
     /// </summary>
-    public DbSet<PecaServico> ServicosPecas { get; set; } = null!;
+    public DbSet<ServicoPeca> ServicosPecas { get; set; } = null!;
 
     /// <summary>
     /// DbSet para peças cadastradas no catálogo.

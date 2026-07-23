@@ -16,18 +16,15 @@ public class ItemServicoConfiguration : IEntityTypeConfiguration<ItemServico>
         builder.Property(i => i.OrdemServicoId)
             .IsRequired();
 
-        builder.Property(i => i.PecaServicoId)
-            .IsRequired();
-
         builder.Ignore(i => i.Descricao);
         builder.Ignore(i => i.Valor);
         builder.Ignore(i => i.ValorTotal);
         builder.Ignore(i => i.Pecas);
 
-        builder.HasOne(i => i.PecaServico)
-            .WithMany()
-            .HasForeignKey(i => i.PecaServicoId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.HasMany<ServicoPeca>("_pecas")
+            .WithOne()
+            .HasForeignKey("ItemServicoId")
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne<OrdemServico>()
             .WithMany()

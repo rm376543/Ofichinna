@@ -28,9 +28,7 @@ public sealed class OrdemServicoRepository : Repository<OrdemServico>, IOrdemSer
         if (includeItens)
         {
             query = query
-                .Include(x => x.Servicos)
-                    .ThenInclude(s => s.PecaServico)
-                        .ThenInclude(ps => ps.Peca);
+                .Include(x => x.Servicos);
         }
 
         return await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
@@ -43,9 +41,7 @@ public sealed class OrdemServicoRepository : Repository<OrdemServico>, IOrdemSer
         if (includeItens)
         {
             query = query
-                .Include(x => x.Servicos)
-                    .ThenInclude(s => s.PecaServico)
-                        .ThenInclude(ps => ps.Peca);
+                .Include(x => x.Servicos);
         }
 
         return await query.ToListAsync(cancellationToken);

@@ -56,7 +56,7 @@ public sealed class CreateServicoPecaCommandHandler : ICommandHandler<CreateServ
 
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation("Peça adicionada ao serviço com sucesso. ServicoId: {ServicoId}, PecaId: {PecaId}, PecaServicoId: {PecaServicoId}.", command.ServicoId, command.PecaId, pecaServico.Id);
+            _logger.LogInformation("Peça adicionada ao serviço com sucesso. ServicoId: {ServicoId}, PecaId: {PecaId}, ServicoPecaId: {ServicoPecaId}.", command.ServicoId, command.PecaId, pecaServico.Id);
             return Result.Success(pecaServico.Id);
         }
         catch (DomainException ex)

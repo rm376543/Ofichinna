@@ -175,43 +175,43 @@ public sealed class CreateServicoPecaCommandHandlerTests
 
     private sealed class FakeServicoPecasRepository : IServicoPecasRepository
     {
-        public List<PecaServico> Itens { get; } = [];
+        public List<ServicoPeca> Itens { get; } = [];
 
-        public Task AddAsync(PecaServico entity, CancellationToken cancellationToken = default)
+        public Task AddAsync(ServicoPeca entity, CancellationToken cancellationToken = default)
         {
             Itens.Add(entity);
             return Task.CompletedTask;
         }
 
-        public Task<PecaServico?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool tracking = false)
-            => Task.FromResult<PecaServico?>(Itens.FirstOrDefault(x => x.Id == id));
+        public Task<ServicoPeca?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool tracking = false)
+            => Task.FromResult<ServicoPeca?>(Itens.FirstOrDefault(x => x.Id == id));
 
-        public Task<IEnumerable<PecaServico>> GetAllAsync(CancellationToken cancellationToken = default)
-            => Task.FromResult<IEnumerable<PecaServico>>(Itens);
+        public Task<IEnumerable<ServicoPeca>> GetAllAsync(CancellationToken cancellationToken = default)
+            => Task.FromResult<IEnumerable<ServicoPeca>>(Itens);
 
-        public Task<PagedResult<PecaServico>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
-            => Task.FromResult(new PagedResult<PecaServico>(Itens, Itens.Count, 1, pagination.PageSize));
+        public Task<PagedResult<ServicoPeca>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
+            => Task.FromResult(new PagedResult<ServicoPeca>(Itens, Itens.Count, 1, pagination.PageSize));
 
-        public Task UpdateAsync(PecaServico entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public Task UpdateAsync(ServicoPeca entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-        public Task DeleteAsync(PecaServico entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public Task DeleteAsync(ServicoPeca entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-        public Task HardDeleteAsync(PecaServico entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public Task HardDeleteAsync(ServicoPeca entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-        public Task<PecaServico?> GetByServicoIdAndPecaIdAsync(Guid servicoId, Guid pecaId, CancellationToken cancellationToken = default, bool tracking = false)
-            => Task.FromResult<PecaServico?>(Itens.FirstOrDefault(x => x.ServicoId == servicoId && x.PecaId == pecaId));
+        public Task<ServicoPeca?> GetByServicoIdAndPecaIdAsync(Guid servicoId, Guid pecaId, CancellationToken cancellationToken = default, bool tracking = false)
+            => Task.FromResult<ServicoPeca?>(Itens.FirstOrDefault(x => x.ServicoId == servicoId && x.PecaId == pecaId));
 
-        public Task<IReadOnlyCollection<PecaServico>> GetByServicoIdAsync(Guid servicoId, CancellationToken cancellationToken = default, bool includePeca = false, bool tracking = false)
-            => Task.FromResult<IReadOnlyCollection<PecaServico>>(Itens.Where(x => x.ServicoId == servicoId).ToList());
+        public Task<IReadOnlyCollection<ServicoPeca>> GetByServicoIdAsync(Guid servicoId, CancellationToken cancellationToken = default, bool includePeca = false, bool tracking = false)
+            => Task.FromResult<IReadOnlyCollection<ServicoPeca>>(Itens.Where(x => x.ServicoId == servicoId).ToList());
 
-        public async Task<PecaServico> AdicionarAsync(Guid servicoId, Guid pecaId, int quantidade, CancellationToken cancellationToken = default)
+        public async Task<ServicoPeca> AdicionarAsync(Guid servicoId, Guid pecaId, int quantidade, CancellationToken cancellationToken = default)
         {
             var existente = await GetByServicoIdAndPecaIdAsync(servicoId, pecaId, cancellationToken, tracking: true);
 
             if (existente is not null && !existente.EstaExcluida())
                 throw new InvalidOperationException("A peça já foi adicionada ao serviço.");
 
-            var pecaServico = PecaServico.Criar(servicoId, pecaId, quantidade);
+            var pecaServico = ServicoPeca.Criar(servicoId, pecaId, quantidade);
             Itens.Add(pecaServico);
             return pecaServico;
         }

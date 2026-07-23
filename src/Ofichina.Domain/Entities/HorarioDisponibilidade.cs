@@ -1,5 +1,3 @@
-using Ofichina.Domain.Exceptions;
-
 namespace Ofichina.Domain.Entities;
 
 /// <summary>
