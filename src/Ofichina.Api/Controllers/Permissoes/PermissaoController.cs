@@ -34,6 +34,11 @@ public sealed class PermissaoController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Retorna todas as permissões cadastradas.
+    /// </summary>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Lista de permissões.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<PermissaoResponse>>), StatusCodes.Status200OK)]
@@ -54,6 +59,12 @@ public sealed class PermissaoController : ControllerBase
         return Ok(ApiResponse<IReadOnlyCollection<PermissaoResponse>>.SuccessResponse(result.Value ?? []));
     }
 
+    /// <summary>
+    /// Retorna uma permissão pelo identificador.
+    /// </summary>
+    /// <param name="id">Identificador da permissão.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Permissão encontrada ou erro 404 quando não existir.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PermissaoResponse>), StatusCodes.Status200OK)]
@@ -75,6 +86,12 @@ public sealed class PermissaoController : ControllerBase
         return Ok(ApiResponse<PermissaoResponse>.SuccessResponse(result.Value));
     }
 
+    /// <summary>
+    /// Cria uma nova permissão.
+    /// </summary>
+    /// <param name="request">Dados da permissão a ser criada.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Id da permissão criada ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
@@ -111,6 +128,12 @@ public sealed class PermissaoController : ControllerBase
         return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Permissão criada com sucesso."));
     }
 
+    /// <summary>
+    /// Retorna uma permissão pelo identificador.
+    /// </summary>
+    /// <param name="request">Dados da permissão a ser atualizada.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Permissão encontrada ou erro 404 quando não existir.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
@@ -118,44 +141,49 @@ public sealed class PermissaoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> UpdateAsync(Guid id, [FromBody] UpdatePermissaoRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse>> UpdateAsync([FromBody] UpdatePermissaoRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando processo de atualização de permissão com ID: {Id}", id);
-        request.Id = id;
+        _logger.LogInformation("Iniciando processo de atualização de permissão com ID: {Id}", request.Id);
 
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
         {
-            _logger.LogWarning("Validação falhou para a atualização de permissão com ID: {Id}. Erros: {Errors}", id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            _logger.LogWarning("Validação falhou para a atualização de permissão com ID: {Id}. Erros: {Errors}", request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _mediator.Send(new UpdatePermissaoCommand(id, request.Codigo, request.Descricao), cancellationToken);
+        var result = await _mediator.Send(new UpdatePermissaoCommand(request.Id, request.Codigo, request.Descricao), cancellationToken);
 
         if (!result.IsSuccess)
         {
             if (result.Error == "Permissão não encontrada.")
             {
-                _logger.LogInformation("Permissão com ID: {Id} não encontrada", id);
+                _logger.LogInformation("Permissão com ID: {Id} não encontrada", request.Id);
                 return NotFound(ApiResponse.FailureResponse(result.Error));
             }
 
-            _logger.LogInformation("Processo de atualização de permissão com ID: {Id} concluído com erros", id);
+            _logger.LogInformation("Processo de atualização de permissão com ID: {Id} concluído com erros", request.Id);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a permissão."));
         }
 
-        _logger.LogInformation("Processo de atualização de permissão com ID: {Id} concluído com sucesso", id);
+        _logger.LogInformation("Processo de atualização de permissão com ID: {Id} concluído com sucesso", request.Id);
         return Ok(ApiResponse.SuccessResponse("Permissão atualizada com sucesso."));
     }
 
+    /// <summary>
+    /// Remove uma permissão pelo identificador.
+    /// </summary>
+    /// <param name="id">Identificador da permissão.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Permissão encontrada ou erro 404 quando não existir.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> DeleteAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse>> DeleteAsync([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando processo de remoção de permissão com ID: {Id}", id);
         var result = await _mediator.Send(new DeletePermissaoCommand(id), cancellationToken);
