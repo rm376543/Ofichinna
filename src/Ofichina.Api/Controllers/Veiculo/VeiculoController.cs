@@ -25,13 +25,11 @@ public sealed class VeiculoController : ControllerBase
     private readonly IMediator _mediator;
     private readonly ILogger<VeiculoController> _logger;
 
-#pragma warning disable S107
     public VeiculoController(
         IValidator<CreateVeiculoRequest> createValidator,
         IValidator<UpdateVeiculoRequest> updateValidator,
         IMediator mediator,
         ILogger<VeiculoController> logger)
-#pragma warning restore S107
     {
         _createValidator = createValidator;
         _updateValidator = updateValidator;
