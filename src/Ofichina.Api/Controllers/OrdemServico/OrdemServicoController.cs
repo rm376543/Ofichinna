@@ -189,35 +189,6 @@ public sealed class OrdemServicoController : ControllerBase
     }
 
     /// <summary>
-    /// Remove logicamente uma ordem de serviço existente.
-    /// </summary>
-    /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso ou erro 404.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpDelete("{id:guid}")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> RemoverOrdemServico(
-        Guid id,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando a remoção da ordem de serviço com Id: {Id}", id);
-
-        var result = await _mediator.Send(new DeleteOrdemServicoCommand { Id = id }, cancellationToken);
-
-        if (!result.IsSuccess)
-        {
-            _logger.LogError("Erro ao remover a ordem de serviço com Id: {Id}. Erro: {Erro}", id, result.Error);
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Ordem de serviço não encontrada."));
-        }
-
-        return Ok(ApiResponse.SuccessResponse("Ordem de serviço removida com sucesso."));
-    }
-
-    /// <summary>
     /// Inicia o diagnóstico da ordem de serviço.
     /// </summary>
     /// <param name="id">Identificador da ordem de serviço.</param>
@@ -348,6 +319,35 @@ public sealed class OrdemServicoController : ControllerBase
         }
 
         return Ok(ApiResponse.SuccessResponse(mensagemSucesso));
+    }
+
+    /// <summary>
+    /// Remove logicamente uma ordem de serviço existente.
+    /// </summary>
+    /// <param name="id">Identificador da ordem de serviço.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso ou erro 404.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> RemoverOrdemServico(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando a remoção da ordem de serviço com Id: {Id}", id);
+
+        var result = await _mediator.Send(new DeleteOrdemServicoCommand { Id = id }, cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogError("Erro ao remover a ordem de serviço com Id: {Id}. Erro: {Erro}", id, result.Error);
+            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Ordem de serviço não encontrada."));
+        }
+
+        return Ok(ApiResponse.SuccessResponse("Ordem de serviço removida com sucesso."));
     }
 }
 

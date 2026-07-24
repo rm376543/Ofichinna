@@ -29,6 +29,27 @@ public sealed class PerfilUsuarioController : ControllerBase
     }
 
     /// <summary>
+    /// Retorna todos os perfis vinculados a um usuário.
+    /// </summary>
+    /// <param name="usuarioId">Identificador do usuário.</param>
+    /// <returns>Lista com os códigos dos perfis vinculados ao usuário.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpGet]
+    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<string>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<string>>>> ObterPerfisAsync(Guid usuarioId)
+    {
+        _logger.LogInformation("Consultando perfis do usuário. UsuarioId: {UsuarioId}", usuarioId);
+
+        var perfis = await _mediator.Send(new ObterPerfisDoUsuarioQuery(usuarioId), HttpContext.RequestAborted);
+
+        _logger.LogInformation("Perfis obtidos com sucesso. UsuarioId: {UsuarioId}, Quantidade: {Quantidade}", usuarioId, perfis.Count);
+
+        return Ok(ApiResponse<IReadOnlyCollection<string>>.SuccessResponse(perfis));
+    }
+
+    /// <summary>
     /// Vincula um perfil a um usuário existente.
     /// </summary>
     /// <param name="usuarioId">Identificador do usuário.</param>
@@ -79,27 +100,6 @@ public sealed class PerfilUsuarioController : ControllerBase
 
         _logger.LogInformation("Perfil vinculado com sucesso. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}", usuarioId, perfilId);
         return Ok(ApiResponse.SuccessResponse(result.Value?.Mensagem ?? "Perfil vinculado com sucesso."));
-    }
-
-    /// <summary>
-    /// Retorna todos os perfis vinculados a um usuário.
-    /// </summary>
-    /// <param name="usuarioId">Identificador do usuário.</param>
-    /// <returns>Lista com os códigos dos perfis vinculados ao usuário.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpGet]
-    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<string>>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<string>>>> ObterPerfisAsync(Guid usuarioId)
-    {
-        _logger.LogInformation("Consultando perfis do usuário. UsuarioId: {UsuarioId}", usuarioId);
-
-        var perfis = await _mediator.Send(new ObterPerfisDoUsuarioQuery(usuarioId), HttpContext.RequestAborted);
-
-        _logger.LogInformation("Perfis obtidos com sucesso. UsuarioId: {UsuarioId}, Quantidade: {Quantidade}", usuarioId, perfis.Count);
-
-        return Ok(ApiResponse<IReadOnlyCollection<string>>.SuccessResponse(perfis));
     }
 }
 

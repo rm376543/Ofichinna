@@ -30,6 +30,39 @@ public sealed class PerfilPermissaoController : ControllerBase
     }
 
     /// <summary>
+    /// Retorna todas as permissões de um perfil específico.
+    /// </summary>
+    /// <param name="perfilId">Identificador do perfil.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Lista de permissões do perfil.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpGet]
+    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<PerfilPermissaoResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<PerfilPermissaoResponse>>>> GetAllAsync(Guid perfilId, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando o processo de obtenção das permissões do perfil {PerfilId}.", perfilId);
+        var result = await _mediator.Send(new GetPermissoesDoPerfilQuery(perfilId), cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogError("Erro ao obter as permissões do perfil {PerfilId}: {Erro}", perfilId, result.Error);
+            if (result.Error == "Perfil não encontrado.")
+            {
+                _logger.LogWarning("Perfil {PerfilId} não encontrado.", perfilId);
+                return NotFound(ApiResponse.FailureResponse(result.Error));
+            }
+
+            _logger.LogWarning("Falha ao obter as permissões do perfil {PerfilId}. Erro: {Erro}", perfilId, result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter as permissões do perfil."));
+        }
+
+        return Ok(ApiResponse<IReadOnlyCollection<PerfilPermissaoResponse>>.SuccessResponse(result.Value ?? []));
+    }
+
+    /// <summary>
     /// Vincula uma permissão a um perfil específico.
     /// </summary>
     /// <param name="request">Dados da permissão a ser vinculada.</param>
@@ -106,36 +139,4 @@ public sealed class PerfilPermissaoController : ControllerBase
         return Ok(ApiResponse.SuccessResponse("Permissão desvinculada do perfil com sucesso."));
     }
 
-    /// <summary>
-    /// Retorna todas as permissões de um perfil específico.
-    /// </summary>
-    /// <param name="perfilId">Identificador do perfil.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Lista de permissões do perfil.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpGet]
-    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<PerfilPermissaoResponse>>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<PerfilPermissaoResponse>>>> GetAllAsync(Guid perfilId, CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando o processo de obtenção das permissões do perfil {PerfilId}.", perfilId);
-        var result = await _mediator.Send(new GetPermissoesDoPerfilQuery(perfilId), cancellationToken);
-
-        if (!result.IsSuccess)
-        {
-            _logger.LogError("Erro ao obter as permissões do perfil {PerfilId}: {Erro}", perfilId, result.Error);
-            if (result.Error == "Perfil não encontrado.")
-            {
-                _logger.LogWarning("Perfil {PerfilId} não encontrado.", perfilId);
-                return NotFound(ApiResponse.FailureResponse(result.Error));
-            }
-
-            _logger.LogWarning("Falha ao obter as permissões do perfil {PerfilId}. Erro: {Erro}", perfilId, result.Error);
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter as permissões do perfil."));
-        }
-
-        return Ok(ApiResponse<IReadOnlyCollection<PerfilPermissaoResponse>>.SuccessResponse(result.Value ?? []));
-    }
 }
