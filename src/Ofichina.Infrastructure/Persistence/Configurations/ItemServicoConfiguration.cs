@@ -16,6 +16,10 @@ public class ItemServicoConfiguration : IEntityTypeConfiguration<ItemServico>
         builder.Property(i => i.OrdemServicoId)
             .IsRequired();
 
+        builder.Property(i => i.ServicoPecaId)
+            .HasColumnName("ServicoPecaId")
+            .IsRequired();
+
         builder.Ignore(i => i.Descricao);
         builder.Ignore(i => i.Valor);
         builder.Ignore(i => i.ValorTotal);

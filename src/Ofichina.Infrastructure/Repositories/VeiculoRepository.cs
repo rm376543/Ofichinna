@@ -3,6 +3,7 @@ using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Infrastructure.Persistence;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Infrastructure.Repositories;
 
@@ -34,7 +35,20 @@ public class VeiculoRepository : Repository<Veiculo>, IVeiculoRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<PagedResult<Veiculo>> GetPagedWithPessoaAsync(Pagination pagination, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyCollection<Veiculo>> GetAllVeiculosByPessoaIdAsync(
+        Guid pessoaId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.Set<Veiculo>()
+            .AsNoTracking()
+            .Include(x => x.Pessoa)
+            .Where(x => x.PessoaId == pessoaId && x.DeletedAt == null)
+            .OrderBy(x => x.CreatedAt)
+            .ThenBy(x => x.Id)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<PagedResult<Veiculo>> GetAllVeiculosPaged(Pagination pagination, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(pagination);
 
@@ -44,30 +58,6 @@ public class VeiculoRepository : Repository<Veiculo>, IVeiculoRepository
         var query = _context.Set<Veiculo>()
             .AsNoTracking()
             .Include(x => x.Pessoa)
-            .OrderBy(x => x.CreatedAt)
-            .ThenBy(x => x.Id);
-
-        var totalCount = await query.CountAsync(cancellationToken);
-        var items = await query
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync(cancellationToken);
-
-        return new PagedResult<Veiculo>(items, totalCount, pageNumber, pageSize);
-    }
-
-    public async Task<PagedResult<Veiculo>> GetVeiclesPagedByPessoaIdAsync(
-        Guid pessoaId,
-        Pagination pagination,
-        CancellationToken cancellationToken = default)
-    {
-        var pageNumber = pagination.PageNumber > 0 ? pagination.PageNumber : 1;
-        var pageSize = pagination.PageSize > 0 ? pagination.PageSize : 10;
-
-        var query = _context.Set<Veiculo>()
-            .AsNoTracking()
-            .Include(x => x.Pessoa)
-            .Where(x => x.PessoaId == pessoaId && x.DeletedAt == null)
             .OrderBy(x => x.CreatedAt)
             .ThenBy(x => x.Id);
 

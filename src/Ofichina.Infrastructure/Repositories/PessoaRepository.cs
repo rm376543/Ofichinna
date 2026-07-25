@@ -19,5 +19,13 @@ namespace Ofichina.Infrastructure.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.UsuarioId == usuarioId, cancellationToken);
         }
+
+        public Task<Pessoa?> GetByIdWithVeiculosAsync(Guid pessoaId, CancellationToken cancellationToken = default)
+        {
+            return _context.Pessoas
+                .AsNoTracking()
+                .Include(x => x.Veiculos)
+                .FirstOrDefaultAsync(x => x.Id == pessoaId, cancellationToken);
+        }
     }
 }
