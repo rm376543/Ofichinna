@@ -3,9 +3,9 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Entities;
-using Ofichina.Authentication.Abstractions;
+using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Contracts.Responses.Authentication;
 
 namespace Ofichina.Authentication.Services;
 
