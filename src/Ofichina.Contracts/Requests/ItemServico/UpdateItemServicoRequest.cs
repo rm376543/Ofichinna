@@ -6,11 +6,6 @@ namespace Ofichina.Contracts.Requests.ItensServico;
 public sealed class UpdateItemServicoRequest : UpdateRequest
 {
     /// <summary>
-    /// Identificador do item de serviço.
-    /// </summary>
-    public Guid Id { get; init; } = Guid.Empty;
-
-    /// <summary>
     /// Identificador da ordem de serviço.
     /// </summary>
     public Guid OrdemServicoId { get; init; } = Guid.Empty;

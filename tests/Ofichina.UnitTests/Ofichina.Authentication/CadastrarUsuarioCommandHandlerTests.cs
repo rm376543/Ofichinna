@@ -1,4 +1,5 @@
 using Ofichina.Authentication.Services;
+using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Usuario;
 using Ofichina.Contracts.Responses.Authentication;
@@ -82,7 +83,7 @@ public sealed class CadastrarUsuarioCommandHandlerTests
 
         public Task UpdateAsync(Usuario entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-        public Task<PagedResult<Usuario>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
+        public Task<PagedResponse<Usuario>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
         {
             var pageNumber = pagination.PageNumber > 0 ? pagination.PageNumber : 1;
             var pageSize = pagination.PageSize > 0 ? pagination.PageSize : 10;
@@ -93,7 +94,16 @@ public sealed class CadastrarUsuarioCommandHandlerTests
                 .Take(pageSize)
                 .ToList();
 
-            return Task.FromResult(new PagedResult<Usuario>(items, _usuarios.Count, pageNumber, pageSize));
+            return Task.FromResult(new PagedResponse<Usuario>
+            {
+                Items = items,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = _usuarios.Count,
+                TotalPages = (int)Math.Ceiling(_usuarios.Count / (double)pageSize),
+                HasNextPage = pageNumber * pageSize < _usuarios.Count,
+                HasPreviousPage = pageNumber > 1
+            });
         }
 
         public Task HardDeleteAsync(Usuario entity, CancellationToken cancellationToken = default) => Task.CompletedTask;

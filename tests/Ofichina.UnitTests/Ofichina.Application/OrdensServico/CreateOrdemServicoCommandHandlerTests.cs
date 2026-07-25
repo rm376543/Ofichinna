@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.Handlers;
+using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
@@ -93,8 +94,17 @@ public sealed class CreateOrdemServicoCommandHandlerTests
         public Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
             => Task.FromResult<IEnumerable<TEntity>>([]);
 
-        public Task<PagedResult<TEntity>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
-            => Task.FromResult(new PagedResult<TEntity>([], 0, 1, pagination.PageSize));
+        public Task<PagedResponse<TEntity>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
+            => Task.FromResult(new PagedResponse<TEntity>
+            {
+                Items = [],
+                PageNumber = 1,
+                PageSize = pagination.PageSize,
+                TotalCount = 0,
+                TotalPages = 0,
+                HasNextPage = false,
+                HasPreviousPage = false
+            });
 
         public Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
@@ -131,8 +141,17 @@ public sealed class CreateOrdemServicoCommandHandlerTests
         public Task<IEnumerable<OrdemServicoAggregate>> GetAllAsync(CancellationToken cancellationToken = default)
             => Task.FromResult<IEnumerable<OrdemServicoAggregate>>([]);
 
-        public Task<PagedResult<OrdemServicoAggregate>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
-            => Task.FromResult(new PagedResult<OrdemServicoAggregate>([], 0, 1, pagination.PageSize));
+        public Task<PagedResponse<OrdemServicoAggregate>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
+            => Task.FromResult(new PagedResponse<OrdemServicoAggregate>
+            {
+                Items = [],
+                PageNumber = 1,
+                PageSize = pagination.PageSize,
+                TotalCount = 0,
+                TotalPages = 0,
+                HasNextPage = false,
+                HasPreviousPage = false
+            });
     }
 
     private sealed class FakeUnitOfWork : IUnitOfWork

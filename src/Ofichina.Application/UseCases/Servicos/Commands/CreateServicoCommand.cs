@@ -6,7 +6,7 @@ namespace Ofichina.Application.UseCases.Servicos.Commands;
 /// <summary>
 /// Comando para criação de serviço.
 /// </summary>
-public sealed class CreateServicoCommand : ICommand<Result<Guid>>
+public sealed class CreateServicoCommand : ICommand<Result>
 {
     /// <summary>
     /// Nome do serviço.
@@ -22,9 +22,4 @@ public sealed class CreateServicoCommand : ICommand<Result<Guid>>
     /// Valor do serviço.
     /// </summary>
     public decimal Valor { get; init; }
-
-    /// <summary>
-    /// Indica se o serviço inicia ativo.
-    /// </summary>
-    public bool Ativo { get; init; } = true;
 }

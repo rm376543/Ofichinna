@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Ofichina.Domain.Entities;
 using Ofichina.Infrastructure.Persistence;
+using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 
 namespace Ofichina.Infrastructure.Repositories;
@@ -43,7 +44,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
         return await _dbSet.AsNoTracking().ToListAsync(cancellationToken);
     }
 
-    public async Task<PagedResult<TEntity>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
+    public async Task<PagedResponse<TEntity>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(pagination);
 
@@ -58,7 +59,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        return new PagedResult<TEntity>(items, totalCount, pageNumber, pageSize);
+        return items.ToPagedResponse(totalCount, pageNumber, pageSize);
     }
 
     public async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)

@@ -136,15 +136,4 @@ public class Pessoa : Entity
         Excluir();
     }
 
-    /// <summary>
-    /// Reativa uma pessoa previamente desativada.
-    /// </summary>
-    public void Reativar()
-    {
-        if (!EstaExcluida())
-            return;
-
-        DeletedAt = null;
-        AtualizarDataModificacao();
-    }
 }

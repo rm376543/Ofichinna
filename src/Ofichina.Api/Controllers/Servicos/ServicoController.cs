@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Servicos.Commands;
 using Ofichina.Application.UseCases.Servicos.Queries;
+using Ofichina.Contracts;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Servicos;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Servicos;
@@ -40,27 +42,34 @@ public sealed class ServicoController : ControllerBase
     /// <summary>
     /// Retorna todos os serviços cadastrados.
     /// </summary>
+    /// <returns>Uma lista paginada de serviços.</returns>
+    /// <param name="pagination">Parâmetros de paginação.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
     [Authorize(Roles = "ADMIN")]
     [HttpGet]
-    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<ServicoResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResponse<ServicoResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<ServicoResponse>>>> BuscarServicos(
+    public async Task<ActionResult<ApiResponse<PagedResponse<ServicoResponse>>>> BuscarTodosServicosPaginados(
+        [FromQuery] Pagination pagination,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção de todos os serviços.");
 
-        var result = await _mediator.Send(new GetServicosQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetAllServicosPaginadosQuery(pagination), cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os serviços."));
 
-        return Ok(ApiResponse<IReadOnlyCollection<ServicoResponse>>.SuccessResponse(result.Value ?? []));
+        return Ok(ApiResponse<PagedResponse<ServicoResponse>>.SuccessResponse(result.Value));
     }
 
     /// <summary>
     /// Retorna um serviço pelo identificador.
     /// </summary>
+    /// <returns>O serviço correspondente ao identificador fornecido.</returns>
+    /// <param name="id">Identificador do serviço.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
     [Authorize(Roles = "ADMIN")]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<ServicoResponse>), StatusCodes.Status200OK)]
@@ -84,13 +93,16 @@ public sealed class ServicoController : ControllerBase
     /// <summary>
     /// Cria um novo serviço.
     /// </summary>
+    /// <returns>O identificador do serviço criado.</returns>
+    /// <param name="request">Dados do serviço a ser criado.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
-    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<Guid>>> CriarServico(
+    public async Task<ActionResult<ApiResponse>> CriarServico(
         [FromBody] CreateServicoRequest request,
         CancellationToken cancellationToken)
     {
@@ -106,18 +118,20 @@ public sealed class ServicoController : ControllerBase
             Nome = request.Nome,
             Descricao = request.Descricao,
             Valor = request.Valor,
-            Ativo = request.Ativo
         }, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o serviço."));
 
-        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Serviço criado com sucesso."));
+        return ApiResponse.SuccessResponse("Serviço criado com sucesso.");
     }
 
     /// <summary>
     /// Atualiza um serviço existente.
     /// </summary>
+    /// <param name="request">Dados do serviço a ser atualizado.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Resultado da operação de atualização.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPut]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
@@ -156,6 +170,9 @@ public sealed class ServicoController : ControllerBase
     /// <summary>
     /// Remove logicamente um serviço.
     /// </summary>
+    /// <param name="id">Identificador do serviço.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Resultado da operação de remoção.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]

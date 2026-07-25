@@ -1,3 +1,4 @@
+using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Aggregates;
 
@@ -5,7 +6,7 @@ namespace Ofichina.Application.Abstractions.Interfaces;
 
 public interface IAgendamentoRepository : IRepository<Agendamento>
 {
-    Task<PagedResult<Agendamento>> GetPagedByClientePessoaAsync(Guid pessoaId, Pagination pagination, CancellationToken cancellationToken = default);
+    Task<PagedResponse<Agendamento>> GetPagedByClientePessoaAsync(Guid pessoaId, Pagination pagination, CancellationToken cancellationToken = default);
 
     Task<Agendamento?> GetByIdAndPessoaAsync(Guid agendamentoId, Guid pessoaId, CancellationToken cancellationToken = default);
 
@@ -13,5 +14,5 @@ public interface IAgendamentoRepository : IRepository<Agendamento>
 
     Task<bool> ExisteConflitoVeiculoAsync(Guid veiculoId, Guid diaDisponibilidadeId, Guid horarioConsultorId, CancellationToken cancellationToken = default);
 
-    Task<Agendamento?> BuscarAgendamentosPorPessoaId(Guid PessoaId);
+    Task<Agendamento?> BuscarAgendamentosPorPessoaId(Guid pessoaId, CancellationToken cancellationToken = default);
 }

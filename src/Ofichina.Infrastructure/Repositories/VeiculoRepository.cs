@@ -3,6 +3,7 @@ using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Infrastructure.Persistence;
+using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 
 namespace Ofichina.Infrastructure.Repositories;
@@ -71,7 +72,7 @@ public class VeiculoRepository : Repository<Veiculo>, IVeiculoRepository
     /// <param name="pagination">Parâmetros de paginação.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Resultado paginado de veículos.</returns>
-    public async Task<PagedResult<Veiculo>> GetAllVeiculosPaged(Pagination pagination, CancellationToken cancellationToken = default)
+    public async Task<PagedResponse<Veiculo>> GetAllVeiculosPaged(Pagination pagination, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(pagination);
 
@@ -90,6 +91,6 @@ public class VeiculoRepository : Repository<Veiculo>, IVeiculoRepository
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        return new PagedResult<Veiculo>(items, totalCount, pageNumber, pageSize);
+        return items.ToPagedResponse(totalCount, pageNumber, pageSize);
     }
 }
