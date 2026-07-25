@@ -69,10 +69,23 @@ public class Agendamento : Entity
     /// </summary>
     public string? Descricao { get; private set; }
 
+    /// <summary>
+    /// Construtor privado para uso interno da entidade.
+    /// </summary>
     private Agendamento()
     {
     }
 
+    /// <summary>
+    /// Cria uma nova instância de agendamento com os parâmetros fornecidos.
+    /// </summary>
+    /// <param name="clientePessoaId"></param>
+    /// <param name="diaDisponibilidadeId"></param>
+    /// <param name="horarioConsultorId"></param>
+    /// <param name="consultorPessoaId"></param>
+    /// <param name="veiculoId"></param>
+    /// <param name="descricao"></param>
+    /// <exception cref="DomainException"></exception>
     public Agendamento(
         Guid clientePessoaId,
         Guid diaDisponibilidadeId,
@@ -105,6 +118,10 @@ public class Agendamento : Entity
         Descricao = string.IsNullOrWhiteSpace(descricao) ? null : descricao.Trim();
     }
 
+    /// <summary>
+    /// Confirma o agendamento, alterando seu status para "Confirmado".
+    /// </summary>
+    /// <exception cref="DomainException"></exception>
     public void Confirmar()
     {
         if (Status is StatusAgendamento.Cancelado or StatusAgendamento.Concluido)
@@ -117,18 +134,26 @@ public class Agendamento : Entity
         AtualizarDataModificacao();
     }
 
+    /// <summary>
+    /// Cancela o agendamento, alterando seu status para "Cancelado".
+    /// </summary>
+    /// <exception cref="DomainException"></exception>
     public void Cancelar()
     {
         if (Status == StatusAgendamento.Concluido)
             throw new DomainException("Não é possível cancelar um agendamento concluído.");
 
         if (Status == StatusAgendamento.Cancelado)
-            return;
+            throw new DomainException("Não é possível cancelar um agendamento já cancelado.");
 
         Status = StatusAgendamento.Cancelado;
         AtualizarDataModificacao();
     }
 
+    /// <summary>
+    /// Conclui o agendamento, alterando seu status para "Concluído".
+    /// </summary>
+    /// <exception cref="DomainException"></exception>
     public void Concluir()
     {
         if (Status == StatusAgendamento.Cancelado)
