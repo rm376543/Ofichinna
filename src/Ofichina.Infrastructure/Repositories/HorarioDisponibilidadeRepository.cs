@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Ofichina.Domain.Entities;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Infrastructure.Persistence;
+using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 
 namespace Ofichina.Infrastructure.Repositories;
@@ -38,7 +39,7 @@ public sealed class HorarioDisponibilidadeRepository : Repository<HorarioDisponi
     /// <param name="pagination"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<PagedResult<HorarioDisponibilidade>> GetHorariosDisponiveisPaginados(Pagination pagination, CancellationToken cancellationToken = default)
+    public async Task<PagedResponse<HorarioDisponibilidade>> GetHorariosDisponiveisPaginados(Pagination pagination, CancellationToken cancellationToken = default)
     {
 
         ArgumentNullException.ThrowIfNull(pagination);
@@ -57,8 +58,7 @@ public sealed class HorarioDisponibilidadeRepository : Repository<HorarioDisponi
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        return new PagedResult<HorarioDisponibilidade>(items, totalCount, pageNumber, pageSize);
-
+        return items.ToPagedResponse(totalCount, pageNumber, pageSize);
     }
 
     public async Task<HorarioDisponibilidade?> BuscarPorHorarioAsync(TimeOnly horario, CancellationToken cancellationToken = default)

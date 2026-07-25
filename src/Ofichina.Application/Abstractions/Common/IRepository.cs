@@ -1,3 +1,4 @@
+using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
@@ -29,7 +30,7 @@ public interface IRepository<TEntity> where TEntity : Entity
     /// <summary>
     /// Obtém uma página de entidades.
     /// </summary>
-    Task<PagedResult<TEntity>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default);
+    Task<PagedResponse<TEntity>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Atualiza uma entidade.

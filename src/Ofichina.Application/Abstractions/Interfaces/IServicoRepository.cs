@@ -1,3 +1,5 @@
+using Ofichina.Contracts;
+using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
 
 namespace Ofichina.Application.Abstractions.Interfaces;
@@ -16,4 +18,12 @@ public interface IServicoRepository : IRepository<Servico>
     /// Obtém todos os serviços, carregando as peças quando necessário.
     /// </summary>
     Task<IReadOnlyCollection<Servico>> GetAllAsync(bool includePecas = false, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Obtém todos os serviços de forma paginada, carregando as peças quando necessário.
+    /// </summary>
+    /// <param name="pagination">Parâmetros de paginação.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Uma lista paginada de serviços.</returns>
+    Task<PagedResponse<Servico>> GetAllServicosPaginadosAsync(Pagination pagination, CancellationToken cancellationToken = default);
 }

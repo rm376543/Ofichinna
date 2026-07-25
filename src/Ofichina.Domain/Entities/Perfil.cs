@@ -121,18 +121,4 @@ public class Perfil : Entity
         Excluir();
     }
 
-
-    /// <summary>
-    /// Reativa um perfil desativado.
-    /// </summary>
-    public void Reativar()
-    {
-        if (!EstaExcluida())
-            return;
-
-
-        DeletedAt = null;
-
-        AtualizarDataModificacao();
-    }
 }

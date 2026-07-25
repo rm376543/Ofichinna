@@ -2,6 +2,7 @@ using System.Reflection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Application.UseCases.ItensServico.Handlers;
+using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
@@ -107,8 +108,17 @@ public sealed class UpdateItemServicoCommandHandlerTests
         public Task<IEnumerable<OrdemServico>> GetAllAsync(CancellationToken cancellationToken = default)
             => Task.FromResult<IEnumerable<OrdemServico>>([]);
 
-        public Task<PagedResult<OrdemServico>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
-            => Task.FromResult(new PagedResult<OrdemServico>([], 0, 1, pagination.PageSize));
+        public Task<PagedResponse<OrdemServico>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
+            => Task.FromResult(new PagedResponse<OrdemServico>
+            {
+                Items = [],
+                PageNumber = 1,
+                PageSize = pagination.PageSize,
+                TotalCount = 0,
+                TotalPages = 0,
+                HasNextPage = false,
+                HasPreviousPage = false
+            });
 
         public Task UpdateAsync(OrdemServico entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
@@ -140,8 +150,17 @@ public sealed class UpdateItemServicoCommandHandlerTests
         public Task<IEnumerable<ServicoPeca>> GetAllAsync(CancellationToken cancellationToken = default)
             => Task.FromResult<IEnumerable<ServicoPeca>>([]);
 
-        public Task<PagedResult<ServicoPeca>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
-            => Task.FromResult(new PagedResult<ServicoPeca>([], 0, 1, pagination.PageSize));
+        public Task<PagedResponse<ServicoPeca>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
+            => Task.FromResult(new PagedResponse<ServicoPeca>
+            {
+                Items = [],
+                PageNumber = 1,
+                PageSize = pagination.PageSize,
+                TotalCount = 0,
+                TotalPages = 0,
+                HasNextPage = false,
+                HasPreviousPage = false
+            });
 
         public Task UpdateAsync(ServicoPeca entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
@@ -167,8 +186,17 @@ public sealed class UpdateItemServicoCommandHandlerTests
         public Task<IEnumerable<ItemServico>> GetAllAsync(CancellationToken cancellationToken = default)
             => Task.FromResult<IEnumerable<ItemServico>>([]);
 
-        public Task<PagedResult<ItemServico>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
-            => Task.FromResult(new PagedResult<ItemServico>([], 0, 1, pagination.PageSize));
+        public Task<PagedResponse<ItemServico>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
+            => Task.FromResult(new PagedResponse<ItemServico>
+            {
+                Items = [],
+                PageNumber = 1,
+                PageSize = pagination.PageSize,
+                TotalCount = 0,
+                TotalPages = 0,
+                HasNextPage = false,
+                HasPreviousPage = false
+            });
 
         public Task UpdateAsync(ItemServico entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
 

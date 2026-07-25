@@ -3,6 +3,7 @@ using Ofichina.Domain.Common;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Infrastructure.Persistence;
+using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 
 namespace Ofichina.Infrastructure.Repositories;
@@ -16,7 +17,7 @@ public sealed class AgendamentoRepository : Repository<Agendamento>, IAgendament
         _context = context;
     }
 
-    public async Task<PagedResult<Agendamento>> GetPagedByClientePessoaAsync(Guid pessoaId, Pagination pagination, CancellationToken cancellationToken = default)
+    public async Task<PagedResponse<Agendamento>> GetPagedByClientePessoaAsync(Guid pessoaId, Pagination pagination, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(pagination);
 
@@ -42,7 +43,7 @@ public sealed class AgendamentoRepository : Repository<Agendamento>, IAgendament
             .Take(pageSize)
             .ToListAsync(cancellationToken);
 
-        return new PagedResult<Agendamento>(items, totalCount, pageNumber, pageSize);
+        return items.ToPagedResponse(totalCount, pageNumber, pageSize);
     }
 
     public async Task<Agendamento?> GetByIdAndPessoaAsync(Guid agendamentoId, Guid pessoaId, CancellationToken cancellationToken = default)
@@ -72,7 +73,7 @@ public sealed class AgendamentoRepository : Repository<Agendamento>, IAgendament
             .AnyAsync(x => x.DeletedAt == null && x.VeiculoId == veiculoId && x.DiaDisponibilidadeId == diaDisponibilidadeId && x.HorarioConsultorId == horarioConsultorId, cancellationToken);
     }
 
-    public async Task<Agendamento?> BuscarAgendamentosPorPessoaId(Guid PessoaID)
+    public async Task<Agendamento?> BuscarAgendamentosPorPessoaId(Guid pessoaId, CancellationToken cancellationToken = default)
     {
         return await _context.Agendamentos
             .AsNoTracking()
@@ -82,6 +83,6 @@ public sealed class AgendamentoRepository : Repository<Agendamento>, IAgendament
             .Include(x => x.DiaDisponibilidade)
             .Include(x => x.HorarioConsultor)
                 .ThenInclude(x => x.Pessoa)
-            .FirstOrDefaultAsync(x => x.ClientePessoaId == PessoaID && x.DeletedAt == null);
+            .FirstOrDefaultAsync(x => x.ClientePessoaId == pessoaId && x.DeletedAt == null, cancellationToken);
     }
 }

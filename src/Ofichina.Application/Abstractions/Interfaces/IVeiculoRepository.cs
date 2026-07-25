@@ -1,6 +1,7 @@
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Common;
 using Ofichina.Application.Abstractions.Common;
+using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 
 namespace Ofichina.Application.Abstractions.Interfaces;
@@ -30,5 +31,5 @@ public interface IVeiculoRepository : IRepository<Veiculo>
     /// <summary>
     /// Lista veículos paginados
     /// </summary>
-    Task<PagedResult<Veiculo>> GetAllVeiculosPaged(Pagination pagination, CancellationToken cancellationToken = default);
+    Task<PagedResponse<Veiculo>> GetAllVeiculosPaged(Pagination pagination, CancellationToken cancellationToken = default);
 }

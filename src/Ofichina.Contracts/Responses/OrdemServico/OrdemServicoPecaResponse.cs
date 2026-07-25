@@ -56,19 +56,4 @@ public sealed class OrdemServicoPecaResponse : BaseEntity
     /// Data em que a peça foi utilizada.
     /// </summary>
     public DateTime? DataUtilizacao { get; set; }
-
-    /// <summary>
-    /// Data de criação do registro.
-    /// </summary>
-    public DateTime CreatedAt { get; set; }
-
-    /// <summary>
-    /// Data da última atualização do registro.
-    /// </summary>
-    public DateTime? UpdatedAt { get; set; }
-
-    /// <summary>
-    /// Data da exclusão lógica do registro.
-    /// </summary>
-    public DateTime? DeletedAt { get; set; }
 }

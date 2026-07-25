@@ -40,7 +40,7 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers
                     Disponivel = h.DeletedAt is null
                 });
 
-                return Result.Success<PagedResponse<HorarioDisponivelResponse>>(response);
+                return Result.Success(response);
             }
             catch (Exception ex)
             {
