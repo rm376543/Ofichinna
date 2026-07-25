@@ -1,22 +1,14 @@
+﻿using Ofichina.Contracts.Common;
+
 namespace Ofichina.Contracts.Responses.Veiculo;
 
 /// <summary>
-/// Resposta com os dados completos de um veículo.
+/// Resposta resumida de veículo, sem dados da pessoa.
 /// </summary>
-public sealed class VeiculoResponse
+public sealed class VeiculoResponse : BaseEntity
 {
     /// <summary>
-    /// Identificador do veículo.
-    /// </summary>
-    public Guid Id { get; set; }
-
-    /// <summary>
-    /// Dados resumidos da pessoa proprietária.
-    /// </summary>
-    public VeiculoPessoaResponse Pessoa { get; set; } = new();
-
-    /// <summary>
-    /// Placa do veículo.
+    /// Número da placa do veículo.
     /// </summary>
     public string Placa { get; set; } = string.Empty;
 
@@ -31,7 +23,7 @@ public sealed class VeiculoResponse
     public string Modelo { get; set; } = string.Empty;
 
     /// <summary>
-    /// Ano de fabricação.
+    /// Ano de fabricação do veículo.
     /// </summary>
     public int AnoFabricacao { get; set; }
 
@@ -41,37 +33,22 @@ public sealed class VeiculoResponse
     public string Cor { get; set; } = string.Empty;
 
     /// <summary>
-    /// Observações adicionais.
+    /// Observações sobre o veículo.
     /// </summary>
     public string? Observacoes { get; set; }
 
     /// <summary>
-    /// Hodometro atual.
+    /// Hodômetro do veículo.
     /// </summary>
     public int Hodometro { get; set; }
 
     /// <summary>
-    /// Hodometro atual formatada para leitura.
+    /// Hodômetro formatado do veículo.
     /// </summary>
-    public string HodometroFormatada { get; set; } = string.Empty;
+    public string HodometroFormatado { get; set; } = string.Empty;
 
     /// <summary>
     /// Indica se o veículo está ativo.
     /// </summary>
     public bool Ativo { get; set; }
-
-    /// <summary>
-    /// Data de criação do registro.
-    /// </summary>
-    public DateTime CreatedAt { get; set; }
-
-    /// <summary>
-    /// Data da última atualização.
-    /// </summary>
-    public DateTime? UpdatedAt { get; set; }
-
-    /// <summary>
-    /// Data da exclusão lógica.
-    /// </summary>
-    public DateTime? DeletedAt { get; set; }
 }

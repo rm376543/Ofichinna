@@ -1,3 +1,5 @@
+using Ofichina.Contracts.Responses;
+
 namespace Ofichina.Contracts.Common;
 
 /// <summary>

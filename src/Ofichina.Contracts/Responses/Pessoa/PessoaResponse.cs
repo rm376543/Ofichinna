@@ -1,15 +1,12 @@
-﻿namespace Ofichina.Contracts.Responses.Pessoa;
+﻿using Ofichina.Contracts.Common;
+
+namespace Ofichina.Contracts.Responses.Pessoa;
 
 /// <summary>
 /// Resposta com os dados de uma pessoa.
 /// </summary>
-public sealed class PessoaResponse
+public class PessoaResponse : BaseEntity
 {
-    /// <summary>
-    /// Identificador da pessoa.
-    /// </summary>
-    public Guid Id { get; set; }
-
     /// <summary>
     /// Nome completo ou razão social.
     /// </summary>
@@ -64,19 +61,4 @@ public sealed class PessoaResponse
     /// Identificador do usuário vinculado à pessoa.
     /// </summary>
     public Guid UsuarioId { get; set; }
-
-    /// <summary>
-    /// Data de criação do registro.
-    /// </summary>
-    public DateTime CreatedAt { get; set; }
-
-    /// <summary>
-    /// Data da última atualização.
-    /// </summary>
-    public DateTime? UpdatedAt { get; set; }
-
-    /// <summary>
-    /// Data da exclusão lógica.
-    /// </summary>
-    public DateTime? DeletedAt { get; set; }
 }

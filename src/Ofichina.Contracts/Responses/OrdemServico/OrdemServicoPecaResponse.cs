@@ -1,9 +1,11 @@
+using Ofichina.Contracts.Common;
+
 namespace Ofichina.Contracts.Responses.OrdensServico;
 
 /// <summary>
 /// Resposta com os dados de uma peça vinculada a um serviço da ordem de serviço.
 /// </summary>
-public sealed class OrdemServicoPecaResponse
+public sealed class OrdemServicoPecaResponse : BaseEntity
 {
     /// <summary>
     /// Identificador da peça vinculada ao serviço.

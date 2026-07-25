@@ -6,26 +6,18 @@ namespace Ofichina.Contracts.Requests.ItensServico;
 public sealed class UpdateItemServicoRequest : UpdateRequest
 {
     /// <summary>
+    /// Identificador do item de serviço.
+    /// </summary>
+    public Guid Id { get; init; } = Guid.Empty;
+
+    /// <summary>
     /// Identificador da ordem de serviço.
     /// </summary>
     public Guid OrdemServicoId { get; init; } = Guid.Empty;
 
     /// <summary>
-    /// Identificador do item de serviço.
+    /// Identificador dos Servicos e Pecas vinculados a uma Ordem de Servico.
     /// </summary>
-    public Guid ItemServicoId { get; init; } = Guid.Empty;
-
-    /// <summary>
-    /// Peças vinculadas ao item.
-    /// </summary>
-    public IReadOnlyCollection<UpdateItemServicoPecaRequest> Pecas { get; init; } = [];
+    public Guid ServicoPecaId { get; init; } = Guid.Empty;
 }
 
-/// <summary>
-/// Peça vinculada ao item de serviço.
-/// </summary>
-public sealed class UpdateItemServicoPecaRequest
-{
-    public Guid PecaServicoId { get; init; }
-    public int Quantidade { get; init; }
-}
