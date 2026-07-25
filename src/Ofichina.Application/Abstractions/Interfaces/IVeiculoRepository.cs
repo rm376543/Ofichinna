@@ -28,7 +28,7 @@ public interface IVeiculoRepository : IRepository<Veiculo>
     Task<IEnumerable<Veiculo>> GetAllWithPessoaAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Lista veículos paginados, incluindo a pessoa vinculada.
+    /// Lista veículos paginados
     /// </summary>
     Task<PagedResult<Veiculo>> GetAllVeiculosPaged(Pagination pagination, CancellationToken cancellationToken = default);
 }

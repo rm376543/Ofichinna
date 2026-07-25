@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Application.UseCases.Veiculos.Queries;
 using Ofichina.Contracts;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Veiculo;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Pessoa;
@@ -72,6 +73,7 @@ public sealed class VeiculoController : ControllerBase
     /// <summary>
     /// Retorna todos os veículos cadastrados.
     /// </summary>
+    /// <param name="pagination" >Parâmetros de paginação.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de veículos.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -79,15 +81,19 @@ public sealed class VeiculoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<PagedResponse<VeiculoResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<PagedResponse<VeiculoResponse>>>> BuscarTodoVeiculosPaginado(CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse<PagedResponse<VeiculoResponse>>>> BuscarTodosVeiculosPaginado([FromQuery] Pagination pagination, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção de todos os veículos vinculados a pessoas.");
 
-        var result = await _mediator.Send(new GetAllVeiculosPaginadosQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetAllVeiculosPaginadosQuery(pagination), cancellationToken);
 
         if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Falha ao obter os veículos vinculados a pessoas. Erro: {Error}", result.Error);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os veículos."));
+        }
 
+        _logger.LogInformation("Pesquisa de veículos concluída com sucesso.");
         return Ok(ApiResponse<PagedResponse<VeiculoResponse>>.SuccessResponse(result.Value));
     }
 

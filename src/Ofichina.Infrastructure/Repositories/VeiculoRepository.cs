@@ -19,6 +19,12 @@ public class VeiculoRepository : Repository<Veiculo>, IVeiculoRepository
         _context = context;
     }
 
+    /// <summary>
+    /// Obtém um veículo pelo seu ID, incluindo a pessoa associada.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public async Task<Veiculo?> GetByIdWithPessoaAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _context.Set<Veiculo>()
@@ -27,6 +33,11 @@ public class VeiculoRepository : Repository<Veiculo>, IVeiculoRepository
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
+    /// <summary>
+    /// Obtém todos os veículos com suas respectivas pessoas associadas.
+    /// </summary>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Lista de veículos com suas respectivas pessoas associadas.</returns>
     public async Task<IEnumerable<Veiculo>> GetAllWithPessoaAsync(CancellationToken cancellationToken = default)
     {
         return await _context.Set<Veiculo>()
@@ -35,6 +46,12 @@ public class VeiculoRepository : Repository<Veiculo>, IVeiculoRepository
             .ToListAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Obtém todos os veículos associados a uma pessoa específica pelo ID da pessoa.
+    /// </summary>
+    /// <param name="pessoaId">ID da pessoa.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Lista de veículos associados à pessoa.</returns>
     public async Task<IReadOnlyCollection<Veiculo>> GetAllVeiculosByPessoaIdAsync(
         Guid pessoaId,
         CancellationToken cancellationToken = default)
@@ -48,6 +65,12 @@ public class VeiculoRepository : Repository<Veiculo>, IVeiculoRepository
             .ToListAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Obtém uma lista paginada de veículos ativos com base nos parâmetros de paginação fornecidos.
+    /// </summary>
+    /// <param name="pagination">Parâmetros de paginação.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Resultado paginado de veículos.</returns>
     public async Task<PagedResult<Veiculo>> GetAllVeiculosPaged(Pagination pagination, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(pagination);
@@ -57,7 +80,7 @@ public class VeiculoRepository : Repository<Veiculo>, IVeiculoRepository
 
         var query = _context.Set<Veiculo>()
             .AsNoTracking()
-            .Include(x => x.Pessoa)
+            .Where(x => x.DeletedAt == null)
             .OrderBy(x => x.CreatedAt)
             .ThenBy(x => x.Id);
 
