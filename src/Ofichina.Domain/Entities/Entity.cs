@@ -1,3 +1,5 @@
+using Ofichina.Domain.Common;
+
 namespace Ofichina.Domain.Entities;
 
 /// <summary>
@@ -5,28 +7,12 @@ namespace Ofichina.Domain.Entities;
 /// Define a identidade da entidade através do Id.
 /// Contém propriedades comuns de auditoria e controle de ciclo de vida.
 /// </summary>
-public abstract class Entity
+public abstract class Entity : Audit
 {
     /// <summary>
     /// Identificador único da entidade.
     /// </summary>
     public Guid Id { get; protected set; }
-
-    /// <summary>
-    /// Data de criação da entidade.
-    /// </summary>
-    public DateTime CreatedAt { get; protected set; }
-
-    /// <summary>
-    /// Data da última atualização da entidade.
-    /// </summary>
-    public DateTime? UpdatedAt { get; protected set; }
-
-    /// <summary>
-    /// Data de exclusão (soft-delete) da entidade.
-    /// Quando preenchida, indica que a entidade foi removida logicamente.
-    /// </summary>
-    public DateTime? DeletedAt { get; protected set; }
 
     /// <summary>
     /// Construtor protegido utilizado pelas entidades no projeto de testes unitarios.

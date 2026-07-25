@@ -165,7 +165,7 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso, erro de validação ou item não encontrado.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut("{id:guid}")]
+    [HttpPut]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -176,32 +176,25 @@ public sealed class ItemServicoController : ControllerBase
         [FromBody] UpdateItemServicoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualização do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", request.OrdemServicoId, request.ItemServicoId);
-
-        request.Id = request.ItemServicoId;
+        _logger.LogInformation("Iniciando a atualização do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", request.OrdemServicoId, request.Id);
 
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
         {
-            _logger.LogWarning("Falha na validação de atualização do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erros: {Erros}", request.OrdemServicoId, request.ItemServicoId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)))
-;
+            _logger.LogWarning("Falha na validação de atualização do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erros: {Erros}", request.OrdemServicoId, request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
         var result = await _mediator.Send(new UpdateItemServicoCommand
         {
+            Id = request.Id,
             OrdemServicoId = request.OrdemServicoId,
-            Id = request.ItemServicoId,
-            Pecas = request.Pecas.Select(x => new UpdateItemServicoPecaCommand
-            {
-                ServicoPecaId = x.PecaServicoId,
-                Quantidade = x.Quantidade
-            }).ToList()
+            ServicoPecaId = request.ServicoPecaId
         }, cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Falha ao atualizar item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erro: {Erro}", request.OrdemServicoId, request.ItemServicoId, result.Error);
+            _logger.LogWarning("Falha ao atualizar item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erro: {Erro}", request.OrdemServicoId, request.Id, result.Error);
 #pragma warning disable S3358
             return result.Error == "Ordem de serviço não encontrada." || result.Error == "Item de serviço não encontrado." || result.Error == "Peça de serviço não encontrada."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
@@ -221,7 +214,7 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpDelete("{id:guid}")]
+    [HttpDelete]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -234,8 +227,8 @@ public sealed class ItemServicoController : ControllerBase
 
         var result = await _mediator.Send(new DeleteItemServicoCommand
         {
-            OrdemServicoId = request.OrdemServicoId,
-            Id = request.Id
+            Id = request.Id,
+            OrdemServicoId = request.OrdemServicoId
         }, cancellationToken);
 
         if (!result.IsSuccess)

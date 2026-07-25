@@ -47,16 +47,6 @@ public sealed class GetVeiculoByIdQueryHandler : IQueryHandler<GetVeiculoByIdQue
         return new VeiculoResponse
         {
             Id = veiculo.Id,
-            Pessoa = new VeiculoPessoaResponse
-            {
-                Nome = veiculo.Pessoa.Nome,
-                Documento = veiculo.Pessoa.Documento.ToString(),
-                Telefone = veiculo.Pessoa.Telefone.ToString(),
-                Ativo = !veiculo.Pessoa.EstaExcluida(),
-                CreatedAt = veiculo.Pessoa.CreatedAt,
-                UpdatedAt = veiculo.Pessoa.UpdatedAt,
-                DeletedAt = veiculo.Pessoa.DeletedAt
-            },
             Placa = veiculo.Placa.ToString(),
             Marca = veiculo.Marca,
             Modelo = veiculo.Modelo,
@@ -64,7 +54,7 @@ public sealed class GetVeiculoByIdQueryHandler : IQueryHandler<GetVeiculoByIdQue
             Cor = veiculo.Cor,
             Observacoes = veiculo.Observacoes,
             Hodometro = veiculo.Hodometro.Valor,
-            HodometroFormatada = veiculo.Hodometro.ToString(),
+            HodometroFormatado = veiculo.Hodometro.ToString(),
             Ativo = !veiculo.EstaExcluida(),
             CreatedAt = veiculo.CreatedAt,
             UpdatedAt = veiculo.UpdatedAt,

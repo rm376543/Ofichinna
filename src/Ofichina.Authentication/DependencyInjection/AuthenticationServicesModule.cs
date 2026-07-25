@@ -1,6 +1,6 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Ofichina.Authentication.Abstractions;
+using Ofichina.Application.Abstractions.Authentication;
 using Ofichina.Authentication.Services;
 
 namespace Ofichina.Authentication.DependencyInjection;

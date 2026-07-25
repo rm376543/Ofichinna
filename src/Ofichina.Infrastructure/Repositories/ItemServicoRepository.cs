@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Exceptions;
 using Ofichina.Infrastructure.Persistence;
 
 namespace Ofichina.Infrastructure.Repositories;
@@ -19,9 +18,9 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
         _context = context;
     }
 
-    public async Task<ItemServico?> GetByOrdemServicoIdAndIdAsync(
+    public async Task<ItemServico?> GetByOrdemServicoIdAndItemServicoIdAsync(
         Guid ordemServicoId,
-        Guid id,
+        Guid itemServicoId,
         CancellationToken cancellationToken = default,
         bool tracking = false,
         bool includeRelacionados = false)
@@ -39,18 +38,24 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
         }
 
         return await query.FirstOrDefaultAsync(
-            x => x.OrdemServicoId == ordemServicoId && x.Id == id,
+            x => x.OrdemServicoId == ordemServicoId && x.Id == itemServicoId,
             cancellationToken);
     }
 
     public async Task<ItemServico?> GetByOrdemServicoIdAndServicoPecaIdAsync(
         Guid ordemServicoId,
-        Guid pecaServicoId,
+        Guid servicoPecaId,
         CancellationToken cancellationToken = default,
         bool tracking = false)
     {
-        // Método obsoleto - manter para compatibilidade mas retornar null pois não há mais ServicoPecaId único
-        return null;
+        IQueryable<ItemServico> query = _context.Set<ItemServico>();
+
+        if (!tracking)
+            query = query.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync(
+            x => x.OrdemServicoId == ordemServicoId && x.ServicoPecaId == servicoPecaId,
+            cancellationToken);
     }
 
     public async Task<IReadOnlyCollection<ItemServico>> GetByOrdemServicoIdAsync(
@@ -78,10 +83,9 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
 
     public async Task<ItemServico> AdicionarAsync(
         Guid ordemServicoId,
-        Guid pecaServicoId,
+        Guid servicoPecaId,
         CancellationToken cancellationToken = default)
     {
-        // Método obsoleto - criar item vazio e deixar handler adicionar peças
         var item = ItemServico.Criar(ordemServicoId);
         await AddAsync(item, cancellationToken);
 

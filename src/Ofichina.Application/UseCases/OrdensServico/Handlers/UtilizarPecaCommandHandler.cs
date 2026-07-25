@@ -6,6 +6,7 @@ using Ofichina.Domain.Exceptions;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Domain.Entities;
+using Ofichina.Application.Abstractions.Common;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 

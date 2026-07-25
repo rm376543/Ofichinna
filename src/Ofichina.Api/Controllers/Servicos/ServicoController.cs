@@ -119,20 +119,17 @@ public sealed class ServicoController : ControllerBase
     /// Atualiza um serviço existente.
     /// </summary>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut("{id:guid}")]
+    [HttpPut]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> AtualizarServico(
-        Guid id,
         [FromBody] UpdateServicoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualização do serviço com Id: {Id}", id);
-
-        request.Id = id;
+        _logger.LogInformation("Iniciando a atualização do serviço com Id: {Id}", request.Id);
 
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
 
@@ -141,7 +138,7 @@ public sealed class ServicoController : ControllerBase
 
         var result = await _mediator.Send(new UpdateServicoCommand
         {
-            Id = id,
+            Id = request.Id,
             Nome = request.Nome,
             Descricao = request.Descricao,
             Valor = request.Valor,

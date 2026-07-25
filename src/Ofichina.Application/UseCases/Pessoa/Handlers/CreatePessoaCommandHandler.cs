@@ -7,6 +7,7 @@ using Ofichina.Domain.Exceptions;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Domain.ValueObjects;
 using Ofichina.Domain.Common;
+using Ofichina.Application.Abstractions.Common;
 
 namespace Ofichina.Application.UseCases.Pessoas.Handlers;
 

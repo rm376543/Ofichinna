@@ -35,11 +35,10 @@ public class ProjectDependencyTests
             "Ofichina.Infrastructure");
 
     [Fact]
-    public void Authentication_deve_depender_apenas_de_Domain_e_Contracts()
+    public void Authentication_deve_depender_Application_Domain_e_Contracts()
         => AssertNoDependencies(
             typeof(AuthenticationModule).Assembly,
             "Ofichina.Api",
-            "Ofichina.Application",
             "Ofichina.Bootstrap",
             "Ofichina.Infrastructure");
 

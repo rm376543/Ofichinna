@@ -9,12 +9,12 @@ namespace Ofichina.Application.UseCases.ItensServico.Commands;
 public sealed class DeleteItemServicoCommand : ICommand<Result>
 {
     /// <summary>
-    /// Identificador da ordem de serviço.
-    /// </summary>
-    public Guid OrdemServicoId { get; init; }
-
-    /// <summary>
     /// Identificador do item de serviço.
     /// </summary>
     public Guid Id { get; init; }
+
+    /// <summary>
+    /// Identificador da ordem de serviço.
+    /// </summary>
+    public Guid OrdemServicoId { get; init; }
 }

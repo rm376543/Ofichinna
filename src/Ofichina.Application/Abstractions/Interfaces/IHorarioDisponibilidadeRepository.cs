@@ -1,9 +1,13 @@
+using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.Abstractions.Interfaces;
 
 public interface IHorarioDisponibilidadeRepository : IRepository<HorarioDisponibilidade>
 {
     Task<IReadOnlyCollection<HorarioDisponibilidade>> GetHorariosPorDiaAsync(Guid diaDisponibilidadeId, CancellationToken cancellationToken = default);
+
+    Task<PagedResult<HorarioDisponibilidade>> GetHorariosDisponiveisPaginados(Pagination pagination, CancellationToken cancellationToken = default);
+
+    Task<HorarioDisponibilidade?> BuscarPorHorarioAsync(TimeOnly horario, CancellationToken cancellationToken = default);
 }

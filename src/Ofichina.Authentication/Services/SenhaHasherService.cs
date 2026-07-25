@@ -1,4 +1,4 @@
-using Ofichina.Authentication.Abstractions;
+using Ofichina.Application.Abstractions.Authentication;
 using Ofichina.Authentication.Security;
 
 namespace Ofichina.Authentication.Services;

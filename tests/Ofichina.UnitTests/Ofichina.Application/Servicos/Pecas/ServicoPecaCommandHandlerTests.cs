@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging.Abstractions;
+using Ofichina.Application.Abstractions.Common;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.ServicosPecas.Commands;
 using Ofichina.Application.UseCases.ServicosPecas.Handlers;
 using Ofichina.Contracts.Common;
-using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 
 namespace Ofichina.UnitTests.Application.Servicos.Pecas;

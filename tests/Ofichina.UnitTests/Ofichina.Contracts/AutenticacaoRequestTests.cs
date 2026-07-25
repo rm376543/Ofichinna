@@ -1,5 +1,5 @@
 ﻿using Ofichina.Contracts.Requests.Autenticacao;
-using Ofichina.Contracts.Responses;
+using Ofichina.Contracts.Responses.Authentication;
 
 namespace Ofichina.UnitTests.Contracts;
 
@@ -10,7 +10,7 @@ public class AutenticacaoRequestTests
     {
         var expiraEm = new DateTime(2026, 07, 11, 12, 00, 00, DateTimeKind.Utc);
 
-        var response = new AutenticacaoResponse
+        var response = new AuthenticationResponse
         {
             UsuarioId = Guid.Parse("550e8400-e29b-41d4-a716-446655440000"),
             Email = "admin@ofichinna.com",
@@ -29,7 +29,7 @@ public class AutenticacaoRequestTests
     [Fact]
     public void AutenticacaoResponse_DeveHerdaDeTokenJwtResponse()
     {
-        var response = new AutenticacaoResponse();
+        var response = new AuthenticationResponse();
 
         Assert.IsAssignableFrom<TokenJwtResponse>(response);
     }

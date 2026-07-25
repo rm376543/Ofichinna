@@ -138,34 +138,31 @@ public sealed class PecaController : ControllerBase
     /// <summary>
     /// Atualiza uma peça existente.
     /// </summary>
-    /// <param name="id">Identificador da peça.</param>
     /// <param name="request">Dados atualizados da peça.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso, erro de validação ou peça não encontrada.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut("{id:guid}")]
+    [HttpPut]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> AtualizarPeca(Guid id, [FromBody] UpdatePecaRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse>> AtualizarPeca([FromBody] UpdatePecaRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualização da peça com Id: {Id}", id);
-
-        request.Id = id;
+        _logger.LogInformation("Iniciando a atualização da peça com Id: {Id}", request.Id);
 
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
         {
-            _logger.LogError("Erro ao validar a atualização da peça com Id: {Id}. Erros: {Erros}", id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            _logger.LogError("Erro ao validar a atualização da peça com Id: {Id}. Erros: {Erros}", request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
         var result = await _mediator.Send(new UpdatePecaCommand
         {
-            Id = id,
+            Id = request.Id,
             Nome = request.Nome,
             Descricao = request.Descricao,
             Codigo = request.Codigo,
@@ -176,7 +173,7 @@ public sealed class PecaController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao atualizar a peça com Id: {Id}. Erro: {Erro}", id, result.Error);
+            _logger.LogError("Erro ao atualizar a peça com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
             return result.Error == "Peça não encontrada."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
                 : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a peça."));

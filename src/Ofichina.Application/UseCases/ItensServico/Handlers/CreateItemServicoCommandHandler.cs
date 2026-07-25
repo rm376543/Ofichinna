@@ -7,6 +7,7 @@ using Ofichina.Domain.Common;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Domain.Enums;
+using Ofichina.Application.Abstractions.Common;
 
 namespace Ofichina.Application.UseCases.ItensServico.Handlers;
 
@@ -17,7 +18,7 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
 {
     private readonly IOrdemServicoRepository _ordemServicoRepository;
     private readonly IItemServicoRepository _itemServicoRepository;
-    private readonly IRepository<ServicoPeca> _pecaServicoRepository;
+    private readonly IRepository<ServicoPeca> _servicoPecaRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateItemServicoCommandHandler> _logger;
 
@@ -30,7 +31,7 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
     {
         _ordemServicoRepository = ordemServicoRepository;
         _itemServicoRepository = itemServicoRepository;
-        _pecaServicoRepository = pecaServicoRepository;
+        _servicoPecaRepository = pecaServicoRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -51,7 +52,7 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
             var pecas = new List<ServicoPeca>();
             foreach (var pecaCommand in command.Pecas)
             {
-                var pecaServico = await _pecaServicoRepository.GetByIdAsync(pecaCommand.ServicoPecaId, cancellationToken, tracking: true);
+                var pecaServico = await _servicoPecaRepository.GetByIdAsync(pecaCommand.ServicoPecaId, cancellationToken, tracking: true);
                 if (pecaServico is null || pecaServico.EstaExcluida())
                     return Result.Failure<Guid>("Peça de serviço não encontrada.");
 

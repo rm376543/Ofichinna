@@ -1,3 +1,4 @@
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.OrdensServico;
 
 namespace Ofichina.Contracts.Responses.ItensServico;
@@ -5,13 +6,8 @@ namespace Ofichina.Contracts.Responses.ItensServico;
 /// <summary>
 /// Resposta com os dados de um item de serviço vinculado à ordem de serviço.
 /// </summary>
-public sealed class ItemServicoResponse
+public sealed class ItemServicoResponse : BaseEntity
 {
-    /// <summary>
-    /// Identificador do item de serviço.
-    /// </summary>
-    public Guid Id { get; set; }
-
     /// <summary>
     /// Identificador do serviço cadastrado vinculado ao item.
     /// </summary>
@@ -41,19 +37,4 @@ public sealed class ItemServicoResponse
     /// Peças vinculadas ao item de serviço.
     /// </summary>
     public ICollection<OrdemServicoPecaResponse> Pecas { get; set; } = [];
-
-    /// <summary>
-    /// Data de criação do registro.
-    /// </summary>
-    public DateTime CreatedAt { get; set; }
-
-    /// <summary>
-    /// Data da última atualização do registro.
-    /// </summary>
-    public DateTime? UpdatedAt { get; set; }
-
-    /// <summary>
-    /// Data da exclusão lógica do registro.
-    /// </summary>
-    public DateTime? DeletedAt { get; set; }
 }

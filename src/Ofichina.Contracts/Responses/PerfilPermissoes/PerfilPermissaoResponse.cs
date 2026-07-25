@@ -1,6 +1,8 @@
+using Ofichina.Contracts.Common;
+
 namespace Ofichina.Contracts.Responses.PerfilPermissoes;
 
-public sealed class PerfilPermissaoResponse
+public sealed class PerfilPermissaoResponse : BaseEntity
 {
     public Guid PerfilId { get; set; }
 

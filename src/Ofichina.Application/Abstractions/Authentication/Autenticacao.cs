@@ -1,21 +1,21 @@
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Autenticacao;
 using Ofichina.Contracts.Requests.Usuario;
-using Ofichina.Contracts.Responses;
+using Ofichina.Contracts.Responses.Authentication;
 using Ofichina.Domain.Entities;
 
-namespace Ofichina.Authentication.Abstractions;
+namespace Ofichina.Application.Abstractions.Authentication;
 
 /// <summary>
 /// Contrato principal do fluxo de autenticação.
 /// </summary>
 public interface IAutenticacaoService
 {
-    Task<Result<AutenticacaoResponse>> AutenticarAsync(
+    Task<Result<AuthenticationResponse>> AutenticarAsync(
         AutenticacaoRequest request,
         CancellationToken cancellationToken = default);
 
-    Task<Result<AutenticacaoResponse>> CadastrarAsync(
+    Task<Result<AuthenticationResponse>> CadastrarAsync(
         CadastrarUsuarioRequest request,
         CancellationToken cancellationToken = default);
 }
@@ -25,7 +25,7 @@ public interface IAutenticacaoService
 /// </summary>
 public interface IUsuarioAutenticacaoRepository
 {
-    Task<Usuario?> ObterPorEmailAsync(string email, CancellationToken cancellationToken = default);
+    Task<Usuario> ObterPorEmailAsync(string email, CancellationToken cancellationToken = default);
 }
 
 /// <summary>

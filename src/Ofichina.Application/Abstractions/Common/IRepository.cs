@@ -1,6 +1,8 @@
+using Ofichina.Contracts.Common;
+using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 
-namespace Ofichina.Domain.Common;
+namespace Ofichina.Application.Abstractions.Common;
 
 /// <summary>
 /// Interface genérica para repositórios.

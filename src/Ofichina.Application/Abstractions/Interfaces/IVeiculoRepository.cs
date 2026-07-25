@@ -1,5 +1,7 @@
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Common;
+using Ofichina.Application.Abstractions.Common;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Application.Abstractions.Interfaces;
 
@@ -16,9 +18,8 @@ public interface IVeiculoRepository : IRepository<Veiculo>
     /// <summary>
     /// Obtém todos os veículos de uma pessoa pelo identificador da pessoa, incluindo a pessoa vinculada.
     /// </summary>
-    Task<PagedResult<Veiculo>> GetVeiclesPagedByPessoaIdAsync(
+    Task<IReadOnlyCollection<Veiculo>> GetAllVeiculosByPessoaIdAsync(
         Guid pessoaId,
-        Pagination pagination,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -29,5 +30,5 @@ public interface IVeiculoRepository : IRepository<Veiculo>
     /// <summary>
     /// Lista veículos paginados, incluindo a pessoa vinculada.
     /// </summary>
-    Task<PagedResult<Veiculo>> GetPagedWithPessoaAsync(Pagination pagination, CancellationToken cancellationToken = default);
+    Task<PagedResult<Veiculo>> GetAllVeiculosPaged(Pagination pagination, CancellationToken cancellationToken = default);
 }

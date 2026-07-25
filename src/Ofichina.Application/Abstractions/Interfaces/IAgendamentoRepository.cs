@@ -1,4 +1,4 @@
-using Ofichina.Domain.Common;
+using Ofichina.Contracts.Common;
 using Ofichina.Domain.Aggregates;
 
 namespace Ofichina.Application.Abstractions.Interfaces;
@@ -12,4 +12,6 @@ public interface IAgendamentoRepository : IRepository<Agendamento>
     Task<bool> ExisteConflitoConsultorAsync(Guid horarioConsultorId, CancellationToken cancellationToken = default);
 
     Task<bool> ExisteConflitoVeiculoAsync(Guid veiculoId, Guid diaDisponibilidadeId, Guid horarioConsultorId, CancellationToken cancellationToken = default);
+
+    Task<Agendamento?> BuscarAgendamentosPorPessoaId(Guid PessoaId);
 }

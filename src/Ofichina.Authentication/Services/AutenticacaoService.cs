@@ -1,11 +1,11 @@
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Autenticacao;
 using Ofichina.Contracts.Requests.Usuario;
-using Ofichina.Contracts.Responses;
+using Ofichina.Application.Abstractions.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
-using Ofichina.Authentication.Abstractions;
-using Ofichina.Domain.Common;
+using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Contracts.Responses.Authentication;
 
 namespace Ofichina.Authentication.Services;
 
@@ -34,7 +34,7 @@ public sealed class AutenticacaoService : IAutenticacaoService
         _senhaHasher = senhaHasher;
     }
 
-    public async Task<Result<AutenticacaoResponse>> AutenticarAsync(
+    public async Task<Result<AuthenticationResponse>> AutenticarAsync(
         AutenticacaoRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -46,19 +46,19 @@ public sealed class AutenticacaoService : IAutenticacaoService
 
         if (usuario is null || !usuario.EstaAtivo())
         {
-            return Result.Failure<AutenticacaoResponse>("Credenciais inv\u00E1lidas.");
+            return Result.Failure<AuthenticationResponse>("Credenciais inválidas.");
         }
 
         if (!_senhaHasher.Verificar(request.Senha, usuario.SenhaHash))
         {
-            return Result.Failure<AutenticacaoResponse>("Credenciais inv\u00E1lidas.");
+            return Result.Failure<AuthenticationResponse>("Credenciais inválidas.");
         }
 
         var perfis = await _perfilService.ObterPerfisAsync(usuario.Id, cancellationToken);
         var permissoes = await _perfilService.ObterPermissoesAsync(usuario.Id, cancellationToken);
         var token = await _jwtTokenService.GerarTokenAsync(usuario, perfis, cancellationToken);
 
-        return Result.Success(new AutenticacaoResponse
+        return Result.Success(new AuthenticationResponse
         {
             UsuarioId = usuario.Id,
             Email = usuario.Email.Value,
@@ -69,7 +69,7 @@ public sealed class AutenticacaoService : IAutenticacaoService
         });
     }
 
-    public async Task<Result<AutenticacaoResponse>> CadastrarAsync(
+    public async Task<Result<AuthenticationResponse>> CadastrarAsync(
         CadastrarUsuarioRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -81,7 +81,7 @@ public sealed class AutenticacaoService : IAutenticacaoService
 
         if (usuarioExistente is not null)
         {
-            return Result.Failure<AutenticacaoResponse>("J\u00E1 existe um usu\u00E1rio cadastrado com este e-mail.");
+            return Result.Failure<AuthenticationResponse>("Já existe um usuário cadastrado com este e-mail.");
         }
 
         var usuario = new Usuario(email, _senhaHasher.GerarHash(request.Senha));
@@ -90,7 +90,7 @@ public sealed class AutenticacaoService : IAutenticacaoService
 
         var token = await _jwtTokenService.GerarTokenAsync(usuario, [], cancellationToken);
 
-        return Result.Success(new AutenticacaoResponse
+        return Result.Success(new AuthenticationResponse
         {
             UsuarioId = usuario.Id,
             Email = usuario.Email.Value,

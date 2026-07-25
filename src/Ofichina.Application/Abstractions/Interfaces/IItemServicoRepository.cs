@@ -1,4 +1,3 @@
-using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 
 namespace Ofichina.Application.Abstractions.Interfaces;
@@ -11,9 +10,9 @@ public interface IItemServicoRepository : IRepository<ItemServico>
     /// <summary>
     /// Obtém um item de serviço pela ordem de serviço e identificador.
     /// </summary>
-    Task<ItemServico?> GetByOrdemServicoIdAndIdAsync(
+    Task<ItemServico?> GetByOrdemServicoIdAndItemServicoIdAsync(
         Guid ordemServicoId,
-        Guid id,
+        Guid itemServicoId,
         CancellationToken cancellationToken = default,
         bool tracking = false,
         bool includeRelacionados = false);
@@ -23,7 +22,7 @@ public interface IItemServicoRepository : IRepository<ItemServico>
     /// </summary>
     Task<ItemServico?> GetByOrdemServicoIdAndServicoPecaIdAsync(
         Guid ordemServicoId,
-        Guid pecaServicoId,
+        Guid servicoPecaId,
         CancellationToken cancellationToken = default,
         bool tracking = false);
 
@@ -41,6 +40,6 @@ public interface IItemServicoRepository : IRepository<ItemServico>
     /// </summary>
     Task<ItemServico> AdicionarAsync(
         Guid ordemServicoId,
-        Guid pecaServicoId,
+        Guid servicoPecaId,
         CancellationToken cancellationToken = default);
 }

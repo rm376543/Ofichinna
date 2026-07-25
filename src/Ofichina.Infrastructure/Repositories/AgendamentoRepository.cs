@@ -3,6 +3,7 @@ using Ofichina.Domain.Common;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Infrastructure.Persistence;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Infrastructure.Repositories;
 
@@ -69,5 +70,18 @@ public sealed class AgendamentoRepository : Repository<Agendamento>, IAgendament
         return await _context.Agendamentos
             .AsNoTracking()
             .AnyAsync(x => x.DeletedAt == null && x.VeiculoId == veiculoId && x.DiaDisponibilidadeId == diaDisponibilidadeId && x.HorarioConsultorId == horarioConsultorId, cancellationToken);
+    }
+
+    public async Task<Agendamento?> BuscarAgendamentosPorPessoaId(Guid PessoaID)
+    {
+        return await _context.Agendamentos
+            .AsNoTracking()
+            .Include(x => x.Cliente)
+            .Include(x => x.Consultor)
+            .Include(x => x.Veiculo)
+            .Include(x => x.DiaDisponibilidade)
+            .Include(x => x.HorarioConsultor)
+                .ThenInclude(x => x.Pessoa)
+            .FirstOrDefaultAsync(x => x.ClientePessoaId == PessoaID && x.DeletedAt == null);
     }
 }

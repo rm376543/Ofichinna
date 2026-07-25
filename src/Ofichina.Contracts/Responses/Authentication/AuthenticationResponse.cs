@@ -1,4 +1,4 @@
-namespace Ofichina.Contracts.Responses;
+namespace Ofichina.Contracts.Responses.Authentication;
 
 /// <summary>
 /// Dados básicos do JWT emitido.
@@ -13,7 +13,7 @@ public class TokenJwtResponse
 /// <summary>
 /// Resposta do processo de autenticação.
 /// </summary>
-public class AutenticacaoResponse : TokenJwtResponse
+public class AuthenticationResponse : TokenJwtResponse
 {
     public Guid UsuarioId { get; set; }
 

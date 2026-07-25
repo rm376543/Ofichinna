@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
-using Ofichina.Authentication.Abstractions;
-using Ofichina.Domain.Common;
+using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Application.Abstractions.Common;
 
 namespace Ofichina.ArchitectureTests.Naming;
 

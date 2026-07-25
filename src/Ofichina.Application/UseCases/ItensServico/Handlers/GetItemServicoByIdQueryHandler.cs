@@ -35,7 +35,7 @@ public sealed class GetItemServicoByIdQueryHandler : IQueryHandler<GetItemServic
             if (ordemServico is null || ordemServico.EstaExcluida())
                 return Result.Failure<ItemServicoResponse>("Ordem de serviço não encontrada.");
 
-            var item = await _itemServicoRepository.GetByOrdemServicoIdAndIdAsync(query.OrdemServicoId, query.Id, cancellationToken, includeRelacionados: true);
+            var item = await _itemServicoRepository.GetByOrdemServicoIdAndItemServicoIdAsync(query.OrdemServicoId, query.Id, cancellationToken, includeRelacionados: true);
             if (item is null || item.EstaExcluida())
                 return Result.Failure<ItemServicoResponse>("Item de serviço não encontrado.");
 

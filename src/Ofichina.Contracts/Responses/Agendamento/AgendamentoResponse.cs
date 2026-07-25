@@ -1,13 +1,13 @@
+using Ofichina.Contracts.Common;
+
 namespace Ofichina.Contracts.Responses.Agendamento;
 
 /// <summary>
 /// Resposta com os dados de um agendamento.
 /// </summary>
-public sealed class AgendamentoResponse
+public sealed class AgendamentoResponse : BaseEntity
 {
-    public Guid Id { get; set; }
-
-    public Guid ClientePessoaId { get; set; }
+    public Guid PessoaId { get; set; }
 
     public string ClienteNome { get; set; } = string.Empty;
 
@@ -28,10 +28,4 @@ public sealed class AgendamentoResponse
     public string Status { get; set; } = string.Empty;
 
     public string? Descricao { get; set; }
-
-    public DateTime CreatedAt { get; set; }
-
-    public DateTime? UpdatedAt { get; set; }
-
-    public DateTime? DeletedAt { get; set; }
 }

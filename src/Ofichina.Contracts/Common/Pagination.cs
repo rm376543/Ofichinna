@@ -1,4 +1,4 @@
-namespace Ofichina.Domain.Common;
+namespace Ofichina.Contracts.Common;
 
 public class Pagination
 {

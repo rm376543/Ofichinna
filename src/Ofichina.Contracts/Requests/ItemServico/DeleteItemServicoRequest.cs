@@ -6,13 +6,13 @@
     public class DeleteItemServicoRequest
     {
         /// <summary>
-        /// Identificador da ordem de serviço.
-        /// </summary>
-        public Guid OrdemServicoId { get; set; }
-
-        /// <summary>
         /// Identificador do item de serviço.
         /// </summary>
         public Guid Id { get; set; } = Guid.Empty;
+
+        /// <summary>
+        /// Identificador da ordem de serviço.
+        /// </summary>
+        public Guid OrdemServicoId { get; set; }
     }
 }

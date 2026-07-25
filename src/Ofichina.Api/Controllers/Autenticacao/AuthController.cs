@@ -6,6 +6,7 @@ using Ofichina.Application.UseCases.Autenticacao.Commands;
 using Ofichina.Contracts.Requests.Autenticacao;
 using Ofichina.Contracts.Requests.Usuario;
 using Ofichina.Contracts.Responses;
+using Ofichina.Contracts.Responses.Authentication;
 
 namespace Ofichina.Api.Controllers.Autenticacao;
 
@@ -40,10 +41,10 @@ public sealed class AuthController : ControllerBase
     /// <returns>Mensagem de sucesso, erro de validação ou erro ao concluir cadastro.</returns>
     [AllowAnonymous]
     [HttpPost("login")]
-    [ProducesResponseType(typeof(ApiResponse<AutenticacaoResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse<AutenticacaoResponse>), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse<AutenticacaoResponse>), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<ApiResponse<AutenticacaoResponse>>> LoginAsync(
+    [ProducesResponseType(typeof(ApiResponse<AuthenticationResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<AuthenticationResponse>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<AuthenticationResponse>), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ApiResponse<AuthenticationResponse>>> LoginAsync(
         [FromBody] AutenticacaoRequest request,
         CancellationToken cancellationToken)
     {
@@ -75,7 +76,7 @@ public sealed class AuthController : ControllerBase
 
         _logger.LogInformation("Login realizado com sucesso. Email: {Email}", request.Email);
 
-        return Ok(ApiResponse<AutenticacaoResponse>.SuccessResponse(result.Value, "Autenticação realizada com sucesso."));
+        return Ok(ApiResponse<AuthenticationResponse>.SuccessResponse(result.Value, "Autenticação realizada com sucesso."));
     }
 
     /// <summary>
@@ -86,9 +87,9 @@ public sealed class AuthController : ControllerBase
     /// <returns>Mensagem de sucesso, erro de validação ou erro ao concluir cadastro.</returns>
     [AllowAnonymous]
     [HttpPost("register")]
-    [ProducesResponseType(typeof(ApiResponse<AutenticacaoResponse>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<AuthenticationResponse>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ApiResponse<AutenticacaoResponse>>> RegisterAsync(
+    public async Task<ActionResult<ApiResponse<AuthenticationResponse>>> RegisterAsync(
         [FromBody] CadastrarUsuarioRequest request,
         CancellationToken cancellationToken)
     {
@@ -124,7 +125,7 @@ public sealed class AuthController : ControllerBase
 
         return StatusCode(
             StatusCodes.Status201Created,
-            ApiResponse<AutenticacaoResponse>.SuccessResponse(result.Value, "Cadastro realizado com sucesso."));
+            ApiResponse<AuthenticationResponse>.SuccessResponse(result.Value, "Cadastro realizado com sucesso."));
     }
 }
 

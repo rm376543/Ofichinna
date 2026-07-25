@@ -1,18 +1,18 @@
 ﻿using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.Exceptions;
+using Ofichina.Application.Abstractions.Authentication;
 using Ofichina.Application.UseCases.Autenticacao.Commands;
-using Ofichina.Authentication.Abstractions;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Enums;
-using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
 using Ofichina.Domain.Common;
+using Ofichina.Contracts.Responses.Authentication;
 
 namespace Ofichina.Application.UseCases.Autenticacao.Handlers;
 
-public sealed class CadastrarUsuarioCommandHandler : ICommandHandler<CadastrarUsuarioCommand, Result<AutenticacaoResponse>>
+public sealed class CadastrarUsuarioCommandHandler : ICommandHandler<CadastrarUsuarioCommand, Result<AuthenticationResponse>>
 {
     private readonly IRepository<Usuario> _usuarioRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -37,7 +37,7 @@ public sealed class CadastrarUsuarioCommandHandler : ICommandHandler<CadastrarUs
         _logger = logger;
     }
 
-    public async Task<Result<AutenticacaoResponse>> HandleAsync(CadastrarUsuarioCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result<AuthenticationResponse>> HandleAsync(CadastrarUsuarioCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -50,7 +50,7 @@ public sealed class CadastrarUsuarioCommandHandler : ICommandHandler<CadastrarUs
             if (usuarioExistente is not null)
             {
                 _logger.LogWarning("Já existe um usuário cadastrado com este e-mail. Email: {Email}", command.Email);
-                return Result.Failure<AutenticacaoResponse>("Já existe um usuário cadastrado com este e-mail.");
+                return Result.Failure<AuthenticationResponse>("Já existe um usuário cadastrado com este e-mail.");
             }
 
             var usuario = new Usuario(email, _senhaHasher.GerarHash(command.Senha));
@@ -63,7 +63,7 @@ public sealed class CadastrarUsuarioCommandHandler : ICommandHandler<CadastrarUs
 
             _logger.LogInformation("Cadastro de usuário realizado com sucesso. UsuarioId: {UsuarioId}, Email: {Email}", usuario.Id, usuario.Email.Value);
 
-            return Result.Success(new AutenticacaoResponse
+            return Result.Success(new AuthenticationResponse
             {
                 UsuarioId = usuario.Id,
                 Email = usuario.Email.Value,
@@ -76,12 +76,12 @@ public sealed class CadastrarUsuarioCommandHandler : ICommandHandler<CadastrarUs
         catch (BusinessException ex)
         {
             _logger.LogError(ex, "Erro de negócio ao cadastrar usuário. Email: {Email}, Erro: {Erro}", command.Email, ex.Message);
-            return Result.Failure<AutenticacaoResponse>(ex.Message);
+            return Result.Failure<AuthenticationResponse>(ex.Message);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro desconhecido ao cadastrar usuário. Email: {Email}, Erro: {Erro}", command.Email, ex.Message);
-            return Result.Failure<AutenticacaoResponse>($"{ApplicationErrors.ErroDesconhecido} - {ex.Message}");
+            return Result.Failure<AuthenticationResponse>($"{ApplicationErrors.ErroDesconhecido} - {ex.Message}");
         }
     }
 }

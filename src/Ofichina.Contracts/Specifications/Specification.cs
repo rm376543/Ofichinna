@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace Ofichina.Domain.Specifications;
+namespace Ofichina.Contracts.Specifications;
 
 /// <summary>
 /// Classe base para Specifications Pattern.

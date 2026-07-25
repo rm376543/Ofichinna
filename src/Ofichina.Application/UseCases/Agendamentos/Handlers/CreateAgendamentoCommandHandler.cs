@@ -1,11 +1,11 @@
 using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Abstractions.Authentication;
 using Ofichina.Application.UseCases.Agendamentos.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Agendamento;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Authentication.Abstractions;
 using Ofichina.Domain.Entities;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Domain.Common;
@@ -132,7 +132,7 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
         return new AgendamentoResponse
         {
             Id = agendamento.Id,
-            ClientePessoaId = agendamento.ClientePessoaId,
+            PessoaId = agendamento.ClientePessoaId,
             ClienteNome = pessoa.Nome,
             DiaDisponibilidadeId = agendamento.DiaDisponibilidadeId,
             HorarioConsultorId = agendamento.HorarioConsultorId,

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Ofichina.Domain.Entities;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Infrastructure.Persistence;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Infrastructure.Repositories;
 
@@ -14,6 +15,13 @@ public sealed class HorarioDisponibilidadeRepository : Repository<HorarioDisponi
         _context = context;
     }
 
+
+    /// <summary>
+    /// Busca os horários de disponibilidade por dia de disponibilidade.
+    /// </summary>
+    /// <param name="diaDisponibilidadeId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     public async Task<IReadOnlyCollection<HorarioDisponibilidade>> GetHorariosPorDiaAsync(Guid diaDisponibilidadeId, CancellationToken cancellationToken = default)
     {
         return await _context.DiasHorariosDisponibilidade
@@ -22,5 +30,43 @@ public sealed class HorarioDisponibilidadeRepository : Repository<HorarioDisponi
             .Select(x => x.HorarioDisponibilidade)
             .OrderBy(x => x.Hora)
             .ToListAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Busca os horários de disponibilidade paginados.
+    /// </summary>
+    /// <param name="pagination"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<PagedResult<HorarioDisponibilidade>> GetHorariosDisponiveisPaginados(Pagination pagination, CancellationToken cancellationToken = default)
+    {
+
+        ArgumentNullException.ThrowIfNull(pagination);
+
+        var pageNumber = pagination.PageNumber > 0 ? pagination.PageNumber : 1;
+        var pageSize = pagination.PageSize > 0 ? pagination.PageSize : 10;
+
+        var query = _context.Set<HorarioDisponibilidade>()
+            .AsNoTracking()
+            .OrderBy(x => x.CreatedAt);
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<HorarioDisponibilidade>(items, totalCount, pageNumber, pageSize);
+
+    }
+
+    public async Task<HorarioDisponibilidade?> BuscarPorHorarioAsync(TimeOnly horario, CancellationToken cancellationToken = default)
+    {
+        var query = _context.Set<HorarioDisponibilidade>()
+            .AsNoTracking()
+            .Where(x => x.Hora == horario && x.DeletedAt == null);
+
+        return await query.FirstOrDefaultAsync(cancellationToken);
     }
 }

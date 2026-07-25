@@ -1,5 +1,4 @@
 using Ofichina.Domain.Aggregates;
-using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.Abstractions.Interfaces;
 

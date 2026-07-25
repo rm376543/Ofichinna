@@ -1,6 +1,6 @@
 ﻿using Ofichina.Application.Abstractions;
+using Ofichina.Application.Abstractions.Authentication;
 using Ofichina.Application.UseCases.PerfilUsuario.Queries;
-using Ofichina.Authentication.Abstractions;
 
 namespace Ofichina.Application.UseCases.PerfilUsuario.Handlers;
 

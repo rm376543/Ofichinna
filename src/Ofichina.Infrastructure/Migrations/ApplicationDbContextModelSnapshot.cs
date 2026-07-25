@@ -264,6 +264,10 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Property<Guid>("OrdemServicoId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("ServicoPecaId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("ServicoPecaId");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 

@@ -1,11 +1,10 @@
 using Ofichina.Application.UseCases.Autenticacao.Commands;
 using Ofichina.Application.UseCases.Autenticacao.Handlers;
-using Ofichina.Authentication.Abstractions;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
 using Microsoft.Extensions.Logging.Abstractions;
+using Ofichina.Contracts.Responses.Authentication;
 
 namespace Ofichina.UnitTests.Application.Autenticacao;
 
@@ -29,7 +28,7 @@ public class AutenticarCommandHandlerTests
             NullLogger<AutenticarCommandHandler>.Instance);
         var command = new AutenticarCommand("admin@ofichinna.com", "Senha@123");
 
-        Result<AutenticacaoResponse> result = await handler.HandleAsync(command);
+        Result<AuthenticationResponse> result = await handler.HandleAsync(command);
 
         Assert.True(result.IsSuccess);
         Assert.NotNull(result.Value);
@@ -59,7 +58,7 @@ public class AutenticarCommandHandlerTests
             NullLogger<AutenticarCommandHandler>.Instance);
         var command = new AutenticarCommand("inexistente@ofichinna.com", "Senha@123");
 
-        Result<AutenticacaoResponse> result = await handler.HandleAsync(command);
+        Result<AuthenticationResponse> result = await handler.HandleAsync(command);
 
         Assert.False(result.IsSuccess);
         Assert.Equal("Verifique os dados fornecidos.", result.Error);
