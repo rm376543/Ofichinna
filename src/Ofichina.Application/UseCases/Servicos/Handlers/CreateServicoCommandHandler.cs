@@ -11,7 +11,7 @@ namespace Ofichina.Application.UseCases.Servicos.Handlers;
 /// <summary>
 /// Handler para criação de serviço.
 /// </summary>
-public sealed class CreateServicoCommandHandler : ICommandHandler<CreateServicoCommand, Result<Guid>>
+public sealed class CreateServicoCommandHandler : ICommandHandler<CreateServicoCommand, Result>
 {
     private readonly IRepository<Servico> _servicoRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -27,29 +27,26 @@ public sealed class CreateServicoCommandHandler : ICommandHandler<CreateServicoC
         _logger = logger;
     }
 
-    public async Task<Result<Guid>> HandleAsync(CreateServicoCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result> HandleAsync(CreateServicoCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
             var servico = new Servico(command.Nome, command.Descricao, command.Valor);
 
-            if (!command.Ativo)
-                servico.Desativar();
-
             await _servicoRepository.AddAsync(servico, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
-            return Result.Success(servico.Id);
+            return Result.Success();
         }
         catch (DomainException ex)
         {
             _logger.LogWarning(ex, "Erro de domínio ao criar serviço.");
-            return Result.Failure<Guid>(ex.Message);
+            return Result.Failure(ex.Message);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao criar serviço.");
-            return Result.Failure<Guid>("Não foi possível criar o serviço.");
+            return Result.Failure("Não foi possível criar o serviço.");
         }
     }
 }

@@ -50,7 +50,7 @@ public sealed class ServicoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<PagedResponse<ServicoResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<PagedResponse<ServicoResponse>>>> BuscarServicos(
+    public async Task<ActionResult<ApiResponse<PagedResponse<ServicoResponse>>>> BuscarTodosServicosPaginados(
         [FromQuery] Pagination pagination,
         CancellationToken cancellationToken)
     {
@@ -98,11 +98,11 @@ public sealed class ServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
-    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<Guid>>> CriarServico(
+    public async Task<ActionResult<ApiResponse>> CriarServico(
         [FromBody] CreateServicoRequest request,
         CancellationToken cancellationToken)
     {
@@ -118,13 +118,12 @@ public sealed class ServicoController : ControllerBase
             Nome = request.Nome,
             Descricao = request.Descricao,
             Valor = request.Valor,
-            Ativo = request.Ativo
         }, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o serviço."));
 
-        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Serviço criado com sucesso."));
+        return ApiResponse.SuccessResponse("Serviço criado com sucesso.");
     }
 
     /// <summary>
