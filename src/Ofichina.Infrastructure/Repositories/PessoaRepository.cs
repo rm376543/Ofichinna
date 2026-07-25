@@ -2,6 +2,8 @@
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Ofichina.Contracts;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Infrastructure.Repositories
 {
@@ -26,6 +28,27 @@ namespace Ofichina.Infrastructure.Repositories
                 .AsNoTracking()
                 .Include(x => x.Veiculos)
                 .FirstOrDefaultAsync(x => x.Id == pessoaId, cancellationToken);
+        }
+
+        public async Task<PagedResponse<Pessoa>> GetAllPessoasPaginadasAsync(Pagination pagination, CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(pagination);
+
+            var pageNumber = pagination.PageNumber > 0 ? pagination.PageNumber : 1;
+            var pageSize = pagination.PageSize > 0 ? pagination.PageSize : 10;
+
+            var query = _context.Set<Pessoa>()
+                .AsNoTracking()
+                .OrderBy(x => x.CreatedAt);
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var items = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            return items.ToPagedResponse(totalCount, pageNumber, pageSize);
         }
     }
 }

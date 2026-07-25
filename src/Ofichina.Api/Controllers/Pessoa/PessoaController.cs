@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Pessoas.Commands;
 using Ofichina.Application.UseCases.Pessoas.Queries;
+using Ofichina.Contracts;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Pessoa;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Pessoa;
@@ -41,19 +43,21 @@ namespace Ofichina.Api.Controllers.Pessoa
         /// <summary>
         /// Retorna todas as pessoas cadastradas.
         /// </summary>
+        /// <param name="pagination"></param>
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Lista de pessoas.</returns>
         //[Authorize(Policy = UserPolicyEnum.Ler)]
         [Authorize(Roles = "ADMIN")]
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<PessoaResponse>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<PagedResponse<PessoaResponse>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<ApiResponse<IReadOnlyCollection<PessoaResponse>>>> BuscarPessoas(CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiResponse<PagedResponse<PessoaResponse>>>> BuscarPessoas(
+            [FromQuery] Pagination pagination,CancellationToken cancellationToken)
         {
             _logger.LogInformation("Iniciando a obtenção de todas as pessoas.");
 
-            var result = await _mediator.Send(new GetPessoasQuery(), cancellationToken);
+            var result = await _mediator.Send(new GetAllPessoasPaginadasQuery(pagination), cancellationToken);
 
             if (!result.IsSuccess)
             {
@@ -61,7 +65,7 @@ namespace Ofichina.Api.Controllers.Pessoa
                 return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter as pessoas."));
             }
 
-            return Ok(ApiResponse<IReadOnlyCollection<PessoaResponse>>.SuccessResponse(result.Value ?? []));
+            return Ok(ApiResponse<PagedResponse<PessoaResponse>>.SuccessResponse(result.Value));
         }
 
         /// <summary>
@@ -100,11 +104,11 @@ namespace Ofichina.Api.Controllers.Pessoa
         //[Authorize(Policy = UserPolicyEnum.Escrever)]
         [Authorize(Roles = "ADMIN")]
         [HttpPost]
-        [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-        public async Task<ActionResult<ApiResponse<Guid>>> CriarPessoa([FromBody] CreatePessoaRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiResponse>> CriarPessoa([FromBody] CreatePessoaRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Iniciando a criação de uma nova pessoa. Nome: {Nome}", request.Nome);
 
@@ -137,7 +141,7 @@ namespace Ofichina.Api.Controllers.Pessoa
                 return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar a pessoa."));
             }
 
-            return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Pessoa criada com sucesso."));
+            return Ok(ApiResponse.SuccessResponse("Pessoa criada com sucesso."));
         }
 
         /// <summary>
