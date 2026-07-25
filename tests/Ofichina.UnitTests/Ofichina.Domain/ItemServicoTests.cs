@@ -16,6 +16,7 @@ public sealed class ItemServicoTests
 
         Assert.NotEqual(Guid.Empty, itemServico.Id);
         Assert.Equal(Guid.Empty, itemServico.ServicoId);
+        Assert.Equal(Guid.Empty, itemServico.ServicoPecaId);
         Assert.Equal(ordemServico.Id, itemServico.OrdemServicoId);
         Assert.Equal(string.Empty, itemServico.Descricao);
         Assert.Equal(0m, itemServico.Valor);
@@ -35,6 +36,7 @@ public sealed class ItemServicoTests
 
         Assert.NotNull(itemServico.UpdatedAt);
         Assert.Single(itemServico.Pecas);
+        Assert.Equal(itemServico.Pecas.First().Id, itemServico.ServicoPecaId);
         Assert.Equal(50m, itemServico.ValorTotal);
     }
 

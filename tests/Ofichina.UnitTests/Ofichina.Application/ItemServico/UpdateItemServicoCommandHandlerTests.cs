@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.Logging.Abstractions;
+using Ofichina.Application.Abstractions.Common;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Application.UseCases.ItensServico.Handlers;
@@ -16,8 +17,8 @@ public sealed class UpdateItemServicoCommandHandlerTests
     {
         var ordemServico = CriarOrdemServico();
         var itemServico = ordemServico.AdicionarServico();
-        var pecaServicoAtual = CriarServicoPeca(Guid.NewGuid(), Guid.NewGuid(), 1);
-        itemServico.AdicionarPeca(pecaServicoAtual, 1);
+        var servicoPecaAtual = CriarServicoPeca(Guid.NewGuid(), Guid.NewGuid(), 1);
+        itemServico.AdicionarPeca(servicoPecaAtual, 1);
 
         var novaServicoPeca = CriarServicoPeca(Guid.NewGuid(), Guid.NewGuid(), 1);
         var handler = CriarHandler(ordemServico, itemServico, novaServicoPeca, out var unitOfWork);
@@ -26,7 +27,6 @@ public sealed class UpdateItemServicoCommandHandlerTests
         {
             OrdemServicoId = ordemServico.Id,
             Id = itemServico.Id,
-            Pecas = [new UpdateItemServicoPecaCommand { ServicoPecaId = novaServicoPeca.Id, Quantidade = 1 }]
         });
 
         Assert.True(result.IsSuccess);
@@ -39,17 +39,16 @@ public sealed class UpdateItemServicoCommandHandlerTests
     {
         var ordemServico = CriarOrdemServico();
         var itemServico = ordemServico.AdicionarServico();
-        var pecaServicoAtual = CriarServicoPeca(Guid.NewGuid(), Guid.NewGuid(), 1);
-        itemServico.AdicionarPeca(pecaServicoAtual, 1);
+        var servicoPecaAtual = CriarServicoPeca(Guid.NewGuid(), Guid.NewGuid(), 1);
+        itemServico.AdicionarPeca(servicoPecaAtual, 1);
 
         var handler = CriarHandler(ordemServico, itemServico, null, out var unitOfWork);
         var novaServicoPecaId = Guid.NewGuid();
 
         var result = await handler.HandleAsync(new UpdateItemServicoCommand
         {
-            OrdemServicoId = ordemServico.Id,
             Id = itemServico.Id,
-            Pecas = [new UpdateItemServicoPecaCommand { ServicoPecaId = novaServicoPecaId, Quantidade = 1 }]
+            OrdemServicoId = ordemServico.Id
         });
 
         Assert.False(result.IsSuccess);
@@ -61,13 +60,13 @@ public sealed class UpdateItemServicoCommandHandlerTests
     {
         var ordemRepository = new FakeOrdemServicoRepository(ordemServico);
         var itemServicoRepository = new FakeItemServicoRepository(itemServico);
-        var pecaServicoRepository = new FakeServicoPecaRepository(novaServicoPeca);
+        var servicoPecaRepository = new FakeServicoPecaRepository(novaServicoPeca);
         unitOfWork = new FakeUnitOfWork();
 
         return new UpdateItemServicoCommandHandler(
             ordemRepository,
             itemServicoRepository,
-            pecaServicoRepository,
+            servicoPecaRepository,
             unitOfWork,
             NullLogger<UpdateItemServicoCommandHandler>.Instance);
     }
@@ -128,17 +127,17 @@ public sealed class UpdateItemServicoCommandHandlerTests
 
     private sealed class FakeServicoPecaRepository : IRepository<ServicoPeca>
     {
-        private readonly ServicoPeca? _pecaServico;
+        private readonly ServicoPeca? _servicoPeca;
 
-        public FakeServicoPecaRepository(ServicoPeca? pecaServico)
+        public FakeServicoPecaRepository(ServicoPeca? servicoPeca)
         {
-            _pecaServico = pecaServico;
+            _servicoPeca = servicoPeca;
         }
 
         public Task AddAsync(ServicoPeca entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
         public Task<ServicoPeca?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool tracking = false)
-            => Task.FromResult(_pecaServico is not null && _pecaServico.Id == id ? _pecaServico : null);
+            => Task.FromResult(_servicoPeca is not null && _servicoPeca.Id == id ? _servicoPeca : null);
 
         public Task<IEnumerable<ServicoPeca>> GetAllAsync(CancellationToken cancellationToken = default)
             => Task.FromResult<IEnumerable<ServicoPeca>>([]);
@@ -179,16 +178,16 @@ public sealed class UpdateItemServicoCommandHandlerTests
 
         public Task HardDeleteAsync(ItemServico entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-        public Task<ItemServico?> GetByOrdemServicoIdAndServicoPecaIdAsync(Guid ordemServicoId, Guid pecaServicoId, CancellationToken cancellationToken = default, bool tracking = false)
-            => Task.FromResult<ItemServico?>(_itemServico.OrdemServicoId == ordemServicoId && _itemServico.Pecas.Any(p => p.Id == pecaServicoId) ? _itemServico : null);
+        public Task<ItemServico?> GetByOrdemServicoIdAndServicoPecaIdAsync(Guid ordemServicoId, Guid servicoPecaId, CancellationToken cancellationToken = default, bool tracking = false)
+            => Task.FromResult<ItemServico?>(_itemServico.OrdemServicoId == ordemServicoId && _itemServico.Pecas.Any(p => p.Id == servicoPecaId) ? _itemServico : null);
 
-        public Task<ItemServico?> GetByOrdemServicoIdAndIdAsync(Guid ordemServicoId, Guid id, CancellationToken cancellationToken = default, bool tracking = false, bool includeRelacionados = false)
-            => Task.FromResult<ItemServico?>(_itemServico.OrdemServicoId == ordemServicoId && _itemServico.Id == id ? _itemServico : null);
+        public Task<ItemServico?> GetByOrdemServicoIdAndItemServicoIdAsync(Guid ordemServicoId, Guid itemServicoId, CancellationToken cancellationToken = default, bool tracking = false, bool includeRelacionados = false)
+            => Task.FromResult<ItemServico?>(_itemServico.OrdemServicoId == ordemServicoId && _itemServico.Id == itemServicoId ? _itemServico : null);
 
         public Task<IReadOnlyCollection<ItemServico>> GetByOrdemServicoIdAsync(Guid ordemServicoId, CancellationToken cancellationToken = default, bool includeRelacionados = false, bool tracking = false)
             => Task.FromResult<IReadOnlyCollection<ItemServico>>(_itemServico.OrdemServicoId == ordemServicoId ? [_itemServico] : []);
 
-        public Task<ItemServico> AdicionarAsync(Guid ordemServicoId, Guid pecaServicoId, CancellationToken cancellationToken = default)
+        public Task<ItemServico> AdicionarAsync(Guid ordemServicoId, Guid servicoPecaId, CancellationToken cancellationToken = default)
             => Task.FromResult(_itemServico);
     }
 

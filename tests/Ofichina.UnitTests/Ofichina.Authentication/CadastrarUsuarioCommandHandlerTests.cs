@@ -1,11 +1,8 @@
-using Ofichina.Authentication.Abstractions;
 using Ofichina.Authentication.Services;
 using Ofichina.Contracts.Requests.Usuario;
-using Ofichina.Contracts.Responses;
+using Ofichina.Contracts.Responses.Authentication;
 using Ofichina.Domain.Entities;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Domain.ValueObjects;
-using Ofichina.Domain.Common;
 
 namespace Ofichina.UnitTests.Autenticacao;
 

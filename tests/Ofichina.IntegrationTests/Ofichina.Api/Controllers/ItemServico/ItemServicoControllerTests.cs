@@ -23,7 +23,9 @@ public sealed class ItemServicoControllerTests
         var controller = CriarController(mediator);
         var request = new UpdateItemServicoRequest
         {
-            Pecas = [new UpdateItemServicoPecaRequest { PecaServicoId = Guid.NewGuid(), Quantidade = 1 }]
+            Id = Guid.NewGuid(),
+            OrdemServicoId = Guid.NewGuid(),
+            ServicoPecaId = Guid.NewGuid()
         };
 
         var result = await controller.AtualizarItemServico(request, CancellationToken.None);
@@ -31,6 +33,9 @@ public sealed class ItemServicoControllerTests
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
         Assert.Equal(StatusCodes.Status404NotFound, notFoundResult.StatusCode);
         Assert.NotNull(mediator.UpdateItemServicoCommandEnviado);
+        Assert.Equal(request.Id, mediator.UpdateItemServicoCommandEnviado!.Id);
+        Assert.Equal(request.OrdemServicoId, mediator.UpdateItemServicoCommandEnviado.OrdemServicoId);
+        Assert.Equal(request.ServicoPecaId, mediator.UpdateItemServicoCommandEnviado.ServicoPecaId);
     }
 
     [Fact]
@@ -44,7 +49,9 @@ public sealed class ItemServicoControllerTests
         var controller = CriarController(mediator);
         var request = new UpdateItemServicoRequest
         {
-            Pecas = [new UpdateItemServicoPecaRequest { PecaServicoId = Guid.NewGuid(), Quantidade = 1 }]
+            Id = Guid.NewGuid(),
+            OrdemServicoId = Guid.NewGuid(),
+            ServicoPecaId = Guid.NewGuid()
         };
 
         var result = await controller.AtualizarItemServico(request, CancellationToken.None);
@@ -60,7 +67,9 @@ public sealed class ItemServicoControllerTests
         var controller = CriarController(mediator);
         var request = new UpdateItemServicoRequest
         {
-            Pecas = [new UpdateItemServicoPecaRequest { PecaServicoId = Guid.Empty, Quantidade = 1 }]
+            Id = Guid.NewGuid(),
+            OrdemServicoId = Guid.Empty,
+            ServicoPecaId = Guid.Empty
         };
 
         var result = await controller.AtualizarItemServico(request, CancellationToken.None);
@@ -123,12 +132,13 @@ public sealed class ItemServicoControllerTests
             throw new NotSupportedException();
         }
 
-        public Task<TResponse> Send<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default) where TRequest : IRequest<TResponse>
+        public Task<TResponse> Send<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default)
+            where TRequest : IRequest<TResponse>
             => request is CreateItemServicoCommand createCommand
                 ? Task.FromResult((TResponse)(object)CreateItemServicoResult)
                 : request is UpdateItemServicoCommand updateCommand
-                        ? Task.FromResult((TResponse)(object)UpdateItemServicoResult)
-                        : throw new NotSupportedException();
+                    ? Task.FromResult((TResponse)(object)UpdateItemServicoResult)
+                    : throw new NotSupportedException();
 
         public Task<object?> Send(object request, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
@@ -142,7 +152,8 @@ public sealed class ItemServicoControllerTests
         public Task Publish(object notification, CancellationToken cancellationToken = default)
             => Task.CompletedTask;
 
-        public Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default) where TNotification : INotification
+        public Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
+            where TNotification : INotification
             => Task.CompletedTask;
     }
 }
