@@ -66,8 +66,8 @@ public sealed class VeiculoController : ControllerBase
         }
 
         _logger.LogInformation("Pesquisa de veículos da pessoa {PessoaId} concluída com sucesso.", pessoaId);
-        var response = ApiResponse<PessoaVeiculoResponse>.SuccessResponse(result.Value);
-        return Ok(response);
+        
+        return Ok(ApiResponse<PessoaVeiculoResponse>.SuccessResponse(result.Value));
     }
 
     /// <summary>
@@ -207,9 +207,8 @@ public sealed class VeiculoController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            return result.Error == "Veículo não encontrado." || result.Error == "Pessoa não encontrada."
-                ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o veículo."));
+            _logger.LogWarning("Falha ao atualizar o veículo. Erro: {Error}", result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o veículo."));
         }
 
         return Ok(ApiResponse.SuccessResponse("Veículo atualizado com sucesso."));
@@ -236,7 +235,10 @@ public sealed class VeiculoController : ControllerBase
         var result = await _mediator.Send(new DeleteVeiculoCommand { Id = id }, cancellationToken);
 
         if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Falha ao remover o veículo. Erro: {Error}", result.Error);
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Veículo não encontrado."));
+        }
 
         return Ok(ApiResponse.SuccessResponse("Veículo removido com sucesso."));
     }
