@@ -3,7 +3,7 @@ using Ofichina.Contracts.Common;
 
 namespace Ofichina.Application.UseCases.Permissoes.Commands;
 
-public sealed class CreatePermissaoCommand : ICommand<Result<Guid>>
+public sealed class CreatePermissaoCommand : ICommand<Result>
 {
     public string Codigo { get; }
 

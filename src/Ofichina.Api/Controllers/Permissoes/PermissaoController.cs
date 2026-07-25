@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Permissoes.Commands;
 using Ofichina.Application.UseCases.Permissoes.Queries;
+using Ofichina.Contracts;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Permissoes;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Permissoes;
@@ -37,17 +39,20 @@ public sealed class PermissaoController : ControllerBase
     /// <summary>
     /// Retorna todas as permissões cadastradas.
     /// </summary>
+    /// <param name="pagination">Parâmetros de paginação.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de permissões.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet]
-    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<PermissaoResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResponse<PermissaoResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<PermissaoResponse>>>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse<PagedResponse<PermissaoResponse>>>> BuscarTodasPermissoesPaginadas(
+        [FromQuery] Pagination pagination,
+        CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando processo de busca de permissões");
-        var result = await _mediator.Send(new GetPermissoesQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetAllPermissoesPaginadasQuery(pagination), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -56,7 +61,7 @@ public sealed class PermissaoController : ControllerBase
         }
 
         _logger.LogInformation("Processo de busca de permissões concluído com sucesso");
-        return Ok(ApiResponse<IReadOnlyCollection<PermissaoResponse>>.SuccessResponse(result.Value ?? []));
+        return Ok(ApiResponse<PagedResponse<PermissaoResponse>>.SuccessResponse(result.Value));
     }
 
     /// <summary>
@@ -94,11 +99,11 @@ public sealed class PermissaoController : ControllerBase
     /// <returns>Id da permissão criada ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
-    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<Guid>>> CreateAsync([FromBody] CreatePermissaoRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse>> CreateAsync([FromBody] CreatePermissaoRequest request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando processo de criação de permissão com código: {Codigo}", request.Codigo);
         var validation = await _createValidator.ValidateAsync(request, cancellationToken);
@@ -113,19 +118,12 @@ public sealed class PermissaoController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            
-            if (result.Error == "Já existe uma permissão com este código.")
-            {
-                _logger.LogError("Já existe uma permissão com o código: {Codigo}", request.Codigo);
-                return BadRequest(ApiResponse.FailureResponse(result.Error));
-            }
-
-            _logger.LogError("Ocorreu um erro ao criar a permissão com código: {Codigo}. Erro: {Error}", request.Codigo, result.Error);
+            _logger.LogInformation("Processo de criação de permissão com código: {Codigo} concluído com erros", request.Codigo);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar a permissão."));
         }
 
         _logger.LogInformation("Processo de criação de permissão com código: {Codigo} concluído com sucesso", request.Codigo);
-        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Permissão criada com sucesso."));
+        return Ok(ApiResponse.SuccessResponse("Permissão criada com sucesso."));
     }
 
     /// <summary>
@@ -157,12 +155,6 @@ public sealed class PermissaoController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            if (result.Error == "Permissão não encontrada.")
-            {
-                _logger.LogInformation("Permissão com ID: {Id} não encontrada", request.Id);
-                return NotFound(ApiResponse.FailureResponse(result.Error));
-            }
-
             _logger.LogInformation("Processo de atualização de permissão com ID: {Id} concluído com erros", request.Id);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a permissão."));
         }
