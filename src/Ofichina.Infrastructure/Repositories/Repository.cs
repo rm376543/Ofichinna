@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Infrastructure.Persistence;
-using Ofichina.Application.Abstractions.Common;
 using Ofichina.Contracts.Common;
 
 namespace Ofichina.Infrastructure.Repositories;
