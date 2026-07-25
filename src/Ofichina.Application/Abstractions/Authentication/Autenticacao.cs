@@ -1,0 +1,81 @@
+using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Requests.Autenticacao;
+using Ofichina.Contracts.Requests.Usuario;
+using Ofichina.Contracts.Responses.Authentication;
+using Ofichina.Domain.Entities;
+
+namespace Ofichina.Application.Abstractions.Authentication;
+
+/// <summary>
+/// Contrato principal do fluxo de autenticação.
+/// </summary>
+public interface IAutenticacaoService
+{
+    Task<Result<AuthenticationResponse>> AutenticarAsync(
+        AutenticacaoRequest request,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<AuthenticationResponse>> CadastrarAsync(
+        CadastrarUsuarioRequest request,
+        CancellationToken cancellationToken = default);
+}
+
+/// <summary>
+/// Contrato para consulta de usuários autenticáveis.
+/// </summary>
+public interface IUsuarioAutenticacaoRepository
+{
+    Task<Usuario> ObterPorEmailAsync(string email, CancellationToken cancellationToken = default);
+}
+
+/// <summary>
+/// Contrato para geração de tokens JWT.
+/// </summary>
+public interface IJwtTokenService
+{
+    Task<TokenJwtResponse> GerarTokenAsync(
+        Usuario usuario,
+        IReadOnlyCollection<string> perfis,
+        CancellationToken cancellationToken = default);
+}
+
+/// <summary>
+/// Contrato para acesso ao usuário autenticado na requisição atual.
+/// </summary>
+public interface IUsuarioAtualService
+{
+    Guid? ObterUsuarioId();
+}
+
+/// <summary>
+/// Contrato para leitura/validação de perfis associados ao usuário.
+/// </summary>
+public interface IPerfilAutorizacaoService
+{
+    Task<IReadOnlyCollection<string>> ObterPerfisAsync(
+        Guid usuarioId,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> PossuiPerfilAsync(
+        Guid usuarioId,
+        string perfil,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<string>> ObterPermissoesAsync(
+        Guid usuarioId,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> PossuiPermissaoAsync(
+        Guid usuarioId,
+        string permissao,
+        CancellationToken cancellationToken = default);
+}
+
+/// <summary>
+/// Contrato para hash e validação de senha.
+/// </summary>
+public interface ISenhaHasher
+{
+    string GerarHash(string senha);
+    bool Verificar(string senha, string hash);
+}

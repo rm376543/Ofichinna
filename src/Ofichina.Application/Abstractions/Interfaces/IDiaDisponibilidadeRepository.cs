@@ -1,4 +1,3 @@
-using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 
 namespace Ofichina.Application.Abstractions.Interfaces;

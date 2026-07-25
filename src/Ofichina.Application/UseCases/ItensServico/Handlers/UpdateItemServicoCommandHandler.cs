@@ -7,6 +7,7 @@ using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
+using Ofichina.Application.Abstractions.Common;
 
 namespace Ofichina.Application.UseCases.ItensServico.Handlers;
 
@@ -17,20 +18,20 @@ public sealed class UpdateItemServicoCommandHandler : ICommandHandler<UpdateItem
 {
     private readonly IOrdemServicoRepository _ordemServicoRepository;
     private readonly IItemServicoRepository _itemServicoRepository;
-    private readonly IRepository<ServicoPeca> _pecaServicoRepository;
+    private readonly IRepository<ServicoPeca> _servicoPecaRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UpdateItemServicoCommandHandler> _logger;
 
     public UpdateItemServicoCommandHandler(
         IOrdemServicoRepository ordemServicoRepository,
         IItemServicoRepository itemServicoRepository,
-        IRepository<ServicoPeca> pecaServicoRepository,
+        IRepository<ServicoPeca> servicoPecaRepository,
         IUnitOfWork unitOfWork,
         ILogger<UpdateItemServicoCommandHandler> logger)
     {
         _ordemServicoRepository = ordemServicoRepository;
         _itemServicoRepository = itemServicoRepository;
-        _pecaServicoRepository = pecaServicoRepository;
+        _servicoPecaRepository = servicoPecaRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -41,6 +42,10 @@ public sealed class UpdateItemServicoCommandHandler : ICommandHandler<UpdateItem
         {
             _logger.LogInformation("Iniciando atualização de item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, command.Id);
 
+            var item = await _itemServicoRepository.GetByOrdemServicoIdAndItemServicoIdAsync(command.OrdemServicoId, command.Id, cancellationToken, tracking: true, includeRelacionados: true);
+            if (item is null || item.EstaExcluida())
+                return Result.Failure("Item de serviço não encontrado.");
+
             var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.OrdemServicoId, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
                 return Result.Failure("Ordem de serviço não encontrada.");
@@ -48,21 +53,9 @@ public sealed class UpdateItemServicoCommandHandler : ICommandHandler<UpdateItem
             if (ordemServico.Status != StatusOrdemServico.Recebida && ordemServico.Status != StatusOrdemServico.EmDiagnostico)
                 return Result.Failure("Não é possível alterar itens nesta etapa da OS.");
 
-            var item = await _itemServicoRepository.GetByOrdemServicoIdAndIdAsync(command.OrdemServicoId, command.Id, cancellationToken, tracking: true, includeRelacionados: true);
-            if (item is null || item.EstaExcluida())
-                return Result.Failure("Item de serviço não encontrado.");
-
-            List<ServicoPeca> novasPecas = new();
-            foreach (var pecaCommand in command.Pecas)
-            {
-                ServicoPeca? pecaServico = await _pecaServicoRepository.GetByIdAsync(pecaCommand.ServicoPecaId, cancellationToken, tracking: true);
-                if (pecaServico is null || pecaServico.EstaExcluida())
-                    return Result.Failure("Peça de serviço não encontrada.");
-
-                novasPecas.Add(pecaServico);
-            }
-
-            item.SubstituirPecas(novasPecas);
+            var servicoPeca = await _servicoPecaRepository.GetByIdAsync(command.ServicoPecaId, cancellationToken);
+            if (servicoPeca is null || servicoPeca.EstaExcluida())
+                return Result.Failure("Serviço/Peça não encontrada.");
 
             await _unitOfWork.SaveChangesAsync();
 

@@ -55,7 +55,7 @@ public sealed class GetAgendamentoByIdQueryHandler : IQueryHandler<GetAgendament
         return new AgendamentoResponse
         {
             Id = agendamento.Id,
-            ClientePessoaId = agendamento.ClientePessoaId,
+            PessoaId = agendamento.ClientePessoaId,
             ClienteNome = agendamento.Cliente.Nome,
             DiaDisponibilidadeId = agendamento.DiaDisponibilidadeId,
             HorarioConsultorId = agendamento.HorarioConsultorId,

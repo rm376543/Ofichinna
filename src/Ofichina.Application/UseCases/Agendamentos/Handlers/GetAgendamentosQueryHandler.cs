@@ -1,10 +1,8 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Agendamento;
 using Ofichina.Domain.Aggregates;
-using Ofichina.Application.Abstractions.Interfaces;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 
@@ -56,7 +54,7 @@ public sealed class GetAgendamentosQueryHandler : IQueryHandler<GetAgendamentosQ
         return new AgendamentoResponse
         {
             Id = agendamento.Id,
-            ClientePessoaId = agendamento.ClientePessoaId,
+            PessoaId = agendamento.ClientePessoaId,
             ClienteNome = agendamento.Cliente.Nome,
             DiaDisponibilidadeId = agendamento.DiaDisponibilidadeId,
             HorarioConsultorId = agendamento.HorarioConsultorId,

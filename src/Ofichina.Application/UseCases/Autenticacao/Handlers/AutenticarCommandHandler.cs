@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Abstractions.Authentication;
 using Ofichina.Application.UseCases.Autenticacao.Commands;
-using Ofichina.Authentication.Abstractions;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses;
+using Ofichina.Contracts.Responses.Authentication;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.ValueObjects;
 
 namespace Ofichina.Application.UseCases.Autenticacao.Handlers;
 
-public sealed class AutenticarCommandHandler : ICommandHandler<AutenticarCommand, Result<AutenticacaoResponse>>
+public sealed class AutenticarCommandHandler : ICommandHandler<AutenticarCommand, Result<AuthenticationResponse>>
 {
     private readonly IUsuarioAutenticacaoRepository _usuarioAutenticacaoRepository;
     private readonly IPerfilAutorizacaoService _perfilService;
@@ -31,7 +31,7 @@ public sealed class AutenticarCommandHandler : ICommandHandler<AutenticarCommand
         _logger = logger;
     }
 
-    public async Task<Result<AutenticacaoResponse>> HandleAsync(AutenticarCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result<AuthenticationResponse>> HandleAsync(AutenticarCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -44,13 +44,13 @@ public sealed class AutenticarCommandHandler : ICommandHandler<AutenticarCommand
             if (usuario is null || !usuario.EstaAtivo())
             {
                 _logger.LogWarning("Usuário não encontrado ou está inativo. Email: {Email}", command.Email);
-                return Result.Failure<AutenticacaoResponse>("Verifique os dados fornecidos.");
+                return Result.Failure<AuthenticationResponse>("Verifique os dados fornecidos.");
             }
 
             if (!_senhaHasher.Verificar(command.Senha, usuario.SenhaHash))
             {
                 _logger.LogWarning("Credenciais inválidas para o email: {Email}", command.Email);
-                return Result.Failure<AutenticacaoResponse>("Credenciais inv\u00E1lidas.");
+                return Result.Failure<AuthenticationResponse>("Credenciais inválidas.");
             }
 
             var perfis = await _perfilService.ObterPerfisAsync(usuario.Id, cancellationToken);
@@ -59,7 +59,7 @@ public sealed class AutenticarCommandHandler : ICommandHandler<AutenticarCommand
 
             _logger.LogInformation("Autenticação bem-sucedida para o email: {Email}", command.Email);
 
-            return Result.Success(new AutenticacaoResponse
+            return Result.Success(new AuthenticationResponse
             {
                 UsuarioId = usuario.Id,
                 Email = usuario.Email.Value,
@@ -72,12 +72,12 @@ public sealed class AutenticarCommandHandler : ICommandHandler<AutenticarCommand
         catch (DomainException ex)
         {
             _logger.LogError(ex, "Erro de domínio durante a autenticação para o email: {Email}", command.Email);
-            return Result.Failure<AutenticacaoResponse>(ex.Message);
+            return Result.Failure<AuthenticationResponse>(ex.Message);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro desconhecido durante a autenticação para o email: {Email}", command.Email);
-            return Result.Failure<AutenticacaoResponse>($"Erro Desconhecido - {ex.Message}");
+            return Result.Failure<AuthenticationResponse>($"Erro Desconhecido - {ex.Message}");
         }
     }
 }

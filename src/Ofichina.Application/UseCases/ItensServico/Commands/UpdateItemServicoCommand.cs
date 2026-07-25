@@ -9,26 +9,17 @@ namespace Ofichina.Application.UseCases.ItensServico.Commands;
 public sealed class UpdateItemServicoCommand : ICommand<Result>
 {
     /// <summary>
-    /// Identificador da ordem de serviço.
-    /// </summary>
-    public Guid OrdemServicoId { get; init; }
-
-    /// <summary>
     /// Identificador do item de serviço.
     /// </summary>
     public Guid Id { get; init; }
 
     /// <summary>
-    /// Peças vinculadas ao item.
+    /// Identificador da ordem de serviço.
     /// </summary>
-    public IReadOnlyCollection<UpdateItemServicoPecaCommand> Pecas { get; init; } = [];
-}
+    public Guid OrdemServicoId { get; init; }
 
-/// <summary>
-/// Dados de uma peça informada na atualização do item.
-/// </summary>
-public sealed class UpdateItemServicoPecaCommand
-{
+    /// <summary>
+    /// Identificador da ordem de serviço.
+    /// </summary>
     public Guid ServicoPecaId { get; init; }
-    public int Quantidade { get; init; }
 }
