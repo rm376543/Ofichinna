@@ -2,8 +2,11 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Ofichina.Application.Abstractions.Common;
 using Ofichina.Application.UseCases.Agendamentos.Commands;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
+using Ofichina.Contracts;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Agendamento;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Agendamento;
@@ -29,6 +32,86 @@ public sealed class AgendamentoController : ControllerBase
         _logger = logger;
     }
 
+
+    /// <summary>
+    /// Busca os horários disponíveis para agendamento.
+    /// </summary>
+    /// <param name="pagination"></param>
+    /// <returns></returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpGet("horarios-disponiveis")]
+    [ProducesResponseType(typeof(ApiResponse<PagedResponse<HorarioDisponivelResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<PagedResponse<HorarioDisponivelResponse>>>> BuscarHorarios([FromQuery] Pagination pagination)
+    {
+        _logger.LogInformation("Iniciando a busca de horários disponíveis para agendamento.");
+
+        var result = await _mediator.Send(new GetHorariosDisponiveisQuery(pagination));
+
+        if (!result.IsSuccess || result.Value is null)
+        {
+            _logger.LogWarning("Falha ao buscar horários disponíveis. Erro: {Erro}", result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os horários disponíveis."));
+        }
+
+        return Ok(ApiResponse<PagedResponse<HorarioDisponivelResponse>>.SuccessResponse(result.Value));
+    }
+
+    /// <summary>
+    /// Cancela um agendamento existente para uma pessoa específica.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpDelete("cancelar-agendamento")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> CancelarAsync(CancelarAgendamentoRequest request, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando o cancelamento do agendamento");
+        
+        var result = await _mediator.Send(new CancelarAgendamentoCommand(request.PessoaId, request.AgendamentoId), cancellationToken);
+        
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Falha ao cancelar agendamento. PessoaId: {PessoaId}, AgendamentoId: {AgendamentoId}, Erro: {Erro}", request.PessoaId, request.AgendamentoId, result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Falha ao cancelar agendamento."));
+        }
+        
+        _logger.LogInformation("Agendamento cancelado com sucesso.");
+        
+        return Ok(ApiResponse.SuccessResponse("Agendamento cancelado com sucesso."));
+    }
+
+    /// <summary>
+    /// Cadastra horários disponíveis para agendamento.
+    /// </summary>
+    /// <param name="horario"></param>
+    /// <returns></returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpPost("cadastrar-horario")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> CadastrarHorarioParaAgendamento([FromBody] TimeOnly horario)
+    {
+        _logger.LogInformation("Iniciando o cadastro de horários disponíveis para agendamento.");
+
+        var result = await _mediator.Send(new CadastraHorarioAgendamentoCommand(horario));
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Falha ao cadastrar horários disponíveis para agendamento. Erro: {Erro}", result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível cadastrar os horários disponíveis."));
+        }
+
+        _logger.LogInformation("Horário cadastrado com sucesso.");
+        return Ok(ApiResponse.SuccessResponse("Horário cadastrado com sucesso."));
+    }
+
     /// <summary>
     /// Lista os agendamentos de uma pessoa específica.
     /// </summary>
@@ -46,7 +129,7 @@ public sealed class AgendamentoController : ControllerBase
         if (!result.IsSuccess)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os agendamentos."));
 
-        return Ok(ApiResponse<IReadOnlyCollection<AgendamentoResponse>>.SuccessResponse(result.Value ?? []));
+        return Ok(ApiResponse<IReadOnlyCollection<AgendamentoResponse>>.SuccessResponse(result.Value));
     }
 
     /// <summary>

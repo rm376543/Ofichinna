@@ -135,7 +135,7 @@ public sealed class PermissaoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Permissão encontrada ou erro 404 quando não existir.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut("{id:guid}")]
+    [HttpPut]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
