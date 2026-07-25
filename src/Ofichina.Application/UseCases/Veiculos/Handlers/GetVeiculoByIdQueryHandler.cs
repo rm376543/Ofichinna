@@ -52,10 +52,8 @@ public sealed class GetVeiculoByIdQueryHandler : IQueryHandler<GetVeiculoByIdQue
             Modelo = veiculo.Modelo,
             AnoFabricacao = veiculo.AnoFabricacao,
             Cor = veiculo.Cor,
-            Observacoes = veiculo.Observacoes,
             Hodometro = veiculo.Hodometro.Valor,
             HodometroFormatado = veiculo.Hodometro.ToString(),
-            Ativo = !veiculo.EstaExcluida(),
             CreatedAt = veiculo.CreatedAt,
             UpdatedAt = veiculo.UpdatedAt,
             DeletedAt = veiculo.DeletedAt

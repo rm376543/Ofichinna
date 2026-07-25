@@ -1,11 +1,9 @@
 using System.Reflection;
 using Microsoft.Extensions.Logging.Abstractions;
-using Ofichina.Application.Abstractions.Common;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Application.UseCases.ItensServico.Handlers;
+using Ofichina.Contracts.Common;
 using Ofichina.Domain.Aggregates;
-using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 
 namespace Ofichina.UnitTests.Application.ItensServico;

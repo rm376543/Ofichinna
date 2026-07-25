@@ -36,17 +36,7 @@ public sealed class CreateVeiculoRequest : CreateRequest
     public string? Cor { get; init; }
 
     /// <summary>
-    /// Observações sobre o veículo.
-    /// </summary>
-    public string? Observacoes { get; init; }
-
-    /// <summary>
     /// Hodometro atual do veículo.
     /// </summary>
     public int Hodometro { get; init; }
-
-    /// <summary>
-    /// Indica se o veículo está ativo.
-    /// </summary>
-    public bool Ativo { get; init; } = true;
 }

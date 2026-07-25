@@ -2,7 +2,7 @@
 
 namespace Ofichina.Contracts.Responses.Pessoa
 {
-    public class PessoaVeiculoResponse : PessoaResponse
+    public class PessoaVeiculoResponse : PessoaSimplesResponse
     {
         public List<VeiculoResponse> Veiculo { get; set; } = new List<VeiculoResponse>();
     }

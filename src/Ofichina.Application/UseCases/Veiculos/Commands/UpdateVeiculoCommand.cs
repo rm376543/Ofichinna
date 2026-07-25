@@ -22,9 +22,5 @@ public sealed class UpdateVeiculoCommand : ICommand<Result>
 
     public string? Cor { get; init; }
 
-    public string? Observacoes { get; init; }
-
     public int Hodometro { get; init; }
-
-    public bool Ativo { get; init; } = true;
 }

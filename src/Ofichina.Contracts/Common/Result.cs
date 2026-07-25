@@ -34,11 +34,11 @@ public sealed class Result
 public sealed class Result<T>
 {
     public bool IsSuccess { get; }
-    public T? Value { get; }
+    public T Value { get; }
     public string? Error { get; }
     public IReadOnlyCollection<string> Errors { get; }
 
-    public Result(bool isSuccess, T? value = default, string? error = null, IReadOnlyCollection<string>? errors = null)
+    public Result(bool isSuccess, T value, string? error = null, IReadOnlyCollection<string>? errors = null)
     {
         IsSuccess = isSuccess;
         Value = value;
@@ -47,6 +47,6 @@ public sealed class Result<T>
     }
 
     public static Result<T> Success(T value) => new(true, value);
-    public static Result<T> Failure(string error) => new(false, default, error);
-    public static Result<T> Failure(IEnumerable<string> errors) => new(false, default, errors: errors.ToList());
+    public static Result<T> Failure(string error) => new(false, default!, error);
+    public static Result<T> Failure(IEnumerable<string> errors) => new(false, default!, errors: errors.ToList());
 }
