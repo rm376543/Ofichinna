@@ -6,7 +6,7 @@ namespace Ofichina.Application.UseCases.ServicosPecas.Commands;
 /// <summary>
 /// Comando para adicionar uma peça a um serviço.
 /// </summary>
-public sealed class CreateServicoPecaCommand : ICommand<Result<Guid>>
+public sealed class CreateServicoPecaCommand : ICommand<Result>
 {
     /// <summary>
     /// Identificador do serviço.

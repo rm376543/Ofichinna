@@ -16,5 +16,5 @@ public sealed class DeleteServicoPecaCommand : ICommand<Result>
     /// <summary>
     /// Identificador da peça do serviço.
     /// </summary>
-    public Guid ServicoPecaId { get; init; }
+    public Guid PecaId { get; init; }
 }
