@@ -33,6 +33,9 @@ public sealed class ServicosPecasController : ControllerBase
     /// <summary>
     /// Adiciona uma peça a um serviço.
     /// </summary>
+    /// <param name="request">Dados da peça a ser adicionada ao serviço.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Identificador da peça adicionada ao serviço.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
@@ -70,8 +73,11 @@ public sealed class ServicosPecasController : ControllerBase
     /// <summary>
     /// Desativa uma peça específica do serviço.
     /// </summary>
+    /// <param name="servicoId">Identificador do serviço.</param>
+    /// <param name="pecaId">Identificador da peça do serviço.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
     [Authorize(Roles = "ADMIN")]
-    [HttpDelete("~/api/servicos/{servicoId:guid}/pecas/{pecaServicoId:guid}")]
+    [HttpDelete("/api/servicos/{servicoId:guid}/pecas/{pecaId:guid}")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -80,30 +86,33 @@ public sealed class ServicosPecasController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status409Conflict)]
     public async Task<ActionResult<ApiResponse>> DesativarPeca(
         [FromRoute] Guid servicoId,
-        [FromRoute] Guid pecaServicoId,
+        [FromRoute] Guid pecaId,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a desativação da peça do serviço. ServicoId: {ServicoId}, ServicoPecaId: {ServicoPecaId}.", servicoId, pecaServicoId);
+        _logger.LogInformation("Iniciando a desativação da peça do serviço. ServicoId: {ServicoId}, PecaId: {PecaId}.", servicoId, pecaId);
 
         var result = await _mediator.Send(new DeleteServicoPecaCommand
         {
             ServicoId = servicoId,
-            ServicoPecaId = pecaServicoId
+            PecaId = pecaId
 
         }, cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Falha ao desativar peça do serviço. ServicoId: {ServicoId}, ServicoPecaId: {ServicoPecaId}. Erro: {Erro}", servicoId, pecaServicoId, result.Error);
+            _logger.LogWarning("Falha ao desativar peça do serviço. ServicoId: {ServicoId}, PecaId: {PecaId}. Erro: {Erro}", servicoId, pecaId, result.Error);
             return MapError(result.Error, "Não foi possível desativar a peça do serviço.");
         }
 
+        _logger.LogInformation("Peça do serviço desativada com sucesso");
         return Ok(ApiResponse.SuccessResponse("Peça do serviço desativada com sucesso."));
     }
 
     /// <summary>
     /// Desativa todas as peças vinculadas ao serviço.
     /// </summary>
+    /// <param name="servicoId">Identificador do serviço.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
     [Authorize(Roles = "ADMIN")]
     [HttpDelete("~/api/servicos/{servicoId:guid}/pecas")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]

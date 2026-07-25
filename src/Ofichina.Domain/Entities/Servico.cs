@@ -135,9 +135,9 @@ public class Servico : Entity
     /// <summary>
     /// Remove uma peça vinculada ao serviço.
     /// </summary>
-    public void RemoverPeca(Guid pecaServicoId)
+    public void RemoverPeca(Guid pecaId)
     {
-        var peca = _pecas.FirstOrDefault(x => x.Id == pecaServicoId);
+        var peca = _pecas.FirstOrDefault(x => x.PecaId == pecaId);
 
         if (peca is null || peca.EstaExcluida())
             throw new DomainException("Peça não encontrada.");
@@ -171,9 +171,9 @@ public class Servico : Entity
     /// <summary>
     /// Marca uma peça como utilizada.
     /// </summary>
-    public void UtilizarPeca(Guid pecaServicoId)
+    public void UtilizarPeca(Guid pecaId)
     {
-        var peca = _pecas.FirstOrDefault(x => x.Id == pecaServicoId);
+        var peca = _pecas.FirstOrDefault(x => x.PecaId == pecaId);
 
         if (peca is null)
             throw new DomainException("Peça não encontrada.");
@@ -188,9 +188,9 @@ public class Servico : Entity
     /// <summary>
     /// Obtém uma peça vinculada ao serviço.
     /// </summary>
-    public ServicoPeca? ObterPeca(Guid pecaServicoId)
+    public ServicoPeca? ObterPeca(Guid pecaId)
     {
-        return _pecas.FirstOrDefault(x => x.Id == pecaServicoId);
+        return _pecas.FirstOrDefault(x => x.PecaId == pecaId);
     }
 
     /// <summary>
