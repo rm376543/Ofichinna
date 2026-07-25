@@ -48,10 +48,8 @@ public sealed class GetAllVeiculosPaginadosQueryHandler
                 Modelo = v.Modelo,
                 AnoFabricacao = v.AnoFabricacao,
                 Cor = v.Cor,
-                Observacoes = v.Observacoes,
                 Hodometro = v.Hodometro.Valor,
                 HodometroFormatado = v.Hodometro.ToString(),
-                Ativo = !v.EstaExcluida(),
                 CreatedAt = v.CreatedAt,
                 UpdatedAt = v.UpdatedAt,
                 DeletedAt = v.DeletedAt

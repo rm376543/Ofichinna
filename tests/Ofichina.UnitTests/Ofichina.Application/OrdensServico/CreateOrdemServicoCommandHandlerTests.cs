@@ -1,11 +1,7 @@
 using Microsoft.Extensions.Logging.Abstractions;
-using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Common;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.Handlers;
 using Ofichina.Contracts.Common;
-using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 using Ofichina.Domain.ValueObjects;
@@ -77,7 +73,6 @@ public sealed class CreateOrdemServicoCommandHandlerTests
             "Gol",
             2020,
             "Prata",
-            null,
             new Hodometro(100000));
     }
 

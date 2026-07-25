@@ -6,7 +6,7 @@ namespace Ofichina.Application.UseCases.Veiculos.Commands;
 /// <summary>
 /// Comando para criação de veículo.
 /// </summary>
-public sealed class CreateVeiculoCommand : ICommand<Result<Guid>>
+public sealed class CreateVeiculoCommand : ICommand<Result>
 {
     public Guid PessoaId { get; init; }
 
@@ -20,9 +20,5 @@ public sealed class CreateVeiculoCommand : ICommand<Result<Guid>>
 
     public string? Cor { get; init; }
 
-    public string? Observacoes { get; init; }
-
     public int Hodometro { get; init; }
-
-    public bool Ativo { get; init; } = true;
 }

@@ -63,13 +63,7 @@ public sealed class UpdateVeiculoCommandHandler : ICommandHandler<UpdateVeiculoC
             veiculo.AlterarModelo(command.Modelo);
             veiculo.AlterarAnoFabricacao(command.AnoFabricacao);
             veiculo.AlterarCor(command.Cor);
-            veiculo.AlterarObservacoes(command.Observacoes);
             veiculo.AlterarHodometro(new Hodometro(command.Hodometro));
-
-            if (command.Ativo)
-                veiculo.Ativar();
-            else
-                veiculo.Desativar();
 
             await _veiculoRepository.UpdateAsync(veiculo, cancellationToken);
             await _unitOfWork.SaveChangesAsync();

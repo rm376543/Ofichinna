@@ -33,11 +33,6 @@ public sealed class VeiculoResponse : BaseEntity
     public string Cor { get; set; } = string.Empty;
 
     /// <summary>
-    /// Observações sobre o veículo.
-    /// </summary>
-    public string? Observacoes { get; set; }
-
-    /// <summary>
     /// Hodômetro do veículo.
     /// </summary>
     public int Hodometro { get; set; }
@@ -46,9 +41,4 @@ public sealed class VeiculoResponse : BaseEntity
     /// Hodômetro formatado do veículo.
     /// </summary>
     public string HodometroFormatado { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Indica se o veículo está ativo.
-    /// </summary>
-    public bool Ativo { get; set; }
 }

@@ -1,4 +1,5 @@
 using Ofichina.Authentication.Services;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Usuario;
 using Ofichina.Contracts.Responses.Authentication;
 using Ofichina.Domain.Entities;

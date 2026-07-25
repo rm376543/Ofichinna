@@ -39,11 +39,6 @@ public class Veiculo : Entity
     public string Cor { get; private set; } = string.Empty;
 
     /// <summary>
-    /// Observações adicionais sobre o veículo.
-    /// </summary>
-    public string? Observacoes { get; private set; }
-
-    /// <summary>
     /// Hodômetro atual do veículo.
     /// </summary>
     public Hodometro Hodometro { get; private set; } = null!;
@@ -67,9 +62,9 @@ public class Veiculo : Entity
     /// <param name="modelo">Modelo do veículo.</param>
     /// <param name="anoFabricacao">Ano de fabricação.</param>
     /// <param name="cor">Cor do veículo.</param>
-    /// <param name="observacoes">Observações adicionais.</param>
     /// <param name="quilometragem">Hodômetro do veículo.</param>
 #pragma warning restore S107
+#pragma warning disable S107
     public Veiculo(
         Guid pessoaId,
         Placa placa,
@@ -77,8 +72,8 @@ public class Veiculo : Entity
         string modelo,
         int anoFabricacao,
         string cor,
-        string? observacoes,
         Hodometro quilometragem)
+#pragma warning restore S107
     {
         if (pessoaId == Guid.Empty)
             throw new DomainException("A pessoa deve ser informada.");
@@ -106,7 +101,6 @@ public class Veiculo : Entity
         Modelo = modelo.Trim();
         AnoFabricacao = anoFabricacao;
         Cor = string.IsNullOrWhiteSpace(cor) ? string.Empty : cor.Trim();
-        Observacoes = string.IsNullOrWhiteSpace(observacoes) ? null : observacoes.Trim();
         Hodometro = quilometragem;
     }
 
@@ -178,15 +172,6 @@ public class Veiculo : Entity
     public void AlterarCor(string? cor)
     {
         Cor = string.IsNullOrWhiteSpace(cor) ? string.Empty : cor.Trim();
-        AtualizarDataModificacao();
-    }
-
-    /// <summary>
-    /// Altera as observações do veículo.
-    /// </summary>
-    public void AlterarObservacoes(string? observacoes)
-    {
-        Observacoes = string.IsNullOrWhiteSpace(observacoes) ? null : observacoes.Trim();
         AtualizarDataModificacao();
     }
 

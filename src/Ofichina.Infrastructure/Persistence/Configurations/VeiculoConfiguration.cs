@@ -38,9 +38,6 @@ public class VeiculoConfiguration : IEntityTypeConfiguration<Veiculo>
             .HasMaxLength(50)
             .IsRequired();
 
-        builder.Property(v => v.Observacoes)
-            .HasMaxLength(1000);
-
         builder.Property(v => v.Hodometro)
             .HasConversion(
                 hodometro => hodometro.Valor,

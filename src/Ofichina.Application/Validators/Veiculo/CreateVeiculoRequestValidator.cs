@@ -32,11 +32,6 @@ public sealed class CreateVeiculoRequestValidator : AbstractValidator<CreateVeic
         RuleFor(x => x.Cor)
             .MaximumLength(50).WithMessage("A cor não pode exceder 50 caracteres.")
             .When(x => !string.IsNullOrWhiteSpace(x.Cor));
-
-        RuleFor(x => x.Observacoes)
-            .MaximumLength(1000).WithMessage("As observações não podem exceder 1000 caracteres.")
-            .When(x => !string.IsNullOrWhiteSpace(x.Observacoes));
-
         RuleFor(x => x.Hodometro)
             .GreaterThanOrEqualTo(0).WithMessage("A quilometragem não pode ser negativa.");
     }

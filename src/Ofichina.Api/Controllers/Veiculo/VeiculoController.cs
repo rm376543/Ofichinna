@@ -129,12 +129,12 @@ public sealed class VeiculoController : ControllerBase
     /// <returns>Identificador do veículo criado ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
-    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<Guid>>> CriarVeiculo(
+    public async Task<ActionResult<ApiResponse>> CriarVeiculo(
         [FromBody] CreateVeiculoRequest request,
         CancellationToken cancellationToken)
     {
@@ -143,7 +143,10 @@ public sealed class VeiculoController : ControllerBase
         var validation = await _createValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
+        {
+            _logger.LogWarning("Falha na validação do veículo. Erros: {Errors}", string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
+        }
 
         var result = await _mediator.Send(new CreateVeiculoCommand
         {
@@ -153,17 +156,17 @@ public sealed class VeiculoController : ControllerBase
             Modelo = request.Modelo,
             AnoFabricacao = request.AnoFabricacao,
             Cor = request.Cor,
-            Observacoes = request.Observacoes,
             Hodometro = request.Hodometro,
-            Ativo = request.Ativo
         }, cancellationToken);
 
         if (!result.IsSuccess)
-            return result.Error == "Pessoa não encontrada."
-                ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o veículo."));
+        {
+            _logger.LogWarning("Falha ao criar o veículo. Erro: {Error}", result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o veículo."));
+        }
 
-        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Veículo criado com sucesso."));
+        _logger.LogInformation("Veículo criado com sucesso.");
+        return Ok(ApiResponse.SuccessResponse("Veículo cadastrado com sucesso."));
     }
 
     /// <summary>
@@ -199,9 +202,7 @@ public sealed class VeiculoController : ControllerBase
             Modelo = request.Modelo,
             AnoFabricacao = request.AnoFabricacao,
             Cor = request.Cor,
-            Observacoes = request.Observacoes,
             Hodometro = request.Hodometro,
-            Ativo = request.Ativo
         }, cancellationToken);
 
         if (!result.IsSuccess)
