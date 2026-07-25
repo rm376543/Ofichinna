@@ -13,7 +13,7 @@ namespace Ofichina.Application.UseCases.ServicosPecas.Handlers;
 /// <summary>
 /// Handler para adicionar uma peça a um serviço.
 /// </summary>
-public sealed class CreateServicoPecaCommandHandler : ICommandHandler<CreateServicoPecaCommand, Result<Guid>>
+public sealed class CreateServicoPecaCommandHandler : ICommandHandler<CreateServicoPecaCommand, Result>
 {
     private readonly IServicoRepository _servicoRepository;
     private readonly IRepository<Peca> _pecaRepository;
@@ -35,7 +35,7 @@ public sealed class CreateServicoPecaCommandHandler : ICommandHandler<CreateServ
         _logger = logger;
     }
 
-    public async Task<Result<Guid>> HandleAsync(CreateServicoPecaCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result> HandleAsync(CreateServicoPecaCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -43,11 +43,11 @@ public sealed class CreateServicoPecaCommandHandler : ICommandHandler<CreateServ
 
             var servico = await _servicoRepository.GetByIdAsync(command.ServicoId, cancellationToken: cancellationToken);
             if (servico is null || servico.EstaExcluida())
-                return Result.Failure<Guid>("Serviço não encontrado.");
+                return Result.Failure("Serviço não encontrado.");
 
             var peca = await _pecaRepository.GetByIdAsync(command.PecaId, cancellationToken);
             if (peca is null || peca.EstaExcluida())
-                return Result.Failure<Guid>("Peça não encontrada.");
+                return Result.Failure("Peça não encontrada.");
 
             var pecaServico = await _servicoPecasRepository.AdicionarAsync(
                 command.ServicoId,
@@ -58,17 +58,17 @@ public sealed class CreateServicoPecaCommandHandler : ICommandHandler<CreateServ
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Peça adicionada ao serviço com sucesso. ServicoId: {ServicoId}, PecaId: {PecaId}, ServicoPecaId: {ServicoPecaId}.", command.ServicoId, command.PecaId, pecaServico.Id);
-            return Result.Success(pecaServico.Id);
+            return Result.Success();
         }
         catch (DomainException ex)
         {
             _logger.LogWarning(ex, "Erro de domínio ao adicionar peça ao serviço. ServicoId: {ServicoId}, PecaId: {PecaId}.", command.ServicoId, command.PecaId);
-            return Result.Failure<Guid>(ex.Message);
+            return Result.Failure(ex.Message);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro inesperado ao adicionar peça ao serviço. ServicoId: {ServicoId}, PecaId: {PecaId}.", command.ServicoId, command.PecaId);
-            return Result.Failure<Guid>("Não foi possível adicionar a peça ao serviço.");
+            return Result.Failure("Não foi possível adicionar a peça ao serviço.");
         }
     }
 }
