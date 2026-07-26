@@ -67,8 +67,6 @@ public sealed class VeiculoResponse : BaseEntity
         string hodometroFormatado
     )
     {
-        ValidaVeiculo();
-
         Placa = placa;
         Marca = marca;
         Modelo = modelo;
@@ -76,6 +74,8 @@ public sealed class VeiculoResponse : BaseEntity
         Cor = cor;
         Hodometro = hodometro;
         HodometroFormatado = hodometroFormatado;
+
+        ValidaVeiculo();
     }
 
     /// <summary>
