@@ -38,9 +38,21 @@ public sealed class GetPecaByIdQueryHandler : IQueryHandler<GetPecaByIdQuery, Re
                 return Result.Failure<PecaResponse>("Peça não encontrada.");
 
             if (peca.EstaExcluida())
-                return Result.Failure<PecaResponse>("Peça não encontrada.");
+                return Result.Failure<PecaResponse>("Peça excluida ou não encontrada.");
 
-            return Result.Success(Mapear(peca));
+            var resultado = new PecaResponse {
+                Id = peca.Id,
+                Nome = peca.Nome,
+                Descricao = peca.Descricao,
+                Codigo = peca.Codigo,
+                Valor = peca.Valor,
+                QuantidadeEstoque = peca.QuantidadeEstoque,
+                CreatedAt = peca.CreatedAt,
+                UpdatedAt = peca.UpdatedAt,
+                DeletedAt = peca.DeletedAt,
+            };
+
+            return Result.Success(resultado);
         }
         catch (Exception ex)
         {
@@ -49,20 +61,4 @@ public sealed class GetPecaByIdQueryHandler : IQueryHandler<GetPecaByIdQuery, Re
         }
     }
 
-    private static PecaResponse Mapear(Peca peca)
-    {
-        return new PecaResponse
-        {
-            Id = peca.Id,
-            Nome = peca.Nome,
-            Descricao = peca.Descricao,
-            Codigo = peca.Codigo,
-            Valor = peca.Valor,
-            QuantidadeEstoque = peca.QuantidadeEstoque,
-            Ativo = !peca.EstaExcluida(),
-            CreatedAt = peca.CreatedAt,
-            UpdatedAt = peca.UpdatedAt,
-            DeletedAt = peca.DeletedAt
-        };
-    }
 }

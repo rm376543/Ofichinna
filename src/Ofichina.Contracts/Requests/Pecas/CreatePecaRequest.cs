@@ -31,9 +31,4 @@ public sealed class CreatePecaRequest : CreateRequest
     /// Quantidade em estoque.
     /// </summary>
     public int QuantidadeEstoque { get; init; }
-
-    /// <summary>
-    /// Indica se a peça está ativa.
-    /// </summary>
-    public bool Ativo { get; init; } = true;
 }
