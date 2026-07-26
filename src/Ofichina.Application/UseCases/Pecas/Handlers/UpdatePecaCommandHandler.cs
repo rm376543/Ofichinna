@@ -30,15 +30,24 @@ public sealed class UpdatePecaCommandHandler : ICommandHandler<UpdatePecaCommand
         _logger = logger;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Manipula o comando de atualização de peça.
+    /// </summary>
+    /// <param name="command">Comando de atualização de peça.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Resultado da operação.</returns>
     public async Task<Result> HandleAsync(UpdatePecaCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
+            _logger.LogInformation("Iniciando atualização da peça com ID: {Id}", command.Id);
             var peca = await _pecaRepository.GetByIdAsync(command.Id, cancellationToken);
 
             if (peca is null || peca.EstaExcluida())
+            {
+                _logger.LogWarning("Peça com ID: {Id} não encontrada ou está excluída.", command.Id);
                 return Result.Failure("Peça não encontrada.");
+            }
 
             peca.AtualizarDados(
                 command.Nome,
@@ -47,14 +56,10 @@ public sealed class UpdatePecaCommandHandler : ICommandHandler<UpdatePecaCommand
                 command.Valor,
                 command.QuantidadeEstoque);
 
-            if (command.Ativo)
-                peca.Ativar();
-            else
-                peca.Desativar();
-
             await _pecaRepository.UpdateAsync(peca, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
+            _logger.LogInformation("Peça com ID: {Id} atualizada com sucesso.", command.Id);
             return Result.Success();
         }
         catch (DomainException ex)

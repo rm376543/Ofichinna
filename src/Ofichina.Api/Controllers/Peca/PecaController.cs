@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Pecas.Commands;
 using Ofichina.Application.UseCases.Pecas.Queries;
+using Ofichina.Contracts;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Pecas;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Pecas;
@@ -43,18 +45,21 @@ public sealed class PecaController : ControllerBase
     /// <summary>
     /// Retorna todas as peças cadastradas.
     /// </summary>
+    /// <param name="pagination">Parâmetros de paginação.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de peças.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet]
-    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<PecaResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResponse<PecaResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<PecaResponse>>>> BuscarPecas(CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse<PagedResponse<PecaResponse>>>> BuscarTodasPecasPaginadas(
+        [FromQuery] Pagination pagination,
+        CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção de todas as peças.");
 
-        var result = await _mediator.Send(new GetPecasQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetAllPecasPaginadasQuery(pagination), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -62,7 +67,7 @@ public sealed class PecaController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter as peças."));
         }
 
-        return Ok(ApiResponse<IReadOnlyCollection<PecaResponse>>.SuccessResponse(result.Value ?? []));
+        return Ok(ApiResponse<PagedResponse<PecaResponse>>.SuccessResponse(result.Value));
     }
 
     /// <summary>
@@ -100,11 +105,11 @@ public sealed class PecaController : ControllerBase
     /// <returns>Id da peça criada ou erros de validação.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
-    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<Guid>>> CriarPeca([FromBody] CreatePecaRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse>> CriarPeca([FromBody] CreatePecaRequest request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a criação de uma nova peça. Nome: {Nome}", request.Nome);
 
@@ -122,8 +127,7 @@ public sealed class PecaController : ControllerBase
             Descricao = request.Descricao,
             Codigo = request.Codigo,
             Valor = request.Valor,
-            QuantidadeEstoque = request.QuantidadeEstoque,
-            Ativo = request.Ativo
+            QuantidadeEstoque = request.QuantidadeEstoque
         }, cancellationToken);
 
         if (!result.IsSuccess)
@@ -132,7 +136,7 @@ public sealed class PecaController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar a peça."));
         }
 
-        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Peça criada com sucesso."));
+        return Ok(ApiResponse.SuccessResponse("Peça criada com sucesso."));
     }
 
     /// <summary>
@@ -148,7 +152,8 @@ public sealed class PecaController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> AtualizarPeca([FromBody] UpdatePecaRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse>> AtualizarPeca(
+        [FromBody] UpdatePecaRequest request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a atualização da peça com Id: {Id}", request.Id);
 
@@ -167,16 +172,13 @@ public sealed class PecaController : ControllerBase
             Descricao = request.Descricao,
             Codigo = request.Codigo,
             Valor = request.Valor,
-            QuantidadeEstoque = request.QuantidadeEstoque,
-            Ativo = request.Ativo
+            QuantidadeEstoque = request.QuantidadeEstoque
         }, cancellationToken);
 
         if (!result.IsSuccess)
         {
             _logger.LogError("Erro ao atualizar a peça com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
-            return result.Error == "Peça não encontrada."
-                ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a peça."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a peça."));
         }
 
         return Ok(ApiResponse.SuccessResponse("Peça atualizada com sucesso."));

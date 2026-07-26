@@ -6,7 +6,7 @@ namespace Ofichina.Application.UseCases.Pecas.Commands;
 /// <summary>
 /// Comando para criação de peça.
 /// </summary>
-public sealed class CreatePecaCommand : ICommand<Result<Guid>>
+public sealed class CreatePecaCommand : ICommand<Result>
 {
     /// <summary>
     /// Nome da peça.
@@ -32,9 +32,4 @@ public sealed class CreatePecaCommand : ICommand<Result<Guid>>
     /// Quantidade inicial em estoque.
     /// </summary>
     public int QuantidadeEstoque { get; init; }
-
-    /// <summary>
-    /// Indica se a peça inicia ativa.
-    /// </summary>
-    public bool Ativo { get; init; } = true;
 }

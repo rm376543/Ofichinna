@@ -11,7 +11,7 @@ namespace Ofichina.Application.UseCases.Pecas.Handlers;
 /// <summary>
 /// Handler para criação de peça.
 /// </summary>
-public sealed class CreatePecaCommandHandler : ICommandHandler<CreatePecaCommand, Result<Guid>>
+public sealed class CreatePecaCommandHandler : ICommandHandler<CreatePecaCommand, Result>
 {
     private readonly IRepository<Peca> _pecaRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -31,7 +31,7 @@ public sealed class CreatePecaCommandHandler : ICommandHandler<CreatePecaCommand
     }
 
     /// <inheritdoc />
-    public async Task<Result<Guid>> HandleAsync(CreatePecaCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result> HandleAsync(CreatePecaCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -42,23 +42,20 @@ public sealed class CreatePecaCommandHandler : ICommandHandler<CreatePecaCommand
                 command.Valor,
                 command.QuantidadeEstoque);
 
-            if (!command.Ativo)
-                peca.Desativar();
-
             await _pecaRepository.AddAsync(peca, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
-            return Result.Success(peca.Id);
+            return Result.Success();
         }
         catch (DomainException ex)
         {
             _logger.LogWarning(ex, "Erro de domínio ao criar peça.");
-            return Result.Failure<Guid>(ex.Message);
+            return Result.Failure(ex.Message);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao criar peça.");
-            return Result.Failure<Guid>("Não foi possível criar a peça.");
+            return Result.Failure("Não foi possível criar a peça.");
         }
     }
 }

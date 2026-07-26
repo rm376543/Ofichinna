@@ -31,9 +31,4 @@ public sealed class PecaResponse : BaseEntity
     /// Quantidade disponível em estoque.
     /// </summary>
     public int QuantidadeEstoque { get; set; }
-
-    /// <summary>
-    /// Indica se a peça está ativa.
-    /// </summary>
-    public bool Ativo { get; set; }
 }
