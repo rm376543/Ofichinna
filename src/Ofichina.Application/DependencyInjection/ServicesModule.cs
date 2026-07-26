@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Ofichina.Application.UseCases.OrdensServico.Services;
 
 namespace Ofichina.Application.DependencyInjection;
 
@@ -10,7 +11,8 @@ public static class ServicesModule
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        // Registra serviços específicos da aplicação aqui
+        services.AddScoped<ICreateOrdemServicoService, CreateOrdemServicoService>();
+        services.AddScoped<IOrdemServicoService, OrdemServicoService>();
 
         return services;
     }

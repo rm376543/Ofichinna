@@ -1,11 +1,12 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Requests.OrdensServico;
 namespace Ofichina.Application.UseCases.OrdensServico.Commands;
 
 /// <summary>
 /// Comando para criação de ordem de serviço.
 /// </summary>
-public sealed class CreateOrdemServicoCommand : ICommand<Result<Guid>>
+public sealed class CreateOrdemServicoCommand : ICommand<Result>
 {
     /// <summary>
     /// Identificador da pessoa vinculada.
@@ -30,11 +31,21 @@ public sealed class CreateOrdemServicoCommand : ICommand<Result<Guid>>
     /// <summary>
     /// Problema relatado na abertura da ordem de serviço.
     /// </summary>
-    public string ProblemaRelatado { get; init; } = string.Empty;
+    public string ProblemaRelatado { get; init; }
 
     /// <summary>
     /// Observações iniciais da ordem de serviço.
     /// </summary>
     public string? Observacoes { get; init; }
+
+    public CreateOrdemServicoCommand(CreateOrdemServicoRequest request)
+    {
+        PessoaId = request.PessoaId;
+        VeiculoId = request.VeiculoId;
+        FuncionarioId = request.FuncionarioId;
+        HodometroEntrada = request.HodometroEntrada;
+        ProblemaRelatado = request.ProblemaRelatado;
+        Observacoes = request.Observacoes;
+    }
 
 }

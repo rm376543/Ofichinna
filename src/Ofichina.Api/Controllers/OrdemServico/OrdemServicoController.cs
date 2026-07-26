@@ -4,9 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
+using Ofichina.Contracts;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Enums;
 using Ofichina.Contracts.Requests.OrdensServico;
 using Ofichina.Contracts.Responses;
+using Ofichina.Contracts.Responses.OrdemServico;
 using Ofichina.Contracts.Responses.OrdensServico;
 
 namespace Ofichina.Api.Controllers.OrdensServico;
@@ -41,19 +44,21 @@ public sealed class OrdemServicoController : ControllerBase
     /// <summary>
     /// Retorna todas as ordens de serviço cadastradas.
     /// </summary>
+    /// <param name="pagination">Parâmetros de paginação.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de ordens de serviço.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet]
-    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<OrdemServicoResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResponse<OrdemServicoSimplesResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<OrdemServicoResponse>>>> BuscarOrdensServico(
+    public async Task<ActionResult<ApiResponse<PagedResponse<OrdemServicoSimplesResponse>>>> BuscarTodasOrdensServicoPaginadas(
+        [FromQuery] Pagination pagination,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção de todas as ordens de serviço.");
 
-        var result = await _mediator.Send(new GetOrdensServicoQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetAllOrdensServicoPaginadasQuery(pagination), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -61,7 +66,7 @@ public sealed class OrdemServicoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter as ordens de serviço."));
         }
 
-        return Ok(ApiResponse<IReadOnlyCollection<OrdemServicoResponse>>.SuccessResponse(result.Value ?? []));
+        return Ok(ApiResponse<PagedResponse<OrdemServicoSimplesResponse>>.SuccessResponse(result.Value));
     }
 
     /// <summary>
@@ -101,12 +106,12 @@ public sealed class OrdemServicoController : ControllerBase
     /// <returns>Identificador da ordem de serviço criada ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
-    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<Guid>>> CriarOrdemServico(
+    public async Task<ActionResult<ApiResponse>> CriarOrdemServico(
         [FromBody] CreateOrdemServicoRequest request,
         CancellationToken cancellationToken)
     {
@@ -119,25 +124,15 @@ public sealed class OrdemServicoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _mediator.Send(new CreateOrdemServicoCommand
-        {
-            PessoaId = request.PessoaId,
-            VeiculoId = request.VeiculoId,
-            FuncionarioId = request.FuncionarioId,
-            HodometroEntrada = request.HodometroEntrada,
-            ProblemaRelatado = request.ProblemaRelatado,
-            Observacoes = request.Observacoes
-        }, cancellationToken);
+        var result = await _mediator.Send(new CreateOrdemServicoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
         {
             _logger.LogError("Erro ao criar a ordem de serviço. Erro: {Erro}", result.Error);
-            return result.Error is "Pessoa não encontrada." or "Funcionário não encontrado." or "Veículo não encontrado."
-                ? NotFound(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar a ordem de serviço."))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar a ordem de serviço."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar a ordem de serviço."));
         }
 
-        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Ordem de serviço criada com sucesso."));
+        return Ok(ApiResponse.SuccessResponse("Ordem de serviço criada com sucesso."));
     }
 
     /// <summary>
@@ -166,23 +161,12 @@ public sealed class OrdemServicoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _mediator.Send(new UpdateOrdemServicoCommand
-        {
-            Id = request.Id,
-            PessoaId = request.PessoaId,
-            VeiculoId = request.VeiculoId,
-            FuncionarioId = request.FuncionarioId,
-            HodometroEntrada = request.HodometroEntrada,
-            ProblemaRelatado = request.ProblemaRelatado,
-            Observacoes = request.Observacoes
-        }, cancellationToken);
+        var result = await _mediator.Send(new UpdateOrdemServicoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
         {
             _logger.LogError("Erro ao atualizar a ordem de serviço com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
-            return result.Error is "Ordem de serviço não encontrada." or "Pessoa não encontrada." or "Funcionário não encontrado." or "Veículo não encontrado."
-                ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a ordem de serviço."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a ordem de serviço."));
         }
 
         return Ok(ApiResponse.SuccessResponse("Ordem de serviço atualizada com sucesso."));

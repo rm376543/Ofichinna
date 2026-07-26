@@ -1,5 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Requests.OrdensServico;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Commands;
 
@@ -36,11 +37,22 @@ public sealed class UpdateOrdemServicoCommand : ICommand<Result>
     /// <summary>
     /// Problema relatado atualizado.
     /// </summary>
-    public string ProblemaRelatado { get; init; } = string.Empty;
+    public string ProblemaRelatado { get; init; }
 
     /// <summary>
     /// Observações atualizadas da ordem de serviço.
     /// </summary>
     public string? Observacoes { get; init; }
+
+    public UpdateOrdemServicoCommand(UpdateOrdemServicoRequest request)
+    {
+        Id = request.Id;
+        PessoaId = request.PessoaId;
+        VeiculoId = request.VeiculoId;
+        FuncionarioId = request.FuncionarioId;
+        HodometroEntrada = request.HodometroEntrada;
+        ProblemaRelatado = request.ProblemaRelatado;
+        Observacoes = request.Observacoes;
+    }
 
 }
