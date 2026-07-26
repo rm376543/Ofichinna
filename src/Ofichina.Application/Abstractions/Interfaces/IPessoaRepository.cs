@@ -23,6 +23,14 @@ public interface IPessoaRepository : IRepository<Pessoa>
     Task<Pessoa?> GetByIdWithVeiculosAsync(Guid pessoaId, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Obtém várias pessoas pelos identificadores informados.
+    /// </summary>
+    /// <param name="pessoaIds">Identificadores das pessoas.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Coleção de pessoas encontradas.</returns>
+    Task<IReadOnlyCollection<Pessoa>> GetByIdsAsync(IEnumerable<Guid> pessoaIds, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Pesquisa todas pessoas e mostra paginadas de acordo com a paginação informada.
     /// </summary>
     /// <param name="pagination">Informações de paginação.</param>

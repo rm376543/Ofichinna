@@ -30,6 +30,24 @@ namespace Ofichina.Infrastructure.Repositories
                 .FirstOrDefaultAsync(x => x.Id == pessoaId, cancellationToken);
         }
 
+        public async Task<IReadOnlyCollection<Pessoa>> GetByIdsAsync(IEnumerable<Guid> pessoaIds, CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(pessoaIds);
+
+            var ids = pessoaIds
+                .Where(id => id != Guid.Empty)
+                .Distinct()
+                .ToArray();
+
+            if (ids.Length == 0)
+                return [];
+
+            return await _context.Pessoas
+                .AsNoTracking()
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<PagedResponse<Pessoa>> GetAllPessoasPaginadasAsync(Pagination pagination, CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(pagination);
