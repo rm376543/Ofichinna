@@ -62,6 +62,11 @@ Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, ut
    - Padrões de entrega
    - Checklist antes de PR
 
+9. **[📐 DESIGN_APPROVAL_SHEET.md](./DESIGN_APPROVAL_SHEET.md)** - Template de aprovação de design
+   - Obrigatório antes de features de negócio significativas
+   - Complementar aos ADRs
+   - Exemplo preenchido em `das/`
+
 ### 🟡 VALIDAÇÃO E RASTREAMENTO
 9. **[✅ RELATORIO_IMPLEMENTACAO.md](./RELATORIO_IMPLEMENTACAO.md)** - Relatório completo
    - Base consolidada da implementação
@@ -102,6 +107,7 @@ Ofichinna/
    ├─ QUICK_REFERENCE.md
    ├─ SUMARIO_EXECUTIVO.md
    ├─ API_REFERENCE.md
+   ├─ DESIGN_APPROVAL_SHEET.md
    ├─ DOMINIO_FEATURES.md
    ├─ LOGGING.md
    ├─ EXEMPLOS_CORRELATION_ID.md
@@ -117,6 +123,8 @@ Ofichinna/
    ├─ CONTRIBUTING.md
    ├─ INDICE.md
    ├─ RELATORIO_IMPLEMENTACAO.md
+   ├─ das/
+   │  └─ DAS-001-exemplo-ordem-servico.md
    ├─ adr/
    │  ├─ ADR-001 - Clean-Architecture-DDD.md
    │  ├─ ADR-002 - Adocao-CQRS-Application.md
@@ -227,7 +235,7 @@ Veja exemplo completo em **GUIA_IMPLEMENTACAO.md**
 | Métrica | Valor |
 |---------|-------|
 | Projetos | 9 |
-| Documentos Markdown | 28 (20 na raiz + 8 ADRs) |
+| Documentos Markdown | 30 (21 na raiz + 1 DAS + 8 ADRs) |
 | Controllers documentados | 13 |
 | Endpoints documentados | 63 |
 | Entidades/features | 9 domínios principais |
@@ -258,6 +266,8 @@ Veja exemplo completo em **GUIA_IMPLEMENTACAO.md**
 - 📖 [DOMINIO_FEATURES.md](./DOMINIO_FEATURES.md) - Entidades e features
 - 📖 [RELATORIO_IMPLEMENTACAO.md](./RELATORIO_IMPLEMENTACAO.md) - Relatório
 - 📖 [API_REFERENCE.md](./API_REFERENCE.md) - Contratos e exemplos da API
+- 📐 [DESIGN_APPROVAL_SHEET.md](./DESIGN_APPROVAL_SHEET.md) - Template de aprovação de design
+- 📐 [das/DAS-001-exemplo-ordem-servico.md](./das/DAS-001-exemplo-ordem-servico.md) - Exemplo preenchido
 - 📖 [LOGGING.md](./LOGGING.md) - Serilog, Seq e correlação
 - 📖 [EXEMPLOS_CORRELATION_ID.md](./EXEMPLOS_CORRELATION_ID.md) - Exemplos de correlação
 - 📖 [DOCUMENTACAO_COMPLETA.md](./DOCUMENTACAO_COMPLETA.md) - Mapa da documentação
@@ -269,6 +279,12 @@ Veja exemplo completo em **GUIA_IMPLEMENTACAO.md**
 - 📖 [adr/](./adr/) - Architecture Decision Records
 - 📖 [CONTRIBUTING.md](./CONTRIBUTING.md) - Padrões de contribuição
 - 📖 [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Solução de problemas
+
+### 🧭 Quando usar DAS ou ADR?
+
+- Use um **DAS** antes de implementar uma feature significativa: ele descreve o problema, escopo, contratos, fluxo, testes, riscos e aprovação daquela feature.
+- Use um **ADR** quando a mudança registrar uma decisão arquitetural duradoura e transversal, como Clean Architecture, CQRS, EF Core ou RBAC.
+- Um DAS deve referenciar os ADRs aplicáveis; um DAS não substitui um ADR quando a feature altera a arquitetura da solução.
 
 ---
 

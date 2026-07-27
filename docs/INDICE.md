@@ -63,6 +63,14 @@ DOCUMENTAÇÃO OFICHINNA
 │     ├─ Regras de contribuição
 │     ├─ Padrões de documentação
 │     └─ Checklist antes de PR
+
+ ├─ 📐 DESIGN E APROVAÇÃO
+ │  ├─ DESIGN_APPROVAL_SHEET.md ⭐⭐⭐
+ │  │  ├─ Template de aprovação pré-implementação
+ │  │  ├─ Design por camada, segurança e testes
+ │  │  └─ Checklist e assinaturas
+ │  └─ das/
+ │     └─ DAS-001-exemplo-ordem-servico.md
 │
 ├─ ✅ VALIDAÇÃO E RASTREAMENTO (15 min de leitura)
 │  │
@@ -209,6 +217,8 @@ DOCUMENTAÇÃO OFICHINNA
 | **ARQUITETURA.md** | ⭐⭐⭐ Profunda | Devs, Arquitetos | ~500 linhas | 20 min |
 | **GUIA_IMPLEMENTACAO.md** | ⭐⭐⭐ Profunda | Devs | ~400 linhas | 20 min |
 | **API_REFERENCE.md** | ⭐⭐ Média | Devs, Integração | ~200 linhas | 10 min |
+| **DESIGN_APPROVAL_SHEET.md** | ⭐⭐⭐ Profunda | Arquitetos, Devs, Produto | template | 15 min |
+| **das/DAS-001-exemplo-ordem-servico.md** | ⭐⭐⭐ Profunda | Devs, QA, Produto | exemplo | 20 min |
 | **DOMINIO_FEATURES.md** | ⭐⭐⭐ Profunda | Devs, Produto, QA | ~300 linhas | 15 min |
 | **QUICK_REFERENCE.md** | ⭐⭐ Média | Devs | ~480 linhas | 15 min |
 | **LOGGING.md** | ⭐⭐ Média | Devs, DevOps | existente | 10 min |
@@ -283,6 +293,12 @@ DOCUMENTAÇÃO OFICHINNA
 
 **"Quais decisões arquiteturais foram registradas?"**
 → adr/ADR-001 - ADR-008
+
+**"Como aprovar o design de uma feature significativa?"**
+→ DESIGN_APPROVAL_SHEET.md e das/DAS-001-exemplo-ordem-servico.md
+
+**"Quando usar DAS em vez de ADR?"**
+→ README.md > "🧭 Quando usar DAS ou ADR?"
 
 **"Como colaborar com o projeto?"**
 → CONTRIBUTING.md > "Regras principais"
