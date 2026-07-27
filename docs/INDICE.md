@@ -55,7 +55,7 @@ DOCUMENTAÇÃO OFICHINNA
 │  │
 │  ├─ API_REFERENCE.md ⭐⭐⭐
 │  │  ├─ Autenticação JWT
-│  │  ├─ Endpoints de perfil
+ │  │  ├─ Endpoints de autenticação, RBAC e features
 │  │  ├─ Exemplos de request/response
 │  │  └─ Códigos de status
 │  │
@@ -63,6 +63,14 @@ DOCUMENTAÇÃO OFICHINNA
 │     ├─ Regras de contribuição
 │     ├─ Padrões de documentação
 │     └─ Checklist antes de PR
+
+ ├─ 📐 DESIGN E APROVAÇÃO
+ │  ├─ DESIGN_APPROVAL_SHEET.md ⭐⭐⭐
+ │  │  ├─ Template de aprovação pré-implementação
+ │  │  ├─ Design por camada, segurança e testes
+ │  │  └─ Checklist e assinaturas
+ │  └─ das/
+ │     └─ DAS-001-exemplo-ordem-servico.md
 │
 ├─ ✅ VALIDAÇÃO E RASTREAMENTO (15 min de leitura)
 │  │
@@ -88,6 +96,16 @@ DOCUMENTAÇÃO OFICHINNA
 │     ├─ Roles e policies
 │     ├─ FallbackPolicy
 │     └─ Proteção de rotas
+
+ ├─ 📚 COMPLEMENTARES
+ │  ├─ DOCUMENTACAO_COMPLETA.md
+ │  ├─ CONCLUSAO.md
+ │  └─ RESUMO_FINAL.md
+
+ ├─ 🏛️ DECISÕES ARQUITETURAIS
+ │  └─ adr/
+ │     ├─ ADR-001 a ADR-008
+ │     └─ Decisões de arquitetura, CQRS, dados, EF, camadas, validação e RBAC
 │
 │
 └─ 📑 NAVEGAÇÃO (Este arquivo)
@@ -199,8 +217,20 @@ DOCUMENTAÇÃO OFICHINNA
 | **ARQUITETURA.md** | ⭐⭐⭐ Profunda | Devs, Arquitetos | ~500 linhas | 20 min |
 | **GUIA_IMPLEMENTACAO.md** | ⭐⭐⭐ Profunda | Devs | ~400 linhas | 20 min |
 | **API_REFERENCE.md** | ⭐⭐ Média | Devs, Integração | ~200 linhas | 10 min |
+| **DESIGN_APPROVAL_SHEET.md** | ⭐⭐⭐ Profunda | Arquitetos, Devs, Produto | template | 15 min |
+| **das/DAS-001-exemplo-ordem-servico.md** | ⭐⭐⭐ Profunda | Devs, QA, Produto | exemplo | 20 min |
+| **DOMINIO_FEATURES.md** | ⭐⭐⭐ Profunda | Devs, Produto, QA | ~300 linhas | 15 min |
+| **QUICK_REFERENCE.md** | ⭐⭐ Média | Devs | ~480 linhas | 15 min |
+| **LOGGING.md** | ⭐⭐ Média | Devs, DevOps | existente | 10 min |
+| **EXEMPLOS_CORRELATION_ID.md** | ⭐⭐ Média | Devs, QA | existente | 10 min |
+| **mediatr.md** | ⭐⭐ Média | Devs | existente | 10 min |
+| **AUTORIZACAO-RBAC-POLICIES.md** | ⭐⭐ Média | Devs, Segurança | existente | 15 min |
 | **CONTRIBUTING.md** | ⭐ Média | Devs | ~100 linhas | 5 min |
 | **RELATORIO_IMPLEMENTACAO.md** | ⭐⭐⭐ Profunda | Arquitetos, QA | ~700 linhas | 25 min |
+| **DOCUMENTACAO_COMPLETA.md** | ⭐⭐ Média | Todos | existente | 10 min |
+| **CONCLUSAO.md** | ⭐⭐ Média | Todos | existente | 10 min |
+| **RESUMO_FINAL.md** | ⭐⭐ Média | Todos | existente | 10 min |
+| **ADR-001 a ADR-008** | ⭐⭐⭐ Profunda | Arquitetos | 8 documentos | 30 min |
 
 ---
 
@@ -253,7 +283,22 @@ DOCUMENTAÇÃO OFICHINNA
 → GUIA_IMPLEMENTACAO.md > "## Padrões de Design Utilizados"
 
 **"Como vejo contratos da API?"**
-→ API_REFERENCE.md > "Endpoints de autenticação"
+→ API_REFERENCE.md > "Endpoints de autenticação" e "Ordens de serviço"
+
+**"Quais entidades e features existem?"**
+→ DOMINIO_FEATURES.md > "Mapa de features"
+
+**"Como funciona o Correlation ID e o logging?"**
+→ LOGGING.md e EXEMPLOS_CORRELATION_ID.md
+
+**"Quais decisões arquiteturais foram registradas?"**
+→ adr/ADR-001 - ADR-008
+
+**"Como aprovar o design de uma feature significativa?"**
+→ DESIGN_APPROVAL_SHEET.md e das/DAS-001-exemplo-ordem-servico.md
+
+**"Quando usar DAS em vez de ADR?"**
+→ README.md > "🧭 Quando usar DAS ou ADR?"
 
 **"Como colaborar com o projeto?"**
 → CONTRIBUTING.md > "Regras principais"
@@ -359,6 +404,18 @@ Ideal para: Code review, auditoria técnica
 - Estatísticas
 - Próximos passos
 
+### DOMINIO_FEATURES.md
+- Entidades reais do domínio
+- Controllers e rotas por feature
+- Relacionamentos e regras de acesso
+
+### LOGGING.md e EXEMPLOS_CORRELATION_ID.md
+- Serilog, Seq e arquivos de log
+- `CorrelationIdMiddleware` e cabeçalho de correlação
+
+### ADR/
+- Registro das decisões técnicas e arquiteturais
+
 ---
 
 ## ⏱️ Estimativas de Tempo
@@ -463,13 +520,16 @@ Se não, consulte referências cruzadas
 
 | Métrica | Valor |
 |---------|-------|
-| Documentos | 6 |
-| Linhas totais | ~3.500+ |
-| Seções | 100+ |
-| Exemplos de código | 20+ |
+| Documentos Markdown | 28 (20 na raiz + 8 ADRs) |
+| Controllers documentados | 13 |
+| Endpoints catalogados | 63 |
+| Entidades/features | 9 domínios principais |
+| ADRs | 8 |
+| Seções | 150+ |
+| Exemplos de código | 30+ |
 | Diagramas | 15+ |
 | Checklists | 10+ |
-| Tabelas | 30+ |
+| Tabelas | 40+ |
 
 ---
 
@@ -479,9 +539,9 @@ Facilitar o **onboarding de novos desenvolvedores** e **manutenção do projeto*
 
 ---
 
-**Última atualização:** 2025  
-**Versão:** 1.0  
-**Status:** ✅ Documentação Completa
+**Última atualização:** 2026  
+**Versão:** 2.0  
+**Status:** ✅ Índice sincronizado com a documentação atual
 
 ---
 

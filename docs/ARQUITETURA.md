@@ -17,7 +17,7 @@ builder.Services.AddBootstrapMiddleware(configuration);
 
 ### 1. **Ofichina.Api** - Camada de Apresentação
 - Controllers
-- Middlewares (futuros)
+- Middlewares `CorrelationIdMiddleware` e `ApiExceptionMiddleware`
 - Handlers de exceções
 - Autenticação e Autorização
 - Integração com SwaggerModule
@@ -130,7 +130,7 @@ Implementação de detalhes técnicos
 - **RepositoryModule**: Implementação de repositórios
   - Repository<T> genérico
   - UnitOfWork
-  - Repositórios concretos de usuário e perfil
+- Repositórios concretos de usuários, perfis, permissões e entidades operacionais
   - Repositório de autenticação para consulta de usuários
 
 - **ServicesModule**: Serviços de apoio à autenticação
@@ -278,4 +278,10 @@ public class CreateClienteCommandHandler : ICommandHandler<CreateClienteCommand,
 
 ---
 
-Arquitetura implementada em 2025 seguindo Clean Architecture com .NET 10
+## 🔄 Estado atual da API
+
+Os 13 controllers em `src/Ofichina.Api/Controllers/` cobrem agendamento, autenticação, itens de serviço, ordens de serviço, peças, pessoas, perfis/RBAC, permissões, serviços, vínculos serviço-peça e veículos. O pipeline em `Program.cs` registra `UseCorrelationId()`, `ApiExceptionMiddleware`, autenticação, autorização e `MapControllers()`.
+
+**Última atualização:** 2026  
+**Versão:** 2.0  
+**Status:** ✅ Arquitetura sincronizada com o código atual

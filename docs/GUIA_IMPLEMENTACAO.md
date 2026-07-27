@@ -306,6 +306,8 @@ dotnet ef database update -p src/Ofichina.Infrastructure
 
 ---
 
-**Implementado em:** 2025  
+**Implementado em:** 2026  
+**Última atualização:** 2026  
+**Versão:** 2.0  
 **Framework:** .NET 10  
 **Padrão:** Clean Architecture + CQRS

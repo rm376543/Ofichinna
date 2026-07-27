@@ -43,24 +43,32 @@ Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, ut
    - Notas importantes
 
 ### 🟢 IMPLEMENTE FEATURES
-4. **[📖 GUIA_IMPLEMENTACAO.md](./GUIA_IMPLEMENTACAO.md)** - Guia prático passo-a-passo
+5. **[📖 GUIA_IMPLEMENTACAO.md](./GUIA_IMPLEMENTACAO.md)** - Guia prático passo-a-passo
    - Exemplo prático completo
    - Checklist para nova feature
    - Padrões de design
    - Código exemplo comentado
 
-5. **[📎 API_REFERENCE.md](./API_REFERENCE.md)** - Referência da API
-   - Endpoints de autenticação e perfil
+6. **[📎 API_REFERENCE.md](./API_REFERENCE.md)** - Referência da API
+   - Endpoints de todos os controllers
    - Exemplos de request/response
    - Códigos de status
 
-6. **[🤝 CONTRIBUTING.md](./CONTRIBUTING.md)** - Guia de contribuição
+7. **[🧩 DOMINIO_FEATURES.md](./DOMINIO_FEATURES.md)** - Entidades e features
+   - Domínios, relacionamentos e operações disponíveis
+
+8. **[🤝 CONTRIBUTING.md](./CONTRIBUTING.md)** - Guia de contribuição
    - Regras de documentação
    - Padrões de entrega
    - Checklist antes de PR
 
+9. **[📐 DESIGN_APPROVAL_SHEET.md](./DESIGN_APPROVAL_SHEET.md)** - Template de aprovação de design
+   - Obrigatório antes de features de negócio significativas
+   - Complementar aos ADRs
+   - Exemplo preenchido em `das/`
+
 ### 🟡 VALIDAÇÃO E RASTREAMENTO
-7. **[✅ RELATORIO_IMPLEMENTACAO.md](./RELATORIO_IMPLEMENTACAO.md)** - Relatório completo
+9. **[✅ RELATORIO_IMPLEMENTACAO.md](./RELATORIO_IMPLEMENTACAO.md)** - Relatório completo
    - Base consolidada da implementação
    - Estrutura de pastas
    - Padrões de design
@@ -68,7 +76,7 @@ Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, ut
    - Estatísticas
    - Checklist de qualidade
 
-8. **[🧰 TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Suporte operacional
+10. **[🧰 TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Suporte operacional
    - Banco de dados
    - Migrations
    - SonarQube
@@ -96,18 +104,37 @@ Ofichinna/
 └─ docs/
    ├─ README.md
    ├─ START_HERE.md
+   ├─ QUICK_REFERENCE.md
    ├─ SUMARIO_EXECUTIVO.md
+   ├─ API_REFERENCE.md
+   ├─ DESIGN_APPROVAL_SHEET.md
+   ├─ DOMINIO_FEATURES.md
+   ├─ LOGGING.md
+   ├─ EXEMPLOS_CORRELATION_ID.md
+   ├─ DOCUMENTACAO_COMPLETA.md
+   ├─ CONCLUSAO.md
+   ├─ RESUMO_FINAL.md
+   ├─ mediatr.md
    ├─ MAPA_VISUAL.md
    ├─ ARQUITETURA.md
    ├─ GUIA_IMPLEMENTACAO.md
-   ├─ QUICK_REFERENCE.md
-   ├─ API_REFERENCE.md
-   ├─ CONTRIBUTING.md
-   ├─ RELATORIO_IMPLEMENTACAO.md
-   ├─ INDICE.md
-   ├─ TROUBLESHOOTING.md
    ├─ AUTORIZACAO-RBAC-POLICIES.md
-   └─ adr/
+   ├─ TROUBLESHOOTING.md
+   ├─ CONTRIBUTING.md
+   ├─ INDICE.md
+   ├─ RELATORIO_IMPLEMENTACAO.md
+   ├─ das/
+   │  └─ DAS-001-exemplo-ordem-servico.md
+   ├─ adr/
+   │  ├─ ADR-001 - Clean-Architecture-DDD.md
+   │  ├─ ADR-002 - Adocao-CQRS-Application.md
+   │  ├─ ADR-003 - Banco-Dados-Relacional.md
+   │  ├─ ADR-004 - Adoção do Entity Framework Core como ORM.md
+   │  ├─ ADR-005 - Organização da Solução por Camadas e Projetos.md
+   │  ├─ ADR-006 - Estratégia para Validações com FluentValidation.md
+   │  ├─ ADR-007 - Autorizacao-RBAC-e-Policies.md
+   │  └─ ADR-008 - Estrategia-Validacoes-FluentValidation.md
+   └─ Documentacao Inicial Projeto/
 ```
 
 ---
@@ -208,11 +235,13 @@ Veja exemplo completo em **GUIA_IMPLEMENTACAO.md**
 | Métrica | Valor |
 |---------|-------|
 | Projetos | 9 |
-| Arquivos Criados | Base consolidada |
-| Linhas de Código | ~2.500+ |
-| Padrões de Design | 8 |
-| Módulos de DI | Múltiplos |
-| Camadas | 6 |
+| Documentos Markdown | 30 (21 na raiz + 1 DAS + 8 ADRs) |
+| Controllers documentados | 13 |
+| Endpoints documentados | 63 |
+| Entidades/features | 9 domínios principais |
+| Padrões de Design | CQRS, Repository, Unit of Work, Specification, Result, Value Object |
+| Módulos da API | Swagger, Correlation ID, exceções |
+| Camadas/projetos | 10 projetos na solução |
 | Build Status | ✅ Sucesso |
 | Erros | 0 |
 
@@ -228,14 +257,34 @@ Veja exemplo completo em **GUIA_IMPLEMENTACAO.md**
 - [Microsoft.Extensions.DependencyInjection](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.dependencyinjection)
 
 ### Documentação Local
+- 📖 [START_HERE.md](./START_HERE.md) - Ponto de partida
+- 📖 [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) - Comandos e consulta rápida
 - 📖 [SUMARIO_EXECUTIVO.md](./SUMARIO_EXECUTIVO.md) - Visão geral
 - 📖 [MAPA_VISUAL.md](./MAPA_VISUAL.md) - Diagramas
 - 📖 [ARQUITETURA.md](./ARQUITETURA.md) - Referência técnica
 - 📖 [GUIA_IMPLEMENTACAO.md](./GUIA_IMPLEMENTACAO.md) - Guia prático
+- 📖 [DOMINIO_FEATURES.md](./DOMINIO_FEATURES.md) - Entidades e features
 - 📖 [RELATORIO_IMPLEMENTACAO.md](./RELATORIO_IMPLEMENTACAO.md) - Relatório
 - 📖 [API_REFERENCE.md](./API_REFERENCE.md) - Contratos e exemplos da API
+- 📐 [DESIGN_APPROVAL_SHEET.md](./DESIGN_APPROVAL_SHEET.md) - Template de aprovação de design
+- 📐 [das/DAS-001-exemplo-ordem-servico.md](./das/DAS-001-exemplo-ordem-servico.md) - Exemplo preenchido
+- 📖 [LOGGING.md](./LOGGING.md) - Serilog, Seq e correlação
+- 📖 [EXEMPLOS_CORRELATION_ID.md](./EXEMPLOS_CORRELATION_ID.md) - Exemplos de correlação
+- 📖 [DOCUMENTACAO_COMPLETA.md](./DOCUMENTACAO_COMPLETA.md) - Mapa da documentação
+- 📖 [CONCLUSAO.md](./CONCLUSAO.md) - Conclusão
+- 📖 [RESUMO_FINAL.md](./RESUMO_FINAL.md) - Resumo final
+- 📖 [mediatr.md](./mediatr.md) - Uso de MediatR
+- 📖 [AUTORIZACAO-RBAC-POLICIES.md](./AUTORIZACAO-RBAC-POLICIES.md) - Autorização
+- 📖 [INDICE.md](./INDICE.md) - Índice completo
+- 📖 [adr/](./adr/) - Architecture Decision Records
 - 📖 [CONTRIBUTING.md](./CONTRIBUTING.md) - Padrões de contribuição
 - 📖 [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) - Solução de problemas
+
+### 🧭 Quando usar DAS ou ADR?
+
+- Use um **DAS** antes de implementar uma feature significativa: ele descreve o problema, escopo, contratos, fluxo, testes, riscos e aprovação daquela feature.
+- Use um **ADR** quando a mudança registrar uma decisão arquitetural duradoura e transversal, como Clean Architecture, CQRS, EF Core ou RBAC.
+- Um DAS deve referenciar os ADRs aplicáveis; um DAS não substitui um ADR quando a feature altera a arquitetura da solução.
 
 ---
 
@@ -314,7 +363,7 @@ Para dúvidas sobre a implementação:
 
 ## 📝 Changelog
 
-### v1.0 - 2025
+### v2.0 - 2026
 - ✅ Clean Architecture implementada
 - ✅ CQRS Pattern configurado
 - ✅ 8 padrões de design implementados
@@ -354,7 +403,7 @@ Pronto para:     ✅ Desenvolvimento
 ---
 
 **Última atualização:** 2026  
-**Versão:** 1.1  
+**Versão:** 2.0  
 **Status:** ✅ PRONTO PARA EVOLUIR
 
 ---

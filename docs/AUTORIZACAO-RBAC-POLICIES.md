@@ -325,3 +325,9 @@ O padrão adotado no projeto é:
 - policies para regras nomeadas;
 - fallback para bloqueio global;
 - exceções públicas apenas por `[AllowAnonymous]`.
+
+> **Estado verificado em 2026:** os controllers usam `[Authorize]` e `[Authorize(Roles = "ADMIN")]`; login e register usam `[AllowAnonymous]`. `UserPolicyEnum` define nomes disponíveis, mas não há `Authorize(Policy = ...)` ativo nas actions atuais. Os exemplos de policies deste documento representam uma evolução possível.
+
+**Última atualização:** 2026  
+**Versão:** 2.0  
+**Status:** ✅ RBAC atual documentado
