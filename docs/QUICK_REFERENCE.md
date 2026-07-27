@@ -475,5 +475,7 @@ dotnet ef database update
 
 ---
 
-**Quick Reference v1.0 - 2025**  
+**Última atualização:** 2026  
+**Versão:** 2.0  
+**Status:** ✅ Rotas, camadas e módulos atualizados  
 *Para referência rápida durante desenvolvimento*

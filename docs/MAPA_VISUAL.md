@@ -234,24 +234,24 @@
 		│                                   │
 		▼                                   ▼
 ┌──────────────────────────┐      ┌──────────────────────────┐
-│ 2. ExemplosController     │      │ 5. ValidationModule      │
-│    - Recebe requisição    │──────│    - Auto-executa        │
-│    - Valida entrada       │      │    - CreateExemploRequest│
+│ 2. ExemplosController    │      │ 5. ValidationModule      │
+│    - Recebe requisição   │──────│    - Auto-executa        │
+│    - Valida entrada      │      │    - CreateExemploRequest│
 └──────────────────────────┘      │      Validator           │
 		│                         └──────────────────────────┘
 		▼
 ┌──────────────────────────┐
-│ 3. CreateExemploCommand   │
-│    - Encapsula dados      │
-│    - ICommand<Guid>       │
+│ 3. CreateExemploCommand  │
+│    - Encapsula dados     │
+│    - ICommand<Guid>      │
 └──────────────────────────┘
 		│
 		▼
-┌──────────────────────────────┐
+┌───────────────────────────────┐
 │ 4. CreateExemploCommandHandler│
 │    - Executa lógica           │
 │    - Chama repository         │
-└──────────────────────────────┘
+└───────────────────────────────┘
 		│
 		├─────────────┬────────────────┐
 		│             │                │
@@ -487,5 +487,6 @@ Para adicionar uma nova entidade (ex: Produto), siga esta sequência:
 
 ---
 
-**Última atualização:** 2025  
-**Status:** ✅ Arquitetura Pronta para Uso
+**Última atualização:** 2026  
+**Versão:** 2.0  
+**Status:** ✅ Arquitetura sincronizada com API, módulos e middlewares atuais

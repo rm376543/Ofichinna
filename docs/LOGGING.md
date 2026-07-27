@@ -318,3 +318,11 @@ _logger.LogInformation("Tentativa de login. Email: {Email}", email);
 - `src/Ofichina.Api/appsettings.json` - Configuração de produção
 - `src/Ofichina.Api/appsettings.Development.json` - Configuração de desenvolvimento
 - `docker/docker-compose.yml` - Serviço Seq
+
+## ✅ Configuração efetiva da API
+
+`Program.cs` registra Serilog no console, no Seq e em `logs/ofichinna-.txt`, com rotação horária e `[CorrelationId]` no template. `CorrelationIdModule` registra o `CorrelationIdMiddleware`; `ApiExceptionMiddleware` trata exceções não tratadas e padroniza a resposta HTTP.
+
+**Última atualização:** 2026  
+**Versão:** 2.0  
+**Status:** ✅ Logging e correlação sincronizados com a API

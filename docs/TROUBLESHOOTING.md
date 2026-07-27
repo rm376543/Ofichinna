@@ -93,3 +93,14 @@ dotnet build --no-incremental
 dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
 dotnet sonarscanner end /d:sonar.token="<token>"
 ```
+
+## 🔎 Diagnóstico da API atual
+
+- Erros não tratados são convertidos por `ApiExceptionMiddleware`.
+- O `CorrelationIdMiddleware` cria ou reutiliza `X-Correlation-Id`.
+- O pipeline é configurado em `src/Ofichina.Api/Program.cs` antes de `MapControllers()`.
+- Login e register são públicos; os demais endpoints exigem autenticação e, quando indicado, a role `ADMIN`.
+
+**Última atualização:** 2026  
+**Versão:** 2.0  
+**Status:** ✅ Troubleshooting alinhado ao pipeline atual
