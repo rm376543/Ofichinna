@@ -63,9 +63,9 @@ public sealed class ServicoPecasRepository : Repository<ServicoPeca>, IServicoPe
         if (existente is not null && !existente.EstaExcluida())
             throw new DomainException("A peça já foi adicionada ao serviço.");
 
-        var pecaServico = ServicoPeca.Criar(servicoId, pecaId, quantidade);
-        await AddAsync(pecaServico, cancellationToken);
+        var servicoPeca = ServicoPeca.Criar(servicoId, pecaId, quantidade);
+        await AddAsync(servicoPeca, cancellationToken);
 
-        return pecaServico;
+        return servicoPeca;
     }
 }

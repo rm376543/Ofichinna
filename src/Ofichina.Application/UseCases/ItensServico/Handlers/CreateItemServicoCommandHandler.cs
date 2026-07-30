@@ -1,13 +1,9 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Exceptions;
-using Ofichina.Domain.Common;
-using Ofichina.Application.Abstractions.Interfaces;
-using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Domain.Enums;
-using Ofichina.Application.Abstractions.Common;
+using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Application.UseCases.ItensServico.Handlers;
 
@@ -25,13 +21,13 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
     public CreateItemServicoCommandHandler(
         IOrdemServicoRepository ordemServicoRepository,
         IItemServicoRepository itemServicoRepository,
-        IRepository<ServicoPeca> pecaServicoRepository,
+        IRepository<ServicoPeca> servicoPecaRepository,
         IUnitOfWork unitOfWork,
         ILogger<CreateItemServicoCommandHandler> logger)
     {
         _ordemServicoRepository = ordemServicoRepository;
         _itemServicoRepository = itemServicoRepository;
-        _servicoPecaRepository = pecaServicoRepository;
+        _servicoPecaRepository = servicoPecaRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -52,11 +48,11 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
             var pecas = new List<ServicoPeca>();
             foreach (var pecaCommand in command.Pecas)
             {
-                var pecaServico = await _servicoPecaRepository.GetByIdAsync(pecaCommand.ServicoPecaId, cancellationToken, tracking: true);
-                if (pecaServico is null || pecaServico.EstaExcluida())
+                var servicoPeca = await _servicoPecaRepository.GetByIdAsync(pecaCommand.ServicoPecaId, cancellationToken, tracking: true);
+                if (servicoPeca is null || servicoPeca.EstaExcluida())
                     return Result.Failure<Guid>("Peça de serviço não encontrada.");
 
-                pecas.Add(pecaServico);
+                pecas.Add(servicoPeca);
             }
 
             var item = new ItemServico(command.OrdemServicoId);

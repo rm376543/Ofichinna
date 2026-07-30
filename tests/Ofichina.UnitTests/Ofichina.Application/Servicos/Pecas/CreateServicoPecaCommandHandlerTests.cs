@@ -250,9 +250,9 @@ public sealed class CreateServicoPecaCommandHandlerTests
             if (existente is not null && !existente.EstaExcluida())
                 throw new InvalidOperationException("A peça já foi adicionada ao serviço.");
 
-            var pecaServico = ServicoPeca.Criar(servicoId, pecaId, quantidade);
-            Itens.Add(pecaServico);
-            return pecaServico;
+            var servicoPeca = ServicoPeca.Criar(servicoId, pecaId, quantidade);
+            Itens.Add(servicoPeca);
+            return servicoPeca;
         }
     }
 

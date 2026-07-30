@@ -119,11 +119,11 @@ public class Servico : Entity
     /// Atualiza uma peça vinculada ao serviço.
     /// </summary>
     public void AtualizarPeca(
-        Guid pecaServicoId,
+        Guid servicoPecaId,
         Guid pecaId,
         int quantidade)
     {
-        var peca = _pecas.FirstOrDefault(x => x.Id == pecaServicoId);
+        var peca = _pecas.FirstOrDefault(x => x.Id == servicoPecaId);
 
         if (peca is null || peca.EstaExcluida())
             throw new DomainException("Peça não encontrada.");

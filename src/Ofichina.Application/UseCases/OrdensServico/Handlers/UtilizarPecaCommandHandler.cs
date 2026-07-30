@@ -46,19 +46,19 @@ public sealed class UtilizarPecaCommandHandler : ICommandHandler<UtilizarPecaCom
             if (servico is null || servico.EstaExcluida())
                 return Result.Failure("Serviço não encontrado.");
 
-            var pecaServico = servico.ObterPeca(command.Id);
-            if (pecaServico is null || pecaServico.EstaExcluida())
+            var servicoPeca = servico.ObterPeca(command.Id);
+            if (servicoPeca is null || servicoPeca.EstaExcluida())
                 return Result.Failure("Peça não encontrada.");
 
-            var peca = await _pecaRepository.GetByIdAsync(pecaServico.PecaId, cancellationToken, tracking: true);
+            var peca = await _pecaRepository.GetByIdAsync(servicoPeca.PecaId, cancellationToken, tracking: true);
             if (peca is null || peca.EstaExcluida())
                 return Result.Failure("Peça de catálogo não encontrada.");
 
-            if (pecaServico.Quantidade > peca.QuantidadeEstoque)
+            if (servicoPeca.Quantidade > peca.QuantidadeEstoque)
                 return Result.Failure("Quantidade insuficiente em estoque.");
 
             ordemServico.UtilizarPeca(command.ItemServicoId, command.Id);
-            peca.SaidaEstoque(pecaServico.Quantidade);
+            peca.SaidaEstoque(servicoPeca.Quantidade);
 
             await _unitOfWork.SaveChangesAsync();
 
