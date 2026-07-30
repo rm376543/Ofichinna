@@ -30,9 +30,9 @@ public sealed class ItemServicoTests
     {
         var ordemServico = CriarOrdemServico();
         var itemServico = ordemServico.AdicionarServico();
-        var pecaServico = CriarServicoPeca(Guid.NewGuid(), Guid.NewGuid(), 1, "Filtro de óleo", 25m);
+        var servicoPeca = CriarServicoPeca(Guid.NewGuid(), Guid.NewGuid(), 1, "Filtro de óleo", 25m);
 
-        itemServico.AdicionarPeca(pecaServico, 2);
+        itemServico.AdicionarPeca(servicoPeca, 2);
 
         Assert.NotNull(itemServico.UpdatedAt);
         Assert.Single(itemServico.Pecas);
@@ -74,9 +74,9 @@ public sealed class ItemServicoTests
     {
         var ordemServico = CriarOrdemServico();
         var itemServico = ordemServico.AdicionarServico();
-        var pecaServico = CriarServicoPeca(Guid.NewGuid(), Guid.NewGuid(), 1, "Velas", 40m);
+        var servicoPeca = CriarServicoPeca(Guid.NewGuid(), Guid.NewGuid(), 1, "Velas", 40m);
 
-        itemServico.RemoverPeca(pecaServico.Id);
+        itemServico.RemoverPeca(servicoPeca.Id);
 
         Assert.True(itemServico.EstaExcluida());
     }
@@ -94,21 +94,21 @@ public sealed class ItemServicoTests
 
     private static ServicoPeca CriarServicoPeca(Guid servicoId, Guid pecaId, int quantidade, string nomePeca, decimal valorPeca)
     {
-        var pecaServico = (ServicoPeca)Activator.CreateInstance(
+        var servicoPeca = (ServicoPeca)Activator.CreateInstance(
             typeof(ServicoPeca),
             BindingFlags.Instance | BindingFlags.NonPublic,
             binder: null,
             args: [servicoId, pecaId, quantidade],
             culture: null)!;
 
-        DefinirPeca(pecaServico, new Peca(nomePeca, null, Guid.NewGuid().ToString("N")[..8], valorPeca, 10));
-        return pecaServico;
+        DefinirPeca(servicoPeca, new Peca(nomePeca, null, Guid.NewGuid().ToString("N")[..8], valorPeca, 10));
+        return servicoPeca;
     }
 
-    private static void DefinirPeca(ServicoPeca pecaServico, Peca peca)
+    private static void DefinirPeca(ServicoPeca servicoPeca, Peca peca)
     {
         typeof(ServicoPeca)
             .GetProperty(nameof(ServicoPeca.Peca), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!
-            .SetValue(pecaServico, peca);
+            .SetValue(servicoPeca, peca);
     }
 }

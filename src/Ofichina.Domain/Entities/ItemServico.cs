@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Ofichina.Domain.Exceptions;
+﻿using Ofichina.Domain.Exceptions;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ofichina.Domain.Entities;
 
@@ -110,21 +110,21 @@ public class ItemServico : Entity
     /// Adiciona uma peça ao item de serviço.
     /// </summary>
     public void AdicionarPeca(
-        ServicoPeca pecaServico,
+        ServicoPeca servicoPeca,
         int quantidade)
     {
         ValidarNaoExcluido();
 
-        if (pecaServico is null)
+        if (servicoPeca is null)
             throw new DomainException("Peça obrigatória.");
 
         if (quantidade <= 0)
             throw new DomainException("Quantidade inválida.");
 
-        if (_pecas.Any(p => p.PecaId == pecaServico.PecaId && !p.EstaExcluida()))
+        if (_pecas.Any(p => p.PecaId == servicoPeca.PecaId && !p.EstaExcluida()))
             throw new DomainException("A peça já foi adicionada ao item de serviço.");
 
-        var novaPeca = ServicoPeca.Criar(pecaServico.ServicoId, pecaServico.PecaId, quantidade);
+        var novaPeca = ServicoPeca.Criar(servicoPeca.ServicoId, servicoPeca.PecaId, quantidade);
         _pecas.Add(novaPeca);
 
         if (ServicoPecaId == Guid.Empty)

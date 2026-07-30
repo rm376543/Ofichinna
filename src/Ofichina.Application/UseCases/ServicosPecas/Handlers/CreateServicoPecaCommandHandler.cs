@@ -49,7 +49,7 @@ public sealed class CreateServicoPecaCommandHandler : ICommandHandler<CreateServ
             if (peca is null || peca.EstaExcluida())
                 return Result.Failure("Peça não encontrada.");
 
-            var pecaServico = await _servicoPecasRepository.AdicionarAsync(
+            var servicoPeca = await _servicoPecasRepository.AdicionarAsync(
                 command.ServicoId,
                 command.PecaId,
                 command.Quantidade,
@@ -57,7 +57,7 @@ public sealed class CreateServicoPecaCommandHandler : ICommandHandler<CreateServ
 
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation("Peça adicionada ao serviço com sucesso. ServicoId: {ServicoId}, PecaId: {PecaId}, ServicoPecaId: {ServicoPecaId}.", command.ServicoId, command.PecaId, pecaServico.Id);
+            _logger.LogInformation("Peça adicionada ao serviço com sucesso. ServicoId: {ServicoId}, PecaId: {PecaId}, ServicoPecaId: {ServicoPecaId}.", command.ServicoId, command.PecaId, servicoPeca.Id);
             return Result.Success();
         }
         catch (DomainException ex)
