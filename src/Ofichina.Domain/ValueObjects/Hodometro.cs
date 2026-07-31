@@ -13,7 +13,7 @@ public sealed class Hodometro : ValueObject
     {
     }
 
-    public  Hodometro (int valor)
+    public Hodometro(int valor)
     {
         if (valor < 0)
             throw new DomainException("A quilometragem não pode ser negativa.");

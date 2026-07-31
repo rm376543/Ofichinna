@@ -12,9 +12,9 @@ namespace Ofichina.Infrastructure.Repositories;
 /// </summary>
 public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
 {
-    #pragma warning disable S4487
+#pragma warning disable S4487
     private readonly ApplicationDbContext _context;
-    #pragma warning restore S4487
+#pragma warning restore S4487
     private readonly DbSet<TEntity> _dbSet;
 
     public Repository(ApplicationDbContext context)

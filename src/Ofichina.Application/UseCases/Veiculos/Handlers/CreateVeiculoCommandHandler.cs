@@ -67,7 +67,7 @@ public sealed class CreateVeiculoCommandHandler : ICommandHandler<CreateVeiculoC
                 command.Cor ?? string.Empty,
                 new Hodometro(command.Hodometro));
 
-            
+
             await _veiculoRepository.AddAsync(veiculo, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 

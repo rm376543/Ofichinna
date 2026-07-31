@@ -13,14 +13,14 @@ public sealed class Telefone : ValueObject
 
     public Telefone() { }
 
-    public Telefone (string telefone)
+    public Telefone(string telefone)
     {
         if (string.IsNullOrWhiteSpace(telefone))
             throw new DomainException("Telefone nao pode ser nulo ou vazio.");
 
-        #pragma warning disable S6444
+#pragma warning disable S6444
         telefone = Regex.Replace(telefone, @"\D", "");
-        #pragma warning restore S6444
+#pragma warning restore S6444
 
         if (!EhValido(telefone))
             throw new DomainException($"Telefone {telefone} inválido.");

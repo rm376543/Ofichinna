@@ -17,7 +17,7 @@ public sealed class GetAllOrdensServicoPaginadasQueryHandler : IQueryHandler<Get
     public GetAllOrdensServicoPaginadasQueryHandler(
         IOrdemServicoService ordemServicoReadService,
         ILogger<GetAllOrdensServicoPaginadasQueryHandler> logger)
-    {   
+    {
         _ordemServicoReadService = ordemServicoReadService;
         _logger = logger;
     }

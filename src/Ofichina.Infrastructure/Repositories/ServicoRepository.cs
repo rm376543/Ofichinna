@@ -8,7 +8,7 @@ using Ofichina.Infrastructure.Persistence;
 namespace Ofichina.Infrastructure.Repositories;
 
 /// <summary>
-    /// Repositório específico para consultas de serviços.
+/// Repositório específico para consultas de serviços.
 /// </summary>
 public sealed class ServicoRepository : Repository<Servico>, IServicoRepository
 {

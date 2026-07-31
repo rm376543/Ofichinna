@@ -12,7 +12,7 @@ public sealed class GetAllVeiculosPaginadosQuery : IQuery<Result<Contracts.Paged
     /// </summary>
     public Pagination Pagination { get; }
 
-    public GetAllVeiculosPaginadosQuery( Pagination pagination )
+    public GetAllVeiculosPaginadosQuery(Pagination pagination)
     {
         Pagination = pagination;
     }

@@ -40,7 +40,8 @@ public sealed class GetPecaByIdQueryHandler : IQueryHandler<GetPecaByIdQuery, Re
             if (peca.EstaExcluida())
                 return Result.Failure<PecaResponse>("Peça excluida ou não encontrada.");
 
-            var resultado = new PecaResponse {
+            var resultado = new PecaResponse
+            {
                 Id = peca.Id,
                 Nome = peca.Nome,
                 Descricao = peca.Descricao,

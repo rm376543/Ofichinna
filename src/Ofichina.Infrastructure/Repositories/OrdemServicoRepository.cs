@@ -65,7 +65,7 @@ public sealed class OrdemServicoRepository : Repository<OrdemServico>, IOrdemSer
 
         var query = _context.Set<OrdemServico>()
             .AsNoTracking()
-            
+
             .OrderBy(x => x.CreatedAt);
 
         var totalCount = await query.CountAsync(cancellationToken);

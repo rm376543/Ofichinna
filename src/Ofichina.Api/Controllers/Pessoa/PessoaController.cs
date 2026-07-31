@@ -53,7 +53,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ApiResponse<PagedResponse<PessoaResponse>>>> BuscarPessoas(
-            [FromQuery] Pagination pagination,CancellationToken cancellationToken)
+            [FromQuery] Pagination pagination, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Iniciando a obtenção de todas as pessoas.");
 

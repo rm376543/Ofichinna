@@ -37,7 +37,7 @@ public sealed class GetAllVeiculosPaginadosQueryHandler
             if (veiculos is null)
             {
                 _logger.LogWarning("Nenhum veículo encontrado.");
-                return Result.Failure<Contracts.PagedResponse<VeiculoResponse>> ("Nenhum veículo encontrado.");
+                return Result.Failure<Contracts.PagedResponse<VeiculoResponse>>("Nenhum veículo encontrado.");
             }
 
             var response = veiculos.ToPagedResponse(v => new VeiculoResponse

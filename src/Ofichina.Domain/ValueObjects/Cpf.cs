@@ -25,9 +25,9 @@ public sealed class Cpf : Documento
         if (string.IsNullOrWhiteSpace(cpf))
             throw new DomainException("CPF inválido.");
 
-        #pragma warning disable S6444
+#pragma warning disable S6444
         return Regex.Replace(cpf, @"\D", "");
-        #pragma warning restore S6444
+#pragma warning restore S6444
     }
 
     private static bool EhValido(string cpf)

@@ -11,14 +11,14 @@ public sealed class Cep : ValueObject
 {
     public string Value { get; }
 
-    public Cep (string cep)
+    public Cep(string cep)
     {
-        if(string.IsNullOrWhiteSpace(cep))
+        if (string.IsNullOrWhiteSpace(cep))
             throw new DomainException("CEP nao pode ser nulo ou vazio.");
 
-        #pragma warning disable S6444
+#pragma warning disable S6444
         cep = Regex.Replace(cep, @"\D", "");
-        #pragma warning restore S6444
+#pragma warning restore S6444
 
         if (!EhValido(cep))
             throw new DomainException($"CEP {cep} inválido.");

@@ -36,9 +36,9 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
         await context.Database.MigrateAsync();
     }
 
-    #pragma warning disable CS0114 
+#pragma warning disable CS0114
     public async Task DisposeAsync()
-    #pragma warning restore CS0114 
+#pragma warning restore CS0114
     {
         Dispose();
         await _container.DisposeAsync();
