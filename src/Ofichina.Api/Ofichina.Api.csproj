@@ -37,6 +37,7 @@
 	<ItemGroup>
 		<Folder Include="Controllers\ItemServico\" />
 		<Folder Include="Controllers\Pessoa\" />
+		<Folder Include="Controllers\ServicosPecas\" />
 		<Folder Include="logs\" />
 	</ItemGroup>
 

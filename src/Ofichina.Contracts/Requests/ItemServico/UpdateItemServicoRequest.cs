@@ -11,8 +11,18 @@ public sealed class UpdateItemServicoRequest : UpdateRequest
     public Guid OrdemServicoId { get; init; } = Guid.Empty;
 
     /// <summary>
-    /// Identificador dos Servicos e Pecas vinculados a uma Ordem de Servico.
+    /// Identificador do serviço executado.
     /// </summary>
-    public Guid ServicoPecaId { get; init; } = Guid.Empty;
+    public Guid ServicoId { get; init; } = Guid.Empty;
+
+    /// <summary>
+    /// Identificador da peça utilizada.
+    /// </summary>
+    public Guid PecaId { get; init; } = Guid.Empty;
+
+    /// <summary>
+    /// Quantidade de peças utilizadas.
+    /// </summary>
+    public int Quantidade { get; init; }
 }
 

@@ -1,8 +1,10 @@
 using Microsoft.Extensions.Logging.Abstractions;
+using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.Handlers;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Requests.OrdensServico;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 using Ofichina.Domain.ValueObjects;
@@ -19,18 +21,12 @@ public sealed class CreateOrdemServicoCommandHandlerTests
         var funcionario = CriarPessoa();
         var veiculo = CriarVeiculo(pessoa.Id);
 
-        var pessoaRepository = new FakeRepository<Pessoa>(pessoa, funcionario);
-        var veiculoRepository = new FakeRepository<Veiculo>(veiculo);
-        var ordemRepository = new FakeOrdemServicoRepository();
-        var unitOfWork = new FakeUnitOfWork();
+        var createService = new FakeCreateOrdemServicoService();
         var handler = new CreateOrdemServicoCommandHandler(
-            ordemRepository,
-            pessoaRepository,
-            veiculoRepository,
-            unitOfWork,
+            createService,
             NullLogger<CreateOrdemServicoCommandHandler>.Instance);
 
-        var command = new CreateOrdemServicoCommand
+        var command = new CreateOrdemServicoCommand(new CreateOrdemServicoRequest
         {
             PessoaId = pessoa.Id,
             VeiculoId = veiculo.Id,
@@ -38,21 +34,18 @@ public sealed class CreateOrdemServicoCommandHandlerTests
             HodometroEntrada = 77290,
             ProblemaRelatado = "Barulhos durante a aceleração",
             Observacoes = "carro de dev"
-        };
+        });
 
         var result = await handler.HandleAsync(command);
 
         Assert.True(result.IsSuccess);
-        Assert.NotEqual(Guid.Empty, result.Value);
-        Assert.Single(ordemRepository.AddedEntities);
-
-        var ordemCriada = ordemRepository.AddedEntities.Single();
-        Assert.Equal(StatusOrdemServico.Recebida, ordemCriada.Status);
-        Assert.Equal(pessoa.Id, ordemCriada.PessoaId);
-        Assert.Equal(veiculo.Id, ordemCriada.VeiculoId);
-        Assert.Equal(funcionario.Id, ordemCriada.FuncionarioId);
-        Assert.Empty(ordemCriada.Servicos);
-        Assert.Equal(1, unitOfWork.SaveChangesCalls);
+        Assert.NotNull(createService.CommandRecebido);
+        Assert.Equal(pessoa.Id, createService.CommandRecebido!.PessoaId);
+        Assert.Equal(veiculo.Id, createService.CommandRecebido.VeiculoId);
+        Assert.Equal(funcionario.Id, createService.CommandRecebido.FuncionarioId);
+        Assert.Equal(77290, createService.CommandRecebido.HodometroEntrada);
+        Assert.Equal("Barulhos durante a aceleração", createService.CommandRecebido.ProblemaRelatado);
+        Assert.Equal("carro de dev", createService.CommandRecebido.Observacoes);
     }
 
     private static Pessoa CriarPessoa()
@@ -77,83 +70,16 @@ public sealed class CreateOrdemServicoCommandHandlerTests
             new Hodometro(100000));
     }
 
-    private sealed class FakeRepository<TEntity> : IRepository<TEntity> where TEntity : Entity
+    private sealed class FakeCreateOrdemServicoService : ICreateOrdemServicoService
     {
-        private readonly IReadOnlyCollection<TEntity> _entities;
+        public CreateOrdemServicoCommand? CommandRecebido { get; private set; }
 
-        public FakeRepository(params TEntity[] entities)
+        public Task<Result> CriarAsync(CreateOrdemServicoCommand command, CancellationToken cancellationToken = default)
         {
-            _entities = entities;
+            CommandRecebido = command;
+            return Task.FromResult(Result.Success());
         }
-
-        public Task AddAsync(TEntity entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
-
-        public Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool tracking = false)
-            => Task.FromResult(_entities.SingleOrDefault(x => x.Id == id));
-
-        public Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
-            => Task.FromResult<IEnumerable<TEntity>>([]);
-
-        public Task<PagedResponse<TEntity>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
-            => Task.FromResult(new PagedResponse<TEntity>
-            {
-                Items = [],
-                PageNumber = 1,
-                PageSize = pagination.PageSize,
-                TotalCount = 0,
-                TotalPages = 0,
-                HasNextPage = false,
-                HasPreviousPage = false
-            });
-
-        public Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
-
-        public Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
-
-        public Task HardDeleteAsync(TEntity entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
-
-    private sealed class FakeOrdemServicoRepository : IOrdemServicoRepository
-    {
-        public List<OrdemServicoAggregate> AddedEntities { get; } = [];
-
-        public Task AddAsync(OrdemServicoAggregate entity, CancellationToken cancellationToken = default)
-        {
-            AddedEntities.Add(entity);
-            return Task.CompletedTask;
-        }
-
-        public Task<OrdemServicoAggregate?> GetByIdAsync(Guid id, bool includeItens = false, CancellationToken cancellationToken = default, bool tracking = false)
-            => Task.FromResult<OrdemServicoAggregate?>(null);
-
-        public Task<OrdemServicoAggregate?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, bool tracking = false)
-            => Task.FromResult<OrdemServicoAggregate?>(null);
-
-        public Task<IReadOnlyCollection<OrdemServicoAggregate>> GetAllAsync(bool includeItens = false, CancellationToken cancellationToken = default)
-            => Task.FromResult<IReadOnlyCollection<OrdemServicoAggregate>>([]);
-
-        public Task UpdateAsync(OrdemServicoAggregate entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
-
-        public Task DeleteAsync(OrdemServicoAggregate entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
-
-        public Task HardDeleteAsync(OrdemServicoAggregate entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
-
-        public Task<IEnumerable<OrdemServicoAggregate>> GetAllAsync(CancellationToken cancellationToken = default)
-            => Task.FromResult<IEnumerable<OrdemServicoAggregate>>([]);
-
-        public Task<PagedResponse<OrdemServicoAggregate>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
-            => Task.FromResult(new PagedResponse<OrdemServicoAggregate>
-            {
-                Items = [],
-                PageNumber = 1,
-                PageSize = pagination.PageSize,
-                TotalCount = 0,
-                TotalPages = 0,
-                HasNextPage = false,
-                HasPreviousPage = false
-            });
-    }
-
     private sealed class FakeUnitOfWork : IUnitOfWork
     {
         public int SaveChangesCalls { get; private set; }

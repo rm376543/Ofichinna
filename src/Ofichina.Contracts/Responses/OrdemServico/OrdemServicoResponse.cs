@@ -1,5 +1,5 @@
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses.ItensServico;
+using Ofichina.Contracts.Responses.OrdemServico;
 
 namespace Ofichina.Contracts.Responses.OrdensServico;
 
@@ -61,5 +61,5 @@ public sealed class OrdemServicoResponse : BaseEntity
     /// <summary>
     /// Serviços vinculados à ordem de serviço.
     /// </summary>
-    public ICollection<ItemServicoResponse> Servicos { get; set; } = [];
+    public ICollection<OrdemServicoItensResponse> Servicos { get; set; } = [];
 }

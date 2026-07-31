@@ -81,7 +81,8 @@ public class OrdemServico : Entity
     /// Calculado através dos serviços e suas peças.
     /// </summary>
     public decimal ValorTotal =>
-        _servicos.Where(x => !x.EstaExcluida()).Sum(x => x.ValorTotal);
+        _servicos.Where(x => !x.EstaExcluida())
+            .Sum(x => (x.Servico?.Valor ?? 0) + ((x.Peca?.Valor ?? 0) * x.Quantidade));
 
 
     /// <summary>
@@ -229,11 +230,11 @@ public class OrdemServico : Entity
     /// <summary>
     /// Adiciona um serviço na ordem de serviço.
     /// </summary>
-    public ItemServico AdicionarServico()
+    public ItemServico AdicionarServico(Guid servicoId, Guid pecaId, int quantidade)
     {
         ValidarAlteracaoItens();
 
-        var item = new ItemServico(Id);
+        var item = new ItemServico(Id, servicoId, pecaId, quantidade);
 
         _servicos.Add(item);
 
@@ -248,6 +249,7 @@ public class OrdemServico : Entity
     /// </summary>
     public void AtualizarServico(
         Guid itemServicoId,
+        Guid servicoId,
         Guid pecaId,
         int quantidade)
     {
@@ -265,17 +267,7 @@ public class OrdemServico : Entity
             throw new DomainException(
                 "Serviço não encontrado.");
 
-
-        // Para manter compatibilidade, assume que já existe uma peça e atualiza a primeira
-        var pecaExistente = item.Pecas.FirstOrDefault();
-        if (pecaExistente is not null)
-        {
-            item.AtualizarPeca(pecaExistente.Id, pecaId, quantidade);
-        }
-        else
-        {
-            item.AdicionarPeca(pecaId, quantidade);
-        }
+        item.AtualizarDados(servicoId, pecaId, quantidade);
 
         AtualizarDataModificacao();
     }
@@ -318,67 +310,6 @@ public class OrdemServico : Entity
 
 
     /// <summary>
-    /// Adiciona uma peça a um serviço da ordem de serviço.
-    /// </summary>
-    public void AdicionarPeca(
-        Guid itemServicoId,
-        Guid pecaId,
-        int quantidade)
-    {
-        ValidarAlteracaoItens();
-
-        var servico = ObterServico(itemServicoId);
-
-        if (servico is null)
-            throw new DomainException("Serviço não encontrado.");
-
-        servico.AdicionarPeca(pecaId, quantidade);
-
-        AtualizarDataModificacao();
-    }
-
-
-
-    /// <summary>
-    /// Remove uma peça de um serviço da ordem de serviço.
-    /// </summary>
-    public void RemoverPeca(Guid itemServicoId, Guid itemPecaId)
-    {
-        ValidarAlteracaoItens();
-
-        var servico = ObterServico(itemServicoId);
-
-        if (servico is null)
-            throw new DomainException("Serviço não encontrado.");
-
-        servico.RemoverPeca(itemPecaId);
-
-        AtualizarDataModificacao();
-    }
-
-
-
-    /// <summary>
-    /// Marca uma peça de um serviço como utilizada no veículo.
-    /// </summary>
-    public void UtilizarPeca(Guid itemServicoId, Guid itemPecaId)
-    {
-        if (Status != StatusOrdemServico.EmExecucao)
-            throw new DomainException(
-                "Peças somente podem ser utilizadas durante a execução da OS.");
-
-        var servico = ObterServico(itemServicoId);
-
-        if (servico is null)
-            throw new DomainException("Serviço não encontrado.");
-
-        servico.UtilizarPeca(itemPecaId);
-
-        AtualizarDataModificacao();
-    }
-
-
-    /// <summary>
     /// Finaliza a ordem de serviço.
     /// </summary>
     public void Finalizar()
@@ -387,16 +318,9 @@ public class OrdemServico : Entity
             throw new DomainException(
                 "A OS precisa estar em execução para ser finalizada.");
 
-
-        var pecasPendentes = _servicos
-            .Where(x => !x.EstaExcluida())
-            .SelectMany(s => s.Pecas)
-            .Where(x => !x.EstaExcluida() && !x.Utilizada)
-            .Any();
-
-        if (pecasPendentes)
+        if (!_servicos.Any(x => !x.EstaExcluida()))
             throw new DomainException(
-                "Existem peças pendentes de utilização.");
+                "A ordem de serviço precisa possuir itens cadastrados.");
 
 
         Status = StatusOrdemServico.Finalizada;

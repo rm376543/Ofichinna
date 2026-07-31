@@ -18,11 +18,12 @@ public interface IItemServicoRepository : IRepository<ItemServico>
         bool includeRelacionados = false);
 
     /// <summary>
-    /// Obtém um item de serviço pela ordem de serviço e pela peça de serviço.
+    /// Obtém um item de serviço pela ordem de serviço, serviço e peça.
     /// </summary>
-    Task<ItemServico?> GetByOrdemServicoIdAndServicoPecaIdAsync(
+    Task<ItemServico?> GetByOrdemServicoIdAndServicoIdAndPecaIdAsync(
         Guid ordemServicoId,
-        Guid servicoPecaId,
+        Guid servicoId,
+        Guid pecaId,
         CancellationToken cancellationToken = default,
         bool tracking = false);
 
@@ -36,10 +37,25 @@ public interface IItemServicoRepository : IRepository<ItemServico>
         bool tracking = false);
 
     /// <summary>
-    /// Adiciona um novo item de serviço.
+    /// Busca um item de serviço pelo identificador da ordem de serviço e do item de serviço.
     /// </summary>
+    /// <param name="ordemServicoId"></param>
+    /// <param name="servicoId"></param>
+    /// <param name="pecaId"></param>
+    /// <param name="quantidade"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     Task<ItemServico> AdicionarAsync(
         Guid ordemServicoId,
-        Guid servicoPecaId,
+        Guid servicoId,
+        Guid pecaId,
+        int quantidade,
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<ItemServico>> GetByOrdemServicoIdAndServicoIdAsync(
+        Guid ordemServicoId,
+        Guid servicoId,
+        CancellationToken cancellationToken = default,
+        bool tracking = false,
+        bool includeRelacionados = false);
 }

@@ -1,9 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using Ofichina.Application.Abstractions;
+﻿using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pessoas.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Pessoa;
-using Ofichina.Application.Abstractions.Interfaces;
+using Ofichina.Domain.Entities;
 
 namespace Ofichina.Application.UseCases.Pessoas.Handlers;
 
@@ -44,7 +43,7 @@ public sealed class GetPessoaByIdQueryHandler : IQueryHandler<GetPessoaByIdQuery
         }
     }
 
-    private static PessoaResponse Mapear(Domain.Entities.Pessoa pessoa)
+    private static PessoaResponse Mapear(Pessoa pessoa)
     {
         return new PessoaResponse
         {

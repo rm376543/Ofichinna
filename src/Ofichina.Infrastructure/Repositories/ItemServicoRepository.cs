@@ -33,8 +33,8 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
         if (includeRelacionados)
         {
             query = query
-                .Include(x => x.Pecas)
-                    .ThenInclude(x => x.Peca);
+                .Include(x => x.Servico)
+                .Include(x => x.Peca);
         }
 
         return await query.FirstOrDefaultAsync(
@@ -42,9 +42,10 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
             cancellationToken);
     }
 
-    public async Task<ItemServico?> GetByOrdemServicoIdAndServicoPecaIdAsync(
+    public async Task<ItemServico?> GetByOrdemServicoIdAndServicoIdAndPecaIdAsync(
         Guid ordemServicoId,
-        Guid servicoPecaId,
+        Guid servicoId,
+        Guid pecaId,
         CancellationToken cancellationToken = default,
         bool tracking = false)
     {
@@ -54,7 +55,7 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync(
-            x => x.OrdemServicoId == ordemServicoId && x.ServicoPecaId == servicoPecaId,
+            x => x.OrdemServicoId == ordemServicoId && x.ServicoId == servicoId && x.PecaId == pecaId,
             cancellationToken);
     }
 
@@ -72,8 +73,8 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
         if (includeRelacionados)
         {
             query = query
-                .Include(x => x.Pecas)
-                    .ThenInclude(x => x.Peca);
+                .Include(x => x.Servico)
+                .Include(x => x.Peca);
         }
 
         return await query
@@ -83,12 +84,41 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
 
     public async Task<ItemServico> AdicionarAsync(
         Guid ordemServicoId,
-        Guid servicoPecaId,
+        Guid servicoId,
+        Guid pecaId,
+        int quantidade,
         CancellationToken cancellationToken = default)
     {
-        var item = ItemServico.Criar(ordemServicoId);
+        var item = ItemServico.Criar(ordemServicoId, servicoId, pecaId, quantidade);
         await AddAsync(item, cancellationToken);
 
         return item;
+    }
+
+    public async Task<IReadOnlyCollection<ItemServico>> GetByOrdemServicoIdAndServicoIdAsync(
+        Guid ordemServicoId,
+        Guid servicoId,
+        CancellationToken cancellationToken = default,
+        bool tracking = false,
+        bool includeRelacionados = false)
+    {
+        IQueryable<ItemServico> query = _context.Set<ItemServico>();
+
+        if (!tracking)
+            query = query.AsNoTracking();
+
+        if (includeRelacionados)
+        {
+            query = query
+                .Include(x => x.Servico)
+                .Include(x => x.Peca);
+        }
+
+        return await query
+            .Where(x =>
+                x.OrdemServicoId == ordemServicoId &&
+                x.ServicoId == servicoId &&
+                x.DeletedAt == null)
+            .ToListAsync(cancellationToken);
     }
 }

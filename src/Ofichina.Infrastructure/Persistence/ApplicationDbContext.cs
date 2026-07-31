@@ -83,11 +83,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<Servico> Servicos { get; set; } = null!;
 
     /// <summary>
-    /// DbSet para peças vinculadas aos serviços.
-    /// </summary>
-    public DbSet<ServicoPeca> ServicosPecas { get; set; } = null!;
-
-    /// <summary>
     /// DbSet para peças cadastradas no catálogo.
     /// </summary>
     public DbSet<Peca> Pecas { get; set; } = null!;
@@ -101,6 +96,7 @@ public class ApplicationDbContext : DbContext
     /// DbSet para vínculos entre perfis e permissoes.
     /// </summary>
     public DbSet<PerfilPermissao> PerfisPermissoes { get; set; } = null!;
+    public object ItemServicos { get; internal set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

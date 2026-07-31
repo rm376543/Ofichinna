@@ -18,20 +18,23 @@ public sealed class UpdateItemServicoCommandHandler : ICommandHandler<UpdateItem
 {
     private readonly IOrdemServicoRepository _ordemServicoRepository;
     private readonly IItemServicoRepository _itemServicoRepository;
-    private readonly IRepository<ServicoPeca> _servicoPecaRepository;
+    private readonly IRepository<Servico> _servicoRepository;
+    private readonly IRepository<Peca> _pecaRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UpdateItemServicoCommandHandler> _logger;
 
     public UpdateItemServicoCommandHandler(
         IOrdemServicoRepository ordemServicoRepository,
         IItemServicoRepository itemServicoRepository,
-        IRepository<ServicoPeca> servicoPecaRepository,
+        IRepository<Servico> servicoRepository,
+        IRepository<Peca> pecaRepository,
         IUnitOfWork unitOfWork,
         ILogger<UpdateItemServicoCommandHandler> logger)
     {
         _ordemServicoRepository = ordemServicoRepository;
         _itemServicoRepository = itemServicoRepository;
-        _servicoPecaRepository = servicoPecaRepository;
+        _servicoRepository = servicoRepository;
+        _pecaRepository = pecaRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -53,9 +56,25 @@ public sealed class UpdateItemServicoCommandHandler : ICommandHandler<UpdateItem
             if (ordemServico.Status != StatusOrdemServico.Recebida && ordemServico.Status != StatusOrdemServico.EmDiagnostico)
                 return Result.Failure("Não é possível alterar itens nesta etapa da OS.");
 
-            var servicoPeca = await _servicoPecaRepository.GetByIdAsync(command.ServicoPecaId, cancellationToken);
-            if (servicoPeca is null || servicoPeca.EstaExcluida())
-                return Result.Failure("Serviço/Peça não encontrada.");
+            var servico = await _servicoRepository.GetByIdAsync(command.ServicoId, cancellationToken, tracking: true);
+            if (servico is null || servico.EstaExcluida())
+                return Result.Failure("Serviço não encontrado.");
+
+            var peca = await _pecaRepository.GetByIdAsync(command.PecaId, cancellationToken, tracking: true);
+            if (peca is null || peca.EstaExcluida())
+                return Result.Failure("Peça não encontrada.");
+
+            var duplicado = await _itemServicoRepository.GetByOrdemServicoIdAndServicoIdAndPecaIdAsync(
+                command.OrdemServicoId,
+                command.ServicoId,
+                command.PecaId,
+                cancellationToken,
+                tracking: true);
+
+            if (duplicado is not null && duplicado.Id != command.Id && !duplicado.EstaExcluida())
+                return Result.Failure("Já existe um item de serviço com este serviço e esta peça na ordem.");
+
+            item.AtualizarDados(command.ServicoId, command.PecaId, command.Quantidade);
 
             await _unitOfWork.SaveChangesAsync();
 

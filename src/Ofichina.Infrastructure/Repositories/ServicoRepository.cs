@@ -8,7 +8,7 @@ using Ofichina.Infrastructure.Persistence;
 namespace Ofichina.Infrastructure.Repositories;
 
 /// <summary>
-/// Repositório específico para consultas de serviços com suas peças.
+    /// Repositório específico para consultas de serviços.
 /// </summary>
 public sealed class ServicoRepository : Repository<Servico>, IServicoRepository
 {
@@ -21,10 +21,9 @@ public sealed class ServicoRepository : Repository<Servico>, IServicoRepository
     }
 
     /// <summary>
-    /// Obtém um serviço pelo seu ID, com a opção de incluir as peças associadas.
+    /// Obtém um serviço pelo seu ID.
     /// </summary>
     /// <param name="id">O identificador do serviço.</param>
-    /// <param name="includePecas">Indica se as peças associadas devem ser incluídas.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <param name="tracking">Indica se o rastreamento de alterações deve ser habilitado.</param>
     /// <returns>O serviço correspondente ao ID fornecido, ou nulo se não encontrado.</returns>
@@ -35,30 +34,23 @@ public sealed class ServicoRepository : Repository<Servico>, IServicoRepository
         if (!tracking)
             query = query.AsNoTracking();
 
-        if (includePecas)
-            query = query.Include(x => x.Pecas);
-
         return await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     /// <summary>
-    /// Obtém todos os serviços, com a opção de incluir as peças associadas.
+    /// Obtém todos os serviços.
     /// </summary>
-    /// <param name="includePecas">Indica se as peças associadas devem ser incluídas.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Uma lista de serviços.</returns>
     public async Task<IReadOnlyCollection<Servico>> GetAllAsync(bool includePecas = false, CancellationToken cancellationToken = default)
     {
         IQueryable<Servico> query = _context.Set<Servico>().AsNoTracking();
 
-        if (includePecas)
-            query = query.Include(x => x.Pecas);
-
         return await query.ToListAsync(cancellationToken);
     }
 
     /// <summary>
-    /// Obtém todos os serviços de forma paginada, com a opção de incluir as peças associadas.
+    /// Obtém todos os serviços de forma paginada.
     /// </summary>
     /// <param name="pagination">Parâmetros de paginação.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>

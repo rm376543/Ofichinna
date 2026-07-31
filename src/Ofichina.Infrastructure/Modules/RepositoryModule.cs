@@ -45,8 +45,6 @@ public static class RepositoryModule
 
         services.AddScoped<IServicoRepository, ServicoRepository>();
 
-        services.AddScoped<IServicoPecasRepository, ServicoPecasRepository>();
-
         services.AddScoped<IAgendamentoRepository, AgendamentoRepository>();
 
         services.AddScoped<IDiaDisponibilidadeRepository, DiaDisponibilidadeRepository>();

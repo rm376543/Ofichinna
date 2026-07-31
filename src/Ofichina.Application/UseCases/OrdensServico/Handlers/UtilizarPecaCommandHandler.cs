@@ -16,17 +16,20 @@ namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 public sealed class UtilizarPecaCommandHandler : ICommandHandler<UtilizarPecaCommand, Result>
 {
     private readonly IOrdemServicoRepository _ordemServicoRepository;
+    private readonly IItemServicoRepository _itemServicoRepository;
     private readonly IRepository<Peca> _pecaRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UtilizarPecaCommandHandler> _logger;
 
     public UtilizarPecaCommandHandler(
         IOrdemServicoRepository ordemServicoRepository,
+        IItemServicoRepository itemServicoRepository,
         IRepository<Peca> pecaRepository,
         IUnitOfWork unitOfWork,
         ILogger<UtilizarPecaCommandHandler> logger)
     {
         _ordemServicoRepository = ordemServicoRepository;
+        _itemServicoRepository = itemServicoRepository;
         _pecaRepository = pecaRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -42,23 +45,24 @@ public sealed class UtilizarPecaCommandHandler : ICommandHandler<UtilizarPecaCom
             if (ordemServico is null || ordemServico.EstaExcluida())
                 return Result.Failure("Ordem de serviço não encontrada.");
 
-            var servico = ordemServico.ObterServico(command.ItemServicoId);
-            if (servico is null || servico.EstaExcluida())
-                return Result.Failure("Serviço não encontrado.");
+            var itemServico = await _itemServicoRepository.GetByOrdemServicoIdAndItemServicoIdAsync(
+                command.OrdemServicoId,
+                command.ItemServicoId,
+                cancellationToken,
+                tracking: true,
+                includeRelacionados: true);
 
-            var servicoPeca = servico.ObterPeca(command.Id);
-            if (servicoPeca is null || servicoPeca.EstaExcluida())
-                return Result.Failure("Peça não encontrada.");
+            if (itemServico is null || itemServico.EstaExcluida())
+                return Result.Failure("Item de serviço não encontrado.");
 
-            var peca = await _pecaRepository.GetByIdAsync(servicoPeca.PecaId, cancellationToken, tracking: true);
+            var peca = await _pecaRepository.GetByIdAsync(itemServico.PecaId, cancellationToken, tracking: true);
             if (peca is null || peca.EstaExcluida())
                 return Result.Failure("Peça de catálogo não encontrada.");
 
-            if (servicoPeca.Quantidade > peca.QuantidadeEstoque)
+            if (itemServico.Quantidade > peca.QuantidadeEstoque)
                 return Result.Failure("Quantidade insuficiente em estoque.");
 
-            ordemServico.UtilizarPeca(command.ItemServicoId, command.Id);
-            peca.SaidaEstoque(servicoPeca.Quantidade);
+            peca.SaidaEstoque(itemServico.Quantidade);
 
             await _unitOfWork.SaveChangesAsync();
 

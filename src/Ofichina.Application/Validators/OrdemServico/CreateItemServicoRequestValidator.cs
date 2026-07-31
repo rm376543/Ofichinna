@@ -13,7 +13,13 @@ public sealed class CreateItemServicoRequestValidator : AbstractValidator<Create
         RuleFor(x => x.OrdemServicoId)
             .NotEmpty().WithMessage("O identificador da ordem de serviço é obrigatório.");
 
-        RuleFor(x => x.Pecas)
-            .NotEmpty().WithMessage("Informe ao menos uma peça para o item de serviço.");
+        RuleFor(x => x.ServicoId)
+            .NotEmpty().WithMessage("O identificador do serviço é obrigatório.");
+
+        RuleFor(x => x.PecaId)
+            .NotEmpty().WithMessage("O identificador da peça é obrigatório.");
+
+        RuleFor(x => x.Quantidade)
+            .GreaterThan(0).WithMessage("A quantidade de peças deve ser maior que zero.");
     }
 }
