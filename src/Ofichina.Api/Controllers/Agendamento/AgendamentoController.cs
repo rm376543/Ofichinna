@@ -72,17 +72,17 @@ public sealed class AgendamentoController : ControllerBase
     public async Task<ActionResult<ApiResponse>> CancelarAsync(CancelarAgendamentoRequest request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando o cancelamento do agendamento");
-        
+
         var result = await _mediator.Send(new CancelarAgendamentoCommand(request.PessoaId, request.AgendamentoId), cancellationToken);
-        
+
         if (!result.IsSuccess)
         {
             _logger.LogWarning("Falha ao cancelar agendamento. PessoaId: {PessoaId}, AgendamentoId: {AgendamentoId}, Erro: {Erro}", request.PessoaId, request.AgendamentoId, result.Error);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Falha ao cancelar agendamento."));
         }
-        
+
         _logger.LogInformation("Agendamento cancelado com sucesso.");
-        
+
         return Ok(ApiResponse.SuccessResponse("Agendamento cancelado com sucesso."));
     }
 

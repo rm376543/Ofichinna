@@ -35,7 +35,7 @@ public sealed class GetAllPecasPaginadasQueryHandler : IQueryHandler<GetAllPecas
         {
             var pecas = await _pecaRepository.GetAllPecasPaginadas(query.Pagination, cancellationToken);
 
-            if(pecas == null)
+            if (pecas == null)
             {
                 _logger.LogWarning("Nenhuma peça encontrada.");
                 return Result.Failure<PagedResponse<PecaResponse>>("Nenhuma peça encontrada.");

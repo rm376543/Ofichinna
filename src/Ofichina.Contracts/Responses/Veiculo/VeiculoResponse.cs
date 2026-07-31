@@ -44,7 +44,7 @@ public sealed class VeiculoResponse : BaseEntity
 
     public VeiculoResponse()
     {
-        
+
     }
 
     /// <summary>
@@ -82,9 +82,9 @@ public sealed class VeiculoResponse : BaseEntity
     /// Valida os dados do veículo, lançando exceções caso algum campo seja inválido.
     /// </summary>
     /// <exception cref="ArgumentException"></exception>
-    private void ValidaVeiculo ()
+    private void ValidaVeiculo()
     {
-        if ( string.IsNullOrEmpty(Placa) )
+        if (string.IsNullOrEmpty(Placa))
         {
             throw new ArgumentException("Placa inválida.");
         }
@@ -92,8 +92,8 @@ public sealed class VeiculoResponse : BaseEntity
         if (string.IsNullOrEmpty(Marca))
         {
             throw new ArgumentException("Marca inválida.");
-        } 
-        
+        }
+
         if (string.IsNullOrEmpty(Cor))
         {
             throw new ArgumentException("Cor inválida.");

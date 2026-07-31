@@ -48,7 +48,8 @@ public sealed class DesvincularPerfilUsuarioCommandHandler : ICommandHandler<Des
                 PerfilId = command.PerfilId,
                 Mensagem = "Perfil desvinculado com sucesso."
             });
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao desvincular perfil do usuário.");
             return Result.Failure<DesvincularPerfilUsuarioResponse>("Erro ao desvincular perfil do usuário.");

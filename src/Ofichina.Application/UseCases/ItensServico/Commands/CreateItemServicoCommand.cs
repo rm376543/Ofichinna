@@ -14,16 +14,17 @@ public sealed class CreateItemServicoCommand : ICommand<Result<Guid>>
     public Guid OrdemServicoId { get; init; }
 
     /// <summary>
-    /// Peças vinculadas ao item.
+    /// Serviço executado na ordem.
     /// </summary>
-    public IReadOnlyCollection<CreateItemServicoPecaCommand> Pecas { get; init; } = [];
-}
+    public Guid ServicoId { get; init; }
 
-/// <summary>
-/// Dados de uma peça informada na criação do item.
-/// </summary>
-public sealed class CreateItemServicoPecaCommand
-{
-    public Guid ServicoPecaId { get; init; }
+    /// <summary>
+    /// Peça utilizada no serviço.
+    /// </summary>
+    public Guid PecaId { get; init; }
+
+    /// <summary>
+    /// Quantidade de peças utilizadas.
+    /// </summary>
     public int Quantidade { get; init; }
 }

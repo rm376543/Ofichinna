@@ -1,13 +1,13 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses.ItensServico;
+using Ofichina.Contracts.Responses.OrdemServico;
 
 namespace Ofichina.Application.UseCases.ItensServico.Queries;
 
 /// <summary>
 /// Query para obter um item de serviço por identificador.
 /// </summary>
-public sealed class GetItemServicoByIdQuery : IQuery<Result<ItemServicoResponse>>
+public sealed class GetItemServicoByIdQuery : IQuery<Result<OrdemServicoItensResponse>>
 {
     /// <summary>
     /// Identificador da ordem de serviço.

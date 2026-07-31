@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ofichina.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class _003servicospecas : Migration
+    public partial class _001migracao_inicial_completa : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -279,7 +279,6 @@ namespace Ofichina.Infrastructure.Migrations
                     Modelo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     AnoFabricacao = table.Column<int>(type: "int", nullable: false),
                     Cor = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Observacoes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Hodometro = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -394,6 +393,9 @@ namespace Ofichina.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrdemServicoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ServicoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PecaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Quantidade = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -407,44 +409,18 @@ namespace Ofichina.Infrastructure.Migrations
                         principalTable: "OrdensServico",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ServicosPecas",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PecaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ServicoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ItemServicoId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Quantidade = table.Column<int>(type: "int", nullable: false),
-                    Utilizada = table.Column<bool>(type: "bit", nullable: false),
-                    DataUtilizacao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ServicosPecas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ServicosPecas_ItensServico_ItemServicoId",
-                        column: x => x.ItemServicoId,
-                        principalTable: "ItensServico",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ServicosPecas_Pecas_PecaId",
+                        name: "FK_ItensServico_Pecas_PecaId",
                         column: x => x.PecaId,
                         principalTable: "Pecas",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ServicosPecas_Servicos_ServicoId",
+                        name: "FK_ItensServico_Servicos_ServicoId",
                         column: x => x.ServicoId,
                         principalTable: "Servicos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -523,6 +499,16 @@ namespace Ofichina.Infrastructure.Migrations
                 column: "OrdemServicoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ItensServico_PecaId",
+                table: "ItensServico",
+                column: "PecaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItensServico_ServicoId",
+                table: "ItensServico",
+                column: "ServicoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrdensServico_FuncionarioId",
                 table: "OrdensServico",
                 column: "FuncionarioId");
@@ -573,28 +559,6 @@ namespace Ofichina.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServicosPecas_ItemServicoId",
-                table: "ServicosPecas",
-                column: "ItemServicoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ServicosPecas_PecaId",
-                table: "ServicosPecas",
-                column: "PecaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ServicosPecas_ServicoId",
-                table: "ServicosPecas",
-                column: "ServicoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ServicosPecas_ServicoId_PecaId",
-                table: "ServicosPecas",
-                columns: new[] { "ServicoId", "PecaId" },
-                unique: true,
-                filter: "[DeletedAt] IS NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UsuariosPerfis_PerfilId",
                 table: "UsuariosPerfis",
                 column: "PerfilId");
@@ -627,10 +591,10 @@ namespace Ofichina.Infrastructure.Migrations
                 name: "DiasHorariosDisponibilidade");
 
             migrationBuilder.DropTable(
-                name: "PerfisPermissoes");
+                name: "ItensServico");
 
             migrationBuilder.DropTable(
-                name: "ServicosPecas");
+                name: "PerfisPermissoes");
 
             migrationBuilder.DropTable(
                 name: "UsuariosPerfis");
@@ -642,10 +606,7 @@ namespace Ofichina.Infrastructure.Migrations
                 name: "DiasDisponibilidade");
 
             migrationBuilder.DropTable(
-                name: "Permissoes");
-
-            migrationBuilder.DropTable(
-                name: "ItensServico");
+                name: "OrdensServico");
 
             migrationBuilder.DropTable(
                 name: "Pecas");
@@ -654,13 +615,13 @@ namespace Ofichina.Infrastructure.Migrations
                 name: "Servicos");
 
             migrationBuilder.DropTable(
+                name: "Permissoes");
+
+            migrationBuilder.DropTable(
                 name: "Perfis");
 
             migrationBuilder.DropTable(
                 name: "HorariosDisponibilidade");
-
-            migrationBuilder.DropTable(
-                name: "OrdensServico");
 
             migrationBuilder.DropTable(
                 name: "Veiculos");

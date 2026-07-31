@@ -14,4 +14,8 @@
     <None Remove="Http\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Responses\ItemServico\" />
+  </ItemGroup>
+
 </Project>

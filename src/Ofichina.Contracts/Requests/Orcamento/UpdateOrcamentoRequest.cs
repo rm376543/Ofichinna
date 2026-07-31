@@ -48,4 +48,3 @@ namespace Ofichina.Contracts.Requests.Orcamento
         public ICollection<UpdateOrcamentoPecaRequest> Pecas { get; init; } = [];
     }
 }
- 

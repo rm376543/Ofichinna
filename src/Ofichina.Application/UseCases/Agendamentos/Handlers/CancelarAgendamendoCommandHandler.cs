@@ -28,7 +28,7 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers
             try
             {
                 _logger.LogInformation("Iniciando o cancelamento do agendamento com ID: {AgendamentoId} para a pessoa com ID: {PessoaId}", command.AgendamentoId, command.PessoaId);
-                
+
                 var agendamento = await _agendamentoRepository.BuscarAgendamentosPorPessoaId(command.PessoaId);
 
                 if (agendamento == null)
@@ -43,7 +43,8 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers
                 _logger.LogInformation("Agendamento com ID: {AgendamentoId} para a pessoa com ID: {PessoaId} cancelado com sucesso.", command.AgendamentoId, command.PessoaId);
 
                 return Result.Success();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao cancelar o agendamento com ID: {AgendamentoId} para a pessoa com ID: {PessoaId}", command.AgendamentoId, command.PessoaId);
                 return Result.Failure($"Erro ao cancelar o agendamento: {ex.Message}");

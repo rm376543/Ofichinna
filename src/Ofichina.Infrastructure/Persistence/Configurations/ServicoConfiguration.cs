@@ -26,9 +26,5 @@ public class ServicoConfiguration : IEntityTypeConfiguration<Servico>
             .HasColumnType("decimal(10,2)")
             .IsRequired();
 
-        builder.HasMany(s => s.Pecas)
-            .WithOne(p => p.Servico)
-            .HasForeignKey(p => p.ServicoId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

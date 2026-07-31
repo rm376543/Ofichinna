@@ -19,7 +19,17 @@ public sealed class UpdateItemServicoCommand : ICommand<Result>
     public Guid OrdemServicoId { get; init; }
 
     /// <summary>
-    /// Identificador da ordem de serviço.
+    /// Identificador do serviço executado.
     /// </summary>
-    public Guid ServicoPecaId { get; init; }
+    public Guid ServicoId { get; init; }
+
+    /// <summary>
+    /// Identificador da peça utilizada.
+    /// </summary>
+    public Guid PecaId { get; init; }
+
+    /// <summary>
+    /// Quantidade de peças utilizadas.
+    /// </summary>
+    public int Quantidade { get; init; }
 }

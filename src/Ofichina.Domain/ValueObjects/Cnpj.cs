@@ -26,9 +26,9 @@ public sealed class Cnpj : Documento
         if (string.IsNullOrWhiteSpace(cnpj))
             throw new DomainException("CNPJ inválido.");
 
-        #pragma warning disable S6444
+#pragma warning disable S6444
         return Regex.Replace(cnpj, @"\D", "");
-        #pragma warning restore S6444
+#pragma warning restore S6444
     }
 
     private static bool EhValido(string cnpj)

@@ -1,4 +1,5 @@
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
@@ -14,20 +15,23 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
 {
     private readonly IOrdemServicoRepository _ordemServicoRepository;
     private readonly IItemServicoRepository _itemServicoRepository;
-    private readonly IRepository<ServicoPeca> _servicoPecaRepository;
+    private readonly IRepository<Servico> _servicoRepository;
+    private readonly IRepository<Peca> _pecaRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateItemServicoCommandHandler> _logger;
 
     public CreateItemServicoCommandHandler(
         IOrdemServicoRepository ordemServicoRepository,
         IItemServicoRepository itemServicoRepository,
-        IRepository<ServicoPeca> servicoPecaRepository,
+        IRepository<Servico> servicoRepository,
+        IRepository<Peca> pecaRepository,
         IUnitOfWork unitOfWork,
         ILogger<CreateItemServicoCommandHandler> logger)
     {
         _ordemServicoRepository = ordemServicoRepository;
         _itemServicoRepository = itemServicoRepository;
-        _servicoPecaRepository = servicoPecaRepository;
+        _servicoRepository = servicoRepository;
+        _pecaRepository = pecaRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -45,23 +49,29 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
             if (ordemServico.Status != StatusOrdemServico.Recebida && ordemServico.Status != StatusOrdemServico.EmDiagnostico)
                 return Result.Failure<Guid>("Não é possível alterar itens nesta etapa da OS.");
 
-            var pecas = new List<ServicoPeca>();
-            foreach (var pecaCommand in command.Pecas)
-            {
-                var servicoPeca = await _servicoPecaRepository.GetByIdAsync(pecaCommand.ServicoPecaId, cancellationToken, tracking: true);
-                if (servicoPeca is null || servicoPeca.EstaExcluida())
-                    return Result.Failure<Guid>("Peça de serviço não encontrada.");
+            var servico = await _servicoRepository.GetByIdAsync(command.ServicoId, cancellationToken, tracking: true);
+            if (servico is null || servico.EstaExcluida())
+                return Result.Failure<Guid>("Serviço não encontrado.");
 
-                pecas.Add(servicoPeca);
-            }
+            var peca = await _pecaRepository.GetByIdAsync(command.PecaId, cancellationToken, tracking: true);
+            if (peca is null || peca.EstaExcluida())
+                return Result.Failure<Guid>("Peça não encontrada.");
 
-            var item = new ItemServico(command.OrdemServicoId);
-            foreach (var pecaCommand in command.Pecas)
-            {
-                var peca = pecas.First(x => x.Id == pecaCommand.ServicoPecaId);
-                var quantidade = pecaCommand.Quantidade;
-                item.AdicionarPeca(peca, quantidade);
-            }
+            var existente = await _itemServicoRepository.GetByOrdemServicoIdAndServicoIdAndPecaIdAsync(
+                command.OrdemServicoId,
+                command.ServicoId,
+                command.PecaId,
+                cancellationToken,
+                tracking: true);
+
+            if (existente is not null && !existente.EstaExcluida())
+                return Result.Failure<Guid>("Já existe um item de serviço com este serviço e esta peça na ordem.");
+
+            var item = new ItemServico(
+                command.OrdemServicoId,
+                command.ServicoId,
+                command.PecaId,
+                command.Quantidade);
 
             await _itemServicoRepository.AddAsync(item, cancellationToken);
 

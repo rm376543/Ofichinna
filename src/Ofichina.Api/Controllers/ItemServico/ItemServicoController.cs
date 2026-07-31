@@ -6,7 +6,7 @@ using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Application.UseCases.ItensServico.Queries;
 using Ofichina.Contracts.Requests.ItensServico;
 using Ofichina.Contracts.Responses;
-using Ofichina.Contracts.Responses.ItensServico;
+using Ofichina.Contracts.Responses.OrdemServico;
 
 namespace Ofichina.Api.Controllers.ItensServico;
 
@@ -45,11 +45,11 @@ public sealed class ItemServicoController : ControllerBase
     /// <returns>Lista de itens de serviço da ordem.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet]
-    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<ItemServicoResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<OrdemServicoItensResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<ItemServicoResponse>>>> BuscarItensServico(
+    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<OrdemServicoItensResponse>>>> BuscarItensServico(
         [FromQuery] Guid ordemServicoId,
         CancellationToken cancellationToken)
     {
@@ -66,7 +66,7 @@ public sealed class ItemServicoController : ControllerBase
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os itens de serviço."));
         }
 
-        return Ok(ApiResponse<IReadOnlyCollection<ItemServicoResponse>>.SuccessResponse(result.Value ?? []));
+        return Ok(ApiResponse<IReadOnlyCollection<OrdemServicoItensResponse>>.SuccessResponse(result.Value ?? []));
     }
 
     /// <summary>
@@ -78,11 +78,11 @@ public sealed class ItemServicoController : ControllerBase
     /// <returns>Item de serviço encontrado ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(ApiResponse<ItemServicoResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<OrdemServicoItensResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<ItemServicoResponse>>> BuscarItemServicoPorId(
+    public async Task<ActionResult<ApiResponse<OrdemServicoItensResponse>>> BuscarItemServicoPorId(
         [FromQuery] Guid ordemServicoId,
         [FromQuery] Guid id,
         CancellationToken cancellationToken)
@@ -101,7 +101,7 @@ public sealed class ItemServicoController : ControllerBase
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Item de serviço não encontrado."));
         }
 
-        return Ok(ApiResponse<ItemServicoResponse>.SuccessResponse(result.Value));
+        return Ok(ApiResponse<OrdemServicoItensResponse>.SuccessResponse(result.Value));
     }
 
     /// <summary>
@@ -140,17 +140,15 @@ public sealed class ItemServicoController : ControllerBase
         var result = await _mediator.Send(new CreateItemServicoCommand
         {
             OrdemServicoId = request.OrdemServicoId,
-            Pecas = request.Pecas.Select(x => new CreateItemServicoPecaCommand
-            {
-                ServicoPecaId = x.ServicoPecaId,
-                Quantidade = x.Quantidade
-            }).ToList()
+            ServicoId = request.ServicoId,
+            PecaId = request.PecaId,
+            Quantidade = request.Quantidade
         }, cancellationToken);
 
         if (!result.IsSuccess)
         {
             _logger.LogWarning("Falha ao criar item de serviço. OrdemServicoId: {OrdemServicoId}. Erro: {Erro}", request.OrdemServicoId, result.Error);
-            return result.Error == "Ordem de serviço não encontrada." || result.Error == "Peça de serviço não encontrada."
+            return result.Error == "Ordem de serviço não encontrada." || result.Error == "Serviço não encontrado." || result.Error == "Peça não encontrada."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
                 : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o item de serviço."));
         }
@@ -189,17 +187,17 @@ public sealed class ItemServicoController : ControllerBase
         {
             Id = request.Id,
             OrdemServicoId = request.OrdemServicoId,
-            ServicoPecaId = request.ServicoPecaId
+            ServicoId = request.ServicoId,
+            PecaId = request.PecaId,
+            Quantidade = request.Quantidade
         }, cancellationToken);
 
         if (!result.IsSuccess)
         {
             _logger.LogWarning("Falha ao atualizar item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erro: {Erro}", request.OrdemServicoId, request.Id, result.Error);
 #pragma warning disable S3358
-            return result.Error == "Ordem de serviço não encontrada." || result.Error == "Item de serviço não encontrado." || result.Error == "Peça de serviço não encontrada."
+            return result.Error == "Ordem de serviço não encontrada." || result.Error == "Item de serviço não encontrado." || result.Error == "Serviço não encontrado." || result.Error == "Peça não encontrada."
                 ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : result.Error == "Remova ou desative as peças do serviço atual antes de alterar o serviço do item."
-                    ? Conflict(ApiResponse.FailureResponse(result.Error))
                 : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o item de serviço."));
 #pragma warning restore S3358
         }

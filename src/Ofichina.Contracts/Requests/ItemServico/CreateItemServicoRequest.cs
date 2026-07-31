@@ -11,16 +11,17 @@ public sealed class CreateItemServicoRequest : CreateRequest
     public Guid OrdemServicoId { get; init; }
 
     /// <summary>
-    /// Peças vinculadas ao item.
+    /// Serviço executado na ordem.
     /// </summary>
-    public IReadOnlyCollection<CreateItemServicoPecaRequest> Pecas { get; init; } = [];
-}
+    public Guid ServicoId { get; init; }
 
-/// <summary>
-/// Peça vinculada ao item de serviço.
-/// </summary>
-public sealed class CreateItemServicoPecaRequest
-{
-    public Guid ServicoPecaId { get; init; }
+    /// <summary>
+    /// Peça utilizada no serviço.
+    /// </summary>
+    public Guid PecaId { get; init; }
+
+    /// <summary>
+    /// Quantidade de peças utilizadas.
+    /// </summary>
     public int Quantidade { get; init; }
 }

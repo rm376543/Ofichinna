@@ -14,7 +14,7 @@ using Ofichina.Contracts.Responses.Veiculo;
 namespace Ofichina.Api.Controllers.Veiculo;
 
 /// <summary>
-    /// Controller responsável pelo CRUD de veículos vinculados a pessoas.
+/// Controller responsável pelo CRUD de veículos vinculados a pessoas.
 /// </summary>
 [Authorize]
 [ApiController]
@@ -66,7 +66,7 @@ public sealed class VeiculoController : ControllerBase
         }
 
         _logger.LogInformation("Pesquisa de veículos da pessoa {PessoaId} concluída com sucesso.", pessoaId);
-        
+
         return Ok(ApiResponse<PessoaVeiculoResponse>.SuccessResponse(result.Value));
     }
 

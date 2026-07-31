@@ -12,7 +12,7 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers
         private readonly IUnitOfWork unitOfWork;
 
         public CadastrarHorarioAgendamentoCommandHandler(
-            IHorarioDisponibilidadeRepository horarioDisponibilidadeRepository, 
+            IHorarioDisponibilidadeRepository horarioDisponibilidadeRepository,
             ILogger<CadastrarHorarioAgendamentoCommandHandler> logger,
             IUnitOfWork unitOfWork)
         {

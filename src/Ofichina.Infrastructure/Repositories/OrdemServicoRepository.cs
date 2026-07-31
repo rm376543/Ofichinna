@@ -30,7 +30,10 @@ public sealed class OrdemServicoRepository : Repository<OrdemServico>, IOrdemSer
         if (includeItens)
         {
             query = query
-                .Include(x => x.Servicos);
+                .Include(x => x.Servicos)
+                    .ThenInclude(x => x.Servico)
+                .Include(x => x.Servicos)
+                    .ThenInclude(x => x.Peca);
         }
 
         return await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
@@ -43,7 +46,10 @@ public sealed class OrdemServicoRepository : Repository<OrdemServico>, IOrdemSer
         if (includeItens)
         {
             query = query
-                .Include(x => x.Servicos);
+                .Include(x => x.Servicos)
+                    .ThenInclude(x => x.Servico)
+                .Include(x => x.Servicos)
+                    .ThenInclude(x => x.Peca);
         }
 
         return await query.ToListAsync(cancellationToken);
@@ -59,7 +65,7 @@ public sealed class OrdemServicoRepository : Repository<OrdemServico>, IOrdemSer
 
         var query = _context.Set<OrdemServico>()
             .AsNoTracking()
-            
+
             .OrderBy(x => x.CreatedAt);
 
         var totalCount = await query.CountAsync(cancellationToken);
