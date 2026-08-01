@@ -48,6 +48,11 @@ public class ApplicationDbContext : DbContext
     public DbSet<OrdemServico> OrdensServico { get; set; } = null!;
 
     /// <summary>
+    /// DbSet para orçamentos.
+    /// </summary>
+    public DbSet<Orcamento> Orcamentos { get; set; } = null!;
+
+    /// <summary>
     /// DbSet para agendamentos.
     /// </summary>
     public DbSet<Agendamento> Agendamentos { get; set; } = null!;
@@ -78,6 +83,16 @@ public class ApplicationDbContext : DbContext
     public DbSet<ItemServico> ItensServico { get; set; } = null!;
 
     /// <summary>
+    /// DbSet para itens previstos do orçamento.
+    /// </summary>
+    public DbSet<ItemOrcamento> ItensOrcamento { get; set; } = null!;
+
+    /// <summary>
+    /// DbSet para checklists de orçamento.
+    /// </summary>
+    public DbSet<Checklist> Checklists { get; set; } = null!;
+
+    /// <summary>
     /// DbSet para serviços cadastrados no catálogo.
     /// </summary>
     public DbSet<Servico> Servicos { get; set; } = null!;
@@ -96,7 +111,6 @@ public class ApplicationDbContext : DbContext
     /// DbSet para vínculos entre perfis e permissoes.
     /// </summary>
     public DbSet<PerfilPermissao> PerfisPermissoes { get; set; } = null!;
-    public object ItemServicos { get; internal set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

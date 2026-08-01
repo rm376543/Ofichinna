@@ -40,6 +40,7 @@ public static class RepositoryModule
         services.AddScoped<IVeiculoRepository, VeiculoRepository>();
 
         services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
+        services.AddScoped<IOrcamentoRepository, OrcamentoRepository>();
 
         services.AddScoped<IItemServicoRepository, ItemServicoRepository>();
 
