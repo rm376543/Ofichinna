@@ -23,6 +23,11 @@ namespace Ofichina.Contracts.Requests.Orcamento
         public Guid ResponsavelId { get; init; }
 
         /// <summary>
+        /// Mecânico responsável pelo diagnóstico.
+        /// </summary>
+        public Guid MecanicoDiagnosticoId { get; init; }
+
+        /// <summary>
         /// Data de validade.
         /// </summary>
         public DateTime DataValidade { get; init; }

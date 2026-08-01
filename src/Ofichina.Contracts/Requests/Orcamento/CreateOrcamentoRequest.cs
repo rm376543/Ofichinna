@@ -23,6 +23,11 @@ public sealed class CreateOrcamentoRequest : CreateRequest
     public Guid ResponsavelId { get; init; }
 
     /// <summary>
+    /// Mecânico responsável pelo diagnóstico.
+    /// </summary>
+    public Guid MecanicoDiagnosticoId { get; init; }
+
+    /// <summary>
     /// Data de validade do orçamento.
     /// </summary>
     public DateTime DataValidade { get; init; }
