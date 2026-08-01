@@ -1,4 +1,3 @@
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +6,6 @@ using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Enums;
-using Ofichina.Contracts.Requests.OrdensServico;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.OrdemServico;
 using Ofichina.Contracts.Responses.OrdensServico;
@@ -15,7 +13,7 @@ using Ofichina.Contracts.Responses.OrdensServico;
 namespace Ofichina.Api.Controllers.OrdensServico;
 
 /// <summary>
-/// Controller responsável pelo CRUD de ordens de serviço e pelas transições de status.
+/// Controller responsável pelas consultas e transições de status de ordens de serviço.
 /// </summary>
 [Authorize]
 [ApiController]
@@ -24,19 +22,13 @@ namespace Ofichina.Api.Controllers.OrdensServico;
 public sealed class OrdemServicoController : ControllerBase
 #pragma warning restore S6960
 {
-    private readonly IValidator<CreateOrdemServicoRequest> _createValidator;
-    private readonly IValidator<UpdateOrdemServicoRequest> _updateValidator;
     private readonly IMediator _mediator;
     private readonly ILogger<OrdemServicoController> _logger;
 
     public OrdemServicoController(
-        IValidator<CreateOrdemServicoRequest> createValidator,
-        IValidator<UpdateOrdemServicoRequest> updateValidator,
         IMediator mediator,
         ILogger<OrdemServicoController> logger)
     {
-        _createValidator = createValidator;
-        _updateValidator = updateValidator;
         _mediator = mediator;
         _logger = logger;
     }
@@ -99,132 +91,22 @@ public sealed class OrdemServicoController : ControllerBase
     }
 
     /// <summary>
-    /// Cria uma nova ordem de serviço.
-    /// </summary>
-    /// <param name="request">Dados da ordem de serviço.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Identificador da ordem de serviço criada ou erro de validação.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpPost]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> CriarOrdemServico(
-        [FromBody] CreateOrdemServicoRequest request,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando a criação de uma nova ordem de serviço. PessoaId: {PessoaId}, VeiculoId: {VeiculoId}.", request.PessoaId, request.VeiculoId);
-
-        var validation = await _createValidator.ValidateAsync(request, cancellationToken);
-        if (!validation.IsValid)
-        {
-            _logger.LogError("Erro ao validar a criação da ordem de serviço. Erros: {Erros}", string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
-            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
-        }
-
-        var result = await _mediator.Send(new CreateOrdemServicoCommand(request), cancellationToken);
-
-        if (!result.IsSuccess)
-        {
-            _logger.LogError("Erro ao criar a ordem de serviço. Erro: {Erro}", result.Error);
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar a ordem de serviço."));
-        }
-
-        return Ok(ApiResponse.SuccessResponse("Ordem de serviço criada com sucesso."));
-    }
-
-    /// <summary>
-    /// Atualiza uma ordem de serviço existente.
-    /// </summary>
-    /// <param name="request">Dados atualizados da ordem de serviço.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso, erro de validação ou ordem de serviço não encontrada.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpPut]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> AtualizarOrdemServico(
-        [FromBody] UpdateOrdemServicoRequest request,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando a atualização da ordem de serviço com Id: {Id}", request.Id);
-
-        var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
-        if (!validation.IsValid)
-        {
-            _logger.LogError("Erro ao validar a atualização da ordem de serviço com Id: {Id}. Erros: {Erros}", request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
-            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
-        }
-
-        var result = await _mediator.Send(new UpdateOrdemServicoCommand(request), cancellationToken);
-
-        if (!result.IsSuccess)
-        {
-            _logger.LogError("Erro ao atualizar a ordem de serviço com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a ordem de serviço."));
-        }
-
-        return Ok(ApiResponse.SuccessResponse("Ordem de serviço atualizada com sucesso."));
-    }
-
-    /// <summary>
-    /// Inicia o diagnóstico da ordem de serviço.
+    /// Inicia a execução da ordem de serviço.
     /// </summary>
     /// <param name="id">Identificador da ordem de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de status.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut("{id:guid}/diagnostico")]
+    [HttpPut("{id:guid}/execucao")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public Task<ActionResult<ApiResponse>> IniciarDiagnostico(
+    public Task<ActionResult<ApiResponse>> IniciarExecucaoOrdemServico(
         Guid id,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.EmDiagnostico, "Diagnóstico da ordem de serviço iniciado com sucesso.", cancellationToken);
-
-    /// <summary>
-    /// Solicita a aprovação da ordem de serviço.
-    /// </summary>
-    /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso ou erro de status.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpPut("{id:guid}/aprovacao")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public Task<ActionResult<ApiResponse>> SolicitarAprovacao(
-        Guid id,
-        CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.AguardandoAprovacao, "Aprovação da ordem de serviço solicitada com sucesso.", cancellationToken);
-
-    /// <summary>
-    /// Aprova a execução da ordem de serviço.
-    /// </summary>
-    /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso ou erro de status.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpPut("{id:guid}/aprovar")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public Task<ActionResult<ApiResponse>> AprovarOrdemServico(
-        Guid id,
-        CancellationToken cancellationToken)
-        => AlterarStatusAsync(id, StatusOrdemServico.EmExecucao, "Ordem de serviço aprovada com sucesso.", cancellationToken);
+        => AlterarStatusAsync(id, StatusOrdemServico.EmExecucao, "Execução da ordem de serviço iniciada com sucesso.", cancellationToken);
 
     /// <summary>
     /// Finaliza a ordem de serviço.
@@ -305,34 +187,6 @@ public sealed class OrdemServicoController : ControllerBase
         return Ok(ApiResponse.SuccessResponse(mensagemSucesso));
     }
 
-    /// <summary>
-    /// Remove logicamente uma ordem de serviço existente.
-    /// </summary>
-    /// <param name="id">Identificador da ordem de serviço.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso ou erro 404.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpDelete("{id:guid}")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> RemoverOrdemServico(
-        Guid id,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando a remoção da ordem de serviço com Id: {Id}", id);
-
-        var result = await _mediator.Send(new DeleteOrdemServicoCommand { Id = id }, cancellationToken);
-
-        if (!result.IsSuccess)
-        {
-            _logger.LogError("Erro ao remover a ordem de serviço com Id: {Id}. Erro: {Erro}", id, result.Error);
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Ordem de serviço não encontrada."));
-        }
-
-        return Ok(ApiResponse.SuccessResponse("Ordem de serviço removida com sucesso."));
-    }
 }
 
 
