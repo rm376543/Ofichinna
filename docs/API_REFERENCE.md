@@ -375,6 +375,59 @@ Remove um item de serviço.
 
 **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `401`, `403`, `404`.
 
+## 💰 Orçamentos
+
+Todos os endpoints desta seção exigem `[Authorize(Roles = "ADMIN")]`.
+
+### GET /api/orcamentos
+Lista orçamentos com paginação.
+
+#### Resposta 200
+```json
+{ "success": true, "data": { "items": [{ "id": "550e8400-e29b-41d4-a716-446655440000", "cliente": "João da Silva", "responsavel": "Maria Souza", "mecanicoDiagnostico": "Carlos Lima", "status": "EmDiagnostico", "dataCriacao": "2026-08-01T12:00:00Z", "dataValidade": "2026-08-10T12:00:00Z", "desconto": 10, "valorTotal": "R$ 1.250,00" }], "pageNumber": 1, "pageSize": 10, "totalCount": 1 } }
+```
+
+**Respostas:** `200`, `400`, `401`, `403`.
+
+### GET /api/orcamentos/{id}
+Retorna o orçamento detalhado com checklist e itens previstos.
+
+#### Resposta 200
+```json
+{ "success": true, "data": { "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "mecanicoDiagnosticoId": "...", "responsavelId": "...", "dataValidade": "2026-08-10T12:00:00Z", "desconto": 10, "observacoes": "Avaliar ruído", "status": "EmDiagnostico", "checklist": { "id": "...", "orcamentoId": "...", "hodometroEntrada": 35000, "itensVerificados": "Pneus, freios", "observacoes": "Sem vazamentos" }, "itensPrevistos": [] } }
+```
+
+**Respostas:** `200`, `401`, `403`, `404`.
+
+### POST /api/orcamentos
+Cria um orçamento.
+
+#### Requisição
+```json
+{ "pessoaId": "550e8400-e29b-41d4-a716-446655440000", "veiculoId": "660e8400-e29b-41d4-a716-446655440000", "responsavelId": "770e8400-e29b-41d4-a716-446655440000", "mecanicoDiagnosticoId": "880e8400-e29b-41d4-a716-446655440000", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Avaliar ruído", "desconto": 10, "servicos": [], "pecas": [] }
+```
+
+**Respostas:** `200`, `400`, `401`, `403`, `404`.
+
+### PUT /api/orcamentos
+Atualiza um orçamento.
+
+#### Requisição
+```json
+{ "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "responsavelId": "...", "mecanicoDiagnosticoId": "...", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Atualizado", "desconto": 12, "servicos": [], "pecas": [] }
+```
+
+**Respostas:** `200`, `400`, `401`, `403`, `404`.
+
+### PUT /api/orcamentos/{id}/enviar
+Marca o orçamento como enviado para o cliente. **Respostas:** `200`, `401`, `403`, `404`.
+
+### PUT /api/orcamentos/{id}/aprovar/{mecanicoReparoId}
+Aprova o orçamento e gera a ordem de serviço vinculada. **Respostas:** `200`, `400`, `401`, `403`, `404`.
+
+### PUT /api/orcamentos/{id}/reprovar
+Reprova o orçamento. **Respostas:** `200`, `401`, `403`, `404`.
+
 ## 🧾 Ordens de serviço
 
 ### GET /api/ordem-servico
@@ -383,39 +436,20 @@ Lista ordens paginadas. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | *
 ### GET /api/ordem-servico/{id}
 Retorna uma ordem detalhada. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `401`, `403`, `404`.
 
-### POST /api/ordem-servico
-Cria uma ordem.
-
-#### Requisição
-```json
-{ "pessoaId": "550e8400-e29b-41d4-a716-446655440000", "veiculoId": "660e8400-e29b-41d4-a716-446655440000", "funcionarioId": "770e8400-e29b-41d4-a716-446655440000", "hodometroEntrada": 35000, "problemaRelatado": "Ruído no motor", "observacoes": "Avaliar correia" }
-```
-
-**Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
-
-### PUT /api/ordem-servico
-Atualiza uma ordem.
-
-#### Requisição
-```json
-{ "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "660e8400-e29b-41d4-a716-446655440000", "veiculoId": "770e8400-e29b-41d4-a716-446655440000", "funcionarioId": "880e8400-e29b-41d4-a716-446655440000", "hodometroEntrada": 35000, "problemaRelatado": "Ruído no motor", "observacoes": "Atualização" }
-```
-
-**Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
-
-### PUT /api/ordem-servico/{id}/diagnostico
-Transiciona para `EmDiagnostico`. **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
-
-### PUT /api/ordem-servico/{id}/aprovacao
-Transiciona para `AguardandoAprovacao`. **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
-
-### PUT /api/ordem-servico/{id}/aprovar
-Transiciona para `EmExecucao`. **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
+### PUT /api/ordem-servico/{id}/execucao
+Inicia a execução da OS. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
 ### PUT /api/ordem-servico/{id}/finalizar
-Transiciona para `Finalizada`. **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
+Finaliza a OS. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
 ### PUT /api/ordem-servico/{id}/entregar
+Marca a OS como entregue. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
+
+### PUT /api/ordem-servico/{id}/cancelar
+Cancela a OS. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
+
+### DELETE /api/ordem-servico/{id}
+Remove logicamente uma OS. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `401`, `403`, `404`.
 Transiciona para `Entregue`. **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
 ### PUT /api/ordem-servico/{id}/cancelar
