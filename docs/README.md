@@ -124,7 +124,8 @@ Ofichinna/
    ├─ INDICE.md
    ├─ RELATORIO_IMPLEMENTACAO.md
    ├─ das/
-   │  └─ DAS-001-exemplo-ordem-servico.md
+   ├─ DAS-001-exemplo-ordem-servico.md
+   └─ DAS-002-fluxo-orcamento.md
    ├─ adr/
    │  ├─ ADR-001 - Clean-Architecture-DDD.md
    │  ├─ ADR-002 - Adocao-CQRS-Application.md
@@ -268,6 +269,7 @@ Veja exemplo completo em **GUIA_IMPLEMENTACAO.md**
 - 📖 [API_REFERENCE.md](./API_REFERENCE.md) - Contratos e exemplos da API
 - 📐 [DESIGN_APPROVAL_SHEET.md](./DESIGN_APPROVAL_SHEET.md) - Template de aprovação de design
 - 📐 [das/DAS-001-exemplo-ordem-servico.md](./das/DAS-001-exemplo-ordem-servico.md) - Exemplo preenchido
+- 📐 [das/DAS-002-fluxo-orcamento.md](./das/DAS-002-fluxo-orcamento.md) - Aprovação do fluxo de orçamento
 - 📖 [LOGGING.md](./LOGGING.md) - Serilog, Seq e correlação
 - 📖 [EXEMPLOS_CORRELATION_ID.md](./EXEMPLOS_CORRELATION_ID.md) - Exemplos de correlação
 - 📖 [DOCUMENTACAO_COMPLETA.md](./DOCUMENTACAO_COMPLETA.md) - Mapa da documentação
@@ -372,6 +374,7 @@ Para dúvidas sobre a implementação:
 - ✅ Documentação completa
 - ✅ Exemplos práticos
 - ✅ Build validado (0 erros)
+- ✅ Fluxo de orçamento documentado na API e em DAS
 
 ---
 

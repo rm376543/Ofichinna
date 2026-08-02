@@ -62,14 +62,8 @@ public sealed class AlterarStatusOrdemServicoCommandHandler : ICommandHandler<Al
     {
         switch (statusDestino)
         {
-            case StatusOrdemServico.EmDiagnostico:
-                ordemServico.IniciarDiagnostico();
-                break;
-            case StatusOrdemServico.AguardandoAprovacao:
-                ordemServico.SolicitarAprovacao();
-                break;
             case StatusOrdemServico.EmExecucao:
-                ordemServico.Aprovar();
+                ordemServico.IniciarExecucao();
                 break;
             case StatusOrdemServico.Finalizada:
                 ordemServico.Finalizar();
@@ -90,8 +84,6 @@ public sealed class AlterarStatusOrdemServicoCommandHandler : ICommandHandler<Al
         return statusDestino switch
         {
             StatusOrdemServico.Recebida => StatusOrdemServico.Recebida,
-            StatusOrdemServico.EmDiagnostico => StatusOrdemServico.EmDiagnostico,
-            StatusOrdemServico.AguardandoAprovacao => StatusOrdemServico.AguardandoAprovacao,
             StatusOrdemServico.EmExecucao => StatusOrdemServico.EmExecucao,
             StatusOrdemServico.Finalizada => StatusOrdemServico.Finalizada,
             StatusOrdemServico.Entregue => StatusOrdemServico.Entregue,

@@ -1,4 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
+using Ofichina.Application.Abstractions.Interfaces;
+using Ofichina.Application.UseCases.Orcamentos.Services;
 using Ofichina.Application.UseCases.OrdensServico.Services;
 
 namespace Ofichina.Application.DependencyInjection;
@@ -13,6 +15,8 @@ public static class ServicesModule
     {
         services.AddScoped<ICreateOrdemServicoService, CreateOrdemServicoService>();
         services.AddScoped<IOrdemServicoService, OrdemServicoService>();
+        services.AddScoped<ICreateOrcamentoService, CreateOrcamentoService>();
+        services.AddScoped<IOrcamentoService, OrcamentoService>();
 
         return services;
     }

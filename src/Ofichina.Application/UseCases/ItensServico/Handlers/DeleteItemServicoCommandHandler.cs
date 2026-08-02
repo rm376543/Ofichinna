@@ -41,7 +41,7 @@ public sealed class DeleteItemServicoCommandHandler : ICommandHandler<DeleteItem
             if (ordemServico is null || ordemServico.EstaExcluida())
                 return Result.Failure("Ordem de serviço não encontrada.");
 
-            if (ordemServico.Status != StatusOrdemServico.Recebida && ordemServico.Status != StatusOrdemServico.EmDiagnostico)
+            if (ordemServico.Status != StatusOrdemServico.Recebida)
                 return Result.Failure("Não é possível alterar itens nesta etapa da OS.");
 
             var item = await _itemServicoRepository.GetByOrdemServicoIdAndItemServicoIdAsync(command.OrdemServicoId, command.Id, cancellationToken, tracking: true);

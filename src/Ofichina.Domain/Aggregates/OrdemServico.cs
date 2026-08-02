@@ -1,9 +1,8 @@
 ﻿using Ofichina.Domain.Entities;
-using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.Enums;
+using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Domain.Aggregates;
-
 
 /// <summary>
 /// Representa a ordem de serviço da oficina.
@@ -14,67 +13,60 @@ public class OrdemServico : Entity
 {
     private readonly List<ItemServico> _servicos = [];
 
-
     /// <summary>
     /// Pessoa relacionada à ordem de serviço.
     /// </summary>
     public Guid PessoaId { get; private set; }
-
 
     /// <summary>
     /// Veículo relacionado à ordem de serviço.
     /// </summary>
     public Guid VeiculoId { get; private set; }
 
-
     /// <summary>
-    /// Funcionário responsável pelo atendimento (mecânico/atendente).
+    /// Funcionário responsável pelo atendimento.
     /// </summary>
     public Guid FuncionarioId { get; private set; }
 
+    /// <summary>
+    /// Mecânico responsável pelo reparo.
+    /// </summary>
+    public Guid MecanicoReparoId { get; private set; }
 
     /// <summary>
     /// Hodômetro de entrada do veículo na ordem de serviço.
     /// </summary>
     public int HodometroEntrada { get; private set; }
 
-
     /// <summary>
     /// Problema relatado na abertura da ordem de serviço.
     /// </summary>
     public string ProblemaRelatado { get; private set; } = string.Empty;
-
 
     /// <summary>
     /// Status atual da ordem de serviço.
     /// </summary>
     public StatusOrdemServico Status { get; private set; }
 
-
     /// <summary>
     /// Data de abertura da ordem de serviço.
     /// </summary>
     public DateTime DataAbertura { get; private set; }
-
 
     /// <summary>
     /// Data em que a ordem foi finalizada.
     /// </summary>
     public DateTime? DataFinalizacao { get; private set; }
 
-
     /// <summary>
     /// Observações gerais da ordem de serviço.
     /// </summary>
     public string? Observacao { get; private set; }
 
-
     /// <summary>
     /// Serviços adicionados na ordem.
     /// </summary>
-    public IReadOnlyCollection<ItemServico> Servicos =>
-        _servicos.AsReadOnly();
-
+    public IReadOnlyCollection<ItemServico> Servicos => _servicos.AsReadOnly();
 
     /// <summary>
     /// Valor total da ordem de serviço.
@@ -84,14 +76,12 @@ public class OrdemServico : Entity
         _servicos.Where(x => !x.EstaExcluida())
             .Sum(x => (x.Servico?.Valor ?? 0) + ((x.Peca?.Valor ?? 0) * x.Quantidade));
 
-
     /// <summary>
     /// Construtor utilizado pelo Entity Framework Core.
     /// </summary>
     private OrdemServico()
     {
     }
-
 
     /// <summary>
     /// Cria uma nova ordem de serviço.
@@ -104,7 +94,6 @@ public class OrdemServico : Entity
         : this(pessoaId, veiculoId, funcionarioId, 0, string.Empty, observacao)
     {
     }
-
 
     /// <summary>
     /// Cria uma nova ordem de serviço.
@@ -132,20 +121,50 @@ public class OrdemServico : Entity
         if (string.IsNullOrWhiteSpace(problemaRelatado))
             throw new DomainException("Problema relatado obrigatório.");
 
-
         PessoaId = pessoaId;
         VeiculoId = veiculoId;
         FuncionarioId = funcionarioId;
         HodometroEntrada = hodometroEntrada;
         ProblemaRelatado = problemaRelatado;
-
         Observacao = observacao;
-
+        MecanicoReparoId = Guid.Empty;
         Status = StatusOrdemServico.Recebida;
-
         DataAbertura = DateTime.UtcNow;
     }
 
+    /// <summary>
+    /// Cria uma ordem de serviço a partir de um orçamento aprovado.
+    /// </summary>
+    public static OrdemServico CriarAPartirDoOrcamento(Orcamento orcamento, Guid mecanicoReparoId)
+    {
+        ArgumentNullException.ThrowIfNull(orcamento);
+
+        if (orcamento.Status != StatusOrcamento.Aprovado)
+            throw new DomainException("O orçamento precisa estar aprovado para gerar a ordem de serviço.");
+
+        var problemaRelatado = orcamento.Checklist?.ItensVerificados;
+        if (string.IsNullOrWhiteSpace(problemaRelatado))
+            problemaRelatado = orcamento.Observacoes ?? "Orçamento aprovado";
+
+        var hodometroEntrada = orcamento.Checklist?.HodometroEntrada ?? 0;
+
+        var ordemServico = new OrdemServico(
+            orcamento.PessoaId,
+            orcamento.VeiculoId,
+            orcamento.ResponsavelId,
+            hodometroEntrada,
+            problemaRelatado,
+            orcamento.Observacoes);
+
+        ordemServico.DesignarMecanicoReparo(mecanicoReparoId, orcamento.MecanicoDiagnosticoId);
+
+        foreach (var item in orcamento.ItensPrevistos.Where(x => !x.EstaExcluida()))
+        {
+            ordemServico.AdicionarServico(item.ServicoId ?? Guid.Empty, item.PecaId ?? Guid.Empty, item.Quantidade);
+        }
+
+        return ordemServico;
+    }
 
     /// <summary>
     /// Atualiza os dados da ordem de serviço.
@@ -173,7 +192,6 @@ public class OrdemServico : Entity
         if (string.IsNullOrWhiteSpace(problemaRelatado))
             throw new DomainException("Problema relatado obrigatório.");
 
-
         PessoaId = pessoaId;
         VeiculoId = veiculoId;
         FuncionarioId = funcionarioId;
@@ -184,48 +202,39 @@ public class OrdemServico : Entity
         AtualizarDataModificacao();
     }
 
-
     /// <summary>
-    /// Inicia o diagnóstico do veículo.
+    /// Desenha o mecânico responsável pelo reparo.
     /// </summary>
-    public void IniciarDiagnostico()
+    public void DesignarMecanicoReparo(Guid mecanicoReparoId, Guid mecanicoDiagnosticoId)
     {
-        ValidarStatus(
-            StatusOrdemServico.Recebida);
+        if (mecanicoReparoId == Guid.Empty)
+            throw new DomainException("Mecânico de reparo obrigatório.");
 
-        Status = StatusOrdemServico.EmDiagnostico;
+        if (mecanicoReparoId == mecanicoDiagnosticoId)
+            throw new DomainException("O mecânico do diagnóstico não pode ser o mesmo do reparo.");
 
+        MecanicoReparoId = mecanicoReparoId;
         AtualizarDataModificacao();
     }
 
-
     /// <summary>
-    /// Solicita aprovação do cliente após diagnóstico.
+    /// Inicia a execução da ordem de serviço.
     /// </summary>
-    public void SolicitarAprovacao()
+    public void IniciarExecucao()
     {
-        ValidarStatus(
-            StatusOrdemServico.EmDiagnostico);
+        ValidarStatus(StatusOrdemServico.Recebida);
 
-        Status = StatusOrdemServico.AguardandoAprovacao;
-
+        Status = StatusOrdemServico.EmExecucao;
         AtualizarDataModificacao();
     }
 
-
     /// <summary>
-    /// Aprova a execução da ordem de serviço.
+    /// Mantém compatibilidade com fluxos existentes.
     /// </summary>
     public void Aprovar()
     {
-        ValidarStatus(
-            StatusOrdemServico.AguardandoAprovacao);
-
-        Status = StatusOrdemServico.EmExecucao;
-
-        AtualizarDataModificacao();
+        IniciarExecucao();
     }
-
 
     /// <summary>
     /// Adiciona um serviço na ordem de serviço.
@@ -235,14 +244,12 @@ public class OrdemServico : Entity
         ValidarAlteracaoItens();
 
         var item = new ItemServico(Id, servicoId, pecaId, quantidade);
-
         _servicos.Add(item);
 
         AtualizarDataModificacao();
 
         return item;
     }
-
 
     /// <summary>
     /// Atualiza um serviço existente na ordem de serviço.
@@ -255,23 +262,14 @@ public class OrdemServico : Entity
     {
         ValidarAlteracaoItens();
 
-
         var item = ObterServico(itemServicoId);
 
-
-        if (item is null)
-            throw new DomainException(
-                "Serviço não encontrado.");
-
-        if (item.EstaExcluida())
-            throw new DomainException(
-                "Serviço não encontrado.");
+        if (item is null || item.EstaExcluida())
+            throw new DomainException("Serviço não encontrado.");
 
         item.AtualizarDados(servicoId, pecaId, quantidade);
-
         AtualizarDataModificacao();
     }
-
 
     /// <summary>
     /// Remove um serviço da ordem de serviço.
@@ -280,24 +278,14 @@ public class OrdemServico : Entity
     {
         ValidarAlteracaoItens();
 
-
         var item = ObterServico(itemServicoId);
 
-
-        if (item is null)
-            throw new DomainException(
-                "Serviço não encontrado.");
-
-        if (item.EstaExcluida())
-            throw new DomainException(
-                "Serviço não encontrado.");
-
+        if (item is null || item.EstaExcluida())
+            throw new DomainException("Serviço não encontrado.");
 
         item.Excluir();
-
         AtualizarDataModificacao();
     }
-
 
     /// <summary>
     /// Obtém um serviço da ordem pelo identificador.
@@ -307,44 +295,33 @@ public class OrdemServico : Entity
         return _servicos.FirstOrDefault(x => x.Id == itemServicoId);
     }
 
-
-
     /// <summary>
     /// Finaliza a ordem de serviço.
     /// </summary>
     public void Finalizar()
     {
         if (Status != StatusOrdemServico.EmExecucao)
-            throw new DomainException(
-                "A OS precisa estar em execução para ser finalizada.");
+            throw new DomainException("A OS precisa estar em execução para ser finalizada.");
 
         if (!_servicos.Any(x => !x.EstaExcluida()))
-            throw new DomainException(
-                "A ordem de serviço precisa possuir itens cadastrados.");
-
+            throw new DomainException("A ordem de serviço precisa possuir itens cadastrados.");
 
         Status = StatusOrdemServico.Finalizada;
-
         DataFinalizacao = DateTime.UtcNow;
 
         AtualizarDataModificacao();
     }
-
 
     /// <summary>
     /// Marca a ordem de serviço como entregue ao cliente.
     /// </summary>
     public void Entregar()
     {
-        ValidarStatus(
-            StatusOrdemServico.Finalizada);
-
+        ValidarStatus(StatusOrdemServico.Finalizada);
 
         Status = StatusOrdemServico.Entregue;
-
         AtualizarDataModificacao();
     }
-
 
     /// <summary>
     /// Cancela a ordem de serviço.
@@ -354,41 +331,28 @@ public class OrdemServico : Entity
         if (Status == StatusOrdemServico.Finalizada ||
             Status == StatusOrdemServico.Entregue)
         {
-            throw new DomainException(
-                "Não é possível cancelar uma OS finalizada ou entregue.");
+            throw new DomainException("Não é possível cancelar uma OS finalizada ou entregue.");
         }
 
-
         Status = StatusOrdemServico.Cancelada;
-
-        this.AtualizarDataModificacao();
+        AtualizarDataModificacao();
     }
-
 
     /// <summary>
     /// Valida se a ordem permite alteração de itens.
     /// </summary>
     private void ValidarAlteracaoItens()
     {
-        if (Status != StatusOrdemServico.Recebida &&
-            Status != StatusOrdemServico.EmDiagnostico)
-        {
-            throw new DomainException(
-                "Não é possível alterar itens nesta etapa da OS.");
-        }
+        if (Status != StatusOrdemServico.Recebida)
+            throw new DomainException("Não é possível alterar itens nesta etapa da OS.");
     }
-
 
     /// <summary>
     /// Valida se a OS está no status esperado.
     /// </summary>
-    private void ValidarStatus(
-        StatusOrdemServico statusEsperado)
+    private void ValidarStatus(StatusOrdemServico statusEsperado)
     {
         if (Status != statusEsperado)
-        {
-            throw new DomainException(
-                $"A OS precisa estar no status {statusEsperado}.");
-        }
+            throw new DomainException($"A OS precisa estar no status {statusEsperado}.");
     }
 }
