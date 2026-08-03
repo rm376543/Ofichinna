@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 using Ofichina.Domain.Exceptions;
@@ -9,7 +10,7 @@ namespace Ofichina.Domain.Aggregates;
 /// </summary>
 public class Orcamento : Entity
 {
-    private readonly List<ItemOrcamento> _itensPrevistos = [];
+    private readonly List<ItemOrcamento> _servicos = [];
 
     public Guid PessoaId { get; private set; }
 
@@ -31,7 +32,10 @@ public class Orcamento : Entity
 
     public Checklist? Checklist { get; private set; }
 
-    public IReadOnlyCollection<ItemOrcamento> ItensPrevistos => _itensPrevistos.AsReadOnly();
+    public IReadOnlyCollection<ItemOrcamento> Servicos => _servicos.AsReadOnly();
+
+    [NotMapped]
+    public IReadOnlyCollection<ItemOrcamento> ItensPrevistos => Servicos;
 
     private Orcamento()
     {
@@ -122,19 +126,19 @@ public class Orcamento : Entity
         AtualizarDataModificacao();
     }
 
-    public ItemOrcamento AdicionarServico(Guid servicoId, Guid pecaId, int quantidade)
+    public ItemOrcamento AdicionarServico(Guid servicoId)
     {
         ValidarAlteracaoItens();
 
-        var item = new ItemOrcamento(Id, servicoId, pecaId, quantidade);
-        _itensPrevistos.Add(item);
+        var item = new ItemOrcamento(Id, servicoId);
+        _servicos.Add(item);
 
         AtualizarDataModificacao();
 
         return item;
     }
 
-    public void AtualizarServico(Guid itemOrcamentoId, Guid servicoId, Guid pecaId, int quantidade)
+    public ItemOrcamentoPeca AdicionarPecaAoServico(Guid itemOrcamentoId, Guid pecaId, int quantidade)
     {
         ValidarAlteracaoItens();
 
@@ -143,7 +147,22 @@ public class Orcamento : Entity
         if (item is null || item.EstaExcluida())
             throw new DomainException("Serviço não encontrado.");
 
-        item.AtualizarDados(servicoId, pecaId, quantidade);
+        var peca = item.AdicionarPeca(pecaId, quantidade);
+        AtualizarDataModificacao();
+
+        return peca;
+    }
+
+    public void AtualizarServico(Guid itemOrcamentoId, Guid servicoId)
+    {
+        ValidarAlteracaoItens();
+
+        var item = ObterServico(itemOrcamentoId);
+
+        if (item is null || item.EstaExcluida())
+            throw new DomainException("Serviço não encontrado.");
+
+        item.AtualizarServico(servicoId);
         AtualizarDataModificacao();
     }
 
@@ -162,7 +181,7 @@ public class Orcamento : Entity
 
     public ItemOrcamento? ObterServico(Guid itemOrcamentoId)
     {
-        return _itensPrevistos.FirstOrDefault(x => x.Id == itemOrcamentoId);
+        return _servicos.FirstOrDefault(x => x.Id == itemOrcamentoId);
     }
 
     public void DefinirChecklist(Checklist checklist)

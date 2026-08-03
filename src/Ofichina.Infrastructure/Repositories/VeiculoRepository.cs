@@ -26,12 +26,16 @@ public class VeiculoRepository : Repository<Veiculo>, IVeiculoRepository
     /// <param name="id"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<Veiculo?> GetByIdWithPessoaAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Veiculo?> GetByIdAsync(Guid id, bool includePessoa = false, CancellationToken cancellationToken = default)
     {
-        return await _context.Set<Veiculo>()
-            .AsNoTracking()
-            .Include(x => x.Pessoa)
-            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        IQueryable<Veiculo> query = _context.Set<Veiculo>();
+
+        if (!includePessoa)
+            query = query.AsNoTracking();
+        else
+            query = query.AsNoTracking().Include(x => x.Pessoa);
+
+        return await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     /// <summary>
@@ -39,12 +43,14 @@ public class VeiculoRepository : Repository<Veiculo>, IVeiculoRepository
     /// </summary>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de veículos com suas respectivas pessoas associadas.</returns>
-    public async Task<IEnumerable<Veiculo>> GetAllWithPessoaAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Veiculo>> GetAllAsync(bool includePessoa = false, CancellationToken cancellationToken = default)
     {
-        return await _context.Set<Veiculo>()
-            .AsNoTracking()
-            .Include(x => x.Pessoa)
-            .ToListAsync(cancellationToken);
+        IQueryable<Veiculo> query = _context.Set<Veiculo>().AsNoTracking();
+
+        if (includePessoa)
+            query = query.Include(x => x.Pessoa);
+
+        return await query.ToListAsync(cancellationToken);
     }
 
     /// <summary>
@@ -72,7 +78,7 @@ public class VeiculoRepository : Repository<Veiculo>, IVeiculoRepository
     /// <param name="pagination">Parâmetros de paginação.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Resultado paginado de veículos.</returns>
-    public async Task<PagedResponse<Veiculo>> GetAllVeiculosPaged(Pagination pagination, CancellationToken cancellationToken = default)
+    public new async Task<PagedResponse<Veiculo>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(pagination);
 

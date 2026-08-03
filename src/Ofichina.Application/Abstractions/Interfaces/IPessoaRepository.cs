@@ -15,12 +15,13 @@ public interface IPessoaRepository : IRepository<Pessoa>
     Task<Pessoa?> GetByUsuarioIdAsync(Guid usuarioId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Obtém uma pessoa pelo ID da pessoa, incluindo os veículos associados.
+    /// Obtém uma pessoa pelo ID da pessoa, incluindo os veículos associados quando solicitado.
     /// </summary>
     /// <param name="pessoaId">ID da pessoa.</param>
+    /// <param name="includeVeiculos">Indica se os veículos associados devem ser carregados.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>A pessoa associada ao ID informado, incluindo os veículos, ou null se não encontrada.</returns>
-    Task<Pessoa?> GetByIdWithVeiculosAsync(Guid pessoaId, CancellationToken cancellationToken = default);
+    /// <returns>A pessoa associada ao ID informado, incluindo os veículos quando solicitado, ou null se não encontrada.</returns>
+    Task<Pessoa?> GetByIdAsync(Guid pessoaId, bool includeVeiculos = false, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Obtém várias pessoas pelos identificadores informados.
@@ -30,12 +31,5 @@ public interface IPessoaRepository : IRepository<Pessoa>
     /// <returns>Coleção de pessoas encontradas.</returns>
     Task<IReadOnlyCollection<Pessoa>> GetByIdsAsync(IEnumerable<Guid> pessoaIds, CancellationToken cancellationToken = default);
 
-    /// <summary>
-    /// Pesquisa todas pessoas e mostra paginadas de acordo com a paginação informada.
-    /// </summary>
-    /// <param name="pagination">Informações de paginação.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Uma resposta paginada contendo as pessoas.</returns>
-    Task<PagedResponse<Pessoa>> GetAllPessoasPaginadasAsync(Pagination pagination, CancellationToken cancellationToken = default);
 }
 

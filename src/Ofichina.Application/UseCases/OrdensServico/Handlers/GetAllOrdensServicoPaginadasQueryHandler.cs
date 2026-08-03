@@ -29,7 +29,7 @@ public sealed class GetAllOrdensServicoPaginadasQueryHandler : IQueryHandler<Get
         try
         {
             _logger.LogInformation("Listando ordens de serviço com paginação");
-            var resultados = await _ordemServicoReadService.GetAllPaginadasAsync(query.Pagination, cancellationToken);
+            var resultados = await _ordemServicoReadService.GetAllPagedAsync(query.Pagination, cancellationToken);
 
             _logger.LogInformation("Ordens de serviço listadas com sucesso");
             return Result.Success(resultados);

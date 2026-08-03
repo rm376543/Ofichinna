@@ -21,11 +21,11 @@ public sealed class OrdemServicoService : IOrdemServicoService
         _pessoaRepository = pessoaRepository;
     }
 
-    public async Task<PagedResponse<OrdemServicoSimplesResponse>> GetAllPaginadasAsync(
+    public async Task<PagedResponse<OrdemServicoSimplesResponse>> GetAllPagedAsync(
         Pagination pagination,
         CancellationToken cancellationToken = default)
     {
-        var ordensServico = await _ordemServicoRepository.GetAllOrdensServicoPaginadasAsync(
+        var ordensServico = await _ordemServicoRepository.GetPagedAsync(
             pagination,
             cancellationToken);
 

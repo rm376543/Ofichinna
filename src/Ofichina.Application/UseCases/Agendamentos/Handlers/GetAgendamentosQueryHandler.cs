@@ -1,4 +1,5 @@
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Extensions;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Agendamento;
@@ -37,7 +38,7 @@ public sealed class GetAgendamentosQueryHandler : IQueryHandler<GetAgendamentosQ
             var paged = await _agendamentoRepository.GetPagedByClientePessoaAsync(query.PessoaId, query.Pagination, cancellationToken);
 
             var resultado = paged.Items
-                .Select(Mapear)
+                .Select(agendamento => agendamento.ToResponse())
                 .ToList();
 
             return Result.Success<IReadOnlyCollection<AgendamentoResponse>>(resultado);
@@ -47,27 +48,5 @@ public sealed class GetAgendamentosQueryHandler : IQueryHandler<GetAgendamentosQ
             _logger.LogError(ex, "Erro ao listar agendamentos.");
             return Result.Failure<IReadOnlyCollection<AgendamentoResponse>>("Não foi possível obter os agendamentos.");
         }
-    }
-
-    private static AgendamentoResponse Mapear(Agendamento agendamento)
-    {
-        return new AgendamentoResponse
-        {
-            Id = agendamento.Id,
-            PessoaId = agendamento.ClientePessoaId,
-            ClienteNome = agendamento.Cliente.Nome,
-            DiaDisponibilidadeId = agendamento.DiaDisponibilidadeId,
-            HorarioConsultorId = agendamento.HorarioConsultorId,
-            ConsultorPessoaId = agendamento.ConsultorPessoaId,
-            ConsultorNome = agendamento.HorarioConsultor.Pessoa.Nome,
-            VeiculoId = agendamento.VeiculoId,
-            VeiculoPlaca = agendamento.Veiculo.Placa.Numero,
-            VeiculoDescricao = $"{agendamento.Veiculo.Marca} {agendamento.Veiculo.Modelo} {agendamento.Veiculo.AnoFabricacao}",
-            Status = agendamento.Status.ToString(),
-            Descricao = agendamento.Descricao,
-            CreatedAt = agendamento.CreatedAt,
-            UpdatedAt = agendamento.UpdatedAt,
-            DeletedAt = agendamento.DeletedAt
-        };
     }
 }

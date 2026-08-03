@@ -12,9 +12,9 @@ namespace Ofichina.Application.Abstractions.Interfaces;
 public interface IVeiculoRepository : IRepository<Veiculo>
 {
     /// <summary>
-    /// Obtém um veículo pelo identificador, incluindo a pessoa vinculada.
+    /// Obtém um veículo pelo identificador, incluindo a pessoa vinculada quando solicitado.
     /// </summary>
-    Task<Veiculo?> GetByIdWithPessoaAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<Veiculo?> GetByIdAsync(Guid id, bool includePessoa = false, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Obtém todos os veículos de uma pessoa pelo identificador da pessoa, incluindo a pessoa vinculada.
@@ -24,12 +24,7 @@ public interface IVeiculoRepository : IRepository<Veiculo>
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Lista todos os veículos, incluindo a pessoa vinculada.
+    /// Lista todos os veículos, incluindo a pessoa vinculada quando solicitado.
     /// </summary>
-    Task<IEnumerable<Veiculo>> GetAllWithPessoaAsync(CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Lista veículos paginados
-    /// </summary>
-    Task<PagedResponse<Veiculo>> GetAllVeiculosPaged(Pagination pagination, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Veiculo>> GetAllAsync(bool includePessoa = false, CancellationToken cancellationToken = default);
 }

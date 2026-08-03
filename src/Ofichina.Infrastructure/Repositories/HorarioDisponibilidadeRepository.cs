@@ -39,7 +39,7 @@ public sealed class HorarioDisponibilidadeRepository : Repository<HorarioDisponi
     /// <param name="pagination"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<PagedResponse<HorarioDisponibilidade>> GetHorariosDisponiveisPaginados(Pagination pagination, CancellationToken cancellationToken = default)
+    public new async Task<PagedResponse<HorarioDisponibilidade>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
     {
 
         ArgumentNullException.ThrowIfNull(pagination);

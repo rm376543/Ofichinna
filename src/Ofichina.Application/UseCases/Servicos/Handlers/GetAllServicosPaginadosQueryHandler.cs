@@ -28,7 +28,7 @@ public sealed class GetAllServicosPaginadosQueryHandler : IQueryHandler<GetAllSe
     {
         try
         {
-            var servicos = await _servicoRepository.GetAllServicosPaginadosAsync(query.Pagination, cancellationToken);
+            var servicos = await _servicoRepository.GetPagedAsync(query.Pagination, cancellationToken);
 
             var resultado = servicos.ToPagedResponse(s => new ServicoResponse
             {

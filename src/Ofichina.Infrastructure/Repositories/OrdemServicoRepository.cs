@@ -55,7 +55,7 @@ public sealed class OrdemServicoRepository : Repository<OrdemServico>, IOrdemSer
         return await query.ToListAsync(cancellationToken);
     }
 
-    public async Task<PagedResponse<OrdemServico>> GetAllOrdensServicoPaginadasAsync(
+    public new async Task<PagedResponse<OrdemServico>> GetPagedAsync(
         Pagination pagination, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(pagination);

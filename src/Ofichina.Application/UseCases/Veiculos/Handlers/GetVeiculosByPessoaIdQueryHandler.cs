@@ -29,7 +29,7 @@ public sealed class GetVeiculosByPessoaIdQueryHandler
     {
         try
         {
-            var pessoa = await _pessoaRepository.GetByIdWithVeiculosAsync(query.PessoaId, cancellationToken);
+            var pessoa = await _pessoaRepository.GetByIdAsync(query.PessoaId, includeVeiculos: true, cancellationToken);
 
             if (pessoa is null)
             {

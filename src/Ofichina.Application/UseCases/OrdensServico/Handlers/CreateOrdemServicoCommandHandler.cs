@@ -27,7 +27,7 @@ public sealed class CreateOrdemServicoCommandHandler : ICommandHandler<CreateOrd
         {
             _logger.LogInformation("Iniciando a criação da ordem de serviço. PessoaId: {PessoaId}, VeiculoId: {VeiculoId}.", command.PessoaId, command.VeiculoId);
 
-            var result = await _createOrdemServicoService.CriarAsync(command, cancellationToken);
+            var result = await _createOrdemServicoService.CreateAsync(command, cancellationToken);
 
             if (result.IsSuccess)
                 _logger.LogInformation("Ordem de serviço criada com sucesso.");

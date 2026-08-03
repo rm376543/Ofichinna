@@ -11,7 +11,7 @@ public sealed class UpdateOrcamentoServicoRequest : UpdateRequest
     public Guid ServicoId { get; init; }
 
     /// <summary>
-    /// Quantidade.
+    /// Peças associadas ao serviço.
     /// </summary>
-    public decimal Quantidade { get; init; }
+    public ICollection<UpdateOrcamentoServicoPecaRequest> Pecas { get; init; } = [];
 }

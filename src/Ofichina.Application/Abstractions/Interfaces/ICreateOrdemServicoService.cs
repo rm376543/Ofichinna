@@ -11,5 +11,5 @@ public interface ICreateOrdemServicoService
     /// <summary>
     /// Cria uma ordem de serviço e retorna o identificador gerado.
     /// </summary>
-    Task<Result> CriarAsync(CreateOrdemServicoCommand command, CancellationToken cancellationToken = default);
+    Task<Result> CreateAsync(CreateOrdemServicoCommand command, CancellationToken cancellationToken = default);
 }

@@ -28,7 +28,7 @@ public sealed class GetAllPessoasPaginadasQueryHandler : IQueryHandler<GetAllPes
         {
             _logger.LogInformation("Iniciando a obtenção de todas as pessoas.");
 
-            var pessoas = await _repository.GetAllPessoasPaginadasAsync(query.Pagination, cancellationToken);
+            var pessoas = await _repository.GetPagedAsync(query.Pagination, cancellationToken);
 
             var resultado = pessoas.ToPagedResponse(p => new PessoaResponse
             {

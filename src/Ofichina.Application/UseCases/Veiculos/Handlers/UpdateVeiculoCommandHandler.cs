@@ -51,7 +51,7 @@ public sealed class UpdateVeiculoCommandHandler : ICommandHandler<UpdateVeiculoC
             if (pessoa is null || pessoa.EstaExcluida())
                 return Result.Failure("Pessoa não encontrada.");
 
-            var placaDuplicada = (await _veiculoRepository.GetAllWithPessoaAsync(cancellationToken))
+            var placaDuplicada = (await _veiculoRepository.GetAllAsync(includePessoa: true, cancellationToken))
                 .FirstOrDefault(v => v.Id != command.Id && v.Placa.Numero == placa.Numero);
 
             if (placaDuplicada is not null)

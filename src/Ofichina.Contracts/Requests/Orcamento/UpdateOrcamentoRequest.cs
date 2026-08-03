@@ -46,10 +46,5 @@ namespace Ofichina.Contracts.Requests.Orcamento
         /// Lista atualizada de serviços.
         /// </summary>
         public ICollection<UpdateOrcamentoServicoRequest> Servicos { get; init; } = [];
-
-        /// <summary>
-        /// Lista atualizada de peças.
-        /// </summary>
-        public ICollection<UpdateOrcamentoPecaRequest> Pecas { get; init; } = [];
     }
 }

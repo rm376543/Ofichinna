@@ -12,5 +12,5 @@ public interface IOrdemServicoService
     /// <summary>
     /// Obtém ordens de serviço de forma paginada com dados simples para listagem.
     /// </summary>
-    Task<PagedResponse<OrdemServicoSimplesResponse>> GetAllPaginadasAsync(Pagination pagination, CancellationToken cancellationToken = default);
+    Task<PagedResponse<OrdemServicoSimplesResponse>> GetAllPagedAsync(Pagination pagination, CancellationToken cancellationToken = default);
 }

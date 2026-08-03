@@ -82,7 +82,7 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<ItemServico> AdicionarAsync(
+    public async Task<ItemServico> AddAsync(
         Guid ordemServicoId,
         Guid servicoId,
         Guid pecaId,

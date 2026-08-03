@@ -33,7 +33,7 @@ public sealed class GetAllPecasPaginadasQueryHandler : IQueryHandler<GetAllPecas
     {
         try
         {
-            var pecas = await _pecaRepository.GetAllPecasPaginadas(query.Pagination, cancellationToken);
+            var pecas = await _pecaRepository.GetPagedAsync(query.Pagination, cancellationToken);
 
             if (pecas == null)
             {

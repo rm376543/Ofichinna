@@ -27,7 +27,7 @@ public sealed class GetAllOrcamentosPaginadosQueryHandler : IQueryHandler<GetAll
     {
         try
         {
-            var resultados = await _orcamentoService.GetAllPaginadasAsync(query.Pagination, cancellationToken);
+            var resultados = await _orcamentoService.GetAllPagedAsync(query.Pagination, cancellationToken);
             return Result.Success(resultados);
         }
         catch (Exception ex)

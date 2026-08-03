@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Extensions;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Agendamento;
@@ -41,35 +42,13 @@ public sealed class GetAgendamentoByIdQueryHandler : IQueryHandler<GetAgendament
             if (agendamento is null)
                 return Result.Failure<AgendamentoResponse>("Agendamento não encontrado.");
 
-            return Result.Success(Mapear(agendamento));
+            return Result.Success(agendamento.ToResponse());
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao obter agendamento por Id. AgendamentoId: {AgendamentoId}", query.Id);
             return Result.Failure<AgendamentoResponse>("Não foi possível obter o agendamento.");
         }
-    }
-
-    private static AgendamentoResponse Mapear(Agendamento agendamento)
-    {
-        return new AgendamentoResponse
-        {
-            Id = agendamento.Id,
-            PessoaId = agendamento.ClientePessoaId,
-            ClienteNome = agendamento.Cliente.Nome,
-            DiaDisponibilidadeId = agendamento.DiaDisponibilidadeId,
-            HorarioConsultorId = agendamento.HorarioConsultorId,
-            ConsultorPessoaId = agendamento.ConsultorPessoaId,
-            ConsultorNome = agendamento.HorarioConsultor.Pessoa.Nome,
-            VeiculoId = agendamento.VeiculoId,
-            VeiculoPlaca = agendamento.Veiculo.Placa.Numero,
-            VeiculoDescricao = $"{agendamento.Veiculo.Marca} {agendamento.Veiculo.Modelo} {agendamento.Veiculo.AnoFabricacao}",
-            Status = agendamento.Status.ToString(),
-            Descricao = agendamento.Descricao,
-            CreatedAt = agendamento.CreatedAt,
-            UpdatedAt = agendamento.UpdatedAt,
-            DeletedAt = agendamento.DeletedAt
-        };
     }
 }
 

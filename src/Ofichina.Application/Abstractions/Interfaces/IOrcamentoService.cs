@@ -9,5 +9,5 @@ namespace Ofichina.Application.Abstractions.Interfaces;
 /// </summary>
 public interface IOrcamentoService
 {
-    Task<PagedResponse<OrcamentoSimplesResponse>> GetAllPaginadasAsync(Pagination pagination, CancellationToken cancellationToken = default);
+    Task<PagedResponse<OrcamentoSimplesResponse>> GetAllPagedAsync(Pagination pagination, CancellationToken cancellationToken = default);
 }

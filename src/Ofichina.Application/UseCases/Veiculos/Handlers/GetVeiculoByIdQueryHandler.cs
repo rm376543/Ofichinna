@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Extensions;
 using Ofichina.Application.UseCases.Veiculos.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Veiculo;
@@ -28,36 +29,18 @@ public sealed class GetVeiculoByIdQueryHandler : IQueryHandler<GetVeiculoByIdQue
     {
         try
         {
-            var veiculo = await _veiculoRepository.GetByIdWithPessoaAsync(query.Id, cancellationToken);
+            var veiculo = await _veiculoRepository.GetByIdAsync(query.Id, includePessoa: true, cancellationToken);
 
             if (veiculo is null || veiculo.EstaExcluida())
                 return Result.Failure<VeiculoResponse>("Veículo não encontrado.");
 
-            return Result.Success(Mapear(veiculo));
+            return Result.Success(veiculo.ToResponse());
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao obter veículo por Id. VeiculoId: {VeiculoId}", query.Id);
             return Result.Failure<VeiculoResponse>("Não foi possível obter o veículo.");
         }
-    }
-
-    private static VeiculoResponse Mapear(Veiculo veiculo)
-    {
-        return new VeiculoResponse
-        {
-            Id = veiculo.Id,
-            Placa = veiculo.Placa.ToString(),
-            Marca = veiculo.Marca,
-            Modelo = veiculo.Modelo,
-            AnoFabricacao = veiculo.AnoFabricacao,
-            Cor = veiculo.Cor,
-            Hodometro = veiculo.Hodometro.Valor,
-            HodometroFormatado = veiculo.Hodometro.ToString(),
-            CreatedAt = veiculo.CreatedAt,
-            UpdatedAt = veiculo.UpdatedAt,
-            DeletedAt = veiculo.DeletedAt
-        };
     }
 }
 

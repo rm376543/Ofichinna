@@ -49,7 +49,7 @@ public sealed class CreateVeiculoCommandHandler : ICommandHandler<CreateVeiculoC
                 return Result.Failure("Pessoa não encontrada.");
             }
 
-            var existente = (await _veiculoRepository.GetAllWithPessoaAsync(cancellationToken))
+            var existente = (await _veiculoRepository.GetAllAsync(includePessoa: true, cancellationToken))
                 .FirstOrDefault(v => v.Placa.Numero == placa.Numero);
 
             if (existente is not null)

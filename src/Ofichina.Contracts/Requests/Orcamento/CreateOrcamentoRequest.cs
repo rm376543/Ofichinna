@@ -46,9 +46,4 @@ public sealed class CreateOrcamentoRequest : CreateRequest
     /// Serviços.
     /// </summary>
     public ICollection<CreateOrcamentoServicoRequest> Servicos { get; init; } = [];
-
-    /// <summary>
-    /// Peças.
-    /// </summary>
-    public ICollection<CreateOrcamentoPecaRequest> Pecas { get; init; } = [];
 }

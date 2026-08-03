@@ -71,9 +71,9 @@ Separar o ciclo comercial do ciclo operacional: primeiro o orçamento é criado,
 
 | ID | Requisito | Critério verificável |
 |---|---|---|---|
-| RF-001 | Criar orçamento com pessoa, veículo, responsável, mecânico do diagnóstico, validade e itens previstos | Request válido cria orçamento em `EmDiagnostico` |
-| RF-002 | Atualizar orçamento existente | Campos e itens são persistidos corretamente |
-| RF-003 | Consultar orçamento detalhado | Retorna checklist e itens previstos |
+| RF-001 | Criar orçamento com pessoa, veículo, responsável, mecânico do diagnóstico, validade e serviços previstos | Request válido cria orçamento em `EmDiagnostico` |
+| RF-002 | Atualizar orçamento existente | Campos e serviços previstos são persistidos corretamente |
+| RF-003 | Consultar orçamento detalhado | Retorna checklist e serviços previstos com peças e valores |
 | RF-004 | Enviar orçamento ao cliente | `EmDiagnostico → AguardandoAprovacao` |
 | RF-005 | Aprovar orçamento | `AguardandoAprovacao → Aprovado` e criação da OS |
 | RF-006 | Reprovar orçamento | `AguardandoAprovacao → Reprovado` |
@@ -85,7 +85,7 @@ Separar o ciclo comercial do ciclo operacional: primeiro o orçamento é criado,
 |---|---|---|
 | RNF-001 | Arquitetura | Regras de negócio permanecem no domínio |
 | RNF-002 | Segurança | Endpoints administrativos exigem `ADMIN` |
-| RNF-003 | Persistência | EF Core deve mapear orçamento, checklist e itens previstos |
+| RNF-003 | Persistência | EF Core deve mapear orçamento, checklist, serviços previstos e peças associadas |
 | RNF-004 | Qualidade | APIs atualizadas devem ter cobertura de teste |
 
 ---
@@ -109,7 +109,8 @@ stateDiagram-v2
 |---|---|---|
 | `Orcamento` | `src/Ofichina.Domain/Aggregates/Orcamento.cs` | Aggregate root do fluxo comercial |
 | `Checklist` | `src/Ofichina.Domain/Entities/Checklist.cs` | Dados da entrada do veículo |
-| `ItemOrcamento` | `src/Ofichina.Domain/Entities/ItemOrcamento.cs` | Itens previstos do orçamento |
+| `ItemOrcamento` | `src/Ofichina.Domain/Entities/ItemOrcamento.cs` | Serviços previstos do orçamento |
+| `ItemOrcamentoPeca` | `src/Ofichina.Domain/Entities/ItemOrcamentoPeca.cs` | Peças vinculadas ao serviço previsto |
 | `OrcamentoController` | `src/Ofichina.Api/Controllers/Orcamento/OrcamentoController.cs` | Endpoints públicos do orçamento |
 | `OrdemServicoController` | `src/Ofichina.Api/Controllers/OrdemServico/OrdemServicoController.cs` | Fluxo operacional da OS |
 

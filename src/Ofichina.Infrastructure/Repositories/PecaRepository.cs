@@ -23,7 +23,7 @@ namespace Ofichina.Infrastructure.Repositories
         /// <param name="pagination">Os parâmetros de paginação.</param>
         /// <param name="cancellationToken">O token de cancelamento.</param>
         /// <returns>Uma resposta paginada contendo entidades Peca.</returns>
-        public async Task<PagedResponse<Peca>> GetAllPecasPaginadas(Pagination pagination, CancellationToken cancellationToken = default)
+    public new async Task<PagedResponse<Peca>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(pagination);
 

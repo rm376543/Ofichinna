@@ -48,16 +48,15 @@ public sealed class UpdateOrcamentoRequestValidatorTests
                 {
                     Id = Guid.NewGuid(),
                     ServicoId = Guid.NewGuid(),
-                    Quantidade = 2
-                }
-            ],
-            Pecas =
-            [
-                new UpdateOrcamentoPecaRequest
-                {
-                    Id = Guid.NewGuid(),
-                    PecaId = Guid.NewGuid(),
-                    Quantidade = 1
+                    Pecas =
+                    [
+                        new UpdateOrcamentoServicoPecaRequest
+                        {
+                            Id = Guid.NewGuid(),
+                            PecaId = Guid.NewGuid(),
+                            Quantidade = 1
+                        }
+                    ]
                 }
             ]
         };

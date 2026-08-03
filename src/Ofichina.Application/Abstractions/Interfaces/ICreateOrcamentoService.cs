@@ -8,5 +8,5 @@ namespace Ofichina.Application.Abstractions.Interfaces;
 /// </summary>
 public interface ICreateOrcamentoService
 {
-    Task<Result> CriarAsync(CreateOrcamentoCommand command, CancellationToken cancellationToken = default);
+    Task<Result> CreateAsync(CreateOrcamentoCommand command, CancellationToken cancellationToken = default);
 }
