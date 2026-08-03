@@ -42,6 +42,5 @@ public sealed class UpdateOrcamentoCommand : ICommand<Result>
         Desconto = request.Desconto;
         Observacoes = request.Observacoes;
         Servicos = request.Servicos;
-        Pecas = request.Pecas;
     }
 }

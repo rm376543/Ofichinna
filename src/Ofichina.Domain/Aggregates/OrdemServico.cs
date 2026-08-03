@@ -160,7 +160,10 @@ public class OrdemServico : Entity
 
         foreach (var item in orcamento.ItensPrevistos.Where(x => !x.EstaExcluida()))
         {
-            ordemServico.AdicionarServico(item.ServicoId ?? Guid.Empty, item.PecaId ?? Guid.Empty, item.Quantidade);
+            foreach (var peca in item.Pecas.Where(x => !x.EstaExcluida()))
+            {
+                ordemServico.AdicionarServico(item.ServicoId, peca.PecaId, peca.Quantidade);
+            }
         }
 
         return ordemServico;

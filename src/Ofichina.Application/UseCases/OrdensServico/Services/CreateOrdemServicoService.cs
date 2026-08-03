@@ -30,7 +30,7 @@ public sealed class CreateOrdemServicoService : ICreateOrdemServicoService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result> CriarAsync(CreateOrdemServicoCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result> CreateAsync(CreateOrdemServicoCommand command, CancellationToken cancellationToken = default)
     {
         try
         {

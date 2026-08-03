@@ -25,7 +25,7 @@ public sealed class PermissaoRepository : Repository<Permissao>, IPermissaoRepos
             .FirstOrDefaultAsync(x => x.Codigo.ToUpper() == normalizedCodigo, cancellationToken);
     }
 
-    public async Task<PagedResponse<Permissao>> GetAllPermissoesPaginadasAsync(
+    public new async Task<PagedResponse<Permissao>> GetPagedAsync(
         Pagination pagination, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(pagination);

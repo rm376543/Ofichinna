@@ -14,24 +14,24 @@ public class ItemOrcamentoConfiguration : IEntityTypeConfiguration<ItemOrcamento
         builder.HasKey(i => i.Id);
 
         builder.Property(i => i.OrcamentoId).IsRequired();
-        builder.Property(i => i.ServicoId).IsRequired(false);
-        builder.Property(i => i.PecaId).IsRequired(false);
-        builder.Property(i => i.Quantidade).IsRequired();
+        builder.Property(i => i.ServicoId).IsRequired();
+
+        builder.Navigation(i => i.Pecas)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
 
         builder.HasOne(i => i.Servico)
             .WithMany()
             .HasForeignKey(i => i.ServicoId)
             .OnDelete(DeleteBehavior.Restrict)
-            .IsRequired(false);
+            .IsRequired();
 
-        builder.HasOne(i => i.Peca)
-            .WithMany()
-            .HasForeignKey(i => i.PecaId)
-            .OnDelete(DeleteBehavior.Restrict)
-            .IsRequired(false);
+        builder.HasMany(i => i.Pecas)
+            .WithOne()
+            .HasForeignKey(i => i.ItemOrcamentoId)
+            .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne<Orcamento>()
-            .WithMany()
+        builder.HasOne(i => i.Orcamento)
+            .WithMany(x => x.Servicos)
             .HasForeignKey(i => i.OrcamentoId)
             .OnDelete(DeleteBehavior.Cascade);
     }

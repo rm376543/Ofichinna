@@ -27,5 +27,5 @@ public sealed class OrcamentoResponse : BaseEntity
 
     public ChecklistResponse? Checklist { get; set; }
 
-    public ICollection<OrcamentoItemResponse> ItensPrevistos { get; set; } = [];
+    public ICollection<OrcamentoItemResponse> Servicos { get; set; } = [];
 }

@@ -45,7 +45,7 @@ public interface IItemServicoRepository : IRepository<ItemServico>
     /// <param name="quantidade"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<ItemServico> AdicionarAsync(
+    Task<ItemServico> AddAsync(
         Guid ordemServicoId,
         Guid servicoId,
         Guid pecaId,

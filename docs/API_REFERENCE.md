@@ -390,11 +390,11 @@ Lista orçamentos com paginação.
 **Respostas:** `200`, `400`, `401`, `403`.
 
 ### GET /api/orcamentos/{id}
-Retorna o orçamento detalhado com checklist e itens previstos.
+Retorna o orçamento detalhado com checklist e serviços previstos, incluindo peças e valores calculados.
 
 #### Resposta 200
 ```json
-{ "success": true, "data": { "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "mecanicoDiagnosticoId": "...", "responsavelId": "...", "dataValidade": "2026-08-10T12:00:00Z", "desconto": 10, "observacoes": "Avaliar ruído", "status": "EmDiagnostico", "checklist": { "id": "...", "orcamentoId": "...", "hodometroEntrada": 35000, "itensVerificados": "Pneus, freios", "observacoes": "Sem vazamentos" }, "itensPrevistos": [] } }
+{ "success": true, "data": { "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "mecanicoDiagnosticoId": "...", "responsavelId": "...", "dataValidade": "2026-08-10T12:00:00Z", "desconto": 10, "observacoes": "Avaliar ruído", "status": "EmDiagnostico", "checklist": { "id": "...", "orcamentoId": "...", "hodometroEntrada": 35000, "itensVerificados": "Pneus, freios", "observacoes": "Sem vazamentos" }, "servicos": [{ "id": "...", "orcamentoId": "...", "servicoId": "...", "descricao": "Troca de óleo", "valorServico": 120, "valorTotal": 180, "pecas": [{ "pecaId": "...", "descricao": "Filtro de óleo", "quantidade": 1, "valorUnitario": 60, "valorTotal": 60 }] }] } }
 ```
 
 **Respostas:** `200`, `401`, `403`, `404`.
@@ -404,7 +404,7 @@ Cria um orçamento.
 
 #### Requisição
 ```json
-{ "pessoaId": "550e8400-e29b-41d4-a716-446655440000", "veiculoId": "660e8400-e29b-41d4-a716-446655440000", "responsavelId": "770e8400-e29b-41d4-a716-446655440000", "mecanicoDiagnosticoId": "880e8400-e29b-41d4-a716-446655440000", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Avaliar ruído", "desconto": 10, "servicos": [], "pecas": [] }
+{ "pessoaId": "550e8400-e29b-41d4-a716-446655440000", "veiculoId": "660e8400-e29b-41d4-a716-446655440000", "responsavelId": "770e8400-e29b-41d4-a716-446655440000", "mecanicoDiagnosticoId": "880e8400-e29b-41d4-a716-446655440000", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Avaliar ruído", "desconto": 10, "servicos": [{ "servicoId": "...", "pecas": [{ "pecaId": "...", "quantidade": 1 }] }] }
 ```
 
 **Respostas:** `200`, `400`, `401`, `403`, `404`.
@@ -414,7 +414,7 @@ Atualiza um orçamento.
 
 #### Requisição
 ```json
-{ "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "responsavelId": "...", "mecanicoDiagnosticoId": "...", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Atualizado", "desconto": 12, "servicos": [], "pecas": [] }
+{ "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "responsavelId": "...", "mecanicoDiagnosticoId": "...", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Atualizado", "desconto": 12, "servicos": [{ "id": "...", "servicoId": "...", "pecas": [{ "id": "...", "pecaId": "...", "quantidade": 1 }] }] }
 ```
 
 **Respostas:** `200`, `400`, `401`, `403`, `404`.

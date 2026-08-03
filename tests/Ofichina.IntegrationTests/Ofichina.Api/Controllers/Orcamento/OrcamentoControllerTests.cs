@@ -37,19 +37,14 @@ public sealed class OrcamentoControllerTests
                 new CreateOrcamentoServicoRequest
                 {
                     ServicoId = Guid.NewGuid(),
-                    Quantidade = 2,
-                    ValorUnitario = 120,
-                    Observacoes = "Troca de óleo"
-                }
-            ],
-            Pecas =
-            [
-                new CreateOrcamentoPecaRequest
-                {
-                    PecaId = Guid.NewGuid(),
-                    Quantidade = 1,
-                    ValorUnitario = 80,
-                    Desconto = 5
+                    Pecas =
+                    [
+                        new CreateOrcamentoServicoPecaRequest
+                        {
+                            PecaId = Guid.NewGuid(),
+                            Quantidade = 2
+                        }
+                    ]
                 }
             ]
         };
@@ -94,16 +89,15 @@ public sealed class OrcamentoControllerTests
                 {
                     Id = Guid.NewGuid(),
                     ServicoId = Guid.NewGuid(),
-                    Quantidade = 3
-                }
-            ],
-            Pecas =
-            [
-                new UpdateOrcamentoPecaRequest
-                {
-                    Id = Guid.NewGuid(),
-                    PecaId = Guid.NewGuid(),
-                    Quantidade = 2
+                    Pecas =
+                    [
+                        new UpdateOrcamentoServicoPecaRequest
+                        {
+                            Id = Guid.NewGuid(),
+                            PecaId = Guid.NewGuid(),
+                            Quantidade = 2
+                        }
+                    ]
                 }
             ]
         };

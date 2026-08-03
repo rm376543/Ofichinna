@@ -1,9 +1,9 @@
-﻿using Ofichina.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
 using Ofichina.Application.Abstractions.Interfaces;
-using Ofichina.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
+using Ofichina.Domain.Entities;
+using Ofichina.Infrastructure.Persistence;
 
 namespace Ofichina.Infrastructure.Repositories
 {
@@ -15,6 +15,12 @@ namespace Ofichina.Infrastructure.Repositories
             _context = context;
         }
 
+        /// <summary>
+        /// Busca uma pessoa pelo ID do usuário associado.
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>A pessoa associada ao ID do usuário, ou null se não encontrada.</returns>
         public Task<Pessoa?> GetByUsuarioIdAsync(Guid usuarioId, CancellationToken cancellationToken = default)
         {
             return _context.Pessoas
@@ -22,14 +28,31 @@ namespace Ofichina.Infrastructure.Repositories
                 .FirstOrDefaultAsync(x => x.UsuarioId == usuarioId, cancellationToken);
         }
 
-        public Task<Pessoa?> GetByIdWithVeiculosAsync(Guid pessoaId, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Busca uma pessoa pelo seu ID, com a opção de incluir os veículos associados.
+        /// </summary>
+        /// <param name="pessoaId"></param>
+        /// <param name="includeVeiculos"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>A pessoa associada ao ID fornecido, ou null se não encontrada.</returns>
+        public async Task<Pessoa?> GetByIdAsync(Guid pessoaId, bool includeVeiculos = false, CancellationToken cancellationToken = default)
         {
-            return _context.Pessoas
-                .AsNoTracking()
-                .Include(x => x.Veiculos)
-                .FirstOrDefaultAsync(x => x.Id == pessoaId, cancellationToken);
+            IQueryable<Pessoa> query = _context.Pessoas;
+
+            if (!includeVeiculos)
+                query = query.AsNoTracking();
+            else
+                query = query.AsNoTracking().Include(x => x.Veiculos);
+
+            return await query.FirstOrDefaultAsync(x => x.Id == pessoaId, cancellationToken);
         }
 
+        /// <summary>
+        /// Busca uma coleção de pessoas pelos seus IDs.
+        /// </summary>
+        /// <param name="pessoaIds"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Uma coleção de pessoas associadas aos IDs fornecidos.</returns>
         public async Task<IReadOnlyCollection<Pessoa>> GetByIdsAsync(IEnumerable<Guid> pessoaIds, CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(pessoaIds);
@@ -48,7 +71,13 @@ namespace Ofichina.Infrastructure.Repositories
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<PagedResponse<Pessoa>> GetAllPessoasPaginadasAsync(Pagination pagination, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Busca uma página de pessoas com base na paginação fornecida.
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Uma página de pessoas com base na paginação fornecida.</returns>
+        public new async Task<PagedResponse<Pessoa>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(pagination);
 

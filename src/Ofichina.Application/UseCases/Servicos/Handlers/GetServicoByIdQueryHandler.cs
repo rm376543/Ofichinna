@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Extensions;
 using Ofichina.Application.UseCases.Servicos.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Servicos;
@@ -33,27 +34,12 @@ public sealed class GetServicoByIdQueryHandler : IQueryHandler<GetServicoByIdQue
             if (servico is null || servico.EstaExcluida())
                 return Result.Failure<ServicoResponse>("Serviço não encontrado.");
 
-            return Result.Success(Mapear(servico));
+            return Result.Success(servico.ToResponse());
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao obter serviço por Id. ServicoId: {ServicoId}", query.Id);
             return Result.Failure<ServicoResponse>("Não foi possível obter o serviço.");
         }
-    }
-
-    private static ServicoResponse Mapear(Servico servico)
-    {
-        return new ServicoResponse
-        {
-            Id = servico.Id,
-            Nome = servico.Nome,
-            Descricao = servico.Descricao,
-            Valor = servico.Valor,
-            Ativo = !servico.EstaExcluida(),
-            CreatedAt = servico.CreatedAt,
-            UpdatedAt = servico.UpdatedAt,
-            DeletedAt = servico.DeletedAt
-        };
     }
 }

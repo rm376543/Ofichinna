@@ -33,39 +33,25 @@ public sealed class CreateOrcamentoRequestValidator : AbstractValidator<CreateOr
             .MaximumLength(1000).WithMessage("As observações não podem exceder 1000 caracteres.")
             .When(x => !string.IsNullOrWhiteSpace(x.Observacoes));
 
-        RuleFor(x => x)
-            .Must(x => x.Servicos.Any() || x.Pecas.Any())
-            .WithMessage("O orçamento deve conter ao menos um serviço ou uma peça.");
+        RuleFor(x => x.Servicos)
+            .NotEmpty().WithMessage("O orçamento deve conter ao menos um serviço.");
 
         RuleForEach(x => x.Servicos).ChildRules(servico =>
         {
             servico.RuleFor(x => x.ServicoId)
                 .NotEmpty().WithMessage("O serviço previsto é obrigatório.");
 
-            servico.RuleFor(x => x.Quantidade)
-                .GreaterThan(0).WithMessage("A quantidade do serviço deve ser maior que zero.");
+            servico.RuleFor(x => x.Pecas)
+                .NotEmpty().WithMessage("O item de serviço deve conter ao menos uma peça.");
 
-            servico.RuleFor(x => x.ValorUnitario)
-                .GreaterThanOrEqualTo(0).WithMessage("O valor unitário do serviço não pode ser negativo.");
+            servico.RuleForEach(x => x.Pecas).ChildRules(peca =>
+            {
+                peca.RuleFor(x => x.PecaId)
+                    .NotEmpty().WithMessage("A peça do serviço é obrigatória.");
 
-            servico.RuleFor(x => x.Observacoes)
-                .MaximumLength(500).WithMessage("As observações do serviço não podem exceder 500 caracteres.")
-                .When(x => !string.IsNullOrWhiteSpace(x.Observacoes));
-        });
-
-        RuleForEach(x => x.Pecas).ChildRules(peca =>
-        {
-            peca.RuleFor(x => x.PecaId)
-                .NotEmpty().WithMessage("A peça prevista é obrigatória.");
-
-            peca.RuleFor(x => x.Quantidade)
-                .GreaterThan(0).WithMessage("A quantidade da peça deve ser maior que zero.");
-
-            peca.RuleFor(x => x.ValorUnitario)
-                .GreaterThanOrEqualTo(0).WithMessage("O valor unitário da peça não pode ser negativo.");
-
-            peca.RuleFor(x => x.Desconto)
-                .GreaterThanOrEqualTo(0).WithMessage("O desconto da peça não pode ser negativo.");
+                peca.RuleFor(x => x.Quantidade)
+                    .GreaterThan(0).WithMessage("A quantidade da peça deve ser maior que zero.");
+            });
         });
     }
 }

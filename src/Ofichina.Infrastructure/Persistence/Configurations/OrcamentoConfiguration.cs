@@ -22,7 +22,7 @@ public class OrcamentoConfiguration : IEntityTypeConfiguration<Orcamento>
         builder.Property(x => x.Observacoes).HasMaxLength(1000);
         builder.Property(x => x.Status).HasConversion<int>().IsRequired();
 
-        builder.Navigation(x => x.ItensPrevistos)
+        builder.Navigation(x => x.Servicos)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
         builder.HasOne<Pessoa>()
@@ -44,11 +44,6 @@ public class OrcamentoConfiguration : IEntityTypeConfiguration<Orcamento>
             .WithMany()
             .HasForeignKey(x => x.ResponsavelId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasMany(x => x.ItensPrevistos)
-            .WithOne()
-            .HasForeignKey(x => x.OrcamentoId)
-            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.Checklist)
             .WithOne(x => x.Orcamento!)

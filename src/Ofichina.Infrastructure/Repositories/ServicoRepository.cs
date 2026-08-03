@@ -55,7 +55,7 @@ public sealed class ServicoRepository : Repository<Servico>, IServicoRepository
     /// <param name="pagination">Parâmetros de paginação.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Uma lista paginada de serviços.</returns>
-    public async Task<PagedResponse<Servico>> GetAllServicosPaginadosAsync(Pagination pagination, CancellationToken cancellationToken = default)
+    public new async Task<PagedResponse<Servico>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(pagination);
 

@@ -88,6 +88,11 @@ public class ApplicationDbContext : DbContext
     public DbSet<ItemOrcamento> ItensOrcamento { get; set; } = null!;
 
     /// <summary>
+    /// DbSet para peças dos itens previstos do orçamento.
+    /// </summary>
+    public DbSet<ItemOrcamentoPeca> ItensOrcamentoPecas { get; set; } = null!;
+
+    /// <summary>
     /// DbSet para checklists de orçamento.
     /// </summary>
     public DbSet<Checklist> Checklists { get; set; } = null!;

@@ -1,5 +1,3 @@
-using Ofichina.Contracts;
-using Ofichina.Contracts.Common;
 using Ofichina.Domain.Aggregates;
 
 namespace Ofichina.Application.Abstractions.Interfaces;
@@ -19,10 +17,4 @@ public interface IOrdemServicoRepository : IRepository<OrdemServico>
     /// </summary>
     Task<IReadOnlyCollection<OrdemServico>> GetAllAsync(bool includeItens = false, CancellationToken cancellationToken = default);
 
-    /// <summary>
-    /// Obtém todas as ordens de serviço de forma paginada, carregando os itens quando necessário.
-    /// </summary>
-    Task<PagedResponse<OrdemServico>> GetAllOrdensServicoPaginadasAsync(
-        Pagination pagination,
-        CancellationToken cancellationToken = default);
 }

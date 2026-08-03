@@ -1,4 +1,5 @@
 ﻿using Ofichina.Application.Abstractions;
+using Ofichina.Application.Extensions;
 using Ofichina.Application.UseCases.Pessoas.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Pessoa;
@@ -34,35 +35,13 @@ public sealed class GetPessoaByIdQueryHandler : IQueryHandler<GetPessoaByIdQuery
                 return Result.Failure<PessoaResponse>("Pessoa não encontrada.");
             }
 
-            return Result.Success(Mapear(pessoa));
+            return Result.Success(pessoa.ToResponse());
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao obter pessoa por Id: {PessoaId}.", query.Id);
             return Result.Failure<PessoaResponse>("Erro ao obter a pessoa.");
         }
-    }
-
-    private static PessoaResponse Mapear(Pessoa pessoa)
-    {
-        return new PessoaResponse
-        {
-            Id = pessoa.Id,
-            Nome = pessoa.Nome,
-            Documento = pessoa.Documento.ToString(),
-            Telefone = pessoa.Telefone.ToString(),
-            Logradouro = pessoa.Endereco.Logradouro,
-            Numero = pessoa.Endereco.Numero,
-            Complemento = pessoa.Endereco.Complemento,
-            Bairro = pessoa.Endereco.Bairro,
-            Cidade = pessoa.Endereco.Cidade,
-            Estado = pessoa.Endereco.Estado,
-            Cep = pessoa.Endereco.Cep.ToString(),
-            UsuarioId = pessoa.UsuarioId,
-            CreatedAt = pessoa.CreatedAt,
-            UpdatedAt = pessoa.UpdatedAt,
-            DeletedAt = pessoa.DeletedAt
-        };
     }
 }
 

@@ -34,7 +34,8 @@ public sealed class OrcamentoRepository : Repository<Orcamento>, IOrcamentoRepos
                 .Include(x => x.ItensPrevistos)
                     .ThenInclude(x => x.Servico)
                 .Include(x => x.ItensPrevistos)
-                    .ThenInclude(x => x.Peca);
+                    .ThenInclude(x => x.Pecas)
+                        .ThenInclude(x => x.Peca);
         }
 
         return await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
@@ -51,13 +52,14 @@ public sealed class OrcamentoRepository : Repository<Orcamento>, IOrcamentoRepos
                 .Include(x => x.ItensPrevistos)
                     .ThenInclude(x => x.Servico)
                 .Include(x => x.ItensPrevistos)
-                    .ThenInclude(x => x.Peca);
+                    .ThenInclude(x => x.Pecas)
+                        .ThenInclude(x => x.Peca);
         }
 
         return await query.ToListAsync(cancellationToken);
     }
 
-    public async Task<PagedResponse<Orcamento>> GetAllOrcamentosPaginadosAsync(Pagination pagination, CancellationToken cancellationToken = default)
+    public new async Task<PagedResponse<Orcamento>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(pagination);
 

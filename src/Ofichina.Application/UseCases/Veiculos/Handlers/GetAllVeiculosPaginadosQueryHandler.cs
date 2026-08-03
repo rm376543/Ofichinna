@@ -32,7 +32,7 @@ public sealed class GetAllVeiculosPaginadosQueryHandler
         {
             _logger.LogInformation("Obtendo veículos paginados.");
 
-            var veiculos = await _veiculoRepository.GetAllVeiculosPaged(query.Pagination, cancellationToken);
+            var veiculos = await _veiculoRepository.GetPagedAsync(query.Pagination, cancellationToken);
 
             if (veiculos is null)
             {

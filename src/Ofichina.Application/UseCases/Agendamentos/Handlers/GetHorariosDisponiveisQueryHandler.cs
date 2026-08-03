@@ -25,7 +25,7 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers
             {
                 _logger.LogInformation("Iniciando busca por horarios disponiveis no sistema.");
 
-                var horariosDisponiveis = await _horarioDisponibilidadeRepository.GetHorariosDisponiveisPaginados(query.Pagination, cancellationToken);
+                var horariosDisponiveis = await _horarioDisponibilidadeRepository.GetPagedAsync(query.Pagination, cancellationToken);
 
                 if (horariosDisponiveis is null)
                 {

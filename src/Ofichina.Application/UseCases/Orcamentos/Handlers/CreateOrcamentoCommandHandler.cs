@@ -28,7 +28,7 @@ public sealed class CreateOrcamentoCommandHandler : ICommandHandler<CreateOrcame
         {
             _logger.LogInformation("Iniciando a criação do orçamento. PessoaId: {PessoaId}, VeiculoId: {VeiculoId}.", command.PessoaId, command.VeiculoId);
 
-            var result = await _createOrcamentoService.CriarAsync(command, cancellationToken);
+            var result = await _createOrcamentoService.CreateAsync(command, cancellationToken);
 
             if (result.IsSuccess)
                 _logger.LogInformation("Orçamento criado com sucesso.");

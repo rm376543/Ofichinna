@@ -1,7 +1,9 @@
-﻿namespace Ofichina.Contracts.Requests.Orcamentos;
+﻿using Ofichina.Contracts.Requests;
+
+namespace Ofichina.Contracts.Requests.Orcamentos;
 
 /// <summary>
-/// Serviço do orçamento.
+/// Item de serviço do orçamento.
 /// </summary>
 public sealed class CreateOrcamentoServicoRequest : CreateRequest
 {
@@ -11,17 +13,7 @@ public sealed class CreateOrcamentoServicoRequest : CreateRequest
     public Guid ServicoId { get; init; }
 
     /// <summary>
-    /// Quantidade.
+    /// Peças associadas ao serviço.
     /// </summary>
-    public decimal Quantidade { get; init; }
-
-    /// <summary>
-    /// Valor unitário.
-    /// </summary>
-    public decimal ValorUnitario { get; init; }
-
-    /// <summary>
-    /// Observações.
-    /// </summary>
-    public string? Observacoes { get; init; }
+    public ICollection<CreateOrcamentoServicoPecaRequest> Pecas { get; init; } = [];
 }

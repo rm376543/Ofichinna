@@ -1,5 +1,3 @@
-using Ofichina.Contracts;
-using Ofichina.Contracts.Common;
 using Ofichina.Domain.Aggregates;
 
 namespace Ofichina.Application.Abstractions.Interfaces;
@@ -13,7 +11,4 @@ public interface IOrcamentoRepository : IRepository<Orcamento>
 
     Task<IReadOnlyCollection<Orcamento>> GetAllAsync(bool includeItens = false, CancellationToken cancellationToken = default);
 
-    Task<PagedResponse<Orcamento>> GetAllOrcamentosPaginadosAsync(
-        Pagination pagination,
-        CancellationToken cancellationToken = default);
 }

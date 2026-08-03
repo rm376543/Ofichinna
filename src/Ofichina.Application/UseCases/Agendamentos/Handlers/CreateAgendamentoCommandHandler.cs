@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Application.Extensions;
 using Ofichina.Application.UseCases.Agendamentos.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Agendamento;
@@ -61,7 +62,7 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
             if (pessoa is null || pessoa.EstaExcluida())
                 return Result.Failure<AgendamentoResponse>("Pessoa não encontrada.");
 
-            var veiculo = await _veiculoRepository.GetByIdWithPessoaAsync(command.VeiculoId, cancellationToken);
+            var veiculo = await _veiculoRepository.GetByIdAsync(command.VeiculoId, includePessoa: true, cancellationToken);
             if (veiculo is null || veiculo.EstaExcluida())
                 return Result.Failure<AgendamentoResponse>("Veículo não encontrado.");
 
@@ -109,7 +110,7 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
 
             _logger.LogInformation("Agendamento criado com sucesso. AgendamentoId: {AgendamentoId}", agendamento.Id);
 
-            return Result.Success(Mapear(agendamento, pessoa, consultor, veiculo));
+            return Result.Success(agendamento.ToResponse(pessoa, consultor, veiculo));
         }
         catch (DomainException ex)
         {
@@ -121,32 +122,6 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
             _logger.LogError(ex, "Erro inesperado ao criar agendamento.");
             return Result.Failure<AgendamentoResponse>("Não foi possível criar o agendamento.");
         }
-    }
-
-    private static AgendamentoResponse Mapear(
-        Agendamento agendamento,
-        Pessoa pessoa,
-        Pessoa consultor,
-        Veiculo veiculo)
-    {
-        return new AgendamentoResponse
-        {
-            Id = agendamento.Id,
-            PessoaId = agendamento.ClientePessoaId,
-            ClienteNome = pessoa.Nome,
-            DiaDisponibilidadeId = agendamento.DiaDisponibilidadeId,
-            HorarioConsultorId = agendamento.HorarioConsultorId,
-            ConsultorPessoaId = agendamento.ConsultorPessoaId,
-            ConsultorNome = consultor.Nome,
-            VeiculoId = agendamento.VeiculoId,
-            VeiculoPlaca = veiculo.Placa.Numero,
-            VeiculoDescricao = $"{veiculo.Marca} {veiculo.Modelo} {veiculo.AnoFabricacao}",
-            Status = agendamento.Status.ToString(),
-            Descricao = agendamento.Descricao,
-            CreatedAt = agendamento.CreatedAt,
-            UpdatedAt = agendamento.UpdatedAt,
-            DeletedAt = agendamento.DeletedAt
-        };
     }
 }
 

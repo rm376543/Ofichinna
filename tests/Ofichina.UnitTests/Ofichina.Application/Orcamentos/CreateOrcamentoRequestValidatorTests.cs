@@ -30,14 +30,13 @@ public sealed class CreateOrcamentoRequestValidatorTests
             DataValidade = DateTime.UtcNow.AddDays(10),
             Desconto = 10,
             Observacoes = "Orçamento sem itens",
-            Servicos = [],
-            Pecas = []
+            Servicos = []
         };
 
         var result = validator.Validate(request);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, x => x.ErrorMessage.Contains("ao menos um serviço ou uma peça", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(result.Errors, x => x.ErrorMessage.Contains("ao menos um serviço", StringComparison.OrdinalIgnoreCase));
     }
 
     private static CreateOrcamentoRequest CriarRequisicaoValida()
@@ -56,19 +55,14 @@ public sealed class CreateOrcamentoRequestValidatorTests
                 new CreateOrcamentoServicoRequest
                 {
                     ServicoId = Guid.NewGuid(),
-                    Quantidade = 1,
-                    ValorUnitario = 100,
-                    Observacoes = "Troca de óleo"
-                }
-            ],
-            Pecas =
-            [
-                new CreateOrcamentoPecaRequest
-                {
-                    PecaId = Guid.NewGuid(),
-                    Quantidade = 1,
-                    ValorUnitario = 50,
-                    Desconto = 0
+                    Pecas =
+                    [
+                        new CreateOrcamentoServicoPecaRequest
+                        {
+                            PecaId = Guid.NewGuid(),
+                            Quantidade = 1
+                        }
+                    ]
                 }
             ]
         };

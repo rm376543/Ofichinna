@@ -74,7 +74,7 @@ public sealed class CreateOrdemServicoCommandHandlerTests
     {
         public CreateOrdemServicoCommand? CommandRecebido { get; private set; }
 
-        public Task<Result> CriarAsync(CreateOrdemServicoCommand command, CancellationToken cancellationToken = default)
+        public Task<Result> CreateAsync(CreateOrdemServicoCommand command, CancellationToken cancellationToken = default)
         {
             CommandRecebido = command;
             return Task.FromResult(Result.Success());

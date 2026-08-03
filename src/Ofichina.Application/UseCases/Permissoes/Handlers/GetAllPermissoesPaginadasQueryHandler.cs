@@ -23,7 +23,7 @@ public sealed class GetAllPermissoesPaginadasQueryHandler : IQueryHandler<GetAll
     {
         try
         {
-            var permissoes = await _repository.GetAllPermissoesPaginadasAsync(query.Pagination, cancellationToken);
+            var permissoes = await _repository.GetPagedAsync(query.Pagination, cancellationToken);
 
             var resultado = permissoes.ToPagedResponse(p => new PermissaoResponse
             {

@@ -21,9 +21,9 @@ public sealed class OrcamentoService : IOrcamentoService
         _pessoaRepository = pessoaRepository;
     }
 
-    public async Task<PagedResponse<OrcamentoSimplesResponse>> GetAllPaginadasAsync(Pagination pagination, CancellationToken cancellationToken = default)
+    public async Task<PagedResponse<OrcamentoSimplesResponse>> GetAllPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
     {
-        var orcamentos = await _orcamentoRepository.GetAllOrcamentosPaginadosAsync(pagination, cancellationToken);
+        var orcamentos = await _orcamentoRepository.GetPagedAsync(pagination, cancellationToken);
 
         var pessoasIds = orcamentos.Items
             .SelectMany(orcamento => new[] { orcamento.PessoaId, orcamento.ResponsavelId, orcamento.MecanicoDiagnosticoId })
@@ -44,7 +44,7 @@ public sealed class OrcamentoService : IOrcamentoService
             DataCriacao = orcamento.DataCriacao.ToString("dd/MM/yyyy"),
             DataValidade = orcamento.DataValidade.ToString("dd/MM/yyyy"),
             Desconto = orcamento.Desconto,
-            ValorTotal = orcamento.ItensPrevistos.Sum(x => x.Quantidade).ToString(),
+            ValorTotal = orcamento.Servicos.Sum(x => x.ValorTotal).ToString(),
             CreatedAt = orcamento.CreatedAt,
             UpdatedAt = orcamento.UpdatedAt,
             DeletedAt = orcamento.DeletedAt

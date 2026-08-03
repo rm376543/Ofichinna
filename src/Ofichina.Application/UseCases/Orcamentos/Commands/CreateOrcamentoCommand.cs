@@ -26,8 +26,6 @@ public sealed class CreateOrcamentoCommand : ICommand<Result>
 
     public ICollection<CreateOrcamentoServicoRequest> Servicos { get; init; } = [];
 
-    public ICollection<CreateOrcamentoPecaRequest> Pecas { get; init; } = [];
-
     public CreateOrcamentoCommand(CreateOrcamentoRequest request)
     {
         PessoaId = request.PessoaId;
@@ -38,6 +36,5 @@ public sealed class CreateOrcamentoCommand : ICommand<Result>
         Desconto = request.Desconto;
         Observacoes = request.Observacoes;
         Servicos = request.Servicos;
-        Pecas = request.Pecas;
     }
 }
