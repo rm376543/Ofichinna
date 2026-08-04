@@ -18,7 +18,7 @@ public sealed class HorarioConsultorConfiguration : IEntityTypeConfiguration<Hor
         builder.HasOne(x => x.HorarioDisponibilidade)
             .WithMany(x => x.Consultores)
             .HasForeignKey(x => x.HorarioDisponibilidadeId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(x => x.Pessoa)
             .WithMany()

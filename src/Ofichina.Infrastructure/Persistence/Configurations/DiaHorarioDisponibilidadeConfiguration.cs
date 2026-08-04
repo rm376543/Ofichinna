@@ -18,12 +18,12 @@ public sealed class DiaHorarioDisponibilidadeConfiguration : IEntityTypeConfigur
         builder.HasOne(x => x.DiaDisponibilidade)
             .WithMany(x => x.Horarios)
             .HasForeignKey(x => x.DiaDisponibilidadeId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(x => x.HorarioDisponibilidade)
             .WithMany(x => x.Dias)
             .HasForeignKey(x => x.HorarioDisponibilidadeId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasIndex(x => new { x.DiaDisponibilidadeId, x.HorarioDisponibilidadeId })
             .IsUnique();
