@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
+using Ofichina.Domain.Enums;
+using Ofichina.Infrastructure.Persistence.Converters;
 
 namespace Ofichina.Infrastructure.Persistence.Configurations;
 
@@ -18,7 +20,10 @@ public class OrdemServicoConfiguration : IEntityTypeConfiguration<OrdemServico>
         builder.Property(x => x.FuncionarioId).IsRequired();
         builder.Property(x => x.HodometroEntrada).IsRequired();
         builder.Property(x => x.ProblemaRelatado).IsRequired().HasMaxLength(500);
-        builder.Property(x => x.Status).IsRequired();
+        builder.Property(x => x.Status)
+            .HasConversion(new EnumParaTextoConverter<StatusOrdemServico>())
+            .HasMaxLength(40)
+            .IsRequired();
         builder.Property(x => x.DataAbertura).IsRequired();
         builder.Property(x => x.DataFinalizacao);
         builder.Property(x => x.Observacao).HasMaxLength(500);

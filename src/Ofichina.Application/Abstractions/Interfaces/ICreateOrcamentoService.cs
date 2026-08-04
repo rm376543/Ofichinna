@@ -10,3 +10,11 @@ public interface ICreateOrcamentoService
 {
     Task<Result> CreateAsync(CreateOrcamentoCommand command, CancellationToken cancellationToken = default);
 }
+
+/// <summary>
+/// Contrato para seleção automática de mecânico disponível.
+/// </summary>
+public interface IMecanicoDisponibilidadeService
+{
+    Task<Guid?> ObterMecanicoDisponivelAsync(CancellationToken cancellationToken = default);
+}

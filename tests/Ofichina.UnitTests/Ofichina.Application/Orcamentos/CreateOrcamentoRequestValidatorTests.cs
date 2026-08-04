@@ -1,6 +1,6 @@
 using Ofichina.Application.Validators.Orcamento;
 using Ofichina.Contracts.Requests.Orcamento;
-using Ofichina.Contracts.Requests.Orcamentos;
+using Ofichina.Contracts.Requests.ItensServico;
 
 namespace Ofichina.UnitTests.Application.Orcamentos;
 
@@ -30,7 +30,7 @@ public sealed class CreateOrcamentoRequestValidatorTests
             DataValidade = DateTime.UtcNow.AddDays(10),
             Desconto = 10,
             Observacoes = "Orçamento sem itens",
-            Servicos = []
+            ItensServico = []
         };
 
         var result = validator.Validate(request);
@@ -50,19 +50,13 @@ public sealed class CreateOrcamentoRequestValidatorTests
             DataValidade = DateTime.UtcNow.AddDays(10),
             Desconto = 10,
             Observacoes = "Orçamento inicial",
-            Servicos =
+            ItensServico =
             [
-                new CreateOrcamentoServicoRequest
+                new CreateItemServicoRequest
                 {
                     ServicoId = Guid.NewGuid(),
-                    Pecas =
-                    [
-                        new CreateOrcamentoServicoPecaRequest
-                        {
-                            PecaId = Guid.NewGuid(),
-                            Quantidade = 1
-                        }
-                    ]
+                    PecaId = Guid.NewGuid(),
+                    Quantidade = 1
                 }
             ]
         };

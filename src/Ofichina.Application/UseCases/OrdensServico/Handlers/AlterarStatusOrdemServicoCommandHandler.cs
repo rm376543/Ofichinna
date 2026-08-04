@@ -1,11 +1,13 @@
 using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Abstractions.Authentication;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Enums;
-using Ofichina.Domain.Aggregates;
-using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.Common;
+using Ofichina.Domain.Aggregates;
+using Ofichina.Domain.Entities;
+using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 
@@ -15,15 +17,21 @@ namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 public sealed class AlterarStatusOrdemServicoCommandHandler : ICommandHandler<AlterarStatusOrdemServicoCommand, Result>
 {
     private readonly IRepository<OrdemServico> _ordemServicoRepository;
+    private readonly IRepository<HistoricoStatus> _historicoStatusRepository;
+    private readonly IUsuarioAtualService _usuarioAtualService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<AlterarStatusOrdemServicoCommandHandler> _logger;
 
     public AlterarStatusOrdemServicoCommandHandler(
         IRepository<OrdemServico> ordemServicoRepository,
+        IRepository<HistoricoStatus> historicoStatusRepository,
+        IUsuarioAtualService usuarioAtualService,
         IUnitOfWork unitOfWork,
         ILogger<AlterarStatusOrdemServicoCommandHandler> logger)
     {
         _ordemServicoRepository = ordemServicoRepository;
+        _historicoStatusRepository = historicoStatusRepository;
+        _usuarioAtualService = usuarioAtualService;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -38,9 +46,17 @@ public sealed class AlterarStatusOrdemServicoCommandHandler : ICommandHandler<Al
             if (ordemServico is null || ordemServico.EstaExcluida())
                 return Result.Failure("Ordem de serviço não encontrada.");
 
+            var statusAnterior = ordemServico.Status;
             AlterarStatus(ordemServico, MapearStatus(command.StatusDestino));
 
             await _ordemServicoRepository.UpdateAsync(ordemServico, cancellationToken);
+            await _historicoStatusRepository.AddAsync(
+                HistoricoStatus.ParaOrdemServico(
+                    ordemServico.Id,
+                    statusAnterior.ToUpperSnakeCase(),
+                    ordemServico.Status.ToUpperSnakeCase(),
+                    _usuarioAtualService.ObterUsuarioId()),
+                cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Status da ordem de serviço alterado com sucesso. OrdemServicoId: {OrdemServicoId}, StatusDestino: {StatusDestino}.", command.Id, command.StatusDestino);

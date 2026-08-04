@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
+using Ofichina.Domain.Enums;
+using Ofichina.Infrastructure.Persistence.Converters;
 
 namespace Ofichina.Infrastructure.Persistence.Configurations;
 
@@ -18,7 +20,10 @@ public class AgendamentoConfiguration : IEntityTypeConfiguration<Agendamento>
         builder.Property(x => x.HorarioConsultorId).IsRequired();
         builder.Property(x => x.ConsultorPessoaId).IsRequired();
         builder.Property(x => x.VeiculoId).IsRequired();
-        builder.Property(x => x.Status).HasConversion<int>().IsRequired();
+        builder.Property(x => x.Status)
+            .HasConversion(new EnumParaTextoConverter<StatusAgendamento>())
+            .HasMaxLength(40)
+            .IsRequired();
         builder.Property(x => x.Descricao).HasMaxLength(1000);
 
         builder.HasOne(x => x.Cliente)

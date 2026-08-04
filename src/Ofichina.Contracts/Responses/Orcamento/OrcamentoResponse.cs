@@ -11,6 +11,8 @@ public sealed class OrcamentoResponse : BaseEntity
 
     public Guid VeiculoId { get; set; }
 
+    public Guid? ChecklistId { get; set; }
+
     public Guid MecanicoDiagnosticoId { get; set; }
 
     public Guid ResponsavelId { get; set; }
@@ -27,5 +29,5 @@ public sealed class OrcamentoResponse : BaseEntity
 
     public ChecklistResponse? Checklist { get; set; }
 
-    public ICollection<OrcamentoItemResponse> Servicos { get; set; } = [];
+    public ICollection<OrcamentoItemResponse> ItensServico { get; set; } = [];
 }

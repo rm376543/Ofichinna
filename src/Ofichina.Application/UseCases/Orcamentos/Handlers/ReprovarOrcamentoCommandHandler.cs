@@ -1,10 +1,13 @@
 using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Abstractions.Authentication;
 using Ofichina.Application.Abstractions.Common;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.Orcamentos.Commands;
 using Ofichina.Contracts.Common;
+using Ofichina.Domain.Common;
 using Ofichina.Domain.Aggregates;
+using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Application.UseCases.Orcamentos.Handlers;
@@ -15,15 +18,24 @@ namespace Ofichina.Application.UseCases.Orcamentos.Handlers;
 public sealed class ReprovarOrcamentoCommandHandler : ICommandHandler<ReprovarOrcamentoCommand, Result>
 {
     private readonly IOrcamentoRepository _orcamentoRepository;
+    private readonly IRepository<MotivoRecusaOrcamento> _motivoRecusaRepository;
+    private readonly IRepository<HistoricoStatus> _historicoStatusRepository;
+    private readonly IUsuarioAtualService _usuarioAtualService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<ReprovarOrcamentoCommandHandler> _logger;
 
     public ReprovarOrcamentoCommandHandler(
         IOrcamentoRepository orcamentoRepository,
+        IRepository<MotivoRecusaOrcamento> motivoRecusaRepository,
+        IRepository<HistoricoStatus> historicoStatusRepository,
+        IUsuarioAtualService usuarioAtualService,
         IUnitOfWork unitOfWork,
         ILogger<ReprovarOrcamentoCommandHandler> logger)
     {
         _orcamentoRepository = orcamentoRepository;
+        _motivoRecusaRepository = motivoRecusaRepository;
+        _historicoStatusRepository = historicoStatusRepository;
+        _usuarioAtualService = usuarioAtualService;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -36,9 +48,25 @@ public sealed class ReprovarOrcamentoCommandHandler : ICommandHandler<ReprovarOr
             if (orcamento is null || orcamento.EstaExcluida())
                 return Result.Failure("Orçamento não encontrado.");
 
+            var statusAnterior = orcamento.Status;
             orcamento.Reprovar();
 
             await _orcamentoRepository.UpdateAsync(orcamento, cancellationToken);
+
+            if (!string.IsNullOrWhiteSpace(command.Motivo))
+            {
+                await _motivoRecusaRepository.AddAsync(
+                    new MotivoRecusaOrcamento(orcamento.Id, command.Motivo),
+                    cancellationToken);
+            }
+
+            await _historicoStatusRepository.AddAsync(
+                HistoricoStatus.ParaOrcamento(
+                    orcamento.Id,
+                    statusAnterior.ToUpperSnakeCase(),
+                    orcamento.Status.ToUpperSnakeCase(),
+                    _usuarioAtualService.ObterUsuarioId()),
+                cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
             return Result.Success();

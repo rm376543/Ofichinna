@@ -6,7 +6,7 @@ namespace Ofichina.Domain.Entities;
 /// <summary>
 /// Representa um veículo associado a uma pessoa no domínio da oficina.
 /// </summary>
-public class Veiculo : Entity
+public sealed class Veiculo : Entity
 {
     /// <summary>
     /// Identificador da pessoa proprietária do veículo.

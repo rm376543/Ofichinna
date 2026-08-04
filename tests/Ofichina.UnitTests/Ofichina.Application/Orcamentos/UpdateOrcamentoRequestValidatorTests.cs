@@ -1,6 +1,6 @@
 using Ofichina.Application.Validators.Orcamento;
 using Ofichina.Contracts.Requests.Orcamento;
-using Ofichina.Contracts.Requests.Orcamentos;
+using Ofichina.Contracts.Requests.ItensServico;
 
 namespace Ofichina.UnitTests.Application.Orcamentos;
 
@@ -42,21 +42,13 @@ public sealed class UpdateOrcamentoRequestValidatorTests
             DataValidade = DateTime.UtcNow.AddDays(5),
             Desconto = 5,
             Observacoes = "Orçamento atualizado",
-            Servicos =
+            ItensServico =
             [
-                new UpdateOrcamentoServicoRequest
+                new UpdateItemServicoRequest
                 {
-                    Id = Guid.NewGuid(),
                     ServicoId = Guid.NewGuid(),
-                    Pecas =
-                    [
-                        new UpdateOrcamentoServicoPecaRequest
-                        {
-                            Id = Guid.NewGuid(),
-                            PecaId = Guid.NewGuid(),
-                            Quantidade = 1
-                        }
-                    ]
+                    PecaId = Guid.NewGuid(),
+                    Quantidade = 1
                 }
             ]
         };

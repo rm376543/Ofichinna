@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
+using Ofichina.Domain.Enums;
+using Ofichina.Infrastructure.Persistence.Converters;
 
 namespace Ofichina.Infrastructure.Persistence.Configurations;
 
@@ -20,34 +22,39 @@ public class OrcamentoConfiguration : IEntityTypeConfiguration<Orcamento>
         builder.Property(x => x.DataValidade).IsRequired();
         builder.Property(x => x.Desconto).HasPrecision(18, 2).IsRequired();
         builder.Property(x => x.Observacoes).HasMaxLength(1000);
-        builder.Property(x => x.Status).HasConversion<int>().IsRequired();
+        builder.Property(x => x.Status)
+            .HasConversion(new EnumParaTextoConverter<StatusOrcamento>())
+            .HasMaxLength(40)
+            .IsRequired();
 
-        builder.Navigation(x => x.Servicos)
+        builder.Navigation(x => x.ItensServico)
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        builder.HasOne<Pessoa>()
+        builder.HasOne<Ofichina.Domain.Entities.Pessoa>()
             .WithMany()
             .HasForeignKey(x => x.PessoaId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne<Veiculo>()
+        builder.HasOne<Ofichina.Domain.Entities.Veiculo>()
             .WithMany()
             .HasForeignKey(x => x.VeiculoId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne<Pessoa>()
+        builder.HasOne<Ofichina.Domain.Entities.Pessoa>()
             .WithMany()
             .HasForeignKey(x => x.MecanicoDiagnosticoId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasOne<Pessoa>()
+        builder.HasOne<Ofichina.Domain.Entities.Pessoa>()
             .WithMany()
             .HasForeignKey(x => x.ResponsavelId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.Property(x => x.ChecklistId);
+
         builder.HasOne(x => x.Checklist)
-            .WithOne(x => x.Orcamento!)
-            .HasForeignKey<Checklist>(x => x.OrcamentoId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .WithMany()
+            .HasForeignKey(x => x.ChecklistId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

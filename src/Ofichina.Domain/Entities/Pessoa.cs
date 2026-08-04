@@ -8,7 +8,7 @@ namespace Ofichina.Domain.Entities;
 /// Pode ser cliente, mecânico, atendente, etc.
 /// O tipo de pessoa é definido através dos perfis associados ao usuário vinculado.
 /// </summary>
-public class Pessoa : Entity
+public sealed class Pessoa : Entity
 {
     private readonly List<Veiculo> _veiculos = [];
 

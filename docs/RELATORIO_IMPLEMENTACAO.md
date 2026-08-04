@@ -7,6 +7,8 @@
 **Padrão:** Clean Architecture + CQRS  
 **Status de Build:** ✅ Compilando com Sucesso
 
+**Estado da regra de persistência:** ✅ Soft delete como padrão, sem `OnDelete(DeleteBehavior.Cascade)` nos relacionamentos ativos
+
 ---
 
 ## 📦 Resumo de Arquivos Criados
@@ -82,6 +84,7 @@
 
 #### Persistence
 - ✅ `src/Ofichina.Infrastructure/Persistence/ApplicationDbContext.cs` (DbContext)
+- ✅ `src/Ofichina.Infrastructure/Persistence/Configurations/*.cs` (mapeamentos com FKs explícitas e delete behavior restrito)
 
 #### Repositories
 - ✅ `src/Ofichina.Infrastructure/Repositories/Repository.cs` (Genérico)
@@ -105,6 +108,14 @@
 
 - ✅ `ARQUITETURA.md` (Documentação técnica completa)
 - ✅ `GUIA_IMPLEMENTACAO.md` (Guia prático com exemplos)
+- ✅ `docs/das/DAS-002-fluxo-orcamento.md` (fluxo checklist → orçamento → OS atualizado)
+- ✅ `docs/API_REFERENCE.md` (contratos atualizados de reprovação, reenvio e aprovação)
+
+### 7. Validação recente
+
+- ✅ Testes de integração do controller de orçamento cobrindo criação, atualização, aprovação, reprovação e reenvio.
+- ✅ Testes de integração do controller de checklist cobrindo criação e finalização.
+- ✅ Build validado após remoção de `OnDelete(DeleteBehavior.Cascade)`.
 
 ---
 

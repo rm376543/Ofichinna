@@ -89,7 +89,7 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
         int quantidade,
         CancellationToken cancellationToken = default)
     {
-        var item = ItemServico.Criar(ordemServicoId, servicoId, pecaId, quantidade);
+        var item = ItemServico.ParaOrdemServico(ordemServicoId, servicoId, pecaId, quantidade);
         await AddAsync(item, cancellationToken);
 
         return item;

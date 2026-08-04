@@ -74,25 +74,20 @@ public sealed class UpdateOrcamentoCommandHandler : ICommandHandler<UpdateOrcame
                 command.Desconto,
                 command.Observacoes);
 
-            foreach (var item in orcamento.ItensPrevistos.ToList())
+            foreach (var item in orcamento.ItensServico.ToList())
                 orcamento.RemoverServico(item.Id);
 
-            foreach (var item in command.Servicos)
+            foreach (var item in command.ItensServico)
             {
                 var servico = await _servicoRepository.GetByIdAsync(item.ServicoId, cancellationToken);
                 if (servico is null || servico.EstaExcluida())
                     return Result.Failure("Serviço não encontrado.");
 
-                var servicoOrcamento = orcamento.AdicionarServico(item.ServicoId);
+                var peca = await _pecaRepository.GetByIdAsync(item.PecaId, cancellationToken);
+                if (peca is null || peca.EstaExcluida())
+                    return Result.Failure("Peça não encontrada.");
 
-                foreach (var pecaItem in item.Pecas)
-                {
-                    var peca = await _pecaRepository.GetByIdAsync(pecaItem.PecaId, cancellationToken);
-                    if (peca is null || peca.EstaExcluida())
-                        return Result.Failure("Peça não encontrada.");
-
-                    servicoOrcamento.AdicionarPeca(pecaItem.PecaId, pecaItem.Quantidade);
-                }
+                orcamento.AdicionarServico(item.ServicoId, item.PecaId, item.Quantidade);
             }
 
             await _orcamentoRepository.UpdateAsync(orcamento, cancellationToken);

@@ -420,13 +420,16 @@ Atualiza um orçamento.
 **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
 ### PUT /api/orcamentos/{id}/enviar
-Marca o orçamento como enviado para o cliente. **Respostas:** `200`, `401`, `403`, `404`.
+Marca o orçamento como enviado para o cliente e registra o histórico de status. **Respostas:** `200`, `401`, `403`, `404`.
 
-### PUT /api/orcamentos/{id}/aprovar/{mecanicoReparoId}
-Aprova o orçamento e gera a ordem de serviço vinculada. **Respostas:** `200`, `400`, `401`, `403`, `404`.
+### PUT /api/orcamentos/{id}/aprovar
+Aprova o orçamento, seleciona automaticamente o mecânico de reparo quando disponível e gera a ordem de serviço vinculada. **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
 ### PUT /api/orcamentos/{id}/reprovar
-Reprova o orçamento. **Respostas:** `200`, `401`, `403`, `404`.
+Reprova o orçamento com motivo opcional, persistindo `MotivoRecusaOrcamento` e histórico de status. **Respostas:** `200`, `401`, `403`, `404`.
+
+### PUT /api/orcamentos/{id}/reenviar
+Reenvia o orçamento após reprovação, retornando o fluxo para diagnóstico e registrando histórico de status. **Respostas:** `200`, `401`, `403`, `404`.
 
 ## 🧾 Ordens de serviço
 
@@ -450,10 +453,6 @@ Cancela a OS. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas
 
 ### DELETE /api/ordem-servico/{id}
 Remove logicamente uma OS. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `401`, `403`, `404`.
-Transiciona para `Entregue`. **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
-
-### PUT /api/ordem-servico/{id}/cancelar
-Transiciona para `Cancelada`. **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
 #### Resposta de transição 200
 ```json

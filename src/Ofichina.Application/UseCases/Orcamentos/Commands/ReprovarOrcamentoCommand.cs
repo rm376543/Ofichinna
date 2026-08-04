@@ -9,4 +9,6 @@ namespace Ofichina.Application.UseCases.Orcamentos.Commands;
 public sealed class ReprovarOrcamentoCommand : ICommand<Result>
 {
     public Guid Id { get; init; }
+
+    public string? Motivo { get; init; }
 }

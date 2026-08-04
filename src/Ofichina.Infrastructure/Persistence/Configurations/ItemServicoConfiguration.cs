@@ -13,8 +13,9 @@ public class ItemServicoConfiguration : IEntityTypeConfiguration<ItemServico>
 
         builder.HasKey(i => i.Id);
 
-        builder.Property(i => i.OrdemServicoId)
-            .IsRequired();
+        builder.Property(i => i.OrcamentoId);
+
+        builder.Property(i => i.OrdemServicoId);
 
         builder.Property(i => i.ServicoId)
             .IsRequired();
@@ -35,9 +36,14 @@ public class ItemServicoConfiguration : IEntityTypeConfiguration<ItemServico>
             .HasForeignKey(i => i.PecaId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasOne(i => i.Orcamento)
+            .WithMany(x => x.ItensServico)
+            .HasForeignKey(i => i.OrcamentoId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasOne<OrdemServico>()
             .WithMany()
             .HasForeignKey(i => i.OrdemServicoId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
