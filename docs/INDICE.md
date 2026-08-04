@@ -64,6 +64,18 @@ DOCUMENTAÇÃO OFICHINNA
 │     ├─ Padrões de documentação
 │     └─ Checklist antes de PR
 
+├─ 🧪 VALIDAÇÃO DE FLUXOS
+│  │
+│  ├─ RELATORIO_IMPLEMENTACAO.md ⭐⭐
+│  │  ├─ Status da implementação
+│  │  ├─ Validação recente
+│  │  └─ Checklist de validação
+│  │
+│  └─ docs/das/DAS-002-fluxo-orcamento.md ⭐⭐⭐
+│     ├─ Fluxo checklist → orçamento → OS
+│     ├─ Reprovação e reenvio
+│     └─ Persistência e rastreabilidade
+
  ├─ 📐 DESIGN E APROVAÇÃO
  │  ├─ DESIGN_APPROVAL_SHEET.md ⭐⭐⭐
  │  │  ├─ Template de aprovação pré-implementação
