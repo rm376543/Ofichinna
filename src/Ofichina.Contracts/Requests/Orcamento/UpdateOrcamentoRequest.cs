@@ -1,4 +1,4 @@
-﻿using Ofichina.Contracts.Requests.Orcamentos;
+﻿using Ofichina.Contracts.Requests.ItensServico;
 
 namespace Ofichina.Contracts.Requests.Orcamento
 {
@@ -43,8 +43,8 @@ namespace Ofichina.Contracts.Requests.Orcamento
         public string? Observacoes { get; init; }
 
         /// <summary>
-        /// Lista atualizada de serviços.
+        /// Lista atualizada de itens de serviço.
         /// </summary>
-        public ICollection<UpdateOrcamentoServicoRequest> Servicos { get; init; } = [];
+        public ICollection<UpdateItemServicoRequest> ItensServico { get; init; } = [];
     }
 }
