@@ -83,15 +83,17 @@ public class ApplicationDbContext : DbContext
     public DbSet<ItemServico> ItensServico { get; set; } = null!;
 
     /// <summary>
-    /// DbSet para itens previstos do orçamento.
+    /// <summary>
+    /// DbSet para motivos de recusa de orçamento.
     /// </summary>
-    public DbSet<ItemOrcamento> ItensOrcamento { get; set; } = null!;
+    public DbSet<MotivoRecusaOrcamento> MotivosRecusaOrcamento { get; set; } = null!;
 
     /// <summary>
-    /// DbSet para peças dos itens previstos do orçamento.
+    /// DbSet para histórico de status.
     /// </summary>
-    public DbSet<ItemOrcamentoPeca> ItensOrcamentoPecas { get; set; } = null!;
+    public DbSet<HistoricoStatus> HistoricoStatus { get; set; } = null!;
 
+    /// <summary>
     /// <summary>
     /// DbSet para checklists de orçamento.
     /// </summary>

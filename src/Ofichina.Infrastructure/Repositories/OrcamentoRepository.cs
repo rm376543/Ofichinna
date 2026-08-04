@@ -31,11 +31,10 @@ public sealed class OrcamentoRepository : Repository<Orcamento>, IOrcamentoRepos
         {
             query = query
                 .Include(x => x.Checklist)
-                .Include(x => x.ItensPrevistos)
+                .Include(x => x.ItensServico)
                     .ThenInclude(x => x.Servico)
-                .Include(x => x.ItensPrevistos)
-                    .ThenInclude(x => x.Pecas)
-                        .ThenInclude(x => x.Peca);
+                .Include(x => x.ItensServico)
+                    .ThenInclude(x => x.Peca);
         }
 
         return await query.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
@@ -49,11 +48,10 @@ public sealed class OrcamentoRepository : Repository<Orcamento>, IOrcamentoRepos
         {
             query = query
                 .Include(x => x.Checklist)
-                .Include(x => x.ItensPrevistos)
+                .Include(x => x.ItensServico)
                     .ThenInclude(x => x.Servico)
-                .Include(x => x.ItensPrevistos)
-                    .ThenInclude(x => x.Pecas)
-                        .ThenInclude(x => x.Peca);
+                .Include(x => x.ItensServico)
+                    .ThenInclude(x => x.Peca);
         }
 
         return await query.ToListAsync(cancellationToken);

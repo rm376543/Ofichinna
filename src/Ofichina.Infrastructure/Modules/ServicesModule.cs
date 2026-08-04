@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Infrastructure.Services;
 
 namespace Ofichina.Infrastructure.DependencyInjection;
@@ -18,6 +19,7 @@ public static class InfrastructureServicesModule
         this IServiceCollection services)
     {
         services.AddScoped<IPerfilAutorizacaoService, PerfilAutorizacaoService>();
+        services.AddScoped<IMecanicoDisponibilidadeService, MecanicoDisponibilidadeService>();
 
         return services;
     }
