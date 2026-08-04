@@ -5,7 +5,7 @@ namespace Ofichina.Domain.Entities;
 /// <summary>
 /// Representa um serviço cadastrado para uso no catálogo da aplicação.
 /// </summary>
-public class Servico : Entity
+public sealed class Servico : Entity
 {
     /// <summary>
     /// Nome do serviço.

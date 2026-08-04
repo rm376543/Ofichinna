@@ -1,16 +1,16 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 using Ofichina.Domain.Exceptions;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ofichina.Domain.Aggregates;
 
 /// <summary>
 /// Representa o orçamento da oficina e seu ciclo de aprovação.
 /// </summary>
-public class Orcamento : Entity
+public sealed class Orcamento : Entity
 {
-    private readonly List<ItemOrcamento> _servicos = [];
+    private readonly List<ItemServico> _itensServico = [];
 
     public Guid PessoaId { get; private set; }
 
@@ -26,16 +26,21 @@ public class Orcamento : Entity
 
     public string? Observacoes { get; private set; }
 
+    public Guid? ChecklistId { get; private set; }
+
     public StatusOrcamento Status { get; private set; }
 
     public DateTime DataCriacao => CreatedAt;
 
     public Checklist? Checklist { get; private set; }
 
-    public IReadOnlyCollection<ItemOrcamento> Servicos => _servicos.AsReadOnly();
+    public IReadOnlyCollection<ItemServico> ItensServico => _itensServico.AsReadOnly();
 
     [NotMapped]
-    public IReadOnlyCollection<ItemOrcamento> ItensPrevistos => Servicos;
+    public IReadOnlyCollection<ItemServico> Servicos => ItensServico;
+
+    [NotMapped]
+    public IReadOnlyCollection<ItemServico> ItensPrevistos => ItensServico;
 
     private Orcamento()
     {
@@ -48,7 +53,8 @@ public class Orcamento : Entity
         Guid responsavelId,
         DateTime dataValidade,
         decimal desconto,
-        string? observacoes)
+        string? observacoes,
+        Guid? checklistId = null)
     {
         ValidarIdentificador(pessoaId, "Pessoa obrigatória.");
         ValidarIdentificador(veiculoId, "Veículo obrigatório.");
@@ -68,15 +74,29 @@ public class Orcamento : Entity
         DataValidade = dataValidade;
         Desconto = desconto;
         Observacoes = observacoes;
-        Status = StatusOrcamento.EmDiagnostico;
+        ChecklistId = checklistId;
+        Status = StatusOrcamento.Recebida;
     }
 
-    public void EnviarParaCliente()
+    public void IniciarDiagnostico()
+    {
+        ValidarStatus(StatusOrcamento.Recebida);
+
+        Status = StatusOrcamento.EmDiagnostico;
+        AtualizarDataModificacao();
+    }
+
+    public void FinalizarDiagnostico()
     {
         ValidarStatus(StatusOrcamento.EmDiagnostico);
 
         Status = StatusOrcamento.AguardandoAprovacao;
         AtualizarDataModificacao();
+    }
+
+    public void EnviarParaCliente()
+    {
+        FinalizarDiagnostico();
     }
 
     public void Aprovar()
@@ -92,6 +112,14 @@ public class Orcamento : Entity
         ValidarStatus(StatusOrcamento.AguardandoAprovacao);
 
         Status = StatusOrcamento.Reprovado;
+        AtualizarDataModificacao();
+    }
+
+    public void ReenviarAposReprovacao()
+    {
+        ValidarStatus(StatusOrcamento.Reprovado);
+
+        Status = StatusOrcamento.EmDiagnostico;
         AtualizarDataModificacao();
     }
 
@@ -126,51 +154,36 @@ public class Orcamento : Entity
         AtualizarDataModificacao();
     }
 
-    public ItemOrcamento AdicionarServico(Guid servicoId)
+    public ItemServico AdicionarServico(Guid servicoId, Guid pecaId, int quantidade)
     {
         ValidarAlteracaoItens();
 
-        var item = new ItemOrcamento(Id, servicoId);
-        _servicos.Add(item);
+        var item = ItemServico.ParaOrcamento(Id, servicoId, pecaId, quantidade);
+        _itensServico.Add(item);
 
         AtualizarDataModificacao();
 
         return item;
     }
 
-    public ItemOrcamentoPeca AdicionarPecaAoServico(Guid itemOrcamentoId, Guid pecaId, int quantidade)
+    public void AtualizarServico(Guid itemServicoId, Guid servicoId, Guid pecaId, int quantidade)
     {
         ValidarAlteracaoItens();
 
-        var item = ObterServico(itemOrcamentoId);
+        var item = ObterServico(itemServicoId);
 
         if (item is null || item.EstaExcluida())
             throw new DomainException("Serviço não encontrado.");
 
-        var peca = item.AdicionarPeca(pecaId, quantidade);
-        AtualizarDataModificacao();
-
-        return peca;
-    }
-
-    public void AtualizarServico(Guid itemOrcamentoId, Guid servicoId)
-    {
-        ValidarAlteracaoItens();
-
-        var item = ObterServico(itemOrcamentoId);
-
-        if (item is null || item.EstaExcluida())
-            throw new DomainException("Serviço não encontrado.");
-
-        item.AtualizarServico(servicoId);
+        item.AtualizarDados(servicoId, pecaId, quantidade);
         AtualizarDataModificacao();
     }
 
-    public void RemoverServico(Guid itemOrcamentoId)
+    public void RemoverServico(Guid itemServicoId)
     {
         ValidarAlteracaoItens();
 
-        var item = ObterServico(itemOrcamentoId);
+        var item = ObterServico(itemServicoId);
 
         if (item is null || item.EstaExcluida())
             throw new DomainException("Serviço não encontrado.");
@@ -179,20 +192,9 @@ public class Orcamento : Entity
         AtualizarDataModificacao();
     }
 
-    public ItemOrcamento? ObterServico(Guid itemOrcamentoId)
+    public ItemServico? ObterServico(Guid itemServicoId)
     {
-        return _servicos.FirstOrDefault(x => x.Id == itemOrcamentoId);
-    }
-
-    public void DefinirChecklist(Checklist checklist)
-    {
-        ArgumentNullException.ThrowIfNull(checklist);
-
-        if (checklist.OrcamentoId != Id)
-            throw new DomainException("Checklist inválido para este orçamento.");
-
-        Checklist = checklist;
-        AtualizarDataModificacao();
+        return _itensServico.FirstOrDefault(x => x.Id == itemServicoId);
     }
 
     private void ValidarAlteracaoItens()

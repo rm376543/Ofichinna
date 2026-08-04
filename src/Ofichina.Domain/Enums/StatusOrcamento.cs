@@ -5,8 +5,9 @@ namespace Ofichina.Domain.Enums;
 /// </summary>
 public enum StatusOrcamento
 {
-    EmDiagnostico = 1,
-    AguardandoAprovacao = 2,
-    Aprovado = 3,
-    Reprovado = 4
+    Recebida = 1,
+    EmDiagnostico = 2,
+    AguardandoAprovacao = 3,
+    Aprovado = 4,
+    Reprovado = 5
 }

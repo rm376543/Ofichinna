@@ -1,13 +1,13 @@
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.Enums;
+using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Domain.Aggregates;
 
 /// <summary>
 /// Representa um agendamento entre cliente, veículo e um horário de disponibilidade vinculado a um consultor.
 /// </summary>
-public class Agendamento : Entity
+public sealed class Agendamento : Entity
 {
     /// <summary>
     /// Pessoa cliente vinculada ao agendamento.

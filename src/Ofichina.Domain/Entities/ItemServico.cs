@@ -3,16 +3,30 @@ using Ofichina.Domain.Exceptions;
 namespace Ofichina.Domain.Entities;
 
 /// <summary>
-/// Representa um serviço executado ou previsto dentro de uma ordem de serviço.
-/// Esta entidade pertence ao agregado OrdemServico e seu ciclo de vida
-/// é controlado pela própria ordem de serviço.
+/// Representa um serviço executado ou previsto dentro de um orçamento ou ordem de serviço.
+/// O vínculo com o agregado é definido pelas chaves estrangeiras opcionais.
 /// </summary>
 public class ItemServico : Entity
 {
     /// <summary>
+    /// Identificador do orçamento ao qual o item pertence.
+    /// </summary>
+    public Guid? OrcamentoId { get; private set; }
+
+    /// <summary>
+    /// Navegação para o orçamento.
+    /// </summary>
+    public Aggregates.Orcamento? Orcamento { get; private set; }
+
+    /// <summary>
     /// Identificador da ordem de serviço à qual o serviço pertence.
     /// </summary>
-    public Guid OrdemServicoId { get; private set; } = Guid.Empty;
+    public Guid? OrdemServicoId { get; private set; }
+
+    /// <summary>
+    /// Navegação para a ordem de serviço.
+    /// </summary>
+    public Aggregates.OrdemServico? OrdemServico { get; private set; }
 
     /// <summary>
     /// Identificador do serviço executado na ordem.
@@ -25,6 +39,11 @@ public class ItemServico : Entity
     public Servico? Servico { get; private set; }
 
     /// <summary>
+    /// Valor do serviço associado.
+    /// </summary>
+    public decimal ValorServico => Servico?.Valor ?? 0m;
+
+    /// <summary>
     /// Identificador da peça utilizada no item de serviço.
     /// </summary>
     public Guid PecaId { get; private set; } = Guid.Empty;
@@ -33,6 +52,11 @@ public class ItemServico : Entity
     /// Navegação para a peça utilizada.
     /// </summary>
     public Peca? Peca { get; private set; }
+
+    /// <summary>
+    /// Valor total do item.
+    /// </summary>
+    public decimal ValorTotal => ValorServico + ((Peca?.Valor ?? 0m) * Quantidade);
 
     /// <summary>
     /// Quantidade de peças utilizadas no item de serviço.
@@ -47,16 +71,38 @@ public class ItemServico : Entity
     }
 
     /// <summary>
+    /// Cria um item de serviço vinculado a um orçamento.
+    /// </summary>
+    public static ItemServico ParaOrcamento(
+        Guid orcamentoId,
+        Guid servicoId,
+        Guid pecaId,
+        int quantidade)
+    {
+        return new ItemServico(orcamentoId, null, servicoId, pecaId, quantidade);
+    }
+
+    /// <summary>
     /// Cria um item de serviço vinculado a uma ordem de serviço.
     /// </summary>
-    public ItemServico(
+    public static ItemServico ParaOrdemServico(
         Guid ordemServicoId,
         Guid servicoId,
         Guid pecaId,
         int quantidade)
     {
-        if (ordemServicoId == Guid.Empty)
-            throw new DomainException("Ordem de serviço obrigatória.");
+        return new ItemServico(null, ordemServicoId, servicoId, pecaId, quantidade);
+    }
+
+    private ItemServico(
+        Guid? orcamentoId,
+        Guid? ordemServicoId,
+        Guid servicoId,
+        Guid pecaId,
+        int quantidade)
+    {
+        if (orcamentoId is null && ordemServicoId is null)
+            throw new DomainException("O item de serviço deve estar vinculado a um orçamento ou a uma ordem de serviço.");
 
         if (servicoId == Guid.Empty)
             throw new DomainException("Serviço obrigatório.");
@@ -67,22 +113,11 @@ public class ItemServico : Entity
         if (quantidade <= 0)
             throw new DomainException("Quantidade inválida.");
 
+        OrcamentoId = orcamentoId;
         OrdemServicoId = ordemServicoId;
         ServicoId = servicoId;
         PecaId = pecaId;
         Quantidade = quantidade;
-    }
-
-    /// <summary>
-    /// Cria um item de serviço vinculado a uma ordem de serviço.
-    /// </summary>
-    public static ItemServico Criar(
-        Guid ordemServicoId,
-        Guid servicoId,
-        Guid pecaId,
-        int quantidade)
-    {
-        return new ItemServico(ordemServicoId, servicoId, pecaId, quantidade);
     }
 
     /// <summary>

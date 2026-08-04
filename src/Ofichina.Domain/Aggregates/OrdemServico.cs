@@ -9,7 +9,7 @@ namespace Ofichina.Domain.Aggregates;
 /// É o Aggregate Root responsável por controlar serviços,
 /// peças e ciclo de vida do atendimento.
 /// </summary>
-public class OrdemServico : Entity
+public sealed class OrdemServico : Entity
 {
     private readonly List<ItemServico> _servicos = [];
 
@@ -158,13 +158,8 @@ public class OrdemServico : Entity
 
         ordemServico.DesignarMecanicoReparo(mecanicoReparoId, orcamento.MecanicoDiagnosticoId);
 
-        foreach (var item in orcamento.ItensPrevistos.Where(x => !x.EstaExcluida()))
-        {
-            foreach (var peca in item.Pecas.Where(x => !x.EstaExcluida()))
-            {
-                ordemServico.AdicionarServico(item.ServicoId, peca.PecaId, peca.Quantidade);
-            }
-        }
+        foreach (var item in orcamento.ItensServico.Where(x => !x.EstaExcluida()))
+            ordemServico.AdicionarServico(item.ServicoId, item.PecaId, item.Quantidade);
 
         return ordemServico;
     }
@@ -213,9 +208,6 @@ public class OrdemServico : Entity
         if (mecanicoReparoId == Guid.Empty)
             throw new DomainException("Mecânico de reparo obrigatório.");
 
-        if (mecanicoReparoId == mecanicoDiagnosticoId)
-            throw new DomainException("O mecânico do diagnóstico não pode ser o mesmo do reparo.");
-
         MecanicoReparoId = mecanicoReparoId;
         AtualizarDataModificacao();
     }
@@ -246,7 +238,7 @@ public class OrdemServico : Entity
     {
         ValidarAlteracaoItens();
 
-        var item = new ItemServico(Id, servicoId, pecaId, quantidade);
+        var item = ItemServico.ParaOrdemServico(Id, servicoId, pecaId, quantidade);
         _servicos.Add(item);
 
         AtualizarDataModificacao();
