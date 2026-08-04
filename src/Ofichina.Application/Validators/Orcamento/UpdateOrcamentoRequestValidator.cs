@@ -1,6 +1,6 @@
 using FluentValidation;
 using Ofichina.Contracts.Requests.Orcamento;
-using Ofichina.Contracts.Requests.Orcamentos;
+using Ofichina.Contracts.Requests.ItensServico;
 
 namespace Ofichina.Application.Validators.Orcamento;
 
@@ -36,31 +36,19 @@ public sealed class UpdateOrcamentoRequestValidator : AbstractValidator<UpdateOr
             .MaximumLength(1000).WithMessage("As observações não podem exceder 1000 caracteres.")
             .When(x => !string.IsNullOrWhiteSpace(x.Observacoes));
 
-        RuleFor(x => x.Servicos)
-            .NotEmpty().WithMessage("O orçamento deve conter ao menos um serviço.");
+        RuleFor(x => x.ItensServico)
+            .NotEmpty().WithMessage("O orçamento deve conter ao menos um item de serviço.");
 
-        RuleForEach(x => x.Servicos).ChildRules(servico =>
+        RuleForEach(x => x.ItensServico).ChildRules(servico =>
         {
-            servico.RuleFor(x => x.Id)
-                .NotEmpty().WithMessage("O identificador do serviço do orçamento é obrigatório.");
-
             servico.RuleFor(x => x.ServicoId)
                 .NotEmpty().WithMessage("O serviço previsto é obrigatório.");
 
-            servico.RuleFor(x => x.Pecas)
-                .NotEmpty().WithMessage("O serviço do orçamento deve conter ao menos uma peça.");
+            servico.RuleFor(x => x.PecaId)
+                .NotEmpty().WithMessage("A peça prevista é obrigatória.");
 
-            servico.RuleForEach(x => x.Pecas).ChildRules(peca =>
-            {
-                peca.RuleFor(x => x.Id)
-                    .NotEmpty().WithMessage("O identificador da peça do serviço é obrigatório.");
-
-                peca.RuleFor(x => x.PecaId)
-                    .NotEmpty().WithMessage("A peça prevista é obrigatória.");
-
-                peca.RuleFor(x => x.Quantidade)
-                    .GreaterThan(0).WithMessage("A quantidade da peça deve ser maior que zero.");
-            });
+            servico.RuleFor(x => x.Quantidade)
+                .GreaterThan(0).WithMessage("A quantidade da peça deve ser maior que zero.");
         });
     }
 }

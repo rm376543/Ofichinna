@@ -1,7 +1,7 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Orcamento;
-using Ofichina.Contracts.Requests.Orcamentos;
+using Ofichina.Contracts.Requests.ItensServico;
 
 namespace Ofichina.Application.UseCases.Orcamentos.Commands;
 
@@ -14,6 +14,8 @@ public sealed class CreateOrcamentoCommand : ICommand<Result>
 
     public Guid VeiculoId { get; init; }
 
+    public Guid? ChecklistId { get; init; }
+
     public Guid MecanicoDiagnosticoId { get; init; }
 
     public Guid ResponsavelId { get; init; }
@@ -24,17 +26,18 @@ public sealed class CreateOrcamentoCommand : ICommand<Result>
 
     public string? Observacoes { get; init; }
 
-    public ICollection<CreateOrcamentoServicoRequest> Servicos { get; init; } = [];
+    public ICollection<CreateItemServicoRequest> ItensServico { get; init; } = [];
 
     public CreateOrcamentoCommand(CreateOrcamentoRequest request)
     {
         PessoaId = request.PessoaId;
         VeiculoId = request.VeiculoId;
+        ChecklistId = request.ChecklistId;
         MecanicoDiagnosticoId = request.MecanicoDiagnosticoId;
         ResponsavelId = request.ResponsavelId;
         DataValidade = request.DataValidade;
         Desconto = request.Desconto;
         Observacoes = request.Observacoes;
-        Servicos = request.Servicos;
+        ItensServico = request.ItensServico;
     }
 }

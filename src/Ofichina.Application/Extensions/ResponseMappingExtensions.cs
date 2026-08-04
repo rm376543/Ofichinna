@@ -5,6 +5,7 @@ using Ofichina.Contracts.Responses.OrdensServico;
 using Ofichina.Contracts.Responses.Pessoa;
 using Ofichina.Contracts.Responses.Servicos;
 using Ofichina.Contracts.Responses.Veiculo;
+using Ofichina.Domain.Common;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 
@@ -65,7 +66,7 @@ public static class ResponseMappingExtensions
             VeiculoId = agendamento.VeiculoId,
             VeiculoPlaca = agendamento.Veiculo.Placa.Numero,
             VeiculoDescricao = $"{agendamento.Veiculo.Marca} {agendamento.Veiculo.Modelo} {agendamento.Veiculo.AnoFabricacao}",
-            Status = agendamento.Status.ToString(),
+            Status = agendamento.Status.ToUpperSnakeCase(),
             Descricao = agendamento.Descricao,
             CreatedAt = agendamento.CreatedAt,
             UpdatedAt = agendamento.UpdatedAt,
@@ -100,7 +101,7 @@ public static class ResponseMappingExtensions
             VeiculoId = agendamento.VeiculoId,
             VeiculoPlaca = veiculo.Placa.Numero,
             VeiculoDescricao = $"{veiculo.Marca} {veiculo.Modelo} {veiculo.AnoFabricacao}",
-            Status = agendamento.Status.ToString(),
+            Status = agendamento.Status.ToUpperSnakeCase(),
             Descricao = agendamento.Descricao,
             CreatedAt = agendamento.CreatedAt,
             UpdatedAt = agendamento.UpdatedAt,
@@ -172,7 +173,7 @@ public static class ResponseMappingExtensions
             FuncionarioId = ordemServico.FuncionarioId,
             HodometroEntrada = ordemServico.HodometroEntrada,
             ProblemaRelatado = ordemServico.ProblemaRelatado,
-            Status = ordemServico.Status.ToString(),
+            Status = ordemServico.Status.ToUpperSnakeCase(),
             DataAbertura = ordemServico.DataAbertura,
             DataFinalizacao = ordemServico.DataFinalizacao,
             Observacao = ordemServico.Observacao,
@@ -198,18 +199,19 @@ public static class ResponseMappingExtensions
             Id = orcamento.Id,
             PessoaId = orcamento.PessoaId,
             VeiculoId = orcamento.VeiculoId,
+            ChecklistId = orcamento.ChecklistId,
             MecanicoDiagnosticoId = orcamento.MecanicoDiagnosticoId,
             ResponsavelId = orcamento.ResponsavelId,
             DataValidade = orcamento.DataValidade,
             Desconto = orcamento.Desconto,
             Observacoes = orcamento.Observacoes,
-            Status = orcamento.Status.ToString(),
+            Status = orcamento.Status.ToUpperSnakeCase(),
             DataCriacao = orcamento.DataCriacao,
             CreatedAt = orcamento.CreatedAt,
             UpdatedAt = orcamento.UpdatedAt,
             DeletedAt = orcamento.DeletedAt,
             Checklist = orcamento.Checklist is null ? null : ToResponse(orcamento.Checklist),
-            Servicos = MapearServicos(orcamento.Servicos)
+            ItensServico = MapearItensServico(orcamento.ItensServico)
         };
     }
 
@@ -223,10 +225,12 @@ public static class ResponseMappingExtensions
         return new ChecklistResponse
         {
             Id = checklist.Id,
-            OrcamentoId = checklist.OrcamentoId,
+            VeiculoId = checklist.VeiculoId,
+            PessoaId = checklist.PessoaId,
             HodometroEntrada = checklist.HodometroEntrada,
             ItensVerificados = checklist.ItensVerificados,
             Observacoes = checklist.Observacoes,
+            Finalizado = checklist.Finalizado,
             CreatedAt = checklist.CreatedAt,
             UpdatedAt = checklist.UpdatedAt,
             DeletedAt = checklist.DeletedAt
@@ -275,46 +279,36 @@ public static class ResponseMappingExtensions
     }
 
     /// <summary>
-    /// Converte os serviços de um Orcamento em uma coleção de objetos de resposta OrcamentoItemResponse.
+    /// Converte os itens de um Orcamento em uma coleção de objetos de resposta OrcamentoItemResponse.
     /// </summary>
     /// <param name="servicos"></param>
     /// <returns>Uma coleção de objetos OrcamentoItemResponse contendo as informações dos serviços do orçamento.</returns>
-    private static ICollection<OrcamentoItemResponse> MapearServicos(IEnumerable<ItemOrcamento> servicos)
+    private static ICollection<OrcamentoItemResponse> MapearItensServico(IEnumerable<ItemServico> servicos)
     {
         return servicos
             .Where(x => !x.EstaExcluida())
-            .Select(x => new OrcamentoItemResponse
+            .GroupBy(x => new { x.ServicoId, Nome = x.Servico?.Nome ?? string.Empty, Valor = x.Servico?.Valor ?? 0m })
+            .Select(g => new OrcamentoItemResponse
             {
-                Id = x.Id,
-                OrcamentoId = x.OrcamentoId,
-                ServicoId = x.ServicoId,
-                Descricao = x.Servico?.Nome ?? string.Empty,
-                ValorServico = x.ValorServico,
-                ValorTotal = x.ValorTotal,
-                Pecas = MapearPecas(x.Pecas),
-                CreatedAt = x.CreatedAt,
-                UpdatedAt = x.UpdatedAt,
-                DeletedAt = x.DeletedAt
-            })
-            .ToList();
-    }
-
-    /// <summary>
-    /// Converte as peças de um ItemOrcamento em uma coleção de objetos de resposta OrcamentoItemServicoPecaResponse.
-    /// </summary>
-    /// <param name="pecas"></param>
-    /// <returns>Uma coleção de objetos OrcamentoItemServicoPecaResponse contendo as informações das peças do item do orçamento.</returns>
-    private static ICollection<OrcamentoItemServicoPecaResponse> MapearPecas(IEnumerable<ItemOrcamentoPeca> pecas)
-    {
-        return pecas
-            .Where(p => !p.EstaExcluida())
-            .Select(p => new OrcamentoItemServicoPecaResponse
-            {
-                PecaId = p.PecaId,
-                Descricao = p.Peca?.Nome ?? string.Empty,
-                Quantidade = p.Quantidade,
-                ValorUnitario = p.Peca?.Valor ?? 0m,
-                ValorTotal = p.ValorTotal
+                OrcamentoId = g.First().OrcamentoId ?? Guid.Empty,
+                Servicos =
+                [
+                    new ServicoItemResponse
+                    {
+                        ServicoId = g.Key.ServicoId,
+                        Descricao = g.Key.Nome,
+                        ValorServico = g.Key.Valor,
+                        Pecas = g.Select(p => new PecaItemResponse
+                        {
+                            PecaId = p.PecaId,
+                            Descricao = p.Peca?.Nome ?? string.Empty,
+                            Quantidade = p.Quantidade,
+                            ValorUnitario = p.Peca?.Valor ?? 0m,
+                            ValorTotal = (p.Peca?.Valor ?? 0m) * p.Quantidade
+                        }).ToList(),
+                        ValorTotal = g.Key.Valor + g.Sum(p => (p.Peca?.Valor ?? 0m) * p.Quantidade)
+                    }
+                ]
             })
             .ToList();
     }

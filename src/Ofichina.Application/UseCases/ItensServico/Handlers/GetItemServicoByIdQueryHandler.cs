@@ -52,7 +52,7 @@ public sealed class GetItemServicoByIdQueryHandler
 
             var response = new OrdemServicoItensResponse
             {
-                OrdemServicoId = item.OrdemServicoId,
+                OrdemServicoId = item.OrdemServicoId ?? Guid.Empty,
                 Servicos =
                 [
                     new ServicoItemResponse

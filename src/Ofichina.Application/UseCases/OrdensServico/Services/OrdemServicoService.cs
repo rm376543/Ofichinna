@@ -1,3 +1,4 @@
+using Ofichina.Domain.Common;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
@@ -44,7 +45,7 @@ public sealed class OrdemServicoService : IOrdemServicoService
             Cliente = ObterNome(ordem.PessoaId, nomesPorId),
             Funcionario = ObterNome(ordem.FuncionarioId, nomesPorId),
             ProblemaRelatado = ordem.ProblemaRelatado,
-            Status = ordem.Status.ToString(),
+            Status = ordem.Status.ToUpperSnakeCase(),
             DataAbetura = ordem.DataAbertura.ToString("dd/MM/yyyy"),
             DataFinalizacao = ordem.DataFinalizacao?.ToString("dd/MM/yyyy") ?? "",
             Observacao = ordem.Observacao,

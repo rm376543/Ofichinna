@@ -1,3 +1,4 @@
+using Ofichina.Domain.Common;
 using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
@@ -40,11 +41,11 @@ public sealed class OrcamentoService : IOrcamentoService
             Cliente = ObterNome(orcamento.PessoaId, nomesPorId),
             Responsavel = ObterNome(orcamento.ResponsavelId, nomesPorId),
             MecanicoDiagnostico = ObterNome(orcamento.MecanicoDiagnosticoId, nomesPorId),
-            Status = orcamento.Status.ToString(),
+            Status = orcamento.Status.ToUpperSnakeCase(),
             DataCriacao = orcamento.DataCriacao.ToString("dd/MM/yyyy"),
             DataValidade = orcamento.DataValidade.ToString("dd/MM/yyyy"),
             Desconto = orcamento.Desconto,
-            ValorTotal = orcamento.Servicos.Sum(x => x.ValorTotal).ToString(),
+            ValorTotal = orcamento.ItensServico.Sum(x => x.ValorTotal).ToString(),
             CreatedAt = orcamento.CreatedAt,
             UpdatedAt = orcamento.UpdatedAt,
             DeletedAt = orcamento.DeletedAt

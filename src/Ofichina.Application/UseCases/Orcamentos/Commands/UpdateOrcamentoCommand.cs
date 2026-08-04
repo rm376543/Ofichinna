@@ -1,8 +1,7 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Orcamento;
-using Ofichina.Contracts.Requests.Orcamentos;
-using Ofichina.Contracts.Requests.Orcamentos;
+using Ofichina.Contracts.Requests.ItensServico;
 
 namespace Ofichina.Application.UseCases.Orcamentos.Commands;
 
@@ -27,9 +26,7 @@ public sealed class UpdateOrcamentoCommand : ICommand<Result>
 
     public string? Observacoes { get; init; }
 
-    public ICollection<UpdateOrcamentoServicoRequest> Servicos { get; init; } = [];
-
-    public ICollection<UpdateOrcamentoPecaRequest> Pecas { get; init; } = [];
+    public ICollection<UpdateItemServicoRequest> ItensServico { get; init; } = [];
 
     public UpdateOrcamentoCommand(UpdateOrcamentoRequest request)
     {
@@ -41,6 +38,6 @@ public sealed class UpdateOrcamentoCommand : ICommand<Result>
         DataValidade = request.DataValidade;
         Desconto = request.Desconto;
         Observacoes = request.Observacoes;
-        Servicos = request.Servicos;
+        ItensServico = request.ItensServico;
     }
 }

@@ -67,7 +67,7 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
             if (existente is not null && !existente.EstaExcluida())
                 return Result.Failure<Guid>("Já existe um item de serviço com este serviço e esta peça na ordem.");
 
-            var item = new ItemServico(
+            var item = ItemServico.ParaOrdemServico(
                 command.OrdemServicoId,
                 command.ServicoId,
                 command.PecaId,

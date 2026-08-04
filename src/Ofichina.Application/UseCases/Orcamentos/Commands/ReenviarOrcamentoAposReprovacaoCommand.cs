@@ -4,11 +4,9 @@ using Ofichina.Contracts.Common;
 namespace Ofichina.Application.UseCases.Orcamentos.Commands;
 
 /// <summary>
-/// Comando para reprovar um orçamento.
+/// Comando para reenviar um orçamento após reprovação.
 /// </summary>
-public sealed class ReprovarOrcamentoCommand : ICommand<Result>
+public sealed class ReenviarOrcamentoAposReprovacaoCommand : ICommand<Result>
 {
     public Guid Id { get; init; }
-
-    public string? Motivo { get; init; }
 }

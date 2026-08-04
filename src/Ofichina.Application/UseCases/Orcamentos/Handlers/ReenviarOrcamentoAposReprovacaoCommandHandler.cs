@@ -2,7 +2,6 @@ using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Authentication;
 using Ofichina.Application.Abstractions.Common;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.Orcamentos.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Common;
@@ -13,22 +12,22 @@ using Ofichina.Domain.Exceptions;
 namespace Ofichina.Application.UseCases.Orcamentos.Handlers;
 
 /// <summary>
-/// Handler para enviar orçamento ao cliente.
+/// Handler para reenviar orçamento após reprovação.
 /// </summary>
-public sealed class EnviarOrcamentoParaClienteCommandHandler : ICommandHandler<EnviarOrcamentoParaClienteCommand, Result>
+public sealed class ReenviarOrcamentoAposReprovacaoCommandHandler : ICommandHandler<ReenviarOrcamentoAposReprovacaoCommand, Result>
 {
     private readonly IOrcamentoRepository _orcamentoRepository;
     private readonly IRepository<HistoricoStatus> _historicoStatusRepository;
     private readonly IUsuarioAtualService _usuarioAtualService;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<EnviarOrcamentoParaClienteCommandHandler> _logger;
+    private readonly ILogger<ReenviarOrcamentoAposReprovacaoCommandHandler> _logger;
 
-    public EnviarOrcamentoParaClienteCommandHandler(
+    public ReenviarOrcamentoAposReprovacaoCommandHandler(
         IOrcamentoRepository orcamentoRepository,
         IRepository<HistoricoStatus> historicoStatusRepository,
         IUsuarioAtualService usuarioAtualService,
         IUnitOfWork unitOfWork,
-        ILogger<EnviarOrcamentoParaClienteCommandHandler> logger)
+        ILogger<ReenviarOrcamentoAposReprovacaoCommandHandler> logger)
     {
         _orcamentoRepository = orcamentoRepository;
         _historicoStatusRepository = historicoStatusRepository;
@@ -37,7 +36,7 @@ public sealed class EnviarOrcamentoParaClienteCommandHandler : ICommandHandler<E
         _logger = logger;
     }
 
-    public async Task<Result> HandleAsync(EnviarOrcamentoParaClienteCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result> HandleAsync(ReenviarOrcamentoAposReprovacaoCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -46,7 +45,7 @@ public sealed class EnviarOrcamentoParaClienteCommandHandler : ICommandHandler<E
                 return Result.Failure("Orçamento não encontrado.");
 
             var statusAnterior = orcamento.Status;
-            orcamento.EnviarParaCliente();
+            orcamento.ReenviarAposReprovacao();
 
             await _orcamentoRepository.UpdateAsync(orcamento, cancellationToken);
             await _historicoStatusRepository.AddAsync(
@@ -62,13 +61,13 @@ public sealed class EnviarOrcamentoParaClienteCommandHandler : ICommandHandler<E
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domínio ao enviar orçamento ao cliente. OrcamentoId: {OrcamentoId}", command.Id);
+            _logger.LogWarning(ex, "Erro de domínio ao reenviar orçamento. OrcamentoId: {OrcamentoId}", command.Id);
             return Result.Failure(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao enviar orçamento ao cliente. OrcamentoId: {OrcamentoId}", command.Id);
-            return Result.Failure("Não foi possível enviar o orçamento.");
+            _logger.LogError(ex, "Erro inesperado ao reenviar orçamento. OrcamentoId: {OrcamentoId}", command.Id);
+            return Result.Failure("Não foi possível reenviar o orçamento.");
         }
     }
 }
