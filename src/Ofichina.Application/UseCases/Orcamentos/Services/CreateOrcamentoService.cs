@@ -52,19 +52,15 @@ public sealed class CreateOrcamentoService : ICreateOrcamentoService
             if (veiculo is null || veiculo.EstaExcluida())
                 return Result.Failure("Veículo não encontrado.");
 
-            Checklist? checklist = null;
-            if (command.ChecklistId.HasValue)
-            {
-                checklist = await _checklistRepository.GetByIdAsync(command.ChecklistId.Value, cancellationToken);
-                if (checklist is null || checklist.EstaExcluida())
-                    return Result.Failure("Checklist não encontrado.");
+            var checklist = await _checklistRepository.GetByIdAsync(command.ChecklistId, cancellationToken);
+            if (checklist is null || checklist.EstaExcluida())
+                return Result.Failure("Checklist não encontrado.");
 
-                if (!checklist.Finalizado)
-                    return Result.Failure("O checklist precisa estar finalizado para gerar o orçamento.");
+            if (!checklist.Finalizado)
+                return Result.Failure("O checklist precisa estar finalizado para gerar o orçamento.");
 
-                if (checklist.PessoaId != command.PessoaId || checklist.VeiculoId != command.VeiculoId)
-                    return Result.Failure("O checklist informado não corresponde à pessoa e ao veículo do orçamento.");
-            }
+            if (checklist.PessoaId != command.PessoaId || checklist.VeiculoId != command.VeiculoId)
+                return Result.Failure("O checklist informado não corresponde à pessoa e ao veículo do orçamento.");
 
             var mecanicoDiagnostico = await _pessoaRepository.GetByIdAsync(command.MecanicoDiagnosticoId, cancellationToken);
             if (mecanicoDiagnostico is null || mecanicoDiagnostico.EstaExcluida())

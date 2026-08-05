@@ -10,9 +10,13 @@
 
 	<ItemGroup>
 	  <Compile Remove="Controllers\Orcamento\**" />
+	  <Compile Remove="Controllers\ServicosPecas\**" />
 	  <Content Remove="Controllers\Orcamento\**" />
+	  <Content Remove="Controllers\ServicosPecas\**" />
 	  <EmbeddedResource Remove="Controllers\Orcamento\**" />
+	  <EmbeddedResource Remove="Controllers\ServicosPecas\**" />
 	  <None Remove="Controllers\Orcamento\**" />
+	  <None Remove="Controllers\ServicosPecas\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -41,7 +45,6 @@
 	<ItemGroup>
 		<Folder Include="Controllers\ItemServico\" />
 		<Folder Include="Controllers\Pessoa\" />
-		<Folder Include="Controllers\ServicosPecas\" />
 		<Folder Include="logs\" />
 	</ItemGroup>
 

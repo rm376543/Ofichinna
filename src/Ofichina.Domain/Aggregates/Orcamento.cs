@@ -96,7 +96,7 @@ public sealed class Orcamento : Entity
 
     public void EnviarParaCliente()
     {
-        FinalizarDiagnostico();
+        ValidarStatus(StatusOrcamento.AguardandoAprovacao);
     }
 
     public void Aprovar()
@@ -199,7 +199,7 @@ public sealed class Orcamento : Entity
 
     private void ValidarAlteracaoItens()
     {
-        if (Status != StatusOrcamento.EmDiagnostico)
+        if (Status != StatusOrcamento.Recebida)
             throw new DomainException("Não é possível alterar itens nesta etapa do orçamento.");
     }
 
