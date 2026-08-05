@@ -122,7 +122,7 @@ public sealed class OrcamentoController : ControllerBase
         var result = await _mediator.Send(new CreateOrcamentoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
-            return ResponderFalha(result.Error, "Não foi possível criar o orçamento.");
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o orçamento."));
 
         return Ok(ApiResponse.SuccessResponse("Orçamento criado com sucesso."));
     }
@@ -152,7 +152,7 @@ public sealed class OrcamentoController : ControllerBase
         }, cancellationToken);
 
         if (!result.IsSuccess)
-            return ResponderFalha(result.Error, "Não foi possível iniciar o diagnóstico do orçamento.");
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível iniciar o diagnóstico do orçamento."));
 
         return Ok(ApiResponse.SuccessResponse("Diagnóstico do orçamento iniciado com sucesso."));
     }
@@ -182,7 +182,7 @@ public sealed class OrcamentoController : ControllerBase
         }, cancellationToken);
 
         if (!result.IsSuccess)
-            return ResponderFalha(result.Error, "Não foi possível finalizar o orçamento.");
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível finalizar o orçamento."));
 
         return Ok(ApiResponse.SuccessResponse("Orçamento finalizado com sucesso."));
     }
@@ -213,7 +213,7 @@ public sealed class OrcamentoController : ControllerBase
         var result = await _mediator.Send(new UpdateOrcamentoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
-            return ResponderFalha(result.Error, "Não foi possível atualizar o orçamento.");
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o orçamento."));
 
         return Ok(ApiResponse.SuccessResponse("Orçamento atualizado com sucesso."));
     }
@@ -239,7 +239,7 @@ public sealed class OrcamentoController : ControllerBase
         var result = await _mediator.Send(new EnviarOrcamentoParaClienteCommand { Id = id }, cancellationToken);
 
         if (!result.IsSuccess)
-            return ResponderFalha(result.Error, "Não foi possível enviar o orçamento.");
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível enviar o orçamento."));
 
         return Ok(ApiResponse.SuccessResponse("Orçamento enviado para o cliente com sucesso."));
     }
@@ -269,15 +269,16 @@ public sealed class OrcamentoController : ControllerBase
         }, cancellationToken);
 
         if (!result.IsSuccess)
-            return ResponderFalha(result.Error, "Não foi possível aprovar o orçamento.");
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível aprovar o orçamento."));
 
         return Ok(ApiResponse.SuccessResponse("Orçamento aprovado com sucesso."));
     }
 
     /// <summary>
-    /// Reprova um orçamento.
+    /// Reprova um orçamento, registrando o motivo da reprovação.
     /// </summary>
     /// <param name="id">Identificador do orçamento.</param>
+    /// <param name="request">Objeto contendo o motivo da reprovação.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
@@ -300,7 +301,7 @@ public sealed class OrcamentoController : ControllerBase
         }, cancellationToken);
 
         if (!result.IsSuccess)
-            return ResponderFalha(result.Error, "Não foi possível reprovar o orçamento.");
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível reprovar o orçamento."));
 
         return Ok(ApiResponse.SuccessResponse("Orçamento reprovado com sucesso."));
     }
@@ -326,16 +327,8 @@ public sealed class OrcamentoController : ControllerBase
         var result = await _mediator.Send(new ReenviarOrcamentoAposReprovacaoCommand { Id = id }, cancellationToken);
 
         if (!result.IsSuccess)
-            return ResponderFalha(result.Error, "Não foi possível reenviar o orçamento.");
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível reenviar o orçamento."));
 
         return Ok(ApiResponse.SuccessResponse("Orçamento reenviado com sucesso."));
-    }
-
-    private ActionResult<ApiResponse> ResponderFalha(string? erro, string mensagemPadrao)
-    {
-        if (!string.IsNullOrWhiteSpace(erro) && erro.Contains("não encontrado", StringComparison.OrdinalIgnoreCase))
-            return NotFound(ApiResponse.FailureResponse(erro));
-
-        return BadRequest(ApiResponse.FailureResponse(erro ?? mensagemPadrao));
     }
 }
