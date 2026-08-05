@@ -56,9 +56,10 @@ public sealed class GetItemServicosByOrdemServicoQueryHandler : IQueryHandler<Ge
                         ValorServico = servico.Key.Valor,
 
                         Pecas = servico
+                            .Where(p => p.PecaId.HasValue)
                             .Select(p => new PecaItemResponse
                             {
-                                PecaId = p.PecaId,
+                                PecaId = p.PecaId!.Value,
                                 Descricao = p.Peca?.Nome ?? "",
                                 Quantidade = p.Quantidade,
                                 ValorUnitario = p.Peca?.Valor ?? 0,

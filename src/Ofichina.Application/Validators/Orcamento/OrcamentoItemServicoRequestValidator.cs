@@ -14,7 +14,7 @@ public sealed class OrcamentoItemServicoRequestValidator : AbstractValidator<Orc
             .NotEmpty().WithMessage("O serviço previsto é obrigatório.");
 
         RuleFor(x => x.PecaId)
-            .NotEmpty().WithMessage("A peça prevista é obrigatória.");
+            .NotEmpty().When(x => x.PecaId.HasValue).WithMessage("A peça prevista é obrigatória.");
 
         RuleFor(x => x.Quantidade)
             .GreaterThan(0).WithMessage("A quantidade da peça deve ser maior que zero.");

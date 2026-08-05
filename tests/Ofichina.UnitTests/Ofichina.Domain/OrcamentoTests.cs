@@ -1,6 +1,6 @@
 using Ofichina.Domain.Aggregates;
-using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.Enums;
+using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.UnitTests.Domain;
 
@@ -17,9 +17,9 @@ public sealed class OrcamentoTests
     [Fact]
     public void Deve_Permitir_Adicionar_Servico_Quando_Status_For_Recebida()
     {
-        var orcamento = CriarOrcamento();
+        var orcamento = CriarOrcamento(comItens: false);
 
-        var item = orcamento.AdicionarServico(Guid.NewGuid(), Guid.NewGuid(), 1);
+        var item = orcamento.AdicionarServico(Guid.NewGuid(), Guid.NewGuid(), 1, StatusOrcamento.EmDiagnostico);
 
         Assert.NotNull(item);
         Assert.Single(orcamento.ItensServico);
@@ -32,9 +32,19 @@ public sealed class OrcamentoTests
         var orcamento = CriarOrcamento();
         orcamento.IniciarDiagnostico();
 
-        var ex = Assert.Throws<DomainException>(() => orcamento.AdicionarServico(Guid.NewGuid(), Guid.NewGuid(), 1));
+        var ex = Assert.Throws<DomainException>(() => orcamento.AdicionarServico(Guid.NewGuid(), Guid.NewGuid(), 1, StatusOrcamento.EmDiagnostico));
 
         Assert.Equal("Não é possível alterar itens nesta etapa do orçamento.", ex.Message);
+    }
+
+    [Fact]
+    public void Deve_Rejeitar_Inicio_De_Diagnostico_Sem_Itens()
+    {
+        var orcamento = CriarOrcamento(comItens: false);
+
+        var ex = Assert.Throws<DomainException>(() => orcamento.IniciarDiagnostico());
+
+        Assert.Equal("O orçamento precisa ter ao menos um serviço cadastrado para iniciar o diagnóstico.", ex.Message);
     }
 
     [Fact]
@@ -60,9 +70,9 @@ public sealed class OrcamentoTests
         Assert.Equal("O orçamento precisa estar no status AguardandoAprovacao.", ex.Message);
     }
 
-    private static Orcamento CriarOrcamento()
+    private static Orcamento CriarOrcamento(bool comItens = true)
     {
-        return new Orcamento(
+        var orcamento = new Orcamento(
             Guid.NewGuid(),
             Guid.NewGuid(),
             Guid.NewGuid(),
@@ -71,5 +81,10 @@ public sealed class OrcamentoTests
             0,
             "Orçamento teste",
             Guid.NewGuid());
+
+        if (comItens)
+            orcamento.AdicionarServico(Guid.NewGuid(), Guid.NewGuid(), 1, StatusOrcamento.EmDiagnostico);
+
+        return orcamento;
     }
 }

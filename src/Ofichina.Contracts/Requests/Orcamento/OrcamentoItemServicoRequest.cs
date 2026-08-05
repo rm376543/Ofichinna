@@ -11,9 +11,9 @@ public sealed class OrcamentoItemServicoRequest
     public Guid ServicoId { get; init; }
 
     /// <summary>
-    /// Identificador da peça prevista.
+    /// Identificador da peça prevista. Opcional no fluxo de orçamento.
     /// </summary>
-    public Guid PecaId { get; init; }
+    public Guid? PecaId { get; init; }
 
     /// <summary>
     /// Quantidade de peças previstas.

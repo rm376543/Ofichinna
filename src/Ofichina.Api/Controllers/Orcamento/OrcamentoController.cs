@@ -312,7 +312,7 @@ public sealed class OrcamentoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut("{id:guid}/reenviar")]
+    [HttpPut("{id:guid}/reenvia-para-diagnostico")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]

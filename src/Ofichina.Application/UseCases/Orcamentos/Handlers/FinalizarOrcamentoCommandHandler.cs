@@ -1,10 +1,7 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Authentication;
-using Ofichina.Application.Abstractions.Common;
 using Ofichina.Application.UseCases.Orcamentos.Commands;
 using Ofichina.Contracts.Common;
-using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
@@ -40,7 +37,7 @@ public sealed class FinalizarOrcamentoCommandHandler : ICommandHandler<Finalizar
     {
         try
         {
-            var orcamento = await _orcamentoRepository.GetByIdAsync(command.Id, cancellationToken, tracking: true);
+            var orcamento = await _orcamentoRepository.GetByIdAsync(command.Id, includeItens: true, cancellationToken, tracking: true);
             if (orcamento is null || orcamento.EstaExcluida())
                 return Result.Failure("Orçamento não encontrado.");
 

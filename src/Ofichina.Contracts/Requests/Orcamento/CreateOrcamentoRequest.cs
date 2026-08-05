@@ -47,8 +47,4 @@ public sealed class CreateOrcamentoRequest : CreateRequest
     /// </summary>
     public decimal Desconto { get; init; }
 
-    /// <summary>
-    /// Itens de serviço.
-    /// </summary>
-    public ICollection<OrcamentoItemServicoRequest> ItensServico { get; init; } = [];
 }

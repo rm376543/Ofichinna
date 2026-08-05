@@ -21,7 +21,7 @@ public class ItemServicoConfiguration : IEntityTypeConfiguration<ItemServico>
             .IsRequired();
 
         builder.Property(i => i.PecaId)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(i => i.Quantidade)
             .IsRequired();

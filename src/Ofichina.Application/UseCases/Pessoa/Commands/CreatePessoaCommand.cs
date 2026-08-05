@@ -6,7 +6,7 @@ namespace Ofichina.Application.UseCases.Pessoas.Commands;
 /// <summary>
 /// Comando para criação de pessoa.
 /// </summary>
-public sealed class CreatePessoaCommand : ICommand<Result<Guid>>
+public sealed class CreatePessoaCommand : ICommand<Result>
 {
     /// <summary>
     /// Nome completo ou razão social.

@@ -32,9 +32,15 @@ public sealed class Orcamento : Entity
 
     public DateTime DataCriacao => CreatedAt;
 
+#pragma warning disable S1144
     public Checklist? Checklist { get; private set; }
+#pragma warning restore S1144
 
     public IReadOnlyCollection<ItemServico> ItensServico => _itensServico.AsReadOnly();
+
+    public decimal ValorBruto => CalcularValorBruto();
+
+    public decimal ValorTotal => CalcularValorTotal();
 
     [NotMapped]
     public IReadOnlyCollection<ItemServico> Servicos => ItensServico;
@@ -46,6 +52,7 @@ public sealed class Orcamento : Entity
     {
     }
 
+#pragma warning disable S107
     public Orcamento(
         Guid pessoaId,
         Guid veiculoId,
@@ -55,6 +62,7 @@ public sealed class Orcamento : Entity
         decimal desconto,
         string? observacoes,
         Guid? checklistId = null)
+#pragma warning restore S107
     {
         ValidarIdentificador(pessoaId, "Pessoa obrigatória.");
         ValidarIdentificador(veiculoId, "Veículo obrigatório.");
@@ -89,6 +97,7 @@ public sealed class Orcamento : Entity
     public void FinalizarDiagnostico()
     {
         ValidarStatus(StatusOrcamento.EmDiagnostico);
+        ValidarItensCadastrados();
 
         Status = StatusOrcamento.AguardandoAprovacao;
         AtualizarDataModificacao();
@@ -154,9 +163,9 @@ public sealed class Orcamento : Entity
         AtualizarDataModificacao();
     }
 
-    public ItemServico AdicionarServico(Guid servicoId, Guid pecaId, int quantidade)
+    public ItemServico AdicionarServico(Guid servicoId, Guid? pecaId, int quantidade, StatusOrcamento statusOrcamento)
     {
-        ValidarAlteracaoItens();
+        ValidarAlteracaoItens(statusOrcamento);
 
         var item = ItemServico.ParaOrcamento(Id, servicoId, pecaId, quantidade);
         _itensServico.Add(item);
@@ -166,9 +175,9 @@ public sealed class Orcamento : Entity
         return item;
     }
 
-    public void AtualizarServico(Guid itemServicoId, Guid servicoId, Guid pecaId, int quantidade)
+    public void AtualizarServico(Guid itemServicoId, Guid servicoId, Guid? pecaId, int quantidade, StatusOrcamento statusOrcamento)
     {
-        ValidarAlteracaoItens();
+        ValidarAlteracaoItens(statusOrcamento);
 
         var item = ObterServico(itemServicoId);
 
@@ -179,9 +188,9 @@ public sealed class Orcamento : Entity
         AtualizarDataModificacao();
     }
 
-    public void RemoverServico(Guid itemServicoId)
+    public void RemoverServico(Guid itemServicoId, StatusOrcamento statusOrcamento)
     {
-        ValidarAlteracaoItens();
+        ValidarAlteracaoItens(statusOrcamento);
 
         var item = ObterServico(itemServicoId);
 
@@ -197,10 +206,28 @@ public sealed class Orcamento : Entity
         return _itensServico.FirstOrDefault(x => x.Id == itemServicoId);
     }
 
-    private void ValidarAlteracaoItens()
+    private void ValidarAlteracaoItens(StatusOrcamento statusOrcamento)
     {
-        if (Status != StatusOrcamento.Recebida)
+        if (Status != statusOrcamento)
             throw new DomainException("Não é possível alterar itens nesta etapa do orçamento.");
+    }
+
+    private void ValidarItensCadastrados()
+    {
+        if (!_itensServico.Any(item => !item.EstaExcluida()))
+            throw new DomainException("O orçamento precisa ter ao menos um serviço para ser finalizado.");
+    }
+
+    private decimal CalcularValorBruto()
+    {
+        return _itensServico
+            .Where(item => !item.EstaExcluida())
+            .Sum(item => item.ValorTotal);
+    }
+
+    private decimal CalcularValorTotal()
+    {
+        return ValorBruto - Desconto;
     }
 
     private void ValidarStatus(StatusOrcamento statusEsperado)

@@ -1,11 +1,8 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Common;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.Orcamentos.Commands;
 using Ofichina.Contracts.Common;
-using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
+using Ofichina.Domain.Enums;
 using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Application.UseCases.Orcamentos.Handlers;
@@ -75,7 +72,7 @@ public sealed class UpdateOrcamentoCommandHandler : ICommandHandler<UpdateOrcame
                 command.Observacoes);
 
             foreach (var item in orcamento.ItensServico.ToList())
-                orcamento.RemoverServico(item.Id);
+                orcamento.RemoverServico(item.Id, StatusOrcamento.EmDiagnostico);
 
             foreach (var item in command.ItensServico)
             {
@@ -83,11 +80,14 @@ public sealed class UpdateOrcamentoCommandHandler : ICommandHandler<UpdateOrcame
                 if (servico is null || servico.EstaExcluida())
                     return Result.Failure("Serviço não encontrado.");
 
-                var peca = await _pecaRepository.GetByIdAsync(item.PecaId, cancellationToken);
-                if (peca is null || peca.EstaExcluida())
-                    return Result.Failure("Peça não encontrada.");
+                if (item.PecaId.HasValue)
+                {
+                    var peca = await _pecaRepository.GetByIdAsync(item.PecaId.Value, cancellationToken);
+                    if (peca is null || peca.EstaExcluida())
+                        return Result.Failure("Peça não encontrada.");
+                }
 
-                orcamento.AdicionarServico(item.ServicoId, item.PecaId, item.Quantidade);
+                orcamento.AdicionarServico(item.ServicoId, item.PecaId, item.Quantidade, StatusOrcamento.EmDiagnostico);
             }
 
             await _orcamentoRepository.UpdateAsync(orcamento, cancellationToken);

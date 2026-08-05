@@ -17,7 +17,7 @@ public sealed class CreateOrcamentoRequestValidatorTests
     }
 
     [Fact]
-    public void Deve_Rejeitar_Requisicao_Sem_Itens()
+    public void Deve_Aceitar_Requisicao_Sem_Itens()
     {
         var validator = new CreateOrcamentoRequestValidator();
         var request = new CreateOrcamentoRequest
@@ -29,14 +29,12 @@ public sealed class CreateOrcamentoRequestValidatorTests
             MecanicoDiagnosticoId = Guid.NewGuid(),
             DataValidade = DateTime.UtcNow.AddDays(10),
             Desconto = 10,
-            Observacoes = "Orçamento sem itens",
-            ItensServico = []
+            Observacoes = "Orçamento sem itens"
         };
 
         var result = validator.Validate(request);
 
-        Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, x => x.ErrorMessage.Contains("ao menos um serviço", StringComparison.OrdinalIgnoreCase));
+        Assert.True(result.IsValid);
     }
 
     [Fact]
@@ -52,16 +50,7 @@ public sealed class CreateOrcamentoRequestValidatorTests
             MecanicoDiagnosticoId = Guid.NewGuid(),
             DataValidade = DateTime.UtcNow.AddDays(10),
             Desconto = 10,
-            Observacoes = "Orçamento inicial",
-            ItensServico =
-            [
-                new OrcamentoItemServicoRequest
-                {
-                    ServicoId = Guid.NewGuid(),
-                    PecaId = Guid.NewGuid(),
-                    Quantidade = 1
-                }
-            ]
+            Observacoes = "Orçamento inicial"
         };
 
         var result = validator.Validate(request);
@@ -81,16 +70,7 @@ public sealed class CreateOrcamentoRequestValidatorTests
             MecanicoDiagnosticoId = Guid.NewGuid(),
             DataValidade = DateTime.UtcNow.AddDays(10),
             Desconto = 10,
-            Observacoes = "Orçamento inicial",
-            ItensServico =
-            [
-                new OrcamentoItemServicoRequest
-                {
-                    ServicoId = Guid.NewGuid(),
-                    PecaId = Guid.NewGuid(),
-                    Quantidade = 1
-                }
-            ]
+            Observacoes = "Orçamento inicial"
         };
     }
 }

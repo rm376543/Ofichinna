@@ -1,20 +1,16 @@
-﻿using Microsoft.Extensions.Logging;
-using Ofichina.Application.Abstractions;
+﻿using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pessoas.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Domain.ValueObjects;
-using Ofichina.Domain.Common;
-using Ofichina.Application.Abstractions.Common;
 
 namespace Ofichina.Application.UseCases.Pessoas.Handlers;
 
 /// <summary>
 /// Handler para criar uma pessoa.
 /// </summary>
-public sealed class CreatePessoaCommandHandler : ICommandHandler<CreatePessoaCommand, Result<Guid>>
+public sealed class CreatePessoaCommandHandler : ICommandHandler<CreatePessoaCommand, Result>
 {
     private readonly IPessoaRepository _repository;
     private readonly IRepository<Usuario> _usuarioRepository;
@@ -33,7 +29,7 @@ public sealed class CreatePessoaCommandHandler : ICommandHandler<CreatePessoaCom
         _logger = logger;
     }
 
-    public async Task<Result<Guid>> HandleAsync(CreatePessoaCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result> HandleAsync(CreatePessoaCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -44,7 +40,7 @@ public sealed class CreatePessoaCommandHandler : ICommandHandler<CreatePessoaCom
             if (usuario is null)
             {
                 _logger.LogWarning("Usuário não encontrado para vinculação da pessoa. UsuarioId: {UsuarioId}", command.UsuarioId);
-                return Result.Failure<Guid>("Usuário não encontrado.");
+                return Result.Failure("Usuário não encontrado.");
             }
 
             var documento = CriarDocumento(command.Documento);
@@ -68,17 +64,17 @@ public sealed class CreatePessoaCommandHandler : ICommandHandler<CreatePessoaCom
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Pessoa criada com sucesso. PessoaId: {PessoaId}", pessoa.Id);
-            return Result.Success(pessoa.Id);
+            return Result.Success();
         }
         catch (DomainException ex)
         {
             _logger.LogWarning(ex, "Erro de domínio ao criar pessoa.");
-            return Result.Failure<Guid>(ex.Message);
+            return Result.Failure(ex.Message);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro inesperado ao criar pessoa.");
-            return Result.Failure<Guid>("Ocorreu um erro ao criar a pessoa.");
+            return Result.Failure("Ocorreu um erro ao criar a pessoa.");
         }
     }
 

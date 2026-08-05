@@ -21,5 +21,5 @@ public sealed class OrcamentoSimplesResponse : BaseEntity
 
     public decimal Desconto { get; set; }
 
-    public string ValorTotal { get; set; } = string.Empty;
+    public decimal ValorTotal { get; set; }
 }

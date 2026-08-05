@@ -1,11 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using Ofichina.Application.Abstractions;
+﻿using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Perfis.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Application.Abstractions.Interfaces;
-using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Perfis.Handlers;
 
@@ -55,7 +52,7 @@ public sealed class CreatePerfilCommandHandler : ICommandHandler<CreatePerfilCom
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao criar perfil.");
-            return Result.Failure(ex.Message);
+            return Result.Failure("Ocorreu um erro ao criar o perfil.");
         }
 
     }

@@ -16,7 +16,9 @@ public class ItemServico : Entity
     /// <summary>
     /// Navegação para o orçamento.
     /// </summary>
+#pragma warning disable S1144
     public Aggregates.Orcamento? Orcamento { get; private set; }
+#pragma warning restore S1144
 
     /// <summary>
     /// Identificador da ordem de serviço à qual o serviço pertence.
@@ -26,7 +28,9 @@ public class ItemServico : Entity
     /// <summary>
     /// Navegação para a ordem de serviço.
     /// </summary>
+#pragma warning disable S1144
     public Aggregates.OrdemServico? OrdemServico { get; private set; }
+#pragma warning restore S1144
 
     /// <summary>
     /// Identificador do serviço executado na ordem.
@@ -36,7 +40,9 @@ public class ItemServico : Entity
     /// <summary>
     /// Navegação para o serviço executado.
     /// </summary>
+#pragma warning disable S1144
     public Servico? Servico { get; private set; }
+#pragma warning restore S1144
 
     /// <summary>
     /// Valor do serviço associado.
@@ -46,12 +52,14 @@ public class ItemServico : Entity
     /// <summary>
     /// Identificador da peça utilizada no item de serviço.
     /// </summary>
-    public Guid PecaId { get; private set; } = Guid.Empty;
+    public Guid? PecaId { get; private set; }
 
     /// <summary>
     /// Navegação para a peça utilizada.
     /// </summary>
+#pragma warning disable S1144
     public Peca? Peca { get; private set; }
+#pragma warning restore S1144
 
     /// <summary>
     /// Valor total do item.
@@ -76,7 +84,7 @@ public class ItemServico : Entity
     public static ItemServico ParaOrcamento(
         Guid orcamentoId,
         Guid servicoId,
-        Guid pecaId,
+        Guid? pecaId,
         int quantidade)
     {
         return new ItemServico(orcamentoId, null, servicoId, pecaId, quantidade);
@@ -88,7 +96,7 @@ public class ItemServico : Entity
     public static ItemServico ParaOrdemServico(
         Guid ordemServicoId,
         Guid servicoId,
-        Guid pecaId,
+        Guid? pecaId,
         int quantidade)
     {
         return new ItemServico(null, ordemServicoId, servicoId, pecaId, quantidade);
@@ -98,7 +106,7 @@ public class ItemServico : Entity
         Guid? orcamentoId,
         Guid? ordemServicoId,
         Guid servicoId,
-        Guid pecaId,
+        Guid? pecaId,
         int quantidade)
     {
         if (orcamentoId is null && ordemServicoId is null)
@@ -106,9 +114,6 @@ public class ItemServico : Entity
 
         if (servicoId == Guid.Empty)
             throw new DomainException("Serviço obrigatório.");
-
-        if (pecaId == Guid.Empty)
-            throw new DomainException("Peça obrigatória.");
 
         if (quantidade <= 0)
             throw new DomainException("Quantidade inválida.");
@@ -125,16 +130,13 @@ public class ItemServico : Entity
     /// </summary>
     public void AtualizarDados(
         Guid servicoId,
-        Guid pecaId,
+        Guid? pecaId,
         int quantidade)
     {
         ValidarNaoExcluido();
 
         if (servicoId == Guid.Empty)
             throw new DomainException("Serviço obrigatório.");
-
-        if (pecaId == Guid.Empty)
-            throw new DomainException("Peça obrigatória.");
 
         if (quantidade <= 0)
             throw new DomainException("Quantidade inválida.");

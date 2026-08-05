@@ -35,10 +35,5 @@ public sealed class CreateOrcamentoRequestValidator : AbstractValidator<CreateOr
             .MaximumLength(1000).WithMessage("As observações não podem exceder 1000 caracteres.")
             .When(x => !string.IsNullOrWhiteSpace(x.Observacoes));
 
-        RuleFor(x => x.ItensServico)
-            .NotEmpty().WithMessage("O orçamento deve conter ao menos um item de serviço.");
-
-        RuleForEach(x => x.ItensServico)
-            .SetValidator(new OrcamentoItemServicoRequestValidator());
     }
 }

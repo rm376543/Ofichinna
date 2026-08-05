@@ -27,6 +27,8 @@ public sealed class OrcamentoResponse : BaseEntity
 
     public DateTime DataCriacao { get; set; }
 
+    public decimal ValorTotal { get; set; }
+
     public ChecklistResponse? Checklist { get; set; }
 
     public ICollection<OrcamentoItemResponse> ItensServico { get; set; } = [];
