@@ -2,13 +2,13 @@
 
 ## 🎯 Visão Geral
 
-Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, utilizando .NET 10 com SQL Server e Entity Framework Core.
+Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, utilizando .NET 10, SQL Server, Entity Framework Core e MediatR.
 
 ### ✅ Status
-- **Implementação**: Completa
-- **Build**: ✅ Sucesso (sem erros)
-- **Documentação**: ✅ Base consolidada e em evolução
-- **Pronto para**: Evolução de features e documentação
+- **Implementação**: Consolidada
+- **Build**: ✅ Validado
+- **Documentação**: ✅ Mantida em evolução contínua
+- **Pronto para**: Evolução de features e refinamentos de domínio
 
 ---
 
@@ -53,9 +53,11 @@ Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, ut
    - Endpoints de todos os controllers
    - Exemplos de request/response
    - Códigos de status
+   - Fluxo atualizado de checklist, orçamento e ordem de serviço
 
 7. **[🧩 DOMINIO_FEATURES.md](./DOMINIO_FEATURES.md)** - Entidades e features
    - Domínios, relacionamentos e operações disponíveis
+   - Regras atuais do fluxo comercial
 
 8. **[🤝 CONTRIBUTING.md](./CONTRIBUTING.md)** - Guia de contribuição
    - Regras de documentação
@@ -68,7 +70,7 @@ Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, ut
    - Exemplo preenchido em `das/`
 
 ### 🟡 VALIDAÇÃO E RASTREAMENTO
-9. **[✅ RELATORIO_IMPLEMENTACAO.md](./RELATORIO_IMPLEMENTACAO.md)** - Relatório completo
+10. **[✅ RELATORIO_IMPLEMENTACAO.md](./RELATORIO_IMPLEMENTACAO.md)** - Relatório completo
    - Base consolidada da implementação
    - Estrutura de pastas
    - Padrões de design
@@ -76,10 +78,11 @@ Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, ut
    - Estatísticas
    - Checklist de qualidade
 
-10. **[🧰 TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Suporte operacional
+11. **[🧰 TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** - Suporte operacional
    - Banco de dados
    - Migrations
    - SonarQube
+   - Problemas comuns de execução
 
 ---
 
@@ -88,10 +91,10 @@ Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, ut
 ```
 Ofichinna/
 │
-├─ Ofichina.Bootstrap/      [Layer: Composição]
-│
 ├─ src/
 │  ├─ Ofichina.Api/              [Layer: Apresentação]
+│  ├─ Ofichina.Authentication/   [Layer: Autenticação e autorização]
+│  ├─ Ofichina.Bootstrap/        [Layer: Composição]
 │  ├─ Ofichina.Contracts/        [Layer: Contratos]
 │  ├─ Ofichina.Application/      [Layer: Aplicação]
 │  ├─ Ofichina.Domain/           [Layer: Domínio]
@@ -99,7 +102,8 @@ Ofichinna/
 │
 ├─ tests/
 │  ├─ Ofichina.UnitTests/
-│  └─ Ofichina.IntegrationTests/
+│  ├─ Ofichina.IntegrationTests/
+│  └─ Ofichina.ArchitectureTests/
 │
 └─ docs/
    ├─ README.md
@@ -138,19 +142,27 @@ Ofichinna/
    └─ Documentacao Inicial Projeto/
 ```
 
+> A solução contém 10 projetos e segue uma separação clara entre apresentação, autenticação, composição, contratos, aplicação, domínio, infraestrutura e testes.
+
 ---
 
 ## 🚀 Quick Start
 
 ### 1. Configurar Banco de Dados
 ```json
-// appsettings.json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=.;Database=Ofichinna;Trusted_Connection=true;TrustServerCertificate=true;"
+    "DefaultConnection": "Server=localhost,1433;Database=ofichinna;User Id=sa;Password=<SENHA>;TrustServerCertificate=True"
+  },
+  "Jwt": {
+    "Issuer": "ofichinna",
+    "Audience": "ofichinna",
+    "Key": "<CHAVE_JWT>"
   }
 }
 ```
+
+> O `ApplicationDbContextFactory` lê `ConnectionStrings__DefaultConnection` do ambiente ou do arquivo `.env`, o que permite usar `dotnet ef` em design-time sem acoplar a string de conexão ao código.
 
 ### 2. Criar Migrations
 ```bash
@@ -165,7 +177,7 @@ dotnet ef database update -p src/Ofichina.Infrastructure
 dotnet run --project src/Ofichina.Api
 ```
 
-Acesse: `https://localhost:7000/swagger`
+Acesse: `https://localhost:7109/swagger`
 
 ---
 
@@ -173,24 +185,33 @@ Acesse: `https://localhost:7000/swagger`
 
 | Padrão | Local | Descrição |
 |--------|-------|-----------|
-| **CQRS** | Application/Abstractions | Commands (escrita) e Queries (leitura) |
-| **Repository** | Domain/Interfaces + Infrastructure/Repositories | Abstração de persistência |
-| **Unit of Work** | Domain/Interfaces + Infrastructure/Repositories | Gerenciamento de transações |
-| **Specification** | Domain/Specifications | Critérios de query encapsulados |
-| **Result** | Domain/Shared | Resultado com sucesso/erro |
-| **Value Object** | Domain/Shared | Objetos imutáveis por valor |
-| **DI** | Application/DependencyInjection | Modularidade e inversão de controle |
-| **Validation** | Application/Validators | FluentValidation integrado |
+| **CQRS** | Application/UseCases + Contracts | Commands (escrita) e Queries (leitura) |
+| **Mediator** | Application + MediatR | Desacoplamento entre requests e handlers |
+| **Repository** | Application/Abstractions + Infrastructure/Repositories | Abstração de persistência |
+| **Unit of Work** | Application/Abstractions + Infrastructure/Repositories | Gerenciamento de transações |
+| **Specification** | Contracts/Specifications | Critérios de consulta encapsulados |
+| **Result** | Contracts/Common | Resultado com sucesso/erro |
+| **Value Object** | Domain/ValueObjects | Objetos imutáveis por valor |
+| **DI** | Bootstrap + Application/DependencyInjection + Infrastructure/Modules + Authentication/DependencyInjection | Modularidade e inversão de controle |
+| **Validation** | Application/Validators + Authentication/Validators | FluentValidation integrado |
+| **Security** | Authentication + Contracts/Enums | JWT, roles e permissões granulares |
 
 ---
 
 ## 📦 Dependências
 
 ```xml
+<PackageReference Include="DotNetEnv" Version="3.2.0" />
+<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.9" />
+<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
 <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
 <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.9" />
+<PackageReference Include="MediatR" Version="12.5.0" />
 <PackageReference Include="FluentValidation" Version="11.9.2" />
 <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
+<PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+<PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0" />
+<PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
 ```
 
 ---
@@ -198,7 +219,10 @@ Acesse: `https://localhost:7000/swagger`
 ## 🔄 Fluxo de Inicialização
 
 ```
+Env.TraversePath().Load()
 Program.cs
+    ↓
+Serilog / Controllers / Swagger / Bootstrap
     ↓
 AddBootstrapMiddleware(configuration)
     ├─ AddAuthorizationModule()
@@ -207,6 +231,13 @@ AddBootstrapMiddleware(configuration)
     ├─ AddAuthenticationServices()
     ├─ AddApplication()
     └─ AddInfrastructure(configuration)
+    ↓
+UseCorrelationId()
+UseMiddleware<ApiExceptionMiddleware>()
+UseSwaggerModule() [Development]
+UseAuthentication()
+UseAuthorization()
+MapControllers()
 ```
 
 ---
@@ -216,15 +247,16 @@ AddBootstrapMiddleware(configuration)
 Seguindo este passo-a-passo (consulte GUIA_IMPLEMENTACAO.md para detalhes):
 
 ```
-1. Criar Entidade em Domain/Entities/
-2. Criar Interface em Domain/Interfaces/
-3. Implementar Repositório em Infrastructure/Repositories/
-4. Registrar em Infrastructure/Modules/RepositoryModule.cs
-5. Adicionar DbSet em ApplicationDbContext
-6. Criar Validador em Application/Validators/
-7. Criar Command/Query em Application/UseCases/
-8. Criar Handler em Application/UseCases/Handlers/
-9. Criar Controller em Api/Controllers/
+1. Criar Entidade ou Aggregate em Domain/Entities/ ou Domain/Aggregates/
+2. Criar Request/Response em Contracts/ se a API exigir contrato novo
+3. Criar Interface em Application/Abstractions/Interfaces/
+4. Implementar Repositório ou Serviço em Infrastructure/Repositories/ ou Infrastructure/Services/
+5. Registrar no módulo correspondente em Infrastructure/Modules/
+6. Ajustar o ApplicationDbContext e as Configurations em Infrastructure/Persistence/
+7. Criar Validador em Application/Validators/
+8. Criar Command/Query em Application/UseCases/
+9. Criar Handler em Application/UseCases/
+10. Criar Controller em Api/Controllers/
 ```
 
 Veja exemplo completo em **GUIA_IMPLEMENTACAO.md**
@@ -235,15 +267,15 @@ Veja exemplo completo em **GUIA_IMPLEMENTACAO.md**
 
 | Métrica | Valor |
 |---------|-------|
-| Projetos | 9 |
-| Documentos Markdown | 30 (21 na raiz + 1 DAS + 8 ADRs) |
-| Controllers documentados | 13 |
-| Endpoints documentados | 63 |
-| Entidades/features | 9 domínios principais |
-| Padrões de Design | CQRS, Repository, Unit of Work, Specification, Result, Value Object |
-| Módulos da API | Swagger, Correlation ID, exceções |
+| Projetos | 10 |
+| Documentos Markdown | 30+ |
+| Controllers documentados | 14 |
+| Endpoints documentados | 68 |
+| Entidades/features | 10+ domínios e fluxos principais |
+| Padrões de Design | CQRS, Mediator, Repository, Unit of Work, Specification, Result, Value Object, DI, Validation, Security |
+| Módulos da API | Swagger, Correlation ID, exceções, autenticação, autorização e logging |
 | Camadas/projetos | 10 projetos na solução |
-| Build Status | ✅ Sucesso |
+| Build Status | ✅ Validado |
 | Erros | 0 |
 
 ---
@@ -344,10 +376,10 @@ R: Siga o passo-a-passo em GUIA_IMPLEMENTACAO.md ou ARQUITETURA.md.
 R: Veja MAPA_VISUAL.md na seção "Mapeamento de Responsabilidades".
 
 **P: Que padrões foram usados?**  
-R: 8 padrões listados em ARQUITETURA.md e RELATORIO_IMPLEMENTACAO.md.
+R: Os principais padrões estão documentados em ARQUITETURA.md e RELATORIO_IMPLEMENTACAO.md: CQRS, Mediator, Repository, Unit of Work, Specification, Result, Value Object, DI, Validation e Security.
 
 **P: Posso usar MediatR?**  
-R: A solução usa abstrações próprias para commands e queries; adapte MediatR apenas se isso for necessário.
+R: Sim. A solução já utiliza MediatR para desacoplar handlers de comandos e consultas.
 
 **P: Como testar?**  
 R: Crie testes em projects `Ofichina.UnitTests` e `Ofichina.IntegrationTests`.
@@ -367,14 +399,14 @@ Para dúvidas sobre a implementação:
 
 ### v2.0 - 2026
 - ✅ Clean Architecture implementada
-- ✅ CQRS Pattern configurado
-- ✅ 8 padrões de design implementados
-- ✅ Entity Framework Core integrado
+- ✅ CQRS e MediatR integrados
+- ✅ Autenticação JWT e RBAC por perfis/permissões
+- ✅ Entity Framework Core 10 integrado
 - ✅ FluentValidation configurado
-- ✅ Documentação completa
-- ✅ Exemplos práticos
-- ✅ Build validado (0 erros)
-- ✅ Fluxo de orçamento documentado na API e em DAS
+- ✅ Swagger, Serilog e Correlation ID configurados
+- ✅ Documentação atualizada com visão da arquitetura e da API
+- ✅ Fluxo de orçamento, checklist e ordem de serviço alinhado ao domínio atual
+- ✅ Build validado
 
 ---
 
@@ -385,10 +417,10 @@ Para dúvidas sobre a implementação:
 │ IMPLEMENTAÇÃO CONCLUÍDA COM SUCESSO ✅ │
 └─────────────────────────────────────────┘
 
-Build:           ✅ Sucesso (sem erros)
+Build:           ✅ Validado
 Arquitetura:     ✅ Clean Architecture
-Padrões:         ✅ 8 implementados
-Documentação:    ✅ 5 arquivos
+Padrões:         ✅ 10+ implementados
+Documentação:    ✅ Ampliada e atualizada
 Exemplos:        ✅ Inclusos
 Pronto para:     ✅ Desenvolvimento
 ```

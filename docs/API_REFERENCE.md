@@ -404,7 +404,7 @@ Cria um orçamento.
 
 #### Requisição
 ```json
-{ "pessoaId": "550e8400-e29b-41d4-a716-446655440000", "veiculoId": "660e8400-e29b-41d4-a716-446655440000", "responsavelId": "770e8400-e29b-41d4-a716-446655440000", "mecanicoDiagnosticoId": "880e8400-e29b-41d4-a716-446655440000", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Avaliar ruído", "desconto": 10, "servicos": [{ "servicoId": "...", "pecas": [{ "pecaId": "...", "quantidade": 1 }] }] }
+{ "pessoaId": "550e8400-e29b-41d4-a716-446655440000", "veiculoId": "660e8400-e29b-41d4-a716-446655440000", "checklistId": "990e8400-e29b-41d4-a716-446655440000", "responsavelId": "770e8400-e29b-41d4-a716-446655440000", "mecanicoDiagnosticoId": "880e8400-e29b-41d4-a716-446655440000", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Avaliar ruído", "desconto": 10, "itensServico": [{ "servicoId": "...", "pecaId": "...", "quantidade": 1 }] }
 ```
 
 **Respostas:** `200`, `400`, `401`, `403`, `404`.
@@ -414,13 +414,19 @@ Atualiza um orçamento.
 
 #### Requisição
 ```json
-{ "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "responsavelId": "...", "mecanicoDiagnosticoId": "...", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Atualizado", "desconto": 12, "servicos": [{ "id": "...", "servicoId": "...", "pecas": [{ "id": "...", "pecaId": "...", "quantidade": 1 }] }] }
+{ "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "responsavelId": "...", "mecanicoDiagnosticoId": "...", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Atualizado", "desconto": 12, "itensServico": [{ "servicoId": "...", "pecaId": "...", "quantidade": 1 }] }
 ```
 
 **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
+### PUT /api/orcamentos/{id}/iniciar-diagnostico
+Inicia o diagnóstico do orçamento, alterando o status de `Recebida` para `EmDiagnostico`. **Respostas:** `200`, `400`, `401`, `403`, `404`.
+
+### PUT /api/orcamentos/{id}/finalizar
+Finaliza o orçamento após o diagnóstico, alterando o status para `AguardandoAprovacao`. **Respostas:** `200`, `400`, `401`, `403`, `404`.
+
 ### PUT /api/orcamentos/{id}/enviar
-Marca o orçamento como enviado para o cliente e registra o histórico de status. **Respostas:** `200`, `401`, `403`, `404`.
+Marca o orçamento como enviado para o cliente e registra o histórico de status. O orçamento precisa estar finalizado antes desse passo. **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
 ### PUT /api/orcamentos/{id}/aprovar
 Aprova o orçamento, seleciona automaticamente o mecânico de reparo quando disponível e gera a ordem de serviço vinculada. **Respostas:** `200`, `400`, `401`, `403`, `404`.

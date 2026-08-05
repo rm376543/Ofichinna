@@ -101,8 +101,9 @@ Separar o ciclo de vistoria do ciclo comercial e do ciclo operacional: primeiro 
 
 ```mermaid
 stateDiagram-v2
-	[*] --> EmDiagnostico
-	EmDiagnostico --> AguardandoAprovacao: EnviarParaCliente()
+	[*] --> Recebida
+	Recebida --> EmDiagnostico: IniciarDiagnostico()
+	EmDiagnostico --> AguardandoAprovacao: FinalizarDiagnostico()
 	AguardandoAprovacao --> Aprovado: Aprovar()
 	AguardandoAprovacao --> Reprovado: Reprovar()
 	Aprovado --> OrdemServicoCriada: CriarAPartirDoOrcamento()
@@ -125,6 +126,8 @@ stateDiagram-v2
 - `GET /api/orcamentos/{id}`
 - `POST /api/orcamentos`
 - `PUT /api/orcamentos`
+- `PUT /api/orcamentos/{id}/iniciar-diagnostico`
+- `PUT /api/orcamentos/{id}/finalizar`
 - `PUT /api/orcamentos/{id}/enviar`
 - `PUT /api/orcamentos/{id}/aprovar`
 - `PUT /api/orcamentos/{id}/reprovar`
