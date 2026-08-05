@@ -7,7 +7,6 @@ using Ofichina.Api.Controllers.Orcamento;
 using Ofichina.Application.UseCases.Orcamentos.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Orcamento;
-using Ofichina.Contracts.Requests.ItensServico;
 
 namespace Ofichina.IntegrationTests.Api.Controllers.Orcamento;
 
@@ -27,6 +26,7 @@ public sealed class OrcamentoControllerTests
         {
             PessoaId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
+            ChecklistId = Guid.NewGuid(),
             ResponsavelId = Guid.NewGuid(),
             MecanicoDiagnosticoId = Guid.NewGuid(),
             DataValidade = DateTime.UtcNow.AddDays(10),
@@ -34,7 +34,7 @@ public sealed class OrcamentoControllerTests
             Observacoes = "Orçamento inicial",
             ItensServico =
             [
-                new CreateItemServicoRequest
+                new OrcamentoItemServicoRequest
                 {
                     ServicoId = Guid.NewGuid(),
                     PecaId = Guid.NewGuid(),
@@ -55,6 +55,44 @@ public sealed class OrcamentoControllerTests
         Assert.Equal(request.DataValidade, mediator.CreateCommandEnviado.DataValidade);
         Assert.Equal(request.Desconto, mediator.CreateCommandEnviado.Desconto);
         Assert.Equal(request.Observacoes, mediator.CreateCommandEnviado.Observacoes);
+    }
+
+    [Fact]
+    public async Task IniciarDiagnosticoOrcamento_Deve_Enviar_Apenas_Id()
+    {
+        var mediator = new FakeMediator();
+        var controller = new OrcamentoController(
+            new InlineValidator<CreateOrcamentoRequest>(),
+            new InlineValidator<UpdateOrcamentoRequest>(),
+            mediator,
+            NullLogger<OrcamentoController>.Instance);
+
+        var id = Guid.NewGuid();
+        var result = await controller.IniciarDiagnosticoOrcamento(id, CancellationToken.None);
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        Assert.NotNull(mediator.IniciarDiagnosticoCommandEnviado);
+        Assert.Equal(id, mediator.IniciarDiagnosticoCommandEnviado!.Id);
+    }
+
+    [Fact]
+    public async Task FinalizarOrcamento_Deve_Enviar_Apenas_Id()
+    {
+        var mediator = new FakeMediator();
+        var controller = new OrcamentoController(
+            new InlineValidator<CreateOrcamentoRequest>(),
+            new InlineValidator<UpdateOrcamentoRequest>(),
+            mediator,
+            NullLogger<OrcamentoController>.Instance);
+
+        var id = Guid.NewGuid();
+        var result = await controller.FinalizarOrcamento(id, CancellationToken.None);
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        Assert.NotNull(mediator.FinalizarCommandEnviado);
+        Assert.Equal(id, mediator.FinalizarCommandEnviado!.Id);
     }
 
     [Fact]
@@ -79,7 +117,7 @@ public sealed class OrcamentoControllerTests
             Observacoes = "Orçamento atualizado",
             ItensServico =
             [
-                new UpdateItemServicoRequest
+                new OrcamentoItemServicoRequest
                 {
                     ServicoId = Guid.NewGuid(),
                     PecaId = Guid.NewGuid(),
@@ -169,6 +207,8 @@ public sealed class OrcamentoControllerTests
     private sealed class FakeMediator : IMediator
     {
         public CreateOrcamentoCommand? CreateCommandEnviado { get; private set; }
+        public IniciarDiagnosticoOrcamentoCommand? IniciarDiagnosticoCommandEnviado { get; private set; }
+        public FinalizarOrcamentoCommand? FinalizarCommandEnviado { get; private set; }
         public UpdateOrcamentoCommand? UpdateCommandEnviado { get; private set; }
         public AprovarOrcamentoCommand? AprovarCommandEnviado { get; private set; }
         public ReprovarOrcamentoCommand? ReprovarCommandEnviado { get; private set; }
@@ -179,6 +219,18 @@ public sealed class OrcamentoControllerTests
             if (request is CreateOrcamentoCommand createCommand)
             {
                 CreateCommandEnviado = createCommand;
+                return Task.FromResult((TResponse)(object)Result.Success());
+            }
+
+            if (request is IniciarDiagnosticoOrcamentoCommand iniciarDiagnosticoCommand)
+            {
+                IniciarDiagnosticoCommandEnviado = iniciarDiagnosticoCommand;
+                return Task.FromResult((TResponse)(object)Result.Success());
+            }
+
+            if (request is FinalizarOrcamentoCommand finalizarCommand)
+            {
+                FinalizarCommandEnviado = finalizarCommand;
                 return Task.FromResult((TResponse)(object)Result.Success());
             }
 
@@ -217,6 +269,18 @@ public sealed class OrcamentoControllerTests
                 return Task.CompletedTask;
             }
 
+            if (request is IniciarDiagnosticoOrcamentoCommand iniciarDiagnosticoCommand)
+            {
+                IniciarDiagnosticoCommandEnviado = iniciarDiagnosticoCommand;
+                return Task.CompletedTask;
+            }
+
+            if (request is FinalizarOrcamentoCommand finalizarCommand)
+            {
+                FinalizarCommandEnviado = finalizarCommand;
+                return Task.CompletedTask;
+            }
+
             if (request is UpdateOrcamentoCommand updateCommand)
             {
                 UpdateCommandEnviado = updateCommand;
@@ -247,6 +311,10 @@ public sealed class OrcamentoControllerTests
         public Task<TResponse> Send<TRequest, TResponse>(TRequest request, CancellationToken cancellationToken = default) where TRequest : IRequest<TResponse>
             => request is CreateOrcamentoCommand createCommand
                 ? Task.FromResult((TResponse)(object)Registrar(createCommand))
+                : request is IniciarDiagnosticoOrcamentoCommand iniciarDiagnosticoCommand
+                    ? Task.FromResult((TResponse)(object)Registrar(iniciarDiagnosticoCommand))
+                    : request is FinalizarOrcamentoCommand finalizarCommand
+                        ? Task.FromResult((TResponse)(object)Registrar(finalizarCommand))
                 : request is UpdateOrcamentoCommand updateCommand
                     ? Task.FromResult((TResponse)(object)Registrar(updateCommand))
                     : request is AprovarOrcamentoCommand aprovarCommand
@@ -258,6 +326,10 @@ public sealed class OrcamentoControllerTests
                                 : throw new NotSupportedException();
 
         private static Result Registrar(CreateOrcamentoCommand command) => Result.Success();
+
+        private static Result Registrar(IniciarDiagnosticoOrcamentoCommand command) => Result.Success();
+
+        private static Result Registrar(FinalizarOrcamentoCommand command) => Result.Success();
 
         private static Result Registrar(UpdateOrcamentoCommand command) => Result.Success();
 

@@ -1,6 +1,5 @@
 using Ofichina.Application.Validators.Orcamento;
 using Ofichina.Contracts.Requests.Orcamento;
-using Ofichina.Contracts.Requests.ItensServico;
 
 namespace Ofichina.UnitTests.Application.Orcamentos;
 
@@ -25,6 +24,7 @@ public sealed class CreateOrcamentoRequestValidatorTests
         {
             PessoaId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
+            ChecklistId = Guid.NewGuid(),
             ResponsavelId = Guid.NewGuid(),
             MecanicoDiagnosticoId = Guid.NewGuid(),
             DataValidade = DateTime.UtcNow.AddDays(10),
@@ -39,12 +39,15 @@ public sealed class CreateOrcamentoRequestValidatorTests
         Assert.Contains(result.Errors, x => x.ErrorMessage.Contains("ao menos um serviço", StringComparison.OrdinalIgnoreCase));
     }
 
-    private static CreateOrcamentoRequest CriarRequisicaoValida()
+    [Fact]
+    public void Deve_Rejeitar_Requisicao_Sem_Checklist()
     {
-        return new CreateOrcamentoRequest
+        var validator = new CreateOrcamentoRequestValidator();
+        var request = new CreateOrcamentoRequest
         {
             PessoaId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
+            ChecklistId = Guid.Empty,
             ResponsavelId = Guid.NewGuid(),
             MecanicoDiagnosticoId = Guid.NewGuid(),
             DataValidade = DateTime.UtcNow.AddDays(10),
@@ -52,7 +55,36 @@ public sealed class CreateOrcamentoRequestValidatorTests
             Observacoes = "Orçamento inicial",
             ItensServico =
             [
-                new CreateItemServicoRequest
+                new OrcamentoItemServicoRequest
+                {
+                    ServicoId = Guid.NewGuid(),
+                    PecaId = Guid.NewGuid(),
+                    Quantidade = 1
+                }
+            ]
+        };
+
+        var result = validator.Validate(request);
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, x => x.PropertyName == nameof(CreateOrcamentoRequest.ChecklistId));
+    }
+
+    private static CreateOrcamentoRequest CriarRequisicaoValida()
+    {
+        return new CreateOrcamentoRequest
+        {
+            PessoaId = Guid.NewGuid(),
+            VeiculoId = Guid.NewGuid(),
+            ChecklistId = Guid.NewGuid(),
+            ResponsavelId = Guid.NewGuid(),
+            MecanicoDiagnosticoId = Guid.NewGuid(),
+            DataValidade = DateTime.UtcNow.AddDays(10),
+            Desconto = 10,
+            Observacoes = "Orçamento inicial",
+            ItensServico =
+            [
+                new OrcamentoItemServicoRequest
                 {
                     ServicoId = Guid.NewGuid(),
                     PecaId = Guid.NewGuid(),
