@@ -12,8 +12,8 @@ using Ofichina.Infrastructure.Persistence;
 namespace Ofichina.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260803224222_009-reestruturar-itens-orcamento-para-itens-servico")]
-    partial class _009reestruturaritensorcamentoparaitensservico
+    [Migration("20260805133639_001-inicial")]
+    partial class _001inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -438,9 +438,6 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Property<Guid?>("OrdemServicoId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("OrdemServicoId2")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("PecaId")
                         .HasColumnType("uniqueidentifier");
 
@@ -458,8 +455,6 @@ namespace Ofichina.Infrastructure.Migrations
                     b.HasIndex("OrcamentoId");
 
                     b.HasIndex("OrdemServicoId");
-
-                    b.HasIndex("OrdemServicoId2");
 
                     b.HasIndex("PecaId");
 
@@ -1003,14 +998,10 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasForeignKey("OrcamentoId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Ofichina.Domain.Aggregates.OrdemServico", null)
+                    b.HasOne("Ofichina.Domain.Aggregates.OrdemServico", "OrdemServico")
                         .WithMany("Servicos")
                         .HasForeignKey("OrdemServicoId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Ofichina.Domain.Aggregates.OrdemServico", "OrdemServico")
-                        .WithMany()
-                        .HasForeignKey("OrdemServicoId2");
 
                     b.HasOne("Ofichina.Domain.Entities.Peca", "Peca")
                         .WithMany()
