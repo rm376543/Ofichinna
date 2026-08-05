@@ -45,7 +45,7 @@ public sealed class OrcamentoService : IOrcamentoService
             DataCriacao = orcamento.DataCriacao.ToString("dd/MM/yyyy"),
             DataValidade = orcamento.DataValidade.ToString("dd/MM/yyyy"),
             Desconto = orcamento.Desconto,
-            ValorTotal = orcamento.ItensServico.Sum(x => x.ValorTotal).ToString(),
+            ValorTotal = orcamento.ValorTotal,
             CreatedAt = orcamento.CreatedAt,
             UpdatedAt = orcamento.UpdatedAt,
             DeletedAt = orcamento.DeletedAt

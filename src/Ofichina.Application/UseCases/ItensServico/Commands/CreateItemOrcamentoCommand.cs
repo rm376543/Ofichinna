@@ -4,24 +4,24 @@ using Ofichina.Contracts.Common;
 namespace Ofichina.Application.UseCases.ItensServico.Commands;
 
 /// <summary>
-/// Comando para criação de um item de serviço em uma ordem de serviço.
+/// Comando para criação de um item de serviço em um orçamento.
 /// </summary>
-public sealed class CreateItemServicoCommand : ICommand<Result>
+public sealed class CreateItemOrcamentoCommand : ICommand<Result>
 {
     /// <summary>
-    /// Identificador da ordem de serviço.
+    /// Identificador do orçamento.
     /// </summary>
-    public Guid OrdemServicoId { get; init; }
+    public Guid OrcamentoId { get; init; }
 
     /// <summary>
-    /// Serviço executado na ordem.
+    /// Serviço executado no orçamento.
     /// </summary>
     public Guid ServicoId { get; init; }
 
     /// <summary>
-    /// Peça utilizada no serviço.
+    /// Peça utilizada no serviço (opcional).
     /// </summary>
-    public Guid PecaId { get; init; }
+    public Guid? PecaId { get; init; }
 
     /// <summary>
     /// Quantidade de peças utilizadas.

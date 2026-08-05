@@ -279,6 +279,10 @@ Remove logicamente um veículo. **Perfis permitidos:** `ADMIN` | **Respostas:** 
 
 Os endpoints desta seção exigem `ADMIN` e não usam policy nomeada.
 
+Observação sobre peças:
+- Nos itens de orçamento, `pecaId` é opcional.
+- Nos fluxos de item de serviço da ordem de serviço, a peça continua obrigatória.
+
 ### GET /api/servicos
 Lista serviços com paginação. **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`.
 
@@ -384,28 +388,40 @@ Lista orçamentos com paginação.
 
 #### Resposta 200
 ```json
-{ "success": true, "data": { "items": [{ "id": "550e8400-e29b-41d4-a716-446655440000", "cliente": "João da Silva", "responsavel": "Maria Souza", "mecanicoDiagnostico": "Carlos Lima", "status": "EmDiagnostico", "dataCriacao": "2026-08-01T12:00:00Z", "dataValidade": "2026-08-10T12:00:00Z", "desconto": 10, "valorTotal": "R$ 1.250,00" }], "pageNumber": 1, "pageSize": 10, "totalCount": 1 } }
+{ "success": true, "data": { "items": [{ "id": "550e8400-e29b-41d4-a716-446655440000", "cliente": "João da Silva", "responsavel": "Maria Souza", "mecanicoDiagnostico": "Carlos Lima", "status": "EmDiagnostico", "dataCriacao": "2026-08-01T12:00:00Z", "dataValidade": "2026-08-10T12:00:00Z", "desconto": 10, "valorTotal": 1250.00 }], "pageNumber": 1, "pageSize": 10, "totalCount": 1 } }
 ```
 
 **Respostas:** `200`, `400`, `401`, `403`.
 
 ### GET /api/orcamentos/{id}
-Retorna o orçamento detalhado com checklist e serviços previstos, incluindo peças e valores calculados.
+Retorna o orçamento detalhado com checklist e serviços previstos, incluindo `valorTotal` líquido com desconto.
 
 #### Resposta 200
 ```json
-{ "success": true, "data": { "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "mecanicoDiagnosticoId": "...", "responsavelId": "...", "dataValidade": "2026-08-10T12:00:00Z", "desconto": 10, "observacoes": "Avaliar ruído", "status": "EmDiagnostico", "checklist": { "id": "...", "orcamentoId": "...", "hodometroEntrada": 35000, "itensVerificados": "Pneus, freios", "observacoes": "Sem vazamentos" }, "servicos": [{ "id": "...", "orcamentoId": "...", "servicoId": "...", "descricao": "Troca de óleo", "valorServico": 120, "valorTotal": 180, "pecas": [{ "pecaId": "...", "descricao": "Filtro de óleo", "quantidade": 1, "valorUnitario": 60, "valorTotal": 60 }] }] } }
+{ "success": true, "data": { "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "mecanicoDiagnosticoId": "...", "responsavelId": "...", "dataValidade": "2026-08-10T12:00:00Z", "desconto": 10, "valorTotal": 1120.00, "observacoes": "Avaliar ruído", "status": "EmDiagnostico", "checklist": { "id": "...", "orcamentoId": "...", "hodometroEntrada": 35000, "itensVerificados": "Pneus, freios", "observacoes": "Sem vazamentos" }, "itensServico": [{ "orcamentoId": "...", "servicos": [{ "servicoId": "...", "descricao": "Troca de óleo", "valorServico": 120, "valorTotal": 180, "pecas": [{ "pecaId": "...", "descricao": "Filtro de óleo", "quantidade": 1, "valorUnitario": 60, "valorTotal": 60 }] }] }] } }
 ```
 
 **Respostas:** `200`, `401`, `403`, `404`.
 
 ### POST /api/orcamentos
-Cria um orçamento.
+Cria um orçamento com dados básicos. Os itens são adicionados em seguida no endpoint `POST /api/orcamentos/{id}/itens`.
 
 #### Requisição
 ```json
-{ "pessoaId": "550e8400-e29b-41d4-a716-446655440000", "veiculoId": "660e8400-e29b-41d4-a716-446655440000", "responsavelId": "770e8400-e29b-41d4-a716-446655440000", "mecanicoDiagnosticoId": "880e8400-e29b-41d4-a716-446655440000", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Avaliar ruído", "desconto": 10, "servicos": [{ "servicoId": "...", "pecas": [{ "pecaId": "...", "quantidade": 1 }] }] }
+{ "pessoaId": "550e8400-e29b-41d4-a716-446655440000", "veiculoId": "660e8400-e29b-41d4-a716-446655440000", "checklistId": "990e8400-e29b-41d4-a716-446655440000", "responsavelId": "770e8400-e29b-41d4-a716-446655440000", "mecanicoDiagnosticoId": "880e8400-e29b-41d4-a716-446655440000", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Avaliar ruído", "desconto": 10 }
 ```
+
+**Respostas:** `200`, `400`, `401`, `403`, `404`.
+
+### POST /api/orcamentos/{id}/itens
+Adiciona um ou mais itens ao orçamento.
+
+#### Requisição
+```json
+{ "orcamentoId": "550e8400-e29b-41d4-a716-446655440000", "itens": [{ "servicoId": "...", "pecaId": null, "quantidade": 2 }, { "servicoId": "...", "pecaId": "...", "quantidade": 1 }] }
+```
+
+**Observações:** `pecaId` é opcional nesta rota e `orcamentoId` deve ser igual ao identificador da rota.
 
 **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
@@ -414,13 +430,19 @@ Atualiza um orçamento.
 
 #### Requisição
 ```json
-{ "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "responsavelId": "...", "mecanicoDiagnosticoId": "...", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Atualizado", "desconto": 12, "servicos": [{ "id": "...", "servicoId": "...", "pecas": [{ "id": "...", "pecaId": "...", "quantidade": 1 }] }] }
+{ "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "responsavelId": "...", "mecanicoDiagnosticoId": "...", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Atualizado", "desconto": 12, "itensServico": [{ "servicoId": "...", "pecaId": null, "quantidade": 1 }] }
 ```
 
 **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
+### PUT /api/orcamentos/{id}/iniciar-diagnostico
+Inicia o diagnóstico do orçamento, alterando o status de `Recebida` para `EmDiagnostico`. O orçamento precisa ter ao menos um item ativo. **Respostas:** `200`, `400`, `401`, `403`, `404`.
+
+### PUT /api/orcamentos/{id}/finalizar
+Finaliza o orçamento após o diagnóstico, alterando o status para `AguardandoAprovacao`. **Respostas:** `200`, `400`, `401`, `403`, `404`.
+
 ### PUT /api/orcamentos/{id}/enviar
-Marca o orçamento como enviado para o cliente e registra o histórico de status. **Respostas:** `200`, `401`, `403`, `404`.
+Marca o orçamento como enviado para o cliente e registra o histórico de status. O orçamento precisa estar finalizado antes desse passo. **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
 ### PUT /api/orcamentos/{id}/aprovar
 Aprova o orçamento, seleciona automaticamente o mecânico de reparo quando disponível e gera a ordem de serviço vinculada. **Respostas:** `200`, `400`, `401`, `403`, `404`.

@@ -58,4 +58,20 @@ public interface IItemServicoRepository : IRepository<ItemServico>
         CancellationToken cancellationToken = default,
         bool tracking = false,
         bool includeRelacionados = false);
+
+    /// <summary>
+    /// Obtém um item de serviço pelo identificador do orçamento, serviço e peça.
+    /// </summary>
+    /// <param name="orcamentoId"></param>
+    /// <param name="servicoId"></param>
+    /// <param name="pecaId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <param name="tracking"></param>
+    /// <returns></returns>
+    Task<ItemServico?> GetByOrcamentoServicoPecaIdAsync(
+        Guid orcamentoId,
+        Guid servicoId,
+        Guid? pecaId,
+        CancellationToken cancellationToken = default,
+        bool tracking = false);
 }

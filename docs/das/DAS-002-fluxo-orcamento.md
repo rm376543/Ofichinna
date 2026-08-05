@@ -77,12 +77,13 @@ Separar o ciclo de vistoria do ciclo comercial e do ciclo operacional: primeiro 
 |---|---|---|---|
 | RF-001 | Criar checklist com veículo e pessoa | Checklist válido é persistido e pode ser finalizado |
 | RF-002 | Atualizar orçamento existente | Campos e serviços previstos são persistidos corretamente |
-| RF-003 | Consultar orçamento detalhado | Retorna checklist de origem, serviços previstos com peças e valores |
+| RF-003 | Consultar orçamento detalhado | Retorna checklist de origem, serviços previstos e valor total líquido |
 | RF-004 | Enviar orçamento ao cliente | `EM_DIAGNOSTICO → AGUARDANDO_APROVACAO` |
 | RF-005 | Reprovar orçamento com motivo opcional | `AGUARDANDO_APROVACAO → REPROVADO` com motivo persistido |
 | RF-006 | Reenviar orçamento após reprovação | `REPROVADO → EM_DIAGNOSTICO` |
 | RF-007 | Aprovar orçamento | `AGUARDANDO_APROVACAO → APROVADO` e criação da OS |
 | RF-008 | Ajustar OS ao novo fluxo | OS mantém transições operacionais com status rastreados |
+| RF-009 | Incluir itens no orçamento | Serviços podem ser cadastrados após a criação do orçamento |
 
 ### 4.2 Requisitos não funcionais
 
@@ -101,8 +102,9 @@ Separar o ciclo de vistoria do ciclo comercial e do ciclo operacional: primeiro 
 
 ```mermaid
 stateDiagram-v2
-	[*] --> EmDiagnostico
-	EmDiagnostico --> AguardandoAprovacao: EnviarParaCliente()
+	[*] --> Recebida
+	Recebida --> EmDiagnostico: IniciarDiagnostico()
+	EmDiagnostico --> AguardandoAprovacao: FinalizarDiagnostico()
 	AguardandoAprovacao --> Aprovado: Aprovar()
 	AguardandoAprovacao --> Reprovado: Reprovar()
 	Aprovado --> OrdemServicoCriada: CriarAPartirDoOrcamento()
@@ -124,7 +126,10 @@ stateDiagram-v2
 - `GET /api/orcamentos`
 - `GET /api/orcamentos/{id}`
 - `POST /api/orcamentos`
+- `POST /api/orcamentos/{id}/itens`
 - `PUT /api/orcamentos`
+- `PUT /api/orcamentos/{id}/iniciar-diagnostico`
+- `PUT /api/orcamentos/{id}/finalizar`
 - `PUT /api/orcamentos/{id}/enviar`
 - `PUT /api/orcamentos/{id}/aprovar`
 - `PUT /api/orcamentos/{id}/reprovar`

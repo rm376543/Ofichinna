@@ -61,17 +61,19 @@ public sealed class GetItemServicoByIdQueryHandler
                         Descricao = item.Servico?.Nome ?? string.Empty,
                         ValorServico = item.Servico?.Valor ?? 0,
 
-                        Pecas =
-                        [
-                            new PecaItemResponse
-                            {
-                                PecaId = item.PecaId,
-                                Descricao = item.Peca?.Nome ?? string.Empty,
-                                Quantidade = item.Quantidade,
-                                ValorUnitario = item.Peca?.Valor ?? 0,
-                                ValorTotal = (item.Peca?.Valor ?? 0) * item.Quantidade
-                            }
-                        ],
+                        Pecas = item.PecaId.HasValue
+                            ?
+                            [
+                                new PecaItemResponse
+                                {
+                                    PecaId = item.PecaId.Value,
+                                    Descricao = item.Peca?.Nome ?? string.Empty,
+                                    Quantidade = item.Quantidade,
+                                    ValorUnitario = item.Peca?.Valor ?? 0,
+                                    ValorTotal = (item.Peca?.Valor ?? 0) * item.Quantidade
+                                }
+                            ]
+                            : [],
 
                         ValorTotal =
                             (item.Servico?.Valor ?? 0) +

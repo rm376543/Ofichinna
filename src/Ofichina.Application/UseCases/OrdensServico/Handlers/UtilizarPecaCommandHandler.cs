@@ -55,7 +55,10 @@ public sealed class UtilizarPecaCommandHandler : ICommandHandler<UtilizarPecaCom
             if (itemServico is null || itemServico.EstaExcluida())
                 return Result.Failure("Item de serviço não encontrado.");
 
-            var peca = await _pecaRepository.GetByIdAsync(itemServico.PecaId, cancellationToken, tracking: true);
+            if (!itemServico.PecaId.HasValue)
+                return Result.Failure("O item de serviço não possui peça vinculada.");
+
+            var peca = await _pecaRepository.GetByIdAsync(itemServico.PecaId.Value, cancellationToken, tracking: true);
             if (peca is null || peca.EstaExcluida())
                 return Result.Failure("Peça de catálogo não encontrada.");
 

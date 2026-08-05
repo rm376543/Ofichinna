@@ -128,6 +128,66 @@ public sealed class OrcamentoController : ControllerBase
     }
 
     /// <summary>
+    /// Inicia o diagnóstico de um orçamento.
+    /// </summary>
+    /// <param name="id">Identificador do orçamento.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso ou erro de validação.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpPut("{id:guid}/iniciar-diagnostico")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> IniciarDiagnosticoOrcamento(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando o diagnóstico do orçamento com Id: {Id}.", id);
+
+        var result = await _mediator.Send(new IniciarDiagnosticoOrcamentoCommand
+        {
+            Id = id
+        }, cancellationToken);
+
+        if (!result.IsSuccess)
+            return ResponderFalha(result.Error, "Não foi possível iniciar o diagnóstico do orçamento.");
+
+        return Ok(ApiResponse.SuccessResponse("Diagnóstico do orçamento iniciado com sucesso."));
+    }
+
+    /// <summary>
+    /// Finaliza o orçamento após diagnóstico.
+    /// </summary>
+    /// <param name="id">Identificador do orçamento.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso ou erro de validação.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpPut("{id:guid}/finalizar")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> FinalizarOrcamento(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Finalizando o orçamento com Id: {Id}.", id);
+
+        var result = await _mediator.Send(new FinalizarOrcamentoCommand
+        {
+            Id = id
+        }, cancellationToken);
+
+        if (!result.IsSuccess)
+            return ResponderFalha(result.Error, "Não foi possível finalizar o orçamento.");
+
+        return Ok(ApiResponse.SuccessResponse("Orçamento finalizado com sucesso."));
+    }
+
+    /// <summary>
     /// Atualiza um orçamento existente.
     /// </summary>
     /// <param name="request">Dados do orçamento.</param>
@@ -252,7 +312,7 @@ public sealed class OrcamentoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut("{id:guid}/reenviar")]
+    [HttpPut("{id:guid}/reenvia-para-diagnostico")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]

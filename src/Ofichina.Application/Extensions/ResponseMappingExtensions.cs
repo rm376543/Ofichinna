@@ -207,6 +207,7 @@ public static class ResponseMappingExtensions
             Observacoes = orcamento.Observacoes,
             Status = orcamento.Status.ToUpperSnakeCase(),
             DataCriacao = orcamento.DataCriacao,
+            ValorTotal = orcamento.ValorTotal,
             CreatedAt = orcamento.CreatedAt,
             UpdatedAt = orcamento.UpdatedAt,
             DeletedAt = orcamento.DeletedAt,
@@ -263,14 +264,17 @@ public static class ResponseMappingExtensions
                         ServicoId = g.Key.ServicoId,
                         Descricao = g.Key.Nome,
                         ValorServico = g.Key.Valor,
-                        Pecas = g.Select(p => new PecaItemResponse
-                        {
-                            PecaId = p.PecaId,
-                            Descricao = p.Peca?.Nome ?? string.Empty,
-                            Quantidade = p.Quantidade,
-                            ValorUnitario = p.Peca?.Valor ?? 0,
-                            ValorTotal = (p.Peca?.Valor ?? 0) * p.Quantidade
-                        }).ToList(),
+                        Pecas = g
+                            .Where(p => p.PecaId.HasValue)
+                            .Select(p => new PecaItemResponse
+                            {
+                                PecaId = p.PecaId!.Value,
+                                Descricao = p.Peca?.Nome ?? string.Empty,
+                                Quantidade = p.Quantidade,
+                                ValorUnitario = p.Peca?.Valor ?? 0,
+                                ValorTotal = (p.Peca?.Valor ?? 0) * p.Quantidade
+                            })
+                            .ToList(),
                         ValorTotal = g.Key.Valor + g.Sum(p => (p.Peca?.Valor ?? 0) * p.Quantidade)
                     }
                 ]
@@ -298,14 +302,17 @@ public static class ResponseMappingExtensions
                         ServicoId = g.Key.ServicoId,
                         Descricao = g.Key.Nome,
                         ValorServico = g.Key.Valor,
-                        Pecas = g.Select(p => new PecaItemResponse
-                        {
-                            PecaId = p.PecaId,
-                            Descricao = p.Peca?.Nome ?? string.Empty,
-                            Quantidade = p.Quantidade,
-                            ValorUnitario = p.Peca?.Valor ?? 0m,
-                            ValorTotal = (p.Peca?.Valor ?? 0m) * p.Quantidade
-                        }).ToList(),
+                        Pecas = g
+                            .Where(p => p.PecaId.HasValue)
+                            .Select(p => new PecaItemResponse
+                            {
+                                PecaId = p.PecaId!.Value,
+                                Descricao = p.Peca?.Nome ?? string.Empty,
+                                Quantidade = p.Quantidade,
+                                ValorUnitario = p.Peca?.Valor ?? 0m,
+                                ValorTotal = (p.Peca?.Valor ?? 0m) * p.Quantidade
+                            })
+                            .ToList(),
                         ValorTotal = g.Key.Valor + g.Sum(p => (p.Peca?.Valor ?? 0m) * p.Quantidade)
                     }
                 ]

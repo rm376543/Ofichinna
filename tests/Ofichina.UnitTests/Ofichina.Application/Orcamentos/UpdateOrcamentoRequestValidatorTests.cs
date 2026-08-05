@@ -1,6 +1,5 @@
 using Ofichina.Application.Validators.Orcamento;
 using Ofichina.Contracts.Requests.Orcamento;
-using Ofichina.Contracts.Requests.ItensServico;
 
 namespace Ofichina.UnitTests.Application.Orcamentos;
 
@@ -44,7 +43,7 @@ public sealed class UpdateOrcamentoRequestValidatorTests
             Observacoes = "Orçamento atualizado",
             ItensServico =
             [
-                new UpdateItemServicoRequest
+                new OrcamentoItemServicoRequest
                 {
                     ServicoId = Guid.NewGuid(),
                     PecaId = Guid.NewGuid(),

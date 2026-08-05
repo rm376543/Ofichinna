@@ -1,5 +1,4 @@
 using Ofichina.Contracts.Requests.Orcamentos;
-using Ofichina.Contracts.Requests.ItensServico;
 
 namespace Ofichina.Contracts.Requests.Orcamento;
 
@@ -21,7 +20,7 @@ public sealed class CreateOrcamentoRequest : CreateRequest
     /// <summary>
     /// Checklist de origem do orçamento.
     /// </summary>
-    public Guid? ChecklistId { get; init; }
+    public Guid ChecklistId { get; init; }
 
     /// <summary>
     /// Responsável.
@@ -48,8 +47,4 @@ public sealed class CreateOrcamentoRequest : CreateRequest
     /// </summary>
     public decimal Desconto { get; init; }
 
-    /// <summary>
-    /// Itens de serviço.
-    /// </summary>
-    public ICollection<CreateItemServicoRequest> ItensServico { get; init; } = [];
 }

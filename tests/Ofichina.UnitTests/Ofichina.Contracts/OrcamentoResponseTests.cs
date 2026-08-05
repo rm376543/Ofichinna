@@ -35,11 +35,13 @@ public sealed class OrcamentoResponseTests
             Desconto = 15m,
             Status = "RECEBIDA",
             DataCriacao = createdAt,
+            ValorTotal = 179.90m,
             ItensServico = [item]
         };
 
         Assert.Single(response.ItensServico);
         Assert.Equal(item, response.ItensServico.First());
+        Assert.Equal(179.90m, response.ValorTotal);
         Assert.Null(typeof(OrcamentoResponse).GetProperty("Servicos"));
         Assert.NotNull(typeof(OrcamentoResponse).GetProperty("ItensServico"));
     }

@@ -21,17 +21,20 @@ public sealed class ItemServicoController : ControllerBase
 #pragma warning restore S6960
 {
     private readonly IValidator<CreateItemServicoRequest> _createValidator;
+    private readonly IValidator<CreateItemOrcamentoRequest> _createOrcamentoItemValidator;
     private readonly IValidator<UpdateItemServicoRequest> _updateValidator;
     private readonly IMediator _mediator;
     private readonly ILogger<ItemServicoController> _logger;
 
     public ItemServicoController(
         IValidator<CreateItemServicoRequest> createValidator,
+        IValidator<CreateItemOrcamentoRequest> createOrcamentoItemValidator,
         IValidator<UpdateItemServicoRequest> updateValidator,
         IMediator mediator,
         ILogger<ItemServicoController> logger)
     {
         _createValidator = createValidator;
+        _createOrcamentoItemValidator = createOrcamentoItemValidator;
         _updateValidator = updateValidator;
         _mediator = mediator;
         _logger = logger;
@@ -63,7 +66,7 @@ public sealed class ItemServicoController : ControllerBase
         if (!result.IsSuccess)
         {
             _logger.LogWarning("Falha ao obter itens de serviço da ordem. OrdemServicoId: {OrdemServicoId}. Erro: {Erro}", ordemServicoId, result.Error);
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os itens de serviço."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os itens de serviço."));
         }
 
         return Ok(ApiResponse<IReadOnlyCollection<OrdemServicoItensResponse>>.SuccessResponse(result.Value ?? []));
@@ -112,20 +115,13 @@ public sealed class ItemServicoController : ControllerBase
     /// <returns>Identificador do item criado ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpPost]
-    [ProducesResponseType(typeof(ApiResponse<Guid>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<Guid>>> CriarItemServico(
+    public async Task<ActionResult<ApiResponse>> CriarItemServico(
         [FromBody] CreateItemServicoRequest request,
-        CancellationToken cancellationToken)
-    {
-        return await ProcessarCriacaoItemServico(request, cancellationToken);
-    }
-
-    private async Task<ActionResult<ApiResponse<Guid>>> ProcessarCriacaoItemServico(
-        CreateItemServicoRequest request,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a criação de item de serviço. OrdemServicoId: {OrdemServicoId}.", request.OrdemServicoId);
@@ -148,12 +144,53 @@ public sealed class ItemServicoController : ControllerBase
         if (!result.IsSuccess)
         {
             _logger.LogWarning("Falha ao criar item de serviço. OrdemServicoId: {OrdemServicoId}. Erro: {Erro}", request.OrdemServicoId, result.Error);
-            return result.Error == "Ordem de serviço não encontrada." || result.Error == "Serviço não encontrado." || result.Error == "Peça não encontrada."
-                ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o item de serviço."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o item de serviço."));
         }
 
-        return StatusCode(StatusCodes.Status201Created, ApiResponse<Guid>.SuccessResponse(result.Value, "Item de serviço criado com sucesso."));
+        return Ok(ApiResponse.SuccessResponse("Item de serviço criado com sucesso."));
+    }
+
+    /// <summary>
+    /// Cria um novo item de serviço vinculado ao orçamento.
+    /// </summary>
+    /// <param name="request">Dados do item de serviço para o orçamento.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Identificador do item criado ou erro de validação.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpPost("orcamentos/adicionar-itens")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> CriarItemOrcamento(
+        [FromBody] CreateItemOrcamentoRequest request,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando a criação de item de serviço no orçamento. OrcamentoId: {OrcamentoId}.", request.OrcamentoId);
+
+        var validation = await _createOrcamentoItemValidator.ValidateAsync(request, cancellationToken);
+        if (!validation.IsValid)
+        {
+            _logger.LogWarning("Falha na validação do item de serviço do orçamento. OrcamentoId: {OrcamentoId}. Erros: {Erros}", request.OrcamentoId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
+        }
+
+        var result = await _mediator.Send(new CreateItemOrcamentoCommand
+        {
+            OrcamentoId = request.OrcamentoId,
+            ServicoId = request.ServicoId,
+            PecaId = request.PecaId,
+            Quantidade = request.Quantidade
+        }, cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Falha ao criar item de serviço no orçamento. OrcamentoId: {OrcamentoId}. Erro: {Erro}", request.OrcamentoId, result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Falha ao tentar criar itens de servico vinculado ao orcamento."));
+        }
+
+        return Ok(ApiResponse.SuccessResponse("Item de serviço criado com sucesso no orçamento."));
     }
 
     /// <summary>
@@ -195,11 +232,8 @@ public sealed class ItemServicoController : ControllerBase
         if (!result.IsSuccess)
         {
             _logger.LogWarning("Falha ao atualizar item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erro: {Erro}", request.OrdemServicoId, request.Id, result.Error);
-#pragma warning disable S3358
-            return result.Error == "Ordem de serviço não encontrada." || result.Error == "Item de serviço não encontrado." || result.Error == "Serviço não encontrado." || result.Error == "Peça não encontrada."
-                ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o item de serviço."));
-#pragma warning restore S3358
+
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o item de serviço."));
         }
 
         return Ok(ApiResponse.SuccessResponse("Item de serviço atualizado com sucesso."));
@@ -232,9 +266,7 @@ public sealed class ItemServicoController : ControllerBase
         if (!result.IsSuccess)
         {
             _logger.LogWarning("Falha ao remover item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erro: {Erro}", request.OrdemServicoId, request.Id, result.Error);
-            return result.Error == "Ordem de serviço não encontrada." || result.Error == "Item de serviço não encontrado."
-                ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível remover o item de serviço."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível remover o item de serviço."));
         }
 
         return Ok(ApiResponse.SuccessResponse("Item de serviço removido com sucesso."));

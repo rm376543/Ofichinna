@@ -1,6 +1,4 @@
-﻿using Ofichina.Contracts.Requests.ItensServico;
-
-namespace Ofichina.Contracts.Requests.Orcamento
+﻿namespace Ofichina.Contracts.Requests.Orcamento
 {
     /// <summary>
     /// Requisição para atualização de orçamento para um usuário.
@@ -45,6 +43,6 @@ namespace Ofichina.Contracts.Requests.Orcamento
         /// <summary>
         /// Lista atualizada de itens de serviço.
         /// </summary>
-        public ICollection<UpdateItemServicoRequest> ItensServico { get; init; } = [];
+        public ICollection<OrcamentoItemServicoRequest> ItensServico { get; init; } = [];
     }
 }

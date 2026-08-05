@@ -1,5 +1,4 @@
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
@@ -11,7 +10,7 @@ namespace Ofichina.Application.UseCases.ItensServico.Handlers;
 /// <summary>
 /// Handler para criacao de item de servico.
 /// </summary>
-public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItemServicoCommand, Result<Guid>>
+public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItemServicoCommand, Result>
 {
     private readonly IOrdemServicoRepository _ordemServicoRepository;
     private readonly IItemServicoRepository _itemServicoRepository;
@@ -36,7 +35,7 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
         _logger = logger;
     }
 
-    public async Task<Result<Guid>> HandleAsync(CreateItemServicoCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result> HandleAsync(CreateItemServicoCommand command, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -44,18 +43,18 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
 
             var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.OrdemServicoId, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
-                return Result.Failure<Guid>("Ordem de serviço não encontrada.");
+                return Result.Failure("Ordem de serviço não encontrada.");
 
             if (ordemServico.Status != StatusOrdemServico.Recebida)
-                return Result.Failure<Guid>("Não é possível alterar itens nesta etapa da OS.");
+                return Result.Failure("Não é possível alterar itens nesta etapa da OS.");
 
             var servico = await _servicoRepository.GetByIdAsync(command.ServicoId, cancellationToken, tracking: true);
             if (servico is null || servico.EstaExcluida())
-                return Result.Failure<Guid>("Serviço não encontrado.");
+                return Result.Failure("Serviço não encontrado.");
 
             var peca = await _pecaRepository.GetByIdAsync(command.PecaId, cancellationToken, tracking: true);
             if (peca is null || peca.EstaExcluida())
-                return Result.Failure<Guid>("Peça não encontrada.");
+                return Result.Failure("Peça não encontrada.");
 
             var existente = await _itemServicoRepository.GetByOrdemServicoIdAndServicoIdAndPecaIdAsync(
                 command.OrdemServicoId,
@@ -65,7 +64,7 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
                 tracking: true);
 
             if (existente is not null && !existente.EstaExcluida())
-                return Result.Failure<Guid>("Já existe um item de serviço com este serviço e esta peça na ordem.");
+                return Result.Failure("Já existe um item de serviço com este serviço e esta peça na ordem.");
 
             var item = ItemServico.ParaOrdemServico(
                 command.OrdemServicoId,
@@ -78,17 +77,17 @@ public sealed class CreateItemServicoCommandHandler : ICommandHandler<CreateItem
             await _unitOfWork.SaveChangesAsync();
 
             _logger.LogInformation("Item de serviço criado com sucesso. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", command.OrdemServicoId, item.Id);
-            return Result.Success(item.Id);
+            return Result.Success();
         }
         catch (DomainException ex)
         {
             _logger.LogWarning(ex, "Erro de domínio ao criar item de serviço. OrdemServicoId: {OrdemServicoId}.", command.OrdemServicoId);
-            return Result.Failure<Guid>(ex.Message);
+            return Result.Failure(ex.Message);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro inesperado ao criar item de serviço. OrdemServicoId: {OrdemServicoId}.", command.OrdemServicoId);
-            return Result.Failure<Guid>("Não foi possível criar o item de serviço.");
+            return Result.Failure("Não foi possível criar o item de serviço.");
         }
     }
 }

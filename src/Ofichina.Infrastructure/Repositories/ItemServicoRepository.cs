@@ -121,4 +121,17 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
                 x.DeletedAt == null)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<ItemServico?> GetByOrcamentoServicoPecaIdAsync(
+        Guid orcamentoId, Guid servicoId, Guid? pecaId, CancellationToken cancellationToken = default, bool tracking = false)
+    {
+        IQueryable<ItemServico> query = _context.Set<ItemServico>();
+
+        if (!tracking)
+            query = query.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync(
+            x => x.OrcamentoId == orcamentoId && x.ServicoId == servicoId && x.PecaId == pecaId,
+            cancellationToken);
+    }
 }

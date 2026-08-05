@@ -46,9 +46,5 @@ public class OrdemServicoConfiguration : IEntityTypeConfiguration<OrdemServico>
             .HasForeignKey(x => x.FuncionarioId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasMany(x => x.Servicos)
-            .WithOne()
-            .HasForeignKey(x => x.OrdemServicoId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

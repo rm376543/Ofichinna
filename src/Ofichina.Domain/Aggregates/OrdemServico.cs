@@ -234,7 +234,7 @@ public sealed class OrdemServico : Entity
     /// <summary>
     /// Adiciona um serviço na ordem de serviço.
     /// </summary>
-    public ItemServico AdicionarServico(Guid servicoId, Guid pecaId, int quantidade)
+    public ItemServico AdicionarServico(Guid servicoId, Guid? pecaId, int quantidade)
     {
         ValidarAlteracaoItens();
 
@@ -252,7 +252,7 @@ public sealed class OrdemServico : Entity
     public void AtualizarServico(
         Guid itemServicoId,
         Guid servicoId,
-        Guid pecaId,
+        Guid? pecaId,
         int quantidade)
     {
         ValidarAlteracaoItens();

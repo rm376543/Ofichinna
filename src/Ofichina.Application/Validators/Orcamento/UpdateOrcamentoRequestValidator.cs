@@ -1,6 +1,5 @@
 using FluentValidation;
 using Ofichina.Contracts.Requests.Orcamento;
-using Ofichina.Contracts.Requests.ItensServico;
 
 namespace Ofichina.Application.Validators.Orcamento;
 
@@ -39,16 +38,7 @@ public sealed class UpdateOrcamentoRequestValidator : AbstractValidator<UpdateOr
         RuleFor(x => x.ItensServico)
             .NotEmpty().WithMessage("O orçamento deve conter ao menos um item de serviço.");
 
-        RuleForEach(x => x.ItensServico).ChildRules(servico =>
-        {
-            servico.RuleFor(x => x.ServicoId)
-                .NotEmpty().WithMessage("O serviço previsto é obrigatório.");
-
-            servico.RuleFor(x => x.PecaId)
-                .NotEmpty().WithMessage("A peça prevista é obrigatória.");
-
-            servico.RuleFor(x => x.Quantidade)
-                .GreaterThan(0).WithMessage("A quantidade da peça deve ser maior que zero.");
-        });
+        RuleForEach(x => x.ItensServico)
+            .SetValidator(new OrcamentoItemServicoRequestValidator());
     }
 }

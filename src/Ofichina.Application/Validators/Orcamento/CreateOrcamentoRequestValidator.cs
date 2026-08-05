@@ -1,6 +1,5 @@
 using FluentValidation;
 using Ofichina.Contracts.Requests.Orcamento;
-using Ofichina.Contracts.Requests.ItensServico;
 
 namespace Ofichina.Application.Validators.Orcamento;
 
@@ -16,6 +15,9 @@ public sealed class CreateOrcamentoRequestValidator : AbstractValidator<CreateOr
 
         RuleFor(x => x.VeiculoId)
             .NotEmpty().WithMessage("O veículo vinculado é obrigatório.");
+
+        RuleFor(x => x.ChecklistId)
+            .NotEmpty().WithMessage("O checklist de origem é obrigatório.");
 
         RuleFor(x => x.ResponsavelId)
             .NotEmpty().WithMessage("O responsável pelo orçamento é obrigatório.");
@@ -33,19 +35,5 @@ public sealed class CreateOrcamentoRequestValidator : AbstractValidator<CreateOr
             .MaximumLength(1000).WithMessage("As observações não podem exceder 1000 caracteres.")
             .When(x => !string.IsNullOrWhiteSpace(x.Observacoes));
 
-        RuleFor(x => x.ItensServico)
-            .NotEmpty().WithMessage("O orçamento deve conter ao menos um item de serviço.");
-
-        RuleForEach(x => x.ItensServico).ChildRules(servico =>
-        {
-            servico.RuleFor(x => x.ServicoId)
-                .NotEmpty().WithMessage("O serviço previsto é obrigatório.");
-
-            servico.RuleFor(x => x.PecaId)
-                .NotEmpty().WithMessage("A peça do serviço é obrigatória.");
-
-            servico.RuleFor(x => x.Quantidade)
-                .GreaterThan(0).WithMessage("A quantidade da peça deve ser maior que zero.");
-        });
     }
 }
