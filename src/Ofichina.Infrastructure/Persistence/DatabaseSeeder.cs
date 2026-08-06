@@ -174,30 +174,81 @@ public static class DatabaseSeeder
             .GroupBy(x => x.UsuarioId)
             .ToDictionary(x => x.Key, x => x.First());
 
+#pragma warning disable S1192
         var pessoasDesejadas = new[]
         {
+            (
+                Nome: "Roberto Almeida",
+                Documento: new Cpf("31415926590"),
+                Telefone: new Telefone("(11) 98888-0001"),
+                Endereco: new Endereco("Rua do Administrador", "10", "Sala 1", "Centro", "São Paulo", "SP", new Cep("01000-001")),
+                EmailUsuario: "admin@ofichina.com.br"
+            ),
+            (
+                Nome: "Mariana Ferreira",
+                Documento: new Cpf("24691357963"),
+                Telefone: new Telefone("(11) 98888-0002"),
+                Endereco: new Endereco("Avenida da Gestão", "200", null, "Bela Vista", "São Paulo", "SP", new Cep("01310-200")),
+                EmailUsuario: "gerente@ofichina.com.br"
+            ),
+            (
+                Nome: "Carlos Silva",
+                Documento: new Cpf("13579135759"),
+                Telefone: new Telefone("(11) 98888-0003"),
+                Endereco: new Endereco("Rua da Oficina", "300", "Fundos", "Mooca", "São Paulo", "SP", new Cep("03100-300")),
+                EmailUsuario: "mecanico.silva@ofichina.com.br"
+            ),
+            (
+                Nome: "Juliana Santos",
+                Documento: new Cpf("24681012190"),
+                Telefone: new Telefone("(11) 98888-0004"),
+                Endereco: new Endereco("Rua das Ferramentas", "400", null, "Tatuapé", "São Paulo", "SP", new Cep("03040-400")),
+                EmailUsuario: "mecanico.santos@ofichina.com.br"
+            ),
+            (
+                Nome: "Maria Souza",
+                Documento: new Cpf("52998224725"),
+                Telefone: new Telefone("(11) 98888-0005"),
+                Endereco: new Endereco("Avenida do Atendimento", "500", "Loja A", "Centro", "São Paulo", "SP", new Cep("01111-500")),
+                EmailUsuario: "atendente.maria@ofichina.com.br"
+            ),
+            (
+                Nome: "João Lima",
+                Documento: new Cpf("11144477735"),
+                Telefone: new Telefone("(11) 98888-0006"),
+                Endereco: new Endereco("Rua do Suporte", "600", null, "Santana", "São Paulo", "SP", new Cep("02020-600")),
+                EmailUsuario: "atendente.joao@ofichina.com.br"
+            ),
+            (
+                Nome: "Lucas Ferreira",
+                Documento: new Cpf("12345678909"),
+                Telefone: new Telefone("(11) 98888-0007"),
+                Endereco: new Endereco("Rua do Consultor", "700", "Conjunto 7", "Pinheiros", "São Paulo", "SP", new Cep("05432-700")),
+                EmailUsuario: "consultor.lucas@ofichina.com.br"
+            ),
             (
                 Nome: "Pedro Silva",
                 Documento: new Cpf("90351003010"),
                 Telefone: new Telefone("(11) 98765-4321"),
                 Endereco: new Endereco("Rua das Flores", "123", "Apto 101", "Centro", "São Paulo", "SP", new Cep("01310-100")),
-                EmailUsuario: "cliente.pedro@email.com"
+                EmailUsuario: "cliente.pedro@ofichina.com.br"
             ),
             (
                 Nome: "Ana Costa",
                 Documento: new Cpf("90115400001"),
                 Telefone: new Telefone("(11) 97654-3210"),
                 Endereco: new Endereco("Avenida Paulista", "1000", null, "Bela Vista", "São Paulo", "SP", new Cep("01311-100")),
-                EmailUsuario: "cliente.ana@email.com"
+                EmailUsuario: "cliente.ana@ofichina.com.br"
             ),
             (
                 Nome: "Carlos Oliveira",
                 Documento: new Cpf("77891063095"),
                 Telefone: new Telefone("(11) 96543-2109"),
                 Endereco: new Endereco("Rua Augusta", "500", "Loja 5", "Consolação", "São Paulo", "SP", new Cep("01305-100")),
-                EmailUsuario: "cliente.carlos@email.com"
+                EmailUsuario: "cliente.carlos@ofichina.com.br"
             ),
         };
+#pragma warning restore S1192
 
         foreach (var pessoaDesejada in pessoasDesejadas)
         {
