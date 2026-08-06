@@ -12,8 +12,8 @@ using Ofichina.Infrastructure.Persistence;
 namespace Ofichina.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260805133639_001-inicial")]
-    partial class _001inicial
+    [Migration("20260806155933_001-migration-inicial")]
+    partial class _001migrationinicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,7 +34,7 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Property<Guid>("ClientePessoaId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ConsultorPessoaId")
+                    b.Property<Guid?>("ConsultorPessoaId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -47,10 +47,13 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<Guid>("DiaDisponibilidadeId")
+                    b.Property<Guid?>("DiaDisponibilidadeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("HorarioConsultorId")
+                    b.Property<Guid>("HorarioConsultorDisponibilidadeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("HorarioConsultorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
@@ -72,14 +75,13 @@ namespace Ofichina.Infrastructure.Migrations
 
                     b.HasIndex("DiaDisponibilidadeId");
 
+                    b.HasIndex("HorarioConsultorDisponibilidadeId");
+
                     b.HasIndex("HorarioConsultorId");
 
                     b.HasIndex("Status");
 
                     b.HasIndex("VeiculoId");
-
-                    b.HasIndex("DiaDisponibilidadeId", "HorarioConsultorId")
-                        .IsUnique();
 
                     b.ToTable("Agendamentos", (string)null);
                 });
@@ -212,6 +214,9 @@ namespace Ofichina.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("AgendamentoId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -243,6 +248,8 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AgendamentoId");
 
                     b.HasIndex("PessoaId");
 
@@ -394,6 +401,45 @@ namespace Ofichina.Infrastructure.Migrations
                     b.ToTable("HorariosConsultores", (string)null);
                 });
 
+            modelBuilder.Entity("Ofichina.Domain.Entities.HorarioConsultorDisponibilidade", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ConsultorPessoaId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("DiaDisponibilidadeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("HorarioDisponibilidadeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConsultorPessoaId");
+
+                    b.HasIndex("DiaDisponibilidadeId");
+
+                    b.HasIndex("HorarioDisponibilidadeId");
+
+                    b.HasIndex("DiaDisponibilidadeId", "HorarioDisponibilidadeId", "ConsultorPessoaId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_HorariosConsultorDisponibilidade_DiaHorarioConsultor");
+
+                    b.ToTable("HorariosConsultorDisponibilidade", (string)null);
+                });
+
             modelBuilder.Entity("Ofichina.Domain.Entities.HorarioDisponibilidade", b =>
                 {
                     b.Property<Guid>("Id")
@@ -438,7 +484,7 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Property<Guid?>("OrdemServicoId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PecaId")
+                    b.Property<Guid?>("PecaId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantidade")
@@ -830,20 +876,23 @@ namespace Ofichina.Infrastructure.Migrations
                     b.HasOne("Ofichina.Domain.Entities.Pessoa", "Consultor")
                         .WithMany()
                         .HasForeignKey("ConsultorPessoaId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Ofichina.Domain.Entities.DiaDisponibilidade", "DiaDisponibilidade")
                         .WithMany()
                         .HasForeignKey("DiaDisponibilidadeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Ofichina.Domain.Entities.HorarioConsultorDisponibilidade", "HorarioConsultorDisponibilidade")
+                        .WithMany()
+                        .HasForeignKey("HorarioConsultorDisponibilidadeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Ofichina.Domain.Entities.HorarioConsultor", "HorarioConsultor")
                         .WithMany()
                         .HasForeignKey("HorarioConsultorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Ofichina.Domain.Entities.Veiculo", "Veiculo")
                         .WithMany()
@@ -858,6 +907,8 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Navigation("DiaDisponibilidade");
 
                     b.Navigation("HorarioConsultor");
+
+                    b.Navigation("HorarioConsultorDisponibilidade");
 
                     b.Navigation("Veiculo");
                 });
@@ -991,6 +1042,33 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Navigation("Pessoa");
                 });
 
+            modelBuilder.Entity("Ofichina.Domain.Entities.HorarioConsultorDisponibilidade", b =>
+                {
+                    b.HasOne("Ofichina.Domain.Entities.Pessoa", "Consultor")
+                        .WithMany()
+                        .HasForeignKey("ConsultorPessoaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Ofichina.Domain.Entities.DiaDisponibilidade", "DiaDisponibilidade")
+                        .WithMany()
+                        .HasForeignKey("DiaDisponibilidadeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Ofichina.Domain.Entities.HorarioDisponibilidade", "HorarioDisponibilidade")
+                        .WithMany()
+                        .HasForeignKey("HorarioDisponibilidadeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Consultor");
+
+                    b.Navigation("DiaDisponibilidade");
+
+                    b.Navigation("HorarioDisponibilidade");
+                });
+
             modelBuilder.Entity("Ofichina.Domain.Entities.ItemServico", b =>
                 {
                     b.HasOne("Ofichina.Domain.Aggregates.Orcamento", "Orcamento")
@@ -1006,8 +1084,7 @@ namespace Ofichina.Infrastructure.Migrations
                     b.HasOne("Ofichina.Domain.Entities.Peca", "Peca")
                         .WithMany()
                         .HasForeignKey("PecaId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Ofichina.Domain.Entities.Servico", "Servico")
                         .WithMany()
