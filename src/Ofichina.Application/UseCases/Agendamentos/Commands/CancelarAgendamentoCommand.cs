@@ -8,12 +8,14 @@ namespace Ofichina.Application.UseCases.Agendamentos.Commands
     /// </summary>
     public sealed class CancelarAgendamentoCommand : ICommand<Result>
     {
-        public Guid PessoaId { get; set; }
+        /// <summary>
+        /// Identificador único do agendamento a ser cancelado.
+        /// </summary>
         public Guid AgendamentoId { get; init; }
-        public CancelarAgendamentoCommand(Guid pessoaId, Guid agendamentoId)
+        public CancelarAgendamentoCommand(Guid agendamentoId)
         {
-            PessoaId = pessoaId;
             AgendamentoId = agendamentoId;
         }
     }
 }
+

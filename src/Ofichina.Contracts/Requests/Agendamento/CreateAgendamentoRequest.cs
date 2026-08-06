@@ -1,5 +1,3 @@
-using Ofichina.Contracts.Requests;
-
 namespace Ofichina.Contracts.Requests.Agendamento;
 
 /// <summary>
@@ -7,6 +5,15 @@ namespace Ofichina.Contracts.Requests.Agendamento;
 /// </summary>
 public sealed class CreateAgendamentoRequest : CreateRequest
 {
+    /// <summary>
+    /// Identificador único do agendamento.
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// Identificador único da pessoa que está solicitando o agendamento.
+    /// </summary>
+    public Guid PessoaId { get; set; }
     /// <summary>
     /// Identificador do slot de disponibilidade (HorarioConsultorDisponibilidade) que consolida dia + horário + consultor.
     /// </summary>

@@ -19,3 +19,5 @@ public sealed class GetAgendamentoByIdQuery : IQuery<Result<AgendamentoResponse>
         Id = id;
     }
 }
+
+

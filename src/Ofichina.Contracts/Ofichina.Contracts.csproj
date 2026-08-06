@@ -10,12 +10,11 @@
 
   <ItemGroup>
     <Compile Remove="Http\**" />
+    <Compile Remove="Responses\ItemServico\**" />
     <EmbeddedResource Remove="Http\**" />
+    <EmbeddedResource Remove="Responses\ItemServico\**" />
     <None Remove="Http\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Responses\ItemServico\" />
+    <None Remove="Responses\ItemServico\**" />
   </ItemGroup>
 
 </Project>

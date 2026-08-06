@@ -1,14 +1,14 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
+using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Responses.Agendamento;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 
 /// <summary>
 /// Handler para listar consultores disponíveis para dia + horário.
 /// </summary>
-public sealed class ListarConsultoresPorDiaHorarioQueryHandler : IQueryHandler<ListarConsultoresPorDiaHorarioQuery, IEnumerable<ConsultorListaDto>>
+public sealed class ListarConsultoresPorDiaHorarioQueryHandler : IQueryHandler<ListarConsultoresPorDiaHorarioQuery, Result<IEnumerable<ConsultorDisponibilidadeResponse>>>
 {
     private readonly IHorarioConsultorDisponibilidadeRepository _slotRepository;
     private readonly IPessoaRepository _pessoaRepository;
@@ -24,19 +24,19 @@ public sealed class ListarConsultoresPorDiaHorarioQueryHandler : IQueryHandler<L
         _logger = logger;
     }
 
-    public async Task<IEnumerable<ConsultorListaDto>> HandleAsync(
+    public async Task<Result<IEnumerable<ConsultorDisponibilidadeResponse>>> HandleAsync(
         ListarConsultoresPorDiaHorarioQuery query,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            _logger.LogInformation("Listando consultores. DiaId: {DiaId}, HorarioId: {HorarioId}", 
+            _logger.LogInformation("Listando consultores. DiaId: {DiaId}, HorarioId: {HorarioId}",
                 query.DiaDisponibilidadeId, query.HorarioDisponibilidadeId);
 
             var slots = await _slotRepository.GetAllAsync(cancellationToken);
 
             var consultorIds = slots
-                .Where(s => s.DiaDisponibilidadeId == query.DiaDisponibilidadeId && 
+                .Where(s => s.DiaDisponibilidadeId == query.DiaDisponibilidadeId &&
                            s.HorarioDisponibilidadeId == query.HorarioDisponibilidadeId)
                 .Select(s => s.ConsultorPessoaId)
                 .Distinct()
@@ -47,7 +47,7 @@ public sealed class ListarConsultoresPorDiaHorarioQueryHandler : IQueryHandler<L
             var resultado = consultores
                 .Where(c => consultorIds.Contains(c.Id))
                 .OrderBy(c => c.Nome)
-                .Select(c => new ConsultorListaDto
+                .Select(c => new ConsultorListaResponse
                 {
                     PessoaId = c.Id,
                     Nome = c.Nome,
@@ -55,15 +55,22 @@ public sealed class ListarConsultoresPorDiaHorarioQueryHandler : IQueryHandler<L
                 })
                 .ToList();
 
+            var result = resultado.Select(c => new ConsultorDisponibilidadeResponse
+            {
+                Id = c.PessoaId,
+                Nome = c.Nome,
+                Documento = c.Documento
+            });
+
             _logger.LogInformation("Encontrados {Count} consultores", resultado.Count);
 
-            return resultado;
+            return Result.Success(result);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao listar consultores. DiaId: {DiaId}, HorarioId: {HorarioId}", 
+            _logger.LogError(ex, "Erro ao listar consultores. DiaId: {DiaId}, HorarioId: {HorarioId}",
                 query.DiaDisponibilidadeId, query.HorarioDisponibilidadeId);
-            return Enumerable.Empty<ConsultorListaDto>();
+            return Result.Failure<IEnumerable<ConsultorDisponibilidadeResponse>>(ex.Message);
         }
     }
 }

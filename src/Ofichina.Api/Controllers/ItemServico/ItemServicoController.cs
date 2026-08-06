@@ -47,13 +47,13 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de itens de serviço da ordem.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet]
+    [HttpGet("buscar-por/{ordemServicoId}")]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<OrdemServicoItensResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<IReadOnlyCollection<OrdemServicoItensResponse>>>> BuscarItensServico(
-        [FromQuery] Guid ordemServicoId,
+        [FromRoute] Guid ordemServicoId,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção dos itens de serviço da ordem. OrdemServicoId: {OrdemServicoId}.", ordemServicoId);
@@ -76,31 +76,29 @@ public sealed class ItemServicoController : ControllerBase
     /// Retorna um item de serviço específico de uma ordem de serviço.
     /// </summary>
     /// <param name="ordemServicoId">Identificador da ordem de serviço.</param>
-    /// <param name="id">Identificador do item de serviço.</param>
+    /// <param name="itemServicoId">Identificador do item de serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Item de serviço encontrado ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet("{id:guid}")]
+    [HttpGet("buscar-por/{ordemServicoId}/{itemServicoId}")]
     [ProducesResponseType(typeof(ApiResponse<OrdemServicoItensResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<OrdemServicoItensResponse>>> BuscarItemServicoPorId(
-        [FromQuery] Guid ordemServicoId,
-        [FromQuery] Guid id,
+        [FromRoute] Guid ordemServicoId,
+        [FromRoute] Guid itemServicoId,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenção do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", ordemServicoId, id);
+        _logger.LogInformation("Iniciando a obtenção do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", ordemServicoId, itemServicoId);
 
-        var result = await _mediator.Send(new GetItemServicoByIdQuery
-        {
-            OrdemServicoId = ordemServicoId,
-            Id = id
-        }, cancellationToken);
+        var result = await _mediator.Send(new GetItemServicoByIdQuery(
+            ordemServicoId, itemServicoId
+        ), cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
         {
-            _logger.LogWarning("Item de serviço não encontrado. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", ordemServicoId, id);
+            _logger.LogWarning("Item de serviço não encontrado. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", ordemServicoId, itemServicoId);
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Item de serviço não encontrado."));
         }
 
@@ -114,7 +112,7 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Identificador do item criado ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost]
+    [HttpPost("novo")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -133,13 +131,7 @@ public sealed class ItemServicoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _mediator.Send(new CreateItemServicoCommand
-        {
-            OrdemServicoId = request.OrdemServicoId,
-            ServicoId = request.ServicoId,
-            PecaId = request.PecaId,
-            Quantidade = request.Quantidade
-        }, cancellationToken);
+        var result = await _mediator.Send(new CreateItemServicoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -157,7 +149,7 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Identificador do item criado ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost("orcamentos/adicionar-itens")]
+    [HttpPost("adicionar/para-orcamento")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -176,13 +168,7 @@ public sealed class ItemServicoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _mediator.Send(new CreateItemOrcamentoCommand
-        {
-            OrcamentoId = request.OrcamentoId,
-            ServicoId = request.ServicoId,
-            PecaId = request.PecaId,
-            Quantidade = request.Quantidade
-        }, cancellationToken);
+        var result = await _mediator.Send(new CreateItemOrcamentoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -200,7 +186,7 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso, erro de validação ou item não encontrado.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut]
+    [HttpPut("atualizar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -220,14 +206,7 @@ public sealed class ItemServicoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _mediator.Send(new UpdateItemServicoCommand
-        {
-            Id = request.Id,
-            OrdemServicoId = request.OrdemServicoId,
-            ServicoId = request.ServicoId,
-            PecaId = request.PecaId,
-            Quantidade = request.Quantidade
-        }, cancellationToken);
+        var result = await _mediator.Send(new UpdateItemServicoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -246,7 +225,7 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpDelete]
+    [HttpDelete("remover")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -257,11 +236,7 @@ public sealed class ItemServicoController : ControllerBase
     {
         _logger.LogInformation("Iniciando a remoção do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", request.OrdemServicoId, request.Id);
 
-        var result = await _mediator.Send(new DeleteItemServicoCommand
-        {
-            Id = request.Id,
-            OrdemServicoId = request.OrdemServicoId
-        }, cancellationToken);
+        var result = await _mediator.Send(new DeleteItemServicoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
         {

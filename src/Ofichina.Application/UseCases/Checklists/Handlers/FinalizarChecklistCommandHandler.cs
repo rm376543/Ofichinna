@@ -53,7 +53,7 @@ public sealed class FinalizarChecklistCommandHandler : ICommandHandler<Finalizar
                 var agendamento = await _agendamentoRepository.GetByIdAsync(checklist.AgendamentoId.Value, cancellationToken, tracking: true);
                 if (agendamento is null || agendamento.EstaExcluida())
                 {
-                    _logger.LogError("Agendamento vinculado ao checklist não encontrado ou foi excluído. ChecklistId: {ChecklistId}, AgendamentoId: {AgendamentoId}", 
+                    _logger.LogError("Agendamento vinculado ao checklist não encontrado ou foi excluído. ChecklistId: {ChecklistId}, AgendamentoId: {AgendamentoId}",
                         command.Id, checklist.AgendamentoId);
                     return Result.Failure("Agendamento vinculado não encontrado. A finalização está bloqueada.");
                 }

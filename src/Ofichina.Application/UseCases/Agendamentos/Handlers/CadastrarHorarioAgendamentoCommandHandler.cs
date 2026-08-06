@@ -50,3 +50,5 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers
         }
     }
 }
+
+
