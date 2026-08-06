@@ -39,10 +39,18 @@ public static class DatabaseSeeder
             await SeedPecas(context);
             await SeedPermissoes(context);
 
+            await SeedDiasDisponibilidade(context);
+            await SeedHorariosDisponibilidade(context);
+
             await context.SaveChangesAsync();
 
             // Vínculos de autorização
             await SeedPerfilPermissoes(context);
+
+            // Vínculos de agenda
+            await SeedDiasHorariosDisponibilidade(context);
+            await SeedHorariosConsultores(context);
+            await SeedHorariosConsultorDisponibilidade(context);
 
             await context.SaveChangesAsync();
         }
@@ -53,6 +61,8 @@ public static class DatabaseSeeder
                 ex);
         }
     }
+
+    #region Seeders
 
     /// <summary>
     /// Popula a tabela de perfis.
@@ -576,6 +586,239 @@ public static class DatabaseSeeder
     }
 
     /// <summary>
+    /// Popula a tabela de dias de disponibilidade.
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    private static async Task SeedDiasDisponibilidade(ApplicationDbContext context)
+    {
+        var diasExistentes = await context.DiasDisponibilidade
+            .IgnoreQueryFilters()
+            .ToListAsync();
+
+        var diasPorData = diasExistentes
+            .GroupBy(x => x.Data)
+            .ToDictionary(x => x.Key, x => x.First());
+
+        var diasDesejados = ObterProximosDiasUteis(10);
+
+        foreach (var data in diasDesejados)
+        {
+            if (diasPorData.ContainsKey(data))
+                continue;
+
+            await context.DiasDisponibilidade.AddAsync(new DiaDisponibilidade(data));
+        }
+    }
+
+    private static async Task SeedHorariosDisponibilidade(ApplicationDbContext context)
+    {
+        var horariosExistentes = await context.HorariosDisponibilidade
+            .IgnoreQueryFilters()
+            .ToListAsync();
+
+        var horariosPorHora = horariosExistentes
+            .GroupBy(x => x.Hora)
+            .ToDictionary(x => x.Key, x => x.First());
+
+        var horariosDesejados = new[]
+        {
+        new TimeOnly(8, 0),
+        new TimeOnly(9, 0),
+        new TimeOnly(10, 0),
+        new TimeOnly(11, 0),
+        new TimeOnly(13, 0),
+        new TimeOnly(14, 0),
+        new TimeOnly(15, 0),
+        new TimeOnly(16, 0),
+        new TimeOnly(17, 0),
+    };
+
+        foreach (var hora in horariosDesejados)
+        {
+            if (horariosPorHora.ContainsKey(hora))
+                continue;
+
+            await context.HorariosDisponibilidade.AddAsync(new HorarioDisponibilidade(hora));
+        }
+    }
+
+    /// <summary>
+    /// Popula a tabela de vínculos entre dias e horários de disponibilidade.
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+#pragma warning disable S3776
+    private static async Task SeedDiasHorariosDisponibilidade(ApplicationDbContext context)
+#pragma warning restore S3776
+    {
+        var dias = await context.DiasDisponibilidade
+            .IgnoreQueryFilters()
+            .ToListAsync();
+
+        var horarios = await context.HorariosDisponibilidade
+            .IgnoreQueryFilters()
+            .ToListAsync();
+
+        if (!dias.Any() || !horarios.Any())
+            return;
+
+        var vinculosExistentes = await context.DiasHorariosDisponibilidade
+            .IgnoreQueryFilters()
+            .Select(x => new { x.DiaDisponibilidadeId, x.HorarioDisponibilidadeId })
+            .ToListAsync();
+
+        var vinculos = vinculosExistentes
+            .Select(x => (x.DiaDisponibilidadeId, x.HorarioDisponibilidadeId))
+            .ToHashSet();
+
+        var horarioInicioAlmoco = new TimeOnly(12, 0);
+
+        foreach (var dia in dias)
+        {
+            if (dia.Data.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+                continue;
+
+            foreach (var horario in horarios)
+            {
+                if (horario.Hora == horarioInicioAlmoco)
+                    continue;
+
+                if (horario.Hora < new TimeOnly(8, 0) || horario.Hora > new TimeOnly(17, 0))
+                    continue;
+
+                var chave = (dia.Id, horario.Id);
+
+                if (vinculos.Contains(chave))
+                    continue;
+
+                await context.DiasHorariosDisponibilidade.AddAsync(
+                    new DiaHorarioDisponibilidade(dia.Id, horario.Id));
+
+                vinculos.Add(chave);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Popula a tabela de horários dos consultores, vinculando horários aos consultores.
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    private static async Task SeedHorariosConsultores(ApplicationDbContext context)
+    {
+        var pessoasConsultoras = await ObterConsultoresAsync(context);
+
+        if (!pessoasConsultoras.Any())
+            return;
+
+        var horarios = await context.HorariosDisponibilidade
+            .IgnoreQueryFilters()
+            .ToListAsync();
+
+        var horariosOperacionais = horarios
+            .Where(x => x.Hora >= new TimeOnly(8, 0) && x.Hora <= new TimeOnly(17, 0))
+            .Where(x => x.Hora != new TimeOnly(12, 0))
+            .OrderBy(x => x.Hora)
+            .ToList();
+
+        if (!horariosOperacionais.Any())
+            return;
+
+        var vinculosExistentes = await context.HorariosConsultores
+            .IgnoreQueryFilters()
+            .Select(x => new { x.HorarioDisponibilidadeId, x.PessoaId })
+            .ToListAsync();
+
+        var vinculos = vinculosExistentes
+            .Select(x => (x.HorarioDisponibilidadeId, x.PessoaId))
+            .ToHashSet();
+
+        foreach (var consultor in pessoasConsultoras)
+        {
+            foreach (var horario in horariosOperacionais)
+            {
+                var chave = (horario.Id, consultor.Id);
+
+                if (vinculos.Contains(chave))
+                    continue;
+
+                await context.HorariosConsultores.AddAsync(
+                    new HorarioConsultor(horario.Id, consultor.Id));
+
+                vinculos.Add(chave);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Popula a tabela de horários de disponibilidade dos consultores, vinculando dias e horários aos consultores.
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    private static async Task SeedHorariosConsultorDisponibilidade(ApplicationDbContext context)
+    {
+        var pessoasConsultoras = await ObterConsultoresAsync(context);
+
+        if (!pessoasConsultoras.Any())
+            return;
+
+        var dias = await context.DiasDisponibilidade
+            .IgnoreQueryFilters()
+            .ToListAsync();
+
+        var horarios = await context.HorariosDisponibilidade
+            .IgnoreQueryFilters()
+            .ToListAsync();
+
+        if (!dias.Any() || !horarios.Any())
+            return;
+
+        var diasUteis = dias
+            .Where(x => x.Data.DayOfWeek is not DayOfWeek.Saturday and not DayOfWeek.Sunday)
+            .OrderBy(x => x.Data)
+            .ToList();
+
+        var horariosOperacionais = horarios
+            .Where(x => x.Hora >= new TimeOnly(8, 0) && x.Hora <= new TimeOnly(17, 0))
+            .Where(x => x.Hora != new TimeOnly(12, 0))
+            .OrderBy(x => x.Hora)
+            .ToList();
+
+        var vinculosExistentes = await context.HorariosConsultorDisponibilidade
+            .IgnoreQueryFilters()
+            .Select(x => new { x.DiaDisponibilidadeId, x.HorarioDisponibilidadeId, x.ConsultorPessoaId })
+            .ToListAsync();
+
+        var vinculos = vinculosExistentes
+            .Select(x => (x.DiaDisponibilidadeId, x.HorarioDisponibilidadeId, x.ConsultorPessoaId))
+            .ToHashSet();
+
+        foreach (var consultor in pessoasConsultoras)
+        {
+            foreach (var dia in diasUteis)
+            {
+                foreach (var horario in horariosOperacionais)
+                {
+                    var chave = (dia.Id, horario.Id, consultor.Id);
+
+                    if (vinculos.Contains(chave))
+                        continue;
+
+                    await context.HorariosConsultorDisponibilidade.AddAsync(
+                        new HorarioConsultorDisponibilidade(dia.Id, horario.Id, consultor.Id));
+
+                    vinculos.Add(chave);
+                }
+            }
+        }
+    }
+
+    #endregion
+
+    #region Private Helper Methods
+
+    /// <summary>
     /// Cria hash de senha usando PBKDF2.
     /// Nota: Em produção, use BCrypt ou Argon2 via biblioteca dedicada.
     /// </summary>
@@ -595,4 +838,46 @@ public static class DatabaseSeeder
 
         return $"{iterations}.{Convert.ToBase64String(salt)}.{Convert.ToBase64String(hash)}";
     }
+
+    /// <summary>
+    /// Obtém os próximos dias úteis a partir da data atual.
+    /// </summary>
+    /// <param name="quantidade"></param>
+    /// <returns></returns>
+    private static IReadOnlyCollection<DateOnly> ObterProximosDiasUteis(int quantidade)
+    {
+        var dias = new List<DateOnly>();
+        var dataAtual = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(1);
+
+        while (dias.Count < quantidade)
+        {
+            if (dataAtual.DayOfWeek is not DayOfWeek.Saturday and not DayOfWeek.Sunday)
+                dias.Add(dataAtual);
+
+            dataAtual = dataAtual.AddDays(1);
+        }
+
+        return dias;
+    }
+
+    /// <summary>
+    /// Obtém a lista de pessoas que possuem o perfil de consultor.
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    private static async Task<IReadOnlyCollection<Pessoa>> ObterConsultoresAsync(ApplicationDbContext context)
+    {
+        var pessoas = await context.Pessoas
+            .IgnoreQueryFilters()
+            .Include(x => x.Usuario)
+                .ThenInclude(x => x.Perfis)
+                    .ThenInclude(x => x.Perfil)
+            .ToListAsync();
+
+        return pessoas
+            .Where(x => x.Usuario.Perfis.Any(p => p.Perfil.NomePerfil.Equals("CONSULTOR", StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+    }
+
+    #endregion
 }
