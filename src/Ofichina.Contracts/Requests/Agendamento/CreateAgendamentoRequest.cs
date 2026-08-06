@@ -3,19 +3,14 @@ using Ofichina.Contracts.Requests;
 namespace Ofichina.Contracts.Requests.Agendamento;
 
 /// <summary>
-/// Requisição para criação de agendamento pelo aplicativo.
+/// Requisição para criação de agendamento usando o novo modelo com HorarioConsultorDisponibilidade.
 /// </summary>
 public sealed class CreateAgendamentoRequest : CreateRequest
 {
     /// <summary>
-    /// Identificador do dia disponível selecionado.
+    /// Identificador do slot de disponibilidade (HorarioConsultorDisponibilidade) que consolida dia + horário + consultor.
     /// </summary>
-    public Guid DiaDisponibilidadeId { get; init; }
-
-    /// <summary>
-    /// Identificador do vínculo entre horário e consultor selecionado.
-    /// </summary>
-    public Guid HorarioConsultorId { get; init; }
+    public Guid HorarioConsultorDisponibilidadeId { get; init; }
 
     /// <summary>
     /// Identificador do veículo a ser atendido.

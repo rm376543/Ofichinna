@@ -15,6 +15,8 @@ public class Checklist : Entity
 
     public Pessoa? Pessoa { get; private set; }
 
+    public Guid? AgendamentoId { get; private set; }
+
     public int HodometroEntrada { get; private set; }
 
     public string ItensVerificados { get; private set; } = string.Empty;
@@ -52,6 +54,15 @@ public class Checklist : Entity
             throw new DomainException("O checklist já foi finalizado.");
 
         Finalizado = true;
+        AtualizarDataModificacao();
+    }
+
+    public void VincularAgendamento(Guid agendamentoId)
+    {
+        if (agendamentoId == Guid.Empty)
+            throw new DomainException("O agendamento deve ser informado.");
+
+        AgendamentoId = agendamentoId;
         AtualizarDataModificacao();
     }
 }

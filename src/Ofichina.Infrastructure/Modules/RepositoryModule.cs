@@ -54,6 +54,8 @@ public static class RepositoryModule
 
         services.AddScoped<IHorarioConsultorRepository, HorarioConsultorRepository>();
 
+        services.AddScoped<IHorarioConsultorDisponibilidadeRepository, HorarioConsultorDisponibilidadeRepository>();
+
         services.AddScoped<IPecaRepository, PecaRepository>();
 
         return services;

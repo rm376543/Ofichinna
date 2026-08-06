@@ -15,6 +15,7 @@ public class ChecklistConfiguration : IEntityTypeConfiguration<Checklist>
 
         builder.Property(x => x.VeiculoId).IsRequired();
         builder.Property(x => x.PessoaId).IsRequired();
+        builder.Property(x => x.AgendamentoId).IsRequired(false);
         builder.Property(x => x.HodometroEntrada).IsRequired();
         builder.Property(x => x.ItensVerificados).HasMaxLength(2000).IsRequired();
         builder.Property(x => x.Observacoes).HasMaxLength(1000);
@@ -29,5 +30,7 @@ public class ChecklistConfiguration : IEntityTypeConfiguration<Checklist>
             .WithMany()
             .HasForeignKey(x => x.PessoaId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(x => x.AgendamentoId);
     }
 }
