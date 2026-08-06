@@ -2,12 +2,12 @@ namespace Ofichina.Domain.Enums;
 
 /// <summary>
 /// Define os possíveis estados de um agendamento.
+/// Ciclo simplificado: AGENDADO → INICIADO → FINALIZADO/CANCELADO.
 /// </summary>
 public enum StatusAgendamento
 {
-    Agendado = 1,
-    Confirmado = 2,
-    EmAndamento = 3,
-    Concluido = 4,
-    Cancelado = 5
+    AGENDADO = 1,
+    INICIADO = 2,
+    FINALIZADO = 3,
+    CANCELADO = 4
 }

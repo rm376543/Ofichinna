@@ -4,17 +4,14 @@ using Ofichina.Contracts.Requests.Agendamento;
 namespace Ofichina.Application.Validators.Agendamento;
 
 /// <summary>
-/// Validador para criação de agendamento.
+/// Validador para criação de agendamento usando o novo modelo com HorarioConsultorDisponibilidade.
 /// </summary>
 public sealed class CreateAgendamentoRequestValidator : AbstractValidator<CreateAgendamentoRequest>
 {
     public CreateAgendamentoRequestValidator()
     {
-        RuleFor(x => x.DiaDisponibilidadeId)
-            .NotEmpty().WithMessage("O dia de disponibilidade é obrigatório.");
-
-        RuleFor(x => x.HorarioConsultorId)
-            .NotEmpty().WithMessage("O horário do consultor é obrigatório.");
+        RuleFor(x => x.HorarioConsultorDisponibilidadeId)
+            .NotEmpty().WithMessage("O slot de disponibilidade (dia + horário + consultor) é obrigatório.");
 
         RuleFor(x => x.VeiculoId)
             .NotEmpty().WithMessage("O veículo é obrigatório.");

@@ -20,34 +20,34 @@ public sealed class Agendamento : Entity
     public Pessoa Cliente { get; private set; } = null!;
 
     /// <summary>
-    /// Dia de disponibilidade associado ao agendamento.
+    /// Dia de disponibilidade associado ao agendamento (legado, nullable para migração).
     /// </summary>
-    public Guid DiaDisponibilidadeId { get; private set; }
+    public Guid? DiaDisponibilidadeId { get; private set; }
 
     /// <summary>
-    /// Dia de disponibilidade associado ao agendamento.
+    /// Dia de disponibilidade associado ao agendamento (legado).
     /// </summary>
-    public DiaDisponibilidade DiaDisponibilidade { get; private set; } = null!;
+    public DiaDisponibilidade? DiaDisponibilidade { get; private set; }
 
     /// <summary>
-    /// Vínculo entre horário e consultor selecionados para o agendamento.
+    /// Vínculo entre horário e consultor selecionados para o agendamento (legado, nullable para migração).
     /// </summary>
-    public Guid HorarioConsultorId { get; private set; }
+    public Guid? HorarioConsultorId { get; private set; }
 
     /// <summary>
-    /// Vínculo entre horário e consultor selecionados para o agendamento.
+    /// Vínculo entre horário e consultor selecionados para o agendamento (legado).
     /// </summary>
-    public HorarioConsultor HorarioConsultor { get; private set; } = null!;
+    public HorarioConsultor? HorarioConsultor { get; private set; }
 
     /// <summary>
-    /// Pessoa consultora vinculada ao agendamento.
+    /// Pessoa consultora vinculada ao agendamento (legado, nullable para migração).
     /// </summary>
-    public Guid ConsultorPessoaId { get; private set; }
+    public Guid? ConsultorPessoaId { get; private set; }
 
     /// <summary>
-    /// Pessoa consultora vinculada ao agendamento.
+    /// Pessoa consultora vinculada ao agendamento (legado).
     /// </summary>
-    public Pessoa Consultor { get; private set; } = null!;
+    public Pessoa? Consultor { get; private set; }
 
     /// <summary>
     /// Veículo informado para o agendamento.
@@ -58,6 +58,16 @@ public sealed class Agendamento : Entity
     /// Veículo informado para o agendamento.
     /// </summary>
     public Veiculo Veiculo { get; private set; } = null!;
+
+    /// <summary>
+    /// Identificador do slot de disponibilidade (HorarioConsultorDisponibilidade).
+    /// </summary>
+    public Guid HorarioConsultorDisponibilidadeId { get; private set; }
+
+    /// <summary>
+    /// Slot de disponibilidade vinculado (Dia + Horário + Consultor).
+    /// </summary>
+    public HorarioConsultorDisponibilidade HorarioConsultorDisponibilidade { get; private set; } = null!;
 
     /// <summary>
     /// Status atual do agendamento.
@@ -114,55 +124,80 @@ public sealed class Agendamento : Entity
         HorarioConsultorId = horarioConsultorId;
         ConsultorPessoaId = consultorPessoaId;
         VeiculoId = veiculoId;
-        Status = StatusAgendamento.Agendado;
+        Status = StatusAgendamento.AGENDADO;
         Descricao = string.IsNullOrWhiteSpace(descricao) ? null : descricao.Trim();
     }
 
     /// <summary>
-    /// Confirma o agendamento, alterando seu status para "Confirmado".
+    /// Cria uma nova instância de agendamento usando o novo modelo de slot.
+    /// </summary>
+    /// <param name="clientePessoaId">ID da pessoa cliente.</param>
+    /// <param name="horarioConsultorDisponibilidadeId">ID do slot de disponibilidade.</param>
+    /// <param name="veiculoId">ID do veículo.</param>
+    /// <param name="descricao">Descrição opcional.</param>
+    /// <exception cref="DomainException"></exception>
+    public Agendamento(
+        Guid clientePessoaId,
+        Guid horarioConsultorDisponibilidadeId,
+        Guid veiculoId,
+        string? descricao = null)
+    {
+        if (clientePessoaId == Guid.Empty)
+            throw new DomainException("A pessoa cliente é obrigatória.");
+
+        if (horarioConsultorDisponibilidadeId == Guid.Empty)
+            throw new DomainException("O slot de disponibilidade é obrigatório.");
+
+        if (veiculoId == Guid.Empty)
+            throw new DomainException("O veículo é obrigatório.");
+
+        ClientePessoaId = clientePessoaId;
+        HorarioConsultorDisponibilidadeId = horarioConsultorDisponibilidadeId;
+        VeiculoId = veiculoId;
+        Status = StatusAgendamento.AGENDADO;
+        Descricao = string.IsNullOrWhiteSpace(descricao) ? null : descricao.Trim();
+    }
+
+    /// <summary>
+    /// Inicia o agendamento, alterando seu status de "AGENDADO" para "INICIADO".
     /// </summary>
     /// <exception cref="DomainException"></exception>
-    public void Confirmar()
+    public void Iniciar()
     {
-        if (Status is StatusAgendamento.Cancelado or StatusAgendamento.Concluido)
-            throw new DomainException("Não é possível confirmar um agendamento cancelado ou concluído.");
+        if (Status != StatusAgendamento.AGENDADO)
+            throw new DomainException("Apenas agendamentos com status 'AGENDADO' podem ser iniciados.");
 
-        if (Status == StatusAgendamento.Confirmado)
-            return;
-
-        Status = StatusAgendamento.Confirmado;
+        Status = StatusAgendamento.INICIADO;
         AtualizarDataModificacao();
     }
 
     /// <summary>
-    /// Cancela o agendamento, alterando seu status para "Cancelado".
+    /// Finaliza o agendamento, alterando seu status de "INICIADO" para "FINALIZADO".
+    /// </summary>
+    /// <exception cref="DomainException"></exception>
+    public void Finalizar()
+    {
+        if (Status != StatusAgendamento.INICIADO)
+            throw new DomainException("Apenas agendamentos com status 'INICIADO' podem ser finalizados.");
+
+        Status = StatusAgendamento.FINALIZADO;
+        AtualizarDataModificacao();
+    }
+
+    /// <summary>
+    /// Cancela o agendamento, alterando seu status para "CANCELADO".
+    /// Permite cancelamento quando o status é "AGENDADO" ou "INICIADO" (no-show).
     /// </summary>
     /// <exception cref="DomainException"></exception>
     public void Cancelar()
     {
-        if (Status == StatusAgendamento.Concluido)
-            throw new DomainException("Não é possível cancelar um agendamento concluído.");
+        if (Status == StatusAgendamento.FINALIZADO)
+            throw new DomainException("Não é possível cancelar um agendamento finalizado.");
 
-        if (Status == StatusAgendamento.Cancelado)
+        if (Status == StatusAgendamento.CANCELADO)
             throw new DomainException("Não é possível cancelar um agendamento já cancelado.");
 
-        Status = StatusAgendamento.Cancelado;
-        AtualizarDataModificacao();
-    }
-
-    /// <summary>
-    /// Conclui o agendamento, alterando seu status para "Concluído".
-    /// </summary>
-    /// <exception cref="DomainException"></exception>
-    public void Concluir()
-    {
-        if (Status == StatusAgendamento.Cancelado)
-            throw new DomainException("Não é possível concluir um agendamento cancelado.");
-
-        if (Status == StatusAgendamento.Concluido)
-            return;
-
-        Status = StatusAgendamento.Concluido;
+        Status = StatusAgendamento.CANCELADO;
         AtualizarDataModificacao();
     }
 }

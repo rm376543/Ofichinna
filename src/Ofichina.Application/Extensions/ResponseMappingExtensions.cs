@@ -62,7 +62,7 @@ public static class ResponseMappingExtensions
             DiaDisponibilidadeId = agendamento.DiaDisponibilidadeId,
             HorarioConsultorId = agendamento.HorarioConsultorId,
             ConsultorPessoaId = agendamento.ConsultorPessoaId,
-            ConsultorNome = agendamento.HorarioConsultor.Pessoa.Nome,
+            ConsultorNome = agendamento.HorarioConsultor?.Pessoa?.Nome ?? string.Empty,
             VeiculoId = agendamento.VeiculoId,
             VeiculoPlaca = agendamento.Veiculo.Placa.Numero,
             VeiculoDescricao = $"{agendamento.Veiculo.Marca} {agendamento.Veiculo.Modelo} {agendamento.Veiculo.AnoFabricacao}",

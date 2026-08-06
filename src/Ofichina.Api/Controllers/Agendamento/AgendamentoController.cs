@@ -59,34 +59,6 @@ public sealed class AgendamentoController : ControllerBase
     }
 
     /// <summary>
-    /// Cancela um agendamento existente para uma pessoa específica.
-    /// </summary>
-    /// <param name="request"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpDelete("cancelar-agendamento")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> CancelarAsync(CancelarAgendamentoRequest request, CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando o cancelamento do agendamento");
-
-        var result = await _mediator.Send(new CancelarAgendamentoCommand(request.PessoaId, request.AgendamentoId), cancellationToken);
-
-        if (!result.IsSuccess)
-        {
-            _logger.LogWarning("Falha ao cancelar agendamento. PessoaId: {PessoaId}, AgendamentoId: {AgendamentoId}, Erro: {Erro}", request.PessoaId, request.AgendamentoId, result.Error);
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Falha ao cancelar agendamento."));
-        }
-
-        _logger.LogInformation("Agendamento cancelado com sucesso.");
-
-        return Ok(ApiResponse.SuccessResponse("Agendamento cancelado com sucesso."));
-    }
-
-    /// <summary>
     /// Cadastra horários disponíveis para agendamento.
     /// </summary>
     /// <param name="horario"></param>
@@ -167,7 +139,7 @@ public sealed class AgendamentoController : ControllerBase
         [FromBody] CreateAgendamentoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a criação de agendamento para a pessoa {PessoaId} no dia {DiaDisponibilidadeId} e horário {HorarioConsultorId}.", pessoaId, request.DiaDisponibilidadeId, request.HorarioConsultorId);
+        _logger.LogInformation("Iniciando criação de agendamento. PessoaId: {PessoaId}, SlotId: {SlotId}", pessoaId, request.HorarioConsultorDisponibilidadeId);
 
         var validation = await _validator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
@@ -176,8 +148,7 @@ public sealed class AgendamentoController : ControllerBase
         var result = await _mediator.Send(new CreateAgendamentoCommand
         {
             PessoaId = pessoaId,
-            DiaDisponibilidadeId = request.DiaDisponibilidadeId,
-            HorarioConsultorId = request.HorarioConsultorId,
+            HorarioConsultorDisponibilidadeId = request.HorarioConsultorDisponibilidadeId,
             VeiculoId = request.VeiculoId,
             Descricao = request.Descricao
         }, cancellationToken);
@@ -186,7 +157,7 @@ public sealed class AgendamentoController : ControllerBase
         {
             var error = result.Error ?? "Não foi possível criar o agendamento.";
 
-            _logger.LogWarning("Falha ao criar agendamento. PessoaId: {PessoaId}, DiaDisponibilidadeId: {DiaDisponibilidadeId}, HorarioConsultorId: {HorarioConsultorId}, Erro: {Erro}", pessoaId, request.DiaDisponibilidadeId, request.HorarioConsultorId, error);
+            _logger.LogWarning("Falha ao criar agendamento. PessoaId: {PessoaId}, SlotId: {SlotId}, Erro: {Erro}", pessoaId, request.HorarioConsultorDisponibilidadeId, error);
 
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Falha ao criar agendamento."));
 
@@ -196,6 +167,147 @@ public sealed class AgendamentoController : ControllerBase
             nameof(ObterPorIdAsync),
             new { pessoaId, id = result.Value.Id },
             ApiResponse<AgendamentoResponse>.SuccessResponse(result.Value, "Agendamento criado com sucesso."));
+    }
+
+    /// <summary>
+    /// Lista dias disponíveis para agendamento em um mês/ano específico.
+    /// </summary>
+    [HttpGet("dias-disponiveis")]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<DiaDisponibilidadeResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<ApiResponse<IEnumerable<DiaDisponibilidadeResponse>>>> ListarDiasDisponiveisAsync(
+        [FromQuery] int mes,
+        [FromQuery] int ano,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Listando dias disponíveis. Mês: {Mes}, Ano: {Ano}", mes, ano);
+
+        var result = await _mediator.Send(new ListarDiasDisponiveisQuery
+        {
+            Mes = mes,
+            Ano = ano
+        }, cancellationToken);
+
+        var mapped = result.Select(d => new DiaDisponibilidadeResponse
+        {
+            Id = d.Id,
+            Data = DateOnly.ParseExact(d.Data, "yyyy-MM-dd")
+        });
+
+        return Ok(ApiResponse<IEnumerable<DiaDisponibilidadeResponse>>.SuccessResponse(mapped));
+    }
+
+    /// <summary>
+    /// Lista horários disponíveis de um dia específico.
+    /// </summary>
+    [HttpGet("dias/{diaId:guid}/horarios")]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<HorarioDisponivelResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<ApiResponse<IEnumerable<HorarioDisponivelResponse>>>> ListarHorariosPorDiaAsync(
+        Guid diaId,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Listando horários para dia. DiaId: {DiaId}", diaId);
+
+        var result = await _mediator.Send(new ListarHorariosPorDiaQuery
+        {
+            DiaDisponibilidadeId = diaId
+        }, cancellationToken);
+
+        var mapped = result.Select(h => new HorarioDisponivelResponse
+        {
+            Id = h.Id,
+            Horario = TimeOnly.ParseExact(h.Hora, "HH:mm"),
+            Disponivel = h.Disponivel
+        });
+
+        return Ok(ApiResponse<IEnumerable<HorarioDisponivelResponse>>.SuccessResponse(mapped));
+    }
+
+    /// <summary>
+    /// Lista consultores disponíveis para uma combinação dia + horário.
+    /// </summary>
+    [HttpGet("dias/{diaId:guid}/horarios/{horarioId:guid}/consultores")]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<ConsultorDisponibilidadeResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<ApiResponse<IEnumerable<ConsultorDisponibilidadeResponse>>>> ListarConsultoresPorDiaHorarioAsync(
+        Guid diaId,
+        Guid horarioId,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Listando consultores. DiaId: {DiaId}, HorarioId: {HorarioId}", diaId, horarioId);
+
+        var result = await _mediator.Send(new ListarConsultoresPorDiaHorarioQuery
+        {
+            DiaDisponibilidadeId = diaId,
+            HorarioDisponibilidadeId = horarioId
+        }, cancellationToken);
+
+        var mapped = result.Select(c => new ConsultorDisponibilidadeResponse
+        {
+            Id = c.PessoaId,
+            Nome = c.Nome,
+            Documento = c.Documento
+        });
+
+        return Ok(ApiResponse<IEnumerable<ConsultorDisponibilidadeResponse>>.SuccessResponse(mapped));
+    }
+
+    /// <summary>
+    /// Lista agenda de um consultor em uma data específica.
+    /// </summary>
+    [HttpGet("consultores/{consultorId:guid}/agenda")]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<AgendaConsultorResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<ApiResponse<IEnumerable<AgendaConsultorResponse>>>> ListarAgendaPorConsultorAsync(
+        Guid consultorId,
+        [FromQuery] DateOnly data,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Listando agenda do consultor. ConsultorId: {ConsultorId}, Data: {Data}", consultorId, data);
+
+        var result = await _mediator.Send(new ListarAgendaPorConsultorQuery
+        {
+            ConsultorPessoaId = consultorId,
+            Data = data
+        }, cancellationToken);
+
+        var mapped = result.Select(a => new AgendaConsultorResponse
+        {
+            SlotId = a.SlotId,
+            Hora = a.Hora,
+            Status = a.Status,
+            ClienteNome = a.ClienteNome,
+            Veiculo = a.Veiculo
+        });
+
+        return Ok(ApiResponse<IEnumerable<AgendaConsultorResponse>>.SuccessResponse(mapped));
+    }
+
+
+    /// <summary>
+    /// Cancela um agendamento existente.
+    /// </summary>
+    [HttpPost("{id:guid}/cancelar")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> CancelarAsync(
+        Guid id,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Cancelando agendamento. AgendamentoId: {AgendamentoId}", id);
+
+        // TODO: Obter PessoaId do contexto (claims do JWT)
+        var pessoaId = Guid.Empty; // Temporariamente vazio, deve vir do contexto
+
+        var result = await _mediator.Send(new CancelarAgendamentoCommand(pessoaId, id), cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível cancelar o agendamento."));
+
+        return Ok(ApiResponse.SuccessResponse("Agendamento cancelado com sucesso."));
     }
 }
 

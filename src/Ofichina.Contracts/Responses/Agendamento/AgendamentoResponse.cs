@@ -11,11 +11,11 @@ public sealed class AgendamentoResponse : BaseEntity
 
     public string ClienteNome { get; set; } = string.Empty;
 
-    public Guid DiaDisponibilidadeId { get; set; }
+    public Guid? DiaDisponibilidadeId { get; set; }
 
-    public Guid HorarioConsultorId { get; set; }
+    public Guid? HorarioConsultorId { get; set; }
 
-    public Guid ConsultorPessoaId { get; set; }
+    public Guid? ConsultorPessoaId { get; set; }
 
     public string ConsultorNome { get; set; } = string.Empty;
 

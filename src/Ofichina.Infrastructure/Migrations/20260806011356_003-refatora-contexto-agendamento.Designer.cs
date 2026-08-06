@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ofichina.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Ofichina.Infrastructure.Persistence;
 namespace Ofichina.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260806011356_003-refatora-contexto-agendamento")]
+    partial class _003refatoracontextoagendamento
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,6 +29,9 @@ namespace Ofichina.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ChecklistId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ClientePessoaId")
@@ -65,6 +71,8 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ChecklistId");
 
                     b.HasIndex("ClientePessoaId");
 
@@ -864,6 +872,11 @@ namespace Ofichina.Infrastructure.Migrations
 
             modelBuilder.Entity("Ofichina.Domain.Aggregates.Agendamento", b =>
                 {
+                    b.HasOne("Ofichina.Domain.Entities.Checklist", "Checklist")
+                        .WithMany()
+                        .HasForeignKey("ChecklistId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Ofichina.Domain.Entities.Pessoa", "Cliente")
                         .WithMany()
                         .HasForeignKey("ClientePessoaId")
@@ -896,6 +909,8 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasForeignKey("VeiculoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Checklist");
 
                     b.Navigation("Cliente");
 

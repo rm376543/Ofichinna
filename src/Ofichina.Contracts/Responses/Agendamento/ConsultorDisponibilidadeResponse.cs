@@ -1,0 +1,12 @@
+using Ofichina.Contracts.Common;
+
+namespace Ofichina.Contracts.Responses.Agendamento;
+
+/// <summary>
+/// Response com informações do consultor disponível.
+/// </summary>
+public sealed class ConsultorDisponibilidadeResponse : BaseEntity
+{
+    public string Nome { get; set; } = string.Empty;
+    public string Documento { get; set; } = string.Empty;
+}
