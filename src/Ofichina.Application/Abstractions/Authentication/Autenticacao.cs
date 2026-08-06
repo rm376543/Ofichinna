@@ -25,7 +25,7 @@ public interface IAutenticacaoService
 /// </summary>
 public interface IUsuarioAutenticacaoRepository
 {
-    Task<Usuario> ObterPorEmailAsync(string email, CancellationToken cancellationToken = default);
+    Task<Usuario?> ObterPorEmailAsync(string email, CancellationToken cancellationToken = default);
 }
 
 /// <summary>

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Ofichina.Infrastructure.DependencyInjection;
 using Ofichina.Infrastructure.Persistence;
 
 namespace Ofichina.Infrastructure.DependencyInjection;
@@ -37,6 +36,23 @@ public static class DatabaseModule
             }));
 
         return services;
+    }
+
+    /// <summary>
+    /// Inicializa o banco de dados com migração e seed de dados.
+    /// </summary>
+    public static async Task InitializeDatabaseAsync(this IServiceProvider serviceProvider)
+    {
+        using (var scope = serviceProvider.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            // Aplica migrações pendentes
+            await context.Database.MigrateAsync();
+
+            // Popula dados iniciais
+            await DatabaseSeeder.SeedAsync(context);
+        }
     }
 }
 

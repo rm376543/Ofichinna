@@ -1,7 +1,8 @@
-using Ofichina.Api.Modules;
-using Ofichina.Api.Middleware;
-using Ofichina.Bootstrap;
 using DotNetEnv;
+using Ofichina.Api.Middleware;
+using Ofichina.Api.Modules;
+using Ofichina.Bootstrap;
+using Ofichina.Infrastructure.DependencyInjection;
 using Serilog;
 
 Env.TraversePath().Load();
@@ -29,7 +30,14 @@ builder.Services.AddSwaggerModule();
 // Adiciona todos os serviços de infraestrutura e demais
 builder.Services.AddBootstrapMiddleware(builder.Configuration);
 
-var app = builder.Build();// Registrar middleware de Correlation ID (deve ser um dos primeiros)
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    await app.Services.InitializeDatabaseAsync();
+}
+
+// Registrar middleware de Correlation ID (deve ser um dos primeiros)
 app.UseCorrelationId();
 app.UseMiddleware<ApiExceptionMiddleware>();
 

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ofichina.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class _001inicial : Migration
+    public partial class _001migrationinicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -241,6 +241,41 @@ namespace Ofichina.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "HorariosConsultorDisponibilidade",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DiaDisponibilidadeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    HorarioDisponibilidadeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ConsultorPessoaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HorariosConsultorDisponibilidade", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HorariosConsultorDisponibilidade_DiasDisponibilidade_DiaDisponibilidadeId",
+                        column: x => x.DiaDisponibilidadeId,
+                        principalTable: "DiasDisponibilidade",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_HorariosConsultorDisponibilidade_HorariosDisponibilidade_HorarioDisponibilidadeId",
+                        column: x => x.HorarioDisponibilidadeId,
+                        principalTable: "HorariosDisponibilidade",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_HorariosConsultorDisponibilidade_Pessoas_ConsultorPessoaId",
+                        column: x => x.ConsultorPessoaId,
+                        principalTable: "Pessoas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "HorariosConsultores",
                 columns: table => new
                 {
@@ -301,10 +336,11 @@ namespace Ofichina.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClientePessoaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DiaDisponibilidadeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    HorarioConsultorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ConsultorPessoaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DiaDisponibilidadeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    HorarioConsultorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ConsultorPessoaId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     VeiculoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    HorarioConsultorDisponibilidadeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Descricao = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -318,6 +354,12 @@ namespace Ofichina.Infrastructure.Migrations
                         name: "FK_Agendamentos_DiasDisponibilidade_DiaDisponibilidadeId",
                         column: x => x.DiaDisponibilidadeId,
                         principalTable: "DiasDisponibilidade",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Agendamentos_HorariosConsultorDisponibilidade_HorarioConsultorDisponibilidadeId",
+                        column: x => x.HorarioConsultorDisponibilidadeId,
+                        principalTable: "HorariosConsultorDisponibilidade",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -353,6 +395,7 @@ namespace Ofichina.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     VeiculoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PessoaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AgendamentoId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     HodometroEntrada = table.Column<int>(type: "int", nullable: false),
                     ItensVerificados = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
                     Observacoes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
@@ -515,7 +558,7 @@ namespace Ofichina.Infrastructure.Migrations
                     OrcamentoId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     OrdemServicoId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ServicoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PecaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PecaId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Quantidade = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -588,10 +631,9 @@ namespace Ofichina.Infrastructure.Migrations
                 column: "DiaDisponibilidadeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Agendamentos_DiaDisponibilidadeId_HorarioConsultorId",
+                name: "IX_Agendamentos_HorarioConsultorDisponibilidadeId",
                 table: "Agendamentos",
-                columns: new[] { "DiaDisponibilidadeId", "HorarioConsultorId" },
-                unique: true);
+                column: "HorarioConsultorDisponibilidadeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Agendamentos_HorarioConsultorId",
@@ -607,6 +649,11 @@ namespace Ofichina.Infrastructure.Migrations
                 name: "IX_Agendamentos_VeiculoId",
                 table: "Agendamentos",
                 column: "VeiculoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Checklists_AgendamentoId",
+                table: "Checklists",
+                column: "AgendamentoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Checklists_PessoaId",
@@ -649,6 +696,27 @@ namespace Ofichina.Infrastructure.Migrations
                 name: "IX_HistoricoStatus_TipoEntidade_EntidadeId",
                 table: "HistoricoStatus",
                 columns: new[] { "TipoEntidade", "EntidadeId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HorariosConsultorDisponibilidade_ConsultorPessoaId",
+                table: "HorariosConsultorDisponibilidade",
+                column: "ConsultorPessoaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HorariosConsultorDisponibilidade_DiaDisponibilidadeId",
+                table: "HorariosConsultorDisponibilidade",
+                column: "DiaDisponibilidadeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HorariosConsultorDisponibilidade_DiaHorarioConsultor",
+                table: "HorariosConsultorDisponibilidade",
+                columns: new[] { "DiaDisponibilidadeId", "HorarioDisponibilidadeId", "ConsultorPessoaId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HorariosConsultorDisponibilidade_HorarioDisponibilidadeId",
+                table: "HorariosConsultorDisponibilidade",
+                column: "HorarioDisponibilidadeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HorariosConsultores_HorarioDisponibilidadeId_PessoaId",
@@ -815,10 +883,10 @@ namespace Ofichina.Infrastructure.Migrations
                 name: "UsuariosPerfis");
 
             migrationBuilder.DropTable(
-                name: "HorariosConsultores");
+                name: "HorariosConsultorDisponibilidade");
 
             migrationBuilder.DropTable(
-                name: "DiasDisponibilidade");
+                name: "HorariosConsultores");
 
             migrationBuilder.DropTable(
                 name: "OrdensServico");
@@ -837,6 +905,9 @@ namespace Ofichina.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Perfis");
+
+            migrationBuilder.DropTable(
+                name: "DiasDisponibilidade");
 
             migrationBuilder.DropTable(
                 name: "HorariosDisponibilidade");
