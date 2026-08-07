@@ -8,6 +8,11 @@ namespace Ofichina.Contracts.Requests.Pecas;
 public sealed class UpdatePecaRequest : UpdateRequest
 {
     /// <summary>
+    /// Identificador da peça.
+    /// </summary>
+    public Guid PecaId { get; init; }
+
+    /// <summary>
     /// Nome da peça.
     /// </summary>
     public string Nome { get; init; } = string.Empty;

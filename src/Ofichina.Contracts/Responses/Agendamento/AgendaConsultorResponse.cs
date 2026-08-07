@@ -5,7 +5,7 @@ namespace Ofichina.Contracts.Responses.Agendamento;
 /// </summary>
 public sealed class AgendaConsultorResponse
 {
-    public Guid SlotId { get; set; }
+    public Guid AgendaId { get; set; }
     public string Hora { get; set; } = string.Empty;
     public string Status { get; set; } = "VAGO";
     public string? ClienteNome { get; set; }

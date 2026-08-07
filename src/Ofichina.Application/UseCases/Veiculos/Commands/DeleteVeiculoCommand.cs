@@ -9,10 +9,10 @@ namespace Ofichina.Application.UseCases.Veiculos.Commands;
 /// </summary>
 public sealed class DeleteVeiculoCommand : ICommand<Result>
 {
-    public Guid Id { get; init; }
+    public Guid VeiculoId { get; init; }
 
     public DeleteVeiculoCommand(RemoveVeiculoRequest request)
     {
-        Id = request.Id;
+        VeiculoId = request.VeiculoId;
     }
 }

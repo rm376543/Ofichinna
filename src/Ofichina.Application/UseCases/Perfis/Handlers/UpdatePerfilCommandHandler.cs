@@ -1,9 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using Ofichina.Application.Abstractions;
+﻿using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Perfis.Commands;
 using Ofichina.Contracts.Common;
-using Ofichina.Application.Abstractions.Interfaces;
-using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Perfis.Handlers;
 
@@ -30,19 +27,19 @@ public class UpdatePerfilCommandHandler : ICommandHandler<UpdatePerfilCommand, R
     {
         try
         {
-            _logger.LogInformation("Iniciando atualização do perfil com Id: {PerfilId}", command.Id);
+            _logger.LogInformation("Iniciando atualização do perfil com Id: {PerfilId}", command.PerfilId);
 
-            var perfil = await _repository.GetByIdAsync(command.Id, cancellationToken);
+            var perfil = await _repository.GetByIdAsync(command.PerfilId, cancellationToken);
 
             if (perfil is null)
             {
-                _logger.LogWarning("Perfil com Id: {PerfilId} não encontrado.", command.Id);
+                _logger.LogWarning("Perfil com Id: {PerfilId} não encontrado.", command.PerfilId);
                 return Result.Failure("Perfil não encontrado.");
             }
 
             var nomeExistente = await _repository.GetByNomeAsync(command.NomePerfil, cancellationToken);
 
-            if (nomeExistente is not null && nomeExistente.Id != command.Id)
+            if (nomeExistente is not null && nomeExistente.Id != command.PerfilId)
             {
                 _logger.LogWarning("Já existe um perfil com o nome: {NomePerfil}", command.NomePerfil);
                 return Result.Failure("Já existe um perfil com este nome.");
@@ -54,12 +51,12 @@ public class UpdatePerfilCommandHandler : ICommandHandler<UpdatePerfilCommand, R
             await _repository.UpdateAsync(perfil, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation("Perfil com Id: {PerfilId} atualizado com sucesso.", command.Id);
+            _logger.LogInformation("Perfil com Id: {PerfilId} atualizado com sucesso.", command.PerfilId);
             return Result.Success();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao atualizar o perfil com Id: {PerfilId}", command.Id);
+            _logger.LogError(ex, "Erro ao atualizar o perfil com Id: {PerfilId}", command.PerfilId);
             return Result.Failure("Ocorreu um erro ao atualizar o perfil.");
         }
 

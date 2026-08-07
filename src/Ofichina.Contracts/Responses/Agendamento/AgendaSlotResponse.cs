@@ -6,7 +6,7 @@
     /// </summary>
     public sealed class AgendaSlotResponse
     {
-        public Guid SlotId { get; set; }
+        public Guid AgendaId { get; set; }
         public string Hora { get; set; } = string.Empty; // HH:mm
         public string Status { get; set; } = "VAGO"; // VAGO, AGENDADO, INICIADO, FINALIZADO, CANCELADO
         public string? ClienteNome { get; set; }

@@ -28,13 +28,15 @@ public sealed class AgendamentoRepository : Repository<Agendamento>, IAgendament
             .AsNoTracking()
             .Where(x => x.DeletedAt == null && x.ClientePessoaId == pessoaId)
             .Include(x => x.Cliente)
-            .Include(x => x.Consultor)
             .Include(x => x.Veiculo)
-            .Include(x => x.DiaDisponibilidade)
-            .Include(x => x.HorarioConsultor)
-                .ThenInclude(x => x.Pessoa)
-            .OrderBy(x => x.DiaDisponibilidade.Data)
-            .ThenBy(x => x.HorarioConsultor.HorarioDisponibilidade.Hora)
+            .Include(x => x.AgendaConsultor)
+                .ThenInclude(x => x.DiaDisponibilidade)
+            .Include(x => x.AgendaConsultor)
+                .ThenInclude(x => x.HorarioDisponibilidade)
+            .Include(x => x.AgendaConsultor)
+                .ThenInclude(x => x.Consultor)
+            .OrderBy(x => x.AgendaConsultor.DiaDisponibilidade.Data)
+            .ThenBy(x => x.AgendaConsultor.HorarioDisponibilidade.Hora)
             .ThenBy(x => x.Id);
 
         var totalCount = await query.CountAsync(cancellationToken);
@@ -51,11 +53,13 @@ public sealed class AgendamentoRepository : Repository<Agendamento>, IAgendament
         return await _context.Agendamentos
             .AsNoTracking()
             .Include(x => x.Cliente)
-            .Include(x => x.Consultor)
             .Include(x => x.Veiculo)
-            .Include(x => x.DiaDisponibilidade)
-            .Include(x => x.HorarioConsultor)
-                .ThenInclude(x => x.Pessoa)
+            .Include(x => x.AgendaConsultor)
+                .ThenInclude(x => x.DiaDisponibilidade)
+            .Include(x => x.AgendaConsultor)
+                .ThenInclude(x => x.HorarioDisponibilidade)
+            .Include(x => x.AgendaConsultor)
+                .ThenInclude(x => x.Consultor)
             .FirstOrDefaultAsync(x => x.Id == agendamentoId && x.ClientePessoaId == pessoaId && x.DeletedAt == null, cancellationToken);
     }
 
@@ -63,14 +67,33 @@ public sealed class AgendamentoRepository : Repository<Agendamento>, IAgendament
     {
         return await _context.Agendamentos
             .AsNoTracking()
-            .AnyAsync(x => x.DeletedAt == null && x.HorarioConsultorId == horarioConsultorId, cancellationToken);
+            .AnyAsync(x => x.DeletedAt == null && x.AgendaConsultorId == horarioConsultorId, cancellationToken);
     }
 
     public async Task<bool> ExisteConflitoVeiculoAsync(Guid veiculoId, Guid diaDisponibilidadeId, Guid horarioConsultorId, CancellationToken cancellationToken = default)
     {
         return await _context.Agendamentos
             .AsNoTracking()
-            .AnyAsync(x => x.DeletedAt == null && x.VeiculoId == veiculoId && x.DiaDisponibilidadeId == diaDisponibilidadeId && x.HorarioConsultorId == horarioConsultorId, cancellationToken);
+            .AnyAsync(x => x.DeletedAt == null
+                && x.VeiculoId == veiculoId
+                && x.AgendaConsultor.DiaDisponibilidadeId == diaDisponibilidadeId
+                && x.AgendaConsultor.HorarioDisponibilidadeId == horarioConsultorId, cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<Agendamento>> GetAllWithIncludesAsync(CancellationToken cancellationToken = default)
+    {
+        return await _context.Agendamentos
+            .AsNoTracking()
+            .Include(x => x.Cliente)
+            .Include(x => x.AgendaConsultor)
+                .ThenInclude(x => x.DiaDisponibilidade)
+            .Include(x => x.AgendaConsultor)
+                .ThenInclude(x => x.HorarioDisponibilidade)
+            .Include(x => x.AgendaConsultor)
+                .ThenInclude(x => x.Consultor)
+            .Include(x => x.Veiculo)
+            .Where(x => x.DeletedAt == null)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<Agendamento?> BuscarAgendamentosPorPessoaId(Guid pessoaId, CancellationToken cancellationToken = default)
@@ -78,11 +101,13 @@ public sealed class AgendamentoRepository : Repository<Agendamento>, IAgendament
         return await _context.Agendamentos
             .AsNoTracking()
             .Include(x => x.Cliente)
-            .Include(x => x.Consultor)
             .Include(x => x.Veiculo)
-            .Include(x => x.DiaDisponibilidade)
-            .Include(x => x.HorarioConsultor)
-                .ThenInclude(x => x.Pessoa)
+            .Include(x => x.AgendaConsultor)
+                .ThenInclude(x => x.DiaDisponibilidade)
+            .Include(x => x.AgendaConsultor)
+                .ThenInclude(x => x.HorarioDisponibilidade)
+            .Include(x => x.AgendaConsultor)
+                .ThenInclude(x => x.Consultor)
             .FirstOrDefaultAsync(x => x.ClientePessoaId == pessoaId && x.DeletedAt == null, cancellationToken);
     }
 }

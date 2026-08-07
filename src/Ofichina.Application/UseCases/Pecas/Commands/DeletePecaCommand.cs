@@ -11,10 +11,10 @@ public sealed class DeletePecaCommand : ICommand<Result>
     /// <summary>
     /// Identificador da peça.
     /// </summary>
-    public Guid Id { get; init; }
+    public Guid PecaId { get; init; }
 
     public DeletePecaCommand(Guid pecaId)
     {
-        Id = pecaId;
+        PecaId = pecaId;
     }
 }

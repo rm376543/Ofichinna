@@ -10,7 +10,7 @@ public sealed class UpdatePerfilRequestValidator : AbstractValidator<UpdatePerfi
 {
     public UpdatePerfilRequestValidator()
     {
-        RuleFor(x => x.Id)
+        RuleFor(x => x.PerfilId)
             .NotEmpty().WithMessage("O Id do perfil é obrigatório.");
 
         RuleFor(x => x.NomePerfil)

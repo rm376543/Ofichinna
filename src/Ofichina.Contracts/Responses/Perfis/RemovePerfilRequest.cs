@@ -2,6 +2,6 @@
 {
     public class RemovePerfilRequest
     {
-        public Guid Id { get; set; }
+        public Guid PerfilId { get; set; }
     }
 }

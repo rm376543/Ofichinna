@@ -55,6 +55,6 @@ public sealed class ServicoRequestValidatorTests
         var result = validator.Validate(request);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, x => x.PropertyName == nameof(UpdateServicoRequest.Id));
+        Assert.Contains(result.Errors, x => x.PropertyName == nameof(UpdateServicoRequest.ServicoId));
     }
 }

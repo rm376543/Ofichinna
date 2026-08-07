@@ -1,10 +1,8 @@
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Extensions;
+using Ofichina.Application.UseCases.OrdensServico.Mappings;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses.OrdemServico;
 using Ofichina.Contracts.Responses.OrdensServico;
-using Ofichina.Domain.Aggregates;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 

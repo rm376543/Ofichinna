@@ -1,6 +1,4 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.Orcamentos.Commands;
 using Ofichina.Contracts.Common;
 
@@ -26,7 +24,7 @@ public sealed class CreateOrcamentoCommandHandler : ICommandHandler<CreateOrcame
     {
         try
         {
-            _logger.LogInformation("Iniciando a criação do orçamento. PessoaId: {PessoaId}, VeiculoId: {VeiculoId}.", command.PessoaId, command.VeiculoId);
+            _logger.LogInformation("Iniciando a criação do orçamento. PessoaId: {PessoaId}, VeiculoId: {VeiculoId}, AgendamentoId: {AgendamentoId}.", command.PessoaId, command.VeiculoId, command.AgendamentoId);
 
             var result = await _createOrcamentoService.CreateAsync(command, cancellationToken);
 

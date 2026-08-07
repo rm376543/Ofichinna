@@ -2,6 +2,6 @@
 {
     public class RemoveVeiculoRequest
     {
-        public Guid Id { get; set; }
+        public Guid VeiculoId { get; set; }
     }
 }

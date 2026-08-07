@@ -9,7 +9,7 @@ namespace Ofichina.Application.UseCases.Veiculos.Commands;
 /// </summary>
 public sealed class UpdateVeiculoCommand : ICommand<Result>
 {
-    public Guid Id { get; init; }
+    public Guid VeiculoId { get; init; }
 
     public Guid PessoaId { get; init; }
 
@@ -27,7 +27,7 @@ public sealed class UpdateVeiculoCommand : ICommand<Result>
 
     public UpdateVeiculoCommand(UpdateVeiculoRequest request)
     {
-        Id = request.Id;
+        VeiculoId = request.VeiculoId;
         PessoaId = request.PessoaId;
         Placa = request.Placa;
         Marca = request.Marca;

@@ -6,6 +6,11 @@
     public class UpdateOrcamentoRequest : UpdateRequest
     {
         /// <summary>
+        /// Identificador do orçamento.
+        /// </summary>
+        public Guid OrcamentoId { get; init; }
+
+        /// <summary>
         /// Pessoa relacionada ao orçamento.
         /// </summary>
         public Guid PessoaId { get; init; }

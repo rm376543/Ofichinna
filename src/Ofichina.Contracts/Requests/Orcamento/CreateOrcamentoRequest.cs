@@ -18,9 +18,9 @@ public sealed class CreateOrcamentoRequest : CreateRequest
     public Guid VeiculoId { get; init; }
 
     /// <summary>
-    /// Checklist de origem do orçamento.
+    /// Agendamento de origem do orçamento.
     /// </summary>
-    public Guid ChecklistId { get; init; }
+    public Guid AgendamentoId { get; init; }
 
     /// <summary>
     /// Responsável.

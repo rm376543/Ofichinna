@@ -5,6 +5,8 @@ namespace Ofichina.Contracts.Responses.OrdemServico
 {
     public sealed class OrdemServicoSimplesResponse : BaseEntity
     {
+        public Guid OrdemServicoSimplesId { get; set; }
+
         public string Cliente { get; set; } = string.Empty;
         public string Funcionario { get; set; } = string.Empty;
         public string ProblemaRelatado { get; set; } = string.Empty;

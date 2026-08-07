@@ -7,6 +7,8 @@ namespace Ofichina.Contracts.Responses.Pecas;
 /// </summary>
 public sealed class PecaResponse : BaseEntity
 {
+    public Guid PecaId { get; set; }
+
     /// <summary>
     /// Nome da peça.
     /// </summary>

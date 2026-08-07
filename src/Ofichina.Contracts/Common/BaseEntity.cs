@@ -2,15 +2,10 @@ namespace Ofichina.Contracts.Common;
 
 /// <summary>
 /// DTO base para entidades.
-/// Contém o identificador e herda propriedades de auditoria.
+/// Contém apenas propriedades de auditoria compartilhadas.
 /// </summary>
 public abstract class BaseEntity
 {
-    /// <summary>
-    /// Identificador único da entidade.
-    /// </summary>
-    public Guid Id { get; set; }
-
     /// <summary>
     /// Data de criação da entidade.
     /// </summary>

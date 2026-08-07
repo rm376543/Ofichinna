@@ -12,7 +12,7 @@ public sealed class UpdatePessoaCommand : ICommand<Result>
     /// <summary>
     /// Identificador da pessoa.
     /// </summary>
-    public Guid Id { get; init; }
+    public Guid PessoaId { get; init; }
 
     /// <summary>
     /// Nome completo ou razão social.
@@ -61,7 +61,8 @@ public sealed class UpdatePessoaCommand : ICommand<Result>
 
     public UpdatePessoaCommand(UpdatePessoaRequest request)
     {
-        Id = request.Id;
+        var pessoaId = request.PessoaId;
+        PessoaId = pessoaId;
         Nome = request.Nome;
         Telefone = request.Telefone;
         Logradouro = request.Logradouro;

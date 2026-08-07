@@ -1,10 +1,8 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Servicos.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Servicos.Handlers;
 
@@ -31,7 +29,7 @@ public sealed class UpdateServicoCommandHandler : ICommandHandler<UpdateServicoC
     {
         try
         {
-            var servico = await _servicoRepository.GetByIdAsync(command.Id, cancellationToken);
+            var servico = await _servicoRepository.GetByIdAsync(command.ServicoId, cancellationToken);
 
             if (servico is null || servico.EstaExcluida())
                 return Result.Failure("Serviço não encontrado.");

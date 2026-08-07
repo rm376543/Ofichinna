@@ -7,6 +7,8 @@ namespace Ofichina.Contracts.Responses.Agendamento;
 /// </summary>
 public sealed class AgendamentoResponse : BaseEntity
 {
+    public Guid AgendamentoId { get; set; }
+
     public Guid PessoaId { get; set; }
 
     public string ClienteNome { get; set; } = string.Empty;

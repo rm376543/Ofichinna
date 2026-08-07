@@ -11,6 +11,7 @@ public sealed class MotivoRecusaOrcamentoConfiguration : IEntityTypeConfiguratio
         builder.ToTable("MotivosRecusaOrcamento");
 
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasColumnName("MotivoRecusaOrcamentoId");
 
         builder.Property(x => x.OrcamentoId).IsRequired();
         builder.Property(x => x.Descricao).HasMaxLength(1000);

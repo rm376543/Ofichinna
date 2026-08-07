@@ -4,6 +4,8 @@ namespace Ofichina.Contracts.Responses.PerfilPermissoes;
 
 public sealed class PerfilPermissaoResponse : BaseEntity
 {
+    public Guid PerfilPermissaoId { get; set; }
+
     public Guid PerfilId { get; set; }
 
     public Guid PermissaoId { get; set; }

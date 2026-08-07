@@ -12,12 +12,12 @@ public sealed class UpdateServicoCommand : ICommand<Result>
     /// <summary>
     /// Identificador do serviço.
     /// </summary>
-    public Guid Id { get; init; }
+    public Guid ServicoId { get; init; }
 
     /// <summary>
     /// Nome do serviço.
     /// </summary>
-    public string Nome { get; init; } = string.Empty;
+    public string Nome { get; init; }
 
     /// <summary>
     /// Descrição do serviço.
@@ -32,14 +32,14 @@ public sealed class UpdateServicoCommand : ICommand<Result>
     /// <summary>
     /// Indica se o serviço está ativo.
     /// </summary>
-    public bool Ativo { get; init; } = true;
+    public bool Ativo { get; init; }
 
-    public UpdateServicoCommand(UpdateServicoRequest request)
+    public UpdateServicoCommand(UpdateServicoRequest updateServicoRequest)
     {
-        Id = request.Id;
-        Nome = request.Nome;
-        Descricao = request.Descricao;
-        Valor = request.Valor;
-        Ativo = request.Ativo;
+        ServicoId = updateServicoRequest.ServicoId;
+        Nome = updateServicoRequest.Nome;
+        Descricao = updateServicoRequest.Descricao;
+        Valor = updateServicoRequest.Valor;
+        Ativo = updateServicoRequest.Ativo;
     }
 }

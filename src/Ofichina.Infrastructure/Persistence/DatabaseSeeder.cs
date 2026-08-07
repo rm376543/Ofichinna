@@ -810,7 +810,7 @@ public static class DatabaseSeeder
                         continue;
 
                     await context.HorariosConsultorDisponibilidade.AddAsync(
-                        new HorarioConsultorDisponibilidade(dia.Id, horario.Id, consultor.Id));
+                        new AgendaConsultor(dia.Id, horario.Id, consultor.Id));
 
                     vinculos.Add(chave);
                 }

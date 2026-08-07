@@ -7,6 +7,8 @@ namespace Ofichina.Contracts.Responses.Servicos;
 /// </summary>
 public sealed class ServicoResponse : BaseEntity
 {
+    public Guid ServicoId { get; set; }
+
     /// <summary>
     /// Nome do serviço.
     /// </summary>

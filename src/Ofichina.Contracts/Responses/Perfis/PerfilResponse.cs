@@ -7,6 +7,8 @@ namespace Ofichina.Contracts.Responses.Perfis;
 /// </summary>
 public class PerfilResponse : BaseEntity
 {
+    public Guid PerfilId { get; set; }
+
     public string Nome { get; set; } = string.Empty;
 
     public string? Descricao { get; set; }

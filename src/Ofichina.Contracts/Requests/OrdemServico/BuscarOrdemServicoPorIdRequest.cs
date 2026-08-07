@@ -2,6 +2,6 @@
 {
     public class BuscarOrdemServicoPorIdRequest : BaseRequest
     {
-        public Guid Id { get; set; }
+        public Guid OrdemServicoId { get; set; }
     }
 }

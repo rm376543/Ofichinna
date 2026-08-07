@@ -8,6 +8,11 @@ namespace Ofichina.Contracts.Responses.OrdensServico;
 public sealed class OrdemServicoPecaResponse : BaseEntity
 {
     /// <summary>
+    /// Identificador do vínculo resposta.
+    /// </summary>
+    public Guid OrdemServicoPecaId { get; set; }
+
+    /// <summary>
     /// Identificador da peça cadastrada.
     /// </summary>
     public Guid PecaId { get; set; }

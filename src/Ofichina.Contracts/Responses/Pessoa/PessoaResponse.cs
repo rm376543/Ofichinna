@@ -7,6 +7,8 @@ namespace Ofichina.Contracts.Responses.Pessoa;
 /// </summary>
 public class PessoaResponse : BaseEntity
 {
+    public Guid PessoaId { get; set; }
+
     /// <summary>
     /// Nome completo ou razão social.
     /// </summary>

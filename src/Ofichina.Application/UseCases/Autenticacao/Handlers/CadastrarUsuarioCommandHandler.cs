@@ -1,14 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using Ofichina.Application.Abstractions;
-using Ofichina.Application.Exceptions;
+﻿using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Application.Exceptions;
 using Ofichina.Application.UseCases.Autenticacao.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Enums;
+using Ofichina.Contracts.Responses.Authentication;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
-using Ofichina.Domain.Common;
-using Ofichina.Contracts.Responses.Authentication;
 
 namespace Ofichina.Application.UseCases.Autenticacao.Handlers;
 

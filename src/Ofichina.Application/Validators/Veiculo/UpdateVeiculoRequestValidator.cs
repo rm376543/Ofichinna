@@ -10,7 +10,7 @@ public sealed class UpdateVeiculoRequestValidator : AbstractValidator<UpdateVeic
 {
     public UpdateVeiculoRequestValidator()
     {
-        RuleFor(x => x.Id)
+        RuleFor(x => x.VeiculoId)
             .NotEmpty().WithMessage("O Id do veículo é obrigatório.");
 
         RuleFor(x => x.PessoaId)

@@ -6,6 +6,11 @@
 public sealed class UpdatePessoaRequest : UpdateRequest
 {
     /// <summary>
+    /// Identificador da pessoa.
+    /// </summary>
+    public Guid PessoaId { get; set; }
+
+    /// <summary>
     /// Nome completo ou razão social da pessoa.
     /// </summary>
     public string Nome { get; set; } = string.Empty;

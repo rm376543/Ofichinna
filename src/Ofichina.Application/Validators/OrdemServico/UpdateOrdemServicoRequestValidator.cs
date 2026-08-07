@@ -10,7 +10,7 @@ public sealed class UpdateOrdemServicoRequestValidator : AbstractValidator<Updat
 {
     public UpdateOrdemServicoRequestValidator()
     {
-        RuleFor(x => x.Id)
+        RuleFor(x => x.OrdemServicoId)
             .NotEmpty().WithMessage("O identificador da ordem de serviço é obrigatório.");
 
         RuleFor(x => x.PessoaId)

@@ -36,7 +36,7 @@ public sealed class ListarDiasDisponiveisQueryHandler : IQueryHandler<ListarDias
                 .OrderBy(d => d.Data)
                 .Select(d => new DiaListaResponse
                 {
-                    Id = d.Id,
+                    DiaListaId = d.Id,
                     Data = d.Data.ToString("yyyy-MM-dd")
                 })
                 .ToList();
@@ -45,8 +45,8 @@ public sealed class ListarDiasDisponiveisQueryHandler : IQueryHandler<ListarDias
 
             var resultado = diasFiltrados.Select(d => new DiaDisponibilidadeResponse
             {
-                Id = d.Id,
-                Data = DateOnly.ParseExact(d.Data, "yyyy-MM-dd")
+                DiaDisponibilidadeId = d.DiaListaId,
+                Data = DateOnly.ParseExact(d.Data, "yyyy-MM-dd"),
             });
 
             return Result.Success(resultado);

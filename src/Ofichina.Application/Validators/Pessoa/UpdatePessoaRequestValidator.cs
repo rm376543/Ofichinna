@@ -11,7 +11,7 @@ public sealed class UpdatePessoaRequestValidator : AbstractValidator<UpdatePesso
 {
     public UpdatePessoaRequestValidator()
     {
-        RuleFor(x => x.Id)
+        RuleFor(x => x.PessoaId)
             .NotEmpty().WithMessage("O Id da pessoa é obrigatório.");
 
         RuleFor(x => x.Nome)

@@ -12,6 +12,7 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
         builder.ToTable("Usuarios");
 
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasColumnName("UsuarioId");
 
         builder.Property(x => x.Email)
             .HasConversion(

@@ -12,12 +12,12 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 /// </summary>
 public sealed class ListarAgendaPorConsultorQueryHandler : IQueryHandler<ListarAgendaPorConsultorQuery, Result<IEnumerable<AgendaConsultorResponse>>>
 {
-    private readonly IHorarioConsultorDisponibilidadeRepository _slotRepository;
+    private readonly IAgendaConsultorRepository _slotRepository;
     private readonly IAgendamentoRepository _agendamentoRepository;
     private readonly ILogger<ListarAgendaPorConsultorQueryHandler> _logger;
 
     public ListarAgendaPorConsultorQueryHandler(
-        IHorarioConsultorDisponibilidadeRepository slotRepository,
+        IAgendaConsultorRepository slotRepository,
         IAgendamentoRepository agendamentoRepository,
         ILogger<ListarAgendaPorConsultorQueryHandler> logger)
     {
@@ -34,37 +34,30 @@ public sealed class ListarAgendaPorConsultorQueryHandler : IQueryHandler<ListarA
         {
             _logger.LogInformation("Listando agenda. ConsultorId: {ConsultorId}, Data: {Data}", query.ConsultorPessoaId, query.Data);
 
-            var slots = await _slotRepository.GetAllAsync(cancellationToken);
-            var agendamentos = await _agendamentoRepository.GetAllAsync(cancellationToken);
+            var slots = await _slotRepository.GetAllWithIncludesAsync(cancellationToken);
+            var agendamentos = await _agendamentoRepository.GetAllWithIncludesAsync(cancellationToken);
+            var agendamentosPorSlot = agendamentos.ToDictionary(a => a.AgendaConsultorId);
 
             var slotsDoConsultor = slots
-                .Where(s => s.ConsultorPessoaId == query.ConsultorPessoaId)
+                .Where(s => s.ConsultorPessoaId == query.ConsultorPessoaId
+                    && s.DiaDisponibilidade.Data == query.Data)
                 .ToList();
 
             var resultado = slotsDoConsultor
                 .OrderBy(s => s.HorarioDisponibilidade.Hora)
-                .Select(slot => new AgendaSlotResponse
+                .Select(slot => new AgendaConsultorResponse
                 {
-                    SlotId = slot.Id,
+                    AgendaId = slot.Id,
                     Hora = slot.HorarioDisponibilidade.Hora.ToString("HH:mm"),
-                    Status = DeterminarStatus(slot, agendamentos),
-                    ClienteNome = ObterClienteNome(slot, agendamentos),
-                    Veiculo = ObterVeiculo(slot, agendamentos)
+                    Status = DeterminarStatus(slot, agendamentosPorSlot),
+                    ClienteNome = ObterClienteNome(slot, agendamentosPorSlot),
+                    Veiculo = ObterVeiculo(slot, agendamentosPorSlot)
                 })
                 .ToList();
 
-            var result = resultado.Select(a => new AgendaConsultorResponse
-            {
-                SlotId = a.SlotId,
-                Hora = a.Hora,
-                Status = a.Status,
-                ClienteNome = a.ClienteNome,
-                Veiculo = a.Veiculo
-            });
-
             _logger.LogInformation("Encontrados {Count} slots na agenda", resultado.Count);
 
-            return Result.Success(result);
+            return Result.Success(resultado.AsEnumerable());
         }
         catch (Exception ex)
         {
@@ -74,24 +67,25 @@ public sealed class ListarAgendaPorConsultorQueryHandler : IQueryHandler<ListarA
         }
     }
 
-    private static string DeterminarStatus(HorarioConsultorDisponibilidade slot, IEnumerable<Agendamento> agendamentos)
+    private static string DeterminarStatus(AgendaConsultor slot, IReadOnlyDictionary<Guid, Agendamento> agendamentosPorSlot)
     {
-        var agendamento = agendamentos.FirstOrDefault(a => a.HorarioConsultorDisponibilidadeId == slot.Id);
+        agendamentosPorSlot.TryGetValue(slot.Id, out var agendamento);
+
         if (agendamento is null)
             return "VAGO";
 
         return agendamento.Status.ToString();
     }
 
-    private static string? ObterClienteNome(HorarioConsultorDisponibilidade slot, IEnumerable<Agendamento> agendamentos)
+    private static string? ObterClienteNome(AgendaConsultor slot, IReadOnlyDictionary<Guid, Agendamento> agendamentosPorSlot)
     {
-        var agendamento = agendamentos.FirstOrDefault(a => a.HorarioConsultorDisponibilidadeId == slot.Id);
+        agendamentosPorSlot.TryGetValue(slot.Id, out var agendamento);
         return agendamento?.Cliente?.Nome;
     }
 
-    private static string? ObterVeiculo(HorarioConsultorDisponibilidade slot, IEnumerable<Agendamento> agendamentos)
+    private static string? ObterVeiculo(AgendaConsultor slot, IReadOnlyDictionary<Guid, Agendamento> agendamentosPorSlot)
     {
-        var agendamento = agendamentos.FirstOrDefault(a => a.HorarioConsultorDisponibilidadeId == slot.Id);
+        agendamentosPorSlot.TryGetValue(slot.Id, out var agendamento);
         return agendamento?.Veiculo?.Placa?.Numero;
     }
 }

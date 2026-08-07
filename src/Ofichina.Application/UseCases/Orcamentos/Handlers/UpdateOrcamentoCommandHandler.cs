@@ -42,7 +42,7 @@ public sealed class UpdateOrcamentoCommandHandler : ICommandHandler<UpdateOrcame
     {
         try
         {
-            var orcamento = await _orcamentoRepository.GetByIdAsync(command.Id, includeItens: true, cancellationToken: cancellationToken, tracking: true);
+            var orcamento = await _orcamentoRepository.GetByIdAsync(command.OrcamentoId, includeItens: true, cancellationToken: cancellationToken, tracking: true);
             if (orcamento is null || orcamento.EstaExcluida())
                 return Result.Failure("Orçamento não encontrado.");
 
@@ -101,7 +101,7 @@ public sealed class UpdateOrcamentoCommandHandler : ICommandHandler<UpdateOrcame
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao atualizar orçamento. OrcamentoId: {OrcamentoId}", command.Id);
+            _logger.LogError(ex, "Erro inesperado ao atualizar orçamento. OrcamentoId: {OrcamentoId}", command.OrcamentoId);
             return Result.Failure("Não foi possível atualizar o orçamento.");
         }
     }

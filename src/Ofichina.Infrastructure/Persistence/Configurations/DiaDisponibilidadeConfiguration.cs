@@ -11,6 +11,7 @@ public sealed class DiaDisponibilidadeConfiguration : IEntityTypeConfiguration<D
         builder.ToTable("DiasDisponibilidade");
 
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasColumnName("DiaDisponibilidadeId");
 
         builder.Property(x => x.Data)
             .HasColumnType("date")

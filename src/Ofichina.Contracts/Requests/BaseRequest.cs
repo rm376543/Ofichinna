@@ -21,5 +21,4 @@ public class CreateRequest : BaseRequest
 /// </summary>
 public class UpdateRequest : BaseRequest
 {
-    public Guid Id { get; set; }
 }

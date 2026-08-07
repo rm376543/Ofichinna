@@ -12,7 +12,7 @@ public sealed class UpdateItemServicoCommand : ICommand<Result>
     /// <summary>
     /// Identificador do item de serviço.
     /// </summary>
-    public Guid Id { get; init; }
+    public Guid ItemServicoId { get; init; }
 
     /// <summary>
     /// Identificador da ordem de serviço.
@@ -36,7 +36,9 @@ public sealed class UpdateItemServicoCommand : ICommand<Result>
 
     public UpdateItemServicoCommand(UpdateItemServicoRequest request)
     {
-        Id = request.Id;
+        ArgumentNullException.ThrowIfNull(request);
+
+        ItemServicoId = request.ItemServicoId;
         OrdemServicoId = request.OrdemServicoId;
         ServicoId = request.ServicoId;
         PecaId = request.PecaId;

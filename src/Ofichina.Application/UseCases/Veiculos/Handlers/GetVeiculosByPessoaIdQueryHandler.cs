@@ -44,7 +44,7 @@ public sealed class GetVeiculosByPessoaIdQueryHandler
                 Telefone = pessoa.Telefone.Value,
                 Veiculo = pessoa.Veiculos.Select(v => new VeiculoResponse
                 {
-                    Id = v.Id,
+                    VeiculoId = v.Id,
                     Placa = v.Placa.ToString(),
                     Marca = v.Marca,
                     Modelo = v.Modelo,

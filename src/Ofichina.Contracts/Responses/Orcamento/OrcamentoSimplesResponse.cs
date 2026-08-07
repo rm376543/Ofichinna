@@ -7,6 +7,8 @@ namespace Ofichina.Contracts.Responses.Orcamento;
 /// </summary>
 public sealed class OrcamentoSimplesResponse : BaseEntity
 {
+    public Guid OrcamentoSimplesId { get; set; }
+
     public string Cliente { get; set; } = string.Empty;
 
     public string Responsavel { get; set; } = string.Empty;

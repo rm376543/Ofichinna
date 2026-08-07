@@ -80,7 +80,7 @@ public class ApplicationDbContext : DbContext
     /// <summary>
     /// DbSet para slots de disponibilidade (Dia + Horário + Consultor).
     /// </summary>
-    public DbSet<HorarioConsultorDisponibilidade> HorariosConsultorDisponibilidade { get; set; } = null!;
+    public DbSet<AgendaConsultor> HorariosConsultorDisponibilidade { get; set; } = null!;
 
     /// <summary>
     /// DbSet para itens de serviço da ordem.

@@ -8,7 +8,7 @@ using Ofichina.Infrastructure.Persistence;
 namespace Ofichina.Infrastructure.Repositories;
 
 /// <summary>
-/// Repositório específico para consultas do orçamento com itens e checklist.
+/// Repositório específico para consultas do orçamento com itens e agendamento.
 /// </summary>
 public sealed class OrcamentoRepository : Repository<Orcamento>, IOrcamentoRepository
 {
@@ -30,7 +30,7 @@ public sealed class OrcamentoRepository : Repository<Orcamento>, IOrcamentoRepos
         if (includeItens)
         {
             query = query
-                .Include(x => x.Checklist)
+                .Include(x => x.Agendamento)
                 .Include(x => x.ItensServico)
                     .ThenInclude(x => x.Servico)
                 .Include(x => x.ItensServico)
@@ -47,7 +47,7 @@ public sealed class OrcamentoRepository : Repository<Orcamento>, IOrcamentoRepos
         if (includeItens)
         {
             query = query
-                .Include(x => x.Checklist)
+                .Include(x => x.Agendamento)
                 .Include(x => x.ItensServico)
                     .ThenInclude(x => x.Servico)
                 .Include(x => x.ItensServico)

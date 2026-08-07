@@ -8,15 +8,15 @@ namespace Ofichina.Application.UseCases.Perfis.Commands;
 /// </summary>
 public class UpdatePerfilCommand : ICommand<Result>
 {
-    public Guid Id { get; set; }
+    public Guid PerfilId { get; set; }
 
     public string NomePerfil { get; set; }
 
     public string Descricao { get; set; }
 
-    public UpdatePerfilCommand(Guid id, string nomePerfil, string descricao)
+    public UpdatePerfilCommand(Guid idPerfil, string nomePerfil, string descricao)
     {
-        Id = id;
+        PerfilId = idPerfil;
         NomePerfil = nomePerfil;
         Descricao = descricao;
     }

@@ -6,7 +6,7 @@ namespace Ofichina.Domain.Entities;
 /// Representa o vínculo entre dia disponível, horário disponível e consultor.
 /// Consolida a disponibilidade em um único slot.
 /// </summary>
-public sealed class HorarioConsultorDisponibilidade : Entity
+public sealed class AgendaConsultor : Entity
 {
     /// <summary>
     /// Identificador do dia disponível.
@@ -41,18 +41,18 @@ public sealed class HorarioConsultorDisponibilidade : Entity
     /// <summary>
     /// Construtor privado para uso interno da entidade.
     /// </summary>
-    private HorarioConsultorDisponibilidade()
+    private AgendaConsultor()
     {
     }
 
     /// <summary>
-    /// Cria uma nova instância de HorarioConsultorDisponibilidade.
+    /// Cria uma nova instância de AgendaConsultor.
     /// </summary>
     /// <param name="diaDisponibilidadeId">ID do dia disponível.</param>
     /// <param name="horarioDisponibilidadeId">ID do horário disponível.</param>
     /// <param name="consultorPessoaId">ID da pessoa consultora.</param>
     /// <exception cref="DomainException"></exception>
-    public HorarioConsultorDisponibilidade(
+    public AgendaConsultor(
         Guid diaDisponibilidadeId,
         Guid horarioDisponibilidadeId,
         Guid consultorPessoaId)

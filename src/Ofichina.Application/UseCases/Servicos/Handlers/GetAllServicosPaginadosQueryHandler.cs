@@ -32,7 +32,7 @@ public sealed class GetAllServicosPaginadosQueryHandler : IQueryHandler<GetAllSe
 
             var resultado = servicos.ToPagedResponse(s => new ServicoResponse
             {
-                Id = s.Id,
+                ServicoId = s.Id,
                 Nome = s.Nome,
                 Descricao = s.Descricao,
                 Valor = s.Valor,

@@ -146,13 +146,13 @@ namespace Ofichina.Api.Controllers.Pessoa
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ApiResponse>> AtualizarPessoa([FromBody] UpdatePessoaRequest request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Iniciando a atualização da pessoa com Id: {Id}", request.Id);
+            _logger.LogInformation("Iniciando a atualização da pessoa com Id: {Id}", request.PessoaId);
 
             var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
 
             if (!validation.IsValid)
             {
-                _logger.LogError("Erro ao validar a atualização da pessoa com Id: {Id}. Erros: {Erros}", request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+                _logger.LogError("Erro ao validar a atualização da pessoa com Id: {Id}. Erros: {Erros}", request.PessoaId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
                 return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
             }
 
@@ -160,7 +160,7 @@ namespace Ofichina.Api.Controllers.Pessoa
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("Erro ao atualizar a pessoa com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
+                _logger.LogError("Erro ao atualizar a pessoa com Id: {Id}. Erro: {Erro}", request.PessoaId, result.Error);
                 return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a pessoa."));
             }
 
@@ -181,13 +181,13 @@ namespace Ofichina.Api.Controllers.Pessoa
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ApiResponse>> DeletarPessoa([FromBody] RemovePessoaRequest request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Iniciando a desativação da pessoa com Id: {Id}", request.Id);
+            _logger.LogInformation("Iniciando a desativação da pessoa com Id: {Id}", request.PessoaId);
 
             var result = await _mediator.Send(new DeletePessoaCommand(request), cancellationToken);
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("Erro ao desativar a pessoa com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
+                _logger.LogError("Erro ao desativar a pessoa com Id: {Id}. Erro: {Erro}", request.PessoaId, result.Error);
                 return NotFound(ApiResponse.FailureResponse(result.Error ?? "Pessoa não encontrada."));
             }
 

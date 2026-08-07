@@ -1,10 +1,8 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pecas.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Pecas.Handlers;
 
@@ -40,12 +38,12 @@ public sealed class UpdatePecaCommandHandler : ICommandHandler<UpdatePecaCommand
     {
         try
         {
-            _logger.LogInformation("Iniciando atualização da peça com ID: {Id}", command.Id);
-            var peca = await _pecaRepository.GetByIdAsync(command.Id, cancellationToken);
+            _logger.LogInformation("Iniciando atualização da peça com ID: {Id}", command.PecaId);
+            var peca = await _pecaRepository.GetByIdAsync(command.PecaId, cancellationToken);
 
             if (peca is null || peca.EstaExcluida())
             {
-                _logger.LogWarning("Peça com ID: {Id} não encontrada ou está excluída.", command.Id);
+                _logger.LogWarning("Peça com ID: {Id} não encontrada ou está excluída.", command.PecaId);
                 return Result.Failure("Peça não encontrada.");
             }
 
@@ -59,7 +57,7 @@ public sealed class UpdatePecaCommandHandler : ICommandHandler<UpdatePecaCommand
             await _pecaRepository.UpdateAsync(peca, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation("Peça com ID: {Id} atualizada com sucesso.", command.Id);
+            _logger.LogInformation("Peça com ID: {Id} atualizada com sucesso.", command.PecaId);
             return Result.Success();
         }
         catch (DomainException ex)

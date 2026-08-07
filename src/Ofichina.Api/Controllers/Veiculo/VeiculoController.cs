@@ -177,7 +177,7 @@ public sealed class VeiculoController : ControllerBase
         [FromBody] UpdateVeiculoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualização do veículo com Id: {Id}", request.Id);
+        _logger.LogInformation("Iniciando a atualização do veículo com Id: {Id}", request.VeiculoId);
 
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
 
@@ -211,7 +211,7 @@ public sealed class VeiculoController : ControllerBase
         [FromBody] RemoveVeiculoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a remoção do veículo com Id: {Id}", request.Id);
+        _logger.LogInformation("Iniciando a remoção do veículo com Id: {Id}", request.VeiculoId);
 
         var result = await _mediator.Send(new DeleteVeiculoCommand(request), cancellationToken);
 

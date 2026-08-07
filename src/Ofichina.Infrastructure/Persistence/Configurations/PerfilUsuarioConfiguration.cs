@@ -10,6 +10,7 @@ public class UsuarioPerfilConfiguration : IEntityTypeConfiguration<UsuarioPerfil
         builder.ToTable("UsuariosPerfis");
 
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasColumnName("UsuarioPerfilId");
 
         builder.HasIndex(x => new { x.UsuarioId, x.PerfilId })
             .IsUnique();

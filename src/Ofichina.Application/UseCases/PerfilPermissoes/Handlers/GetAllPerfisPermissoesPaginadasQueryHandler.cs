@@ -1,6 +1,5 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Interfaces;
+using Ofichina.Application.UseCases.PerfilPermissoes.Mappings;
 using Ofichina.Application.UseCases.PerfilPermissoes.Queries;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
@@ -35,17 +34,7 @@ public sealed class GetAllPerfisPermissoesPaginadasQueryHandler : IQueryHandler<
 
             var permissoes = await _perfilPermissaoRepository.GetAllPermissoesAssociadosDeUmPerfil(query.PerfilId, query.Pagination, cancellationToken);
 
-            var resultado = permissoes.ToPagedResponse(p => new PerfilPermissaoResponse
-            {
-                Id = p.Id,
-                PerfilId = p.PerfilId,
-                PermissaoId = p.PermissaoId,
-                Codigo = p.Permissao.Codigo,
-                Descricao = p.Permissao.Descricao,
-                CreatedAt = p.CreatedAt,
-                UpdatedAt = p.UpdatedAt,
-                DeletedAt = p.DeletedAt
-            });
+            var resultado = permissoes.ToPagedResponse(p => p.ToResponse());
 
             return Result.Success(resultado);
         }

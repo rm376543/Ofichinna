@@ -1,9 +1,8 @@
 ﻿using Ofichina.Application.Abstractions;
-using Ofichina.Application.Extensions;
+using Ofichina.Application.UseCases.Pessoas.Mappings;
 using Ofichina.Application.UseCases.Pessoas.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Pessoa;
-using Ofichina.Domain.Entities;
 
 namespace Ofichina.Application.UseCases.Pessoas.Handlers;
 

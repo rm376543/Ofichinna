@@ -1,9 +1,7 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pecas.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Pecas.Handlers;
 
@@ -34,7 +32,7 @@ public sealed class DeletePecaCommandHandler : ICommandHandler<DeletePecaCommand
     {
         try
         {
-            var peca = await _pecaRepository.GetByIdAsync(command.Id, cancellationToken);
+            var peca = await _pecaRepository.GetByIdAsync(command.PecaId, cancellationToken);
 
             if (peca is null || peca.EstaExcluida())
                 return Result.Failure("Peça não encontrada.");
@@ -48,7 +46,7 @@ public sealed class DeletePecaCommandHandler : ICommandHandler<DeletePecaCommand
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao remover peça. PecaId: {PecaId}", command.Id);
+            _logger.LogError(ex, "Erro ao remover peça. PecaId: {PecaId}", command.PecaId);
             return Result.Failure("Não foi possível remover a peça.");
         }
     }

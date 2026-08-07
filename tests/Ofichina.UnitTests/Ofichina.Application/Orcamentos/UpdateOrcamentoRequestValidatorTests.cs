@@ -20,20 +20,38 @@ public sealed class UpdateOrcamentoRequestValidatorTests
     public void Deve_Rejeitar_Requisicao_Com_Identificador_Vazio()
     {
         var validator = new UpdateOrcamentoRequestValidator();
-        var request = CriarRequisicaoValida();
-        request.Id = Guid.Empty;
+        var request = new UpdateOrcamentoRequest
+        {
+            OrcamentoId = Guid.Empty,
+            PessoaId = Guid.NewGuid(),
+            VeiculoId = Guid.NewGuid(),
+            ResponsavelId = Guid.NewGuid(),
+            MecanicoDiagnosticoId = Guid.NewGuid(),
+            DataValidade = DateTime.UtcNow.AddDays(5),
+            Desconto = 5,
+            Observacoes = "Orçamento atualizado",
+            ItensServico =
+            [
+                new OrcamentoItemServicoRequest
+                {
+                    ServicoId = Guid.NewGuid(),
+                    PecaId = Guid.NewGuid(),
+                    Quantidade = 1
+                }
+            ]
+        };
 
         var result = validator.Validate(request);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, x => x.PropertyName == nameof(UpdateOrcamentoRequest.Id));
+        Assert.Contains(result.Errors, x => x.PropertyName == nameof(UpdateOrcamentoRequest.OrcamentoId));
     }
 
     private static UpdateOrcamentoRequest CriarRequisicaoValida()
     {
         return new UpdateOrcamentoRequest
         {
-            Id = Guid.NewGuid(),
+            OrcamentoId = Guid.NewGuid(),
             PessoaId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
             ResponsavelId = Guid.NewGuid(),

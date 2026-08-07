@@ -1,11 +1,8 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Extensions;
+using Ofichina.Application.UseCases.Agendamentos.Mappings;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Agendamento;
-using Ofichina.Domain.Aggregates;
-using Ofichina.Application.Abstractions.Interfaces;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 

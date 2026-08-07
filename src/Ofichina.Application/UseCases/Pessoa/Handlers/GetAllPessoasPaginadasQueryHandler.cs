@@ -32,7 +32,7 @@ public sealed class GetAllPessoasPaginadasQueryHandler : IQueryHandler<GetAllPes
 
             var resultado = pessoas.ToPagedResponse(p => new PessoaResponse
             {
-                Id = p.Id,
+                PessoaId = p.Id,
                 Nome = p.Nome,
                 Documento = p.Documento.Numero,
                 Logradouro = p.Endereco.Logradouro,

@@ -2,6 +2,6 @@
 {
     public class RemovePermissaoRequest
     {
-        public Guid Id { get; set; }
+        public Guid PermissaoId { get; set; }
     }
 }

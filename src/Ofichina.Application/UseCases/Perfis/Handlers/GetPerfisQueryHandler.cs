@@ -32,7 +32,7 @@ public class GetPerfisQueryHandler : IQueryHandler<GetPerfisQuery, Result<IReadO
             var resultado = perfis.Items
                 .Select(perfil => new PerfilResponse
                 {
-                    Id = perfil.Id,
+                    PerfilId = perfil.Id,
                     Nome = perfil.NomePerfil,
                     Descricao = perfil.Descricao,
                     CreatedAt = perfil.CreatedAt,

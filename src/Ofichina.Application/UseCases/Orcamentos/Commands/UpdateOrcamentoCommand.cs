@@ -9,7 +9,7 @@ namespace Ofichina.Application.UseCases.Orcamentos.Commands;
 /// </summary>
 public sealed class UpdateOrcamentoCommand : ICommand<Result>
 {
-    public Guid Id { get; init; }
+    public Guid OrcamentoId { get; init; }
 
     public Guid PessoaId { get; init; }
 
@@ -29,7 +29,7 @@ public sealed class UpdateOrcamentoCommand : ICommand<Result>
 
     public UpdateOrcamentoCommand(UpdateOrcamentoRequest request)
     {
-        Id = request.Id;
+        OrcamentoId = request.OrcamentoId;
         PessoaId = request.PessoaId;
         VeiculoId = request.VeiculoId;
         MecanicoDiagnosticoId = request.MecanicoDiagnosticoId;

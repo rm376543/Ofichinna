@@ -7,7 +7,7 @@ public sealed class UpdatePermissaoRequestValidator : AbstractValidator<UpdatePe
 {
     public UpdatePermissaoRequestValidator()
     {
-        RuleFor(x => x.Id)
+        RuleFor(x => x.PermissaoId)
             .NotEmpty().WithMessage("O Id da permissão é obrigatório.");
 
         RuleFor(x => x.Codigo)

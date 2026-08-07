@@ -8,6 +8,11 @@ namespace Ofichina.Contracts.Requests.Servicos;
 public sealed class UpdateServicoRequest : UpdateRequest
 {
     /// <summary>
+    /// Identificador do serviço.
+    /// </summary>
+    public Guid ServicoId { get; init; }
+
+    /// <summary>
     /// Nome do serviço.
     /// </summary>
     public string Nome { get; init; } = string.Empty;

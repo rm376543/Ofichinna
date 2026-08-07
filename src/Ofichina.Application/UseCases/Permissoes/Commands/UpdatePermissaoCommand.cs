@@ -5,15 +5,15 @@ namespace Ofichina.Application.UseCases.Permissoes.Commands;
 
 public sealed class UpdatePermissaoCommand : ICommand<Result>
 {
-    public Guid Id { get; }
+    public Guid PermissaoId { get; }
 
     public string Codigo { get; }
 
     public string Descricao { get; }
 
-    public UpdatePermissaoCommand(Guid id, string codigo, string descricao)
+    public UpdatePermissaoCommand(Guid idPermissao, string codigo, string descricao)
     {
-        Id = id;
+        PermissaoId = idPermissao;
         Codigo = codigo;
         Descricao = descricao;
     }

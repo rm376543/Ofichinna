@@ -37,7 +37,7 @@ public sealed class OrcamentoService : IOrcamentoService
 
         return orcamentos.ToPagedResponse(orcamento => new OrcamentoSimplesResponse
         {
-            Id = orcamento.Id,
+            OrcamentoSimplesId = orcamento.Id,
             Cliente = ObterNome(orcamento.PessoaId, nomesPorId),
             Responsavel = ObterNome(orcamento.ResponsavelId, nomesPorId),
             MecanicoDiagnostico = ObterNome(orcamento.MecanicoDiagnosticoId, nomesPorId),

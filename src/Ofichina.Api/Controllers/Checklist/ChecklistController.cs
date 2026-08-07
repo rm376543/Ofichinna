@@ -38,7 +38,7 @@ public sealed class ChecklistController : ControllerBase
         [FromBody] CreateChecklistRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a criação de um checklist. VeiculoId: {VeiculoId}, PessoaId: {PessoaId}.", request.VeiculoId, request.PessoaId);
+        _logger.LogInformation("Iniciando a criação de um checklist. AgendamentoId: {AgendamentoId}, VeiculoId: {VeiculoId}, PessoaId: {PessoaId}.", request.AgendamentoId, request.VeiculoId, request.PessoaId);
 
         var result = await _mediator.Send(new CreateChecklistCommand(request), cancellationToken);
 
@@ -62,7 +62,7 @@ public sealed class ChecklistController : ControllerBase
         [FromBody] FinalizarChecklistRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a finalização do checklist com Id: {Id}.", request.Id);
+        _logger.LogInformation("Iniciando a finalização do checklist com Id: {Id}.", request.AgendamentoId);
 
         var result = await _mediator.Send(new FinalizarChecklistCommand(request), cancellationToken);
 

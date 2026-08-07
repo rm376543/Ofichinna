@@ -37,11 +37,11 @@ public sealed class UpdateVeiculoCommandHandler : ICommandHandler<UpdateVeiculoC
     {
         try
         {
-            _logger.LogInformation("Iniciando atualização do veículo. Id: {VeiculoId}", command.Id);
+            _logger.LogInformation("Iniciando atualização do veículo. Id: {VeiculoId}", command.VeiculoId);
 
             var placa = new Placa(command.Placa);
 
-            var veiculo = await _veiculoRepository.GetByIdAsync(command.Id, cancellationToken);
+            var veiculo = await _veiculoRepository.GetByIdAsync(command.VeiculoId, cancellationToken);
 
             if (veiculo is null || veiculo.EstaExcluida())
                 return Result.Failure("Veículo não encontrado.");
@@ -52,7 +52,7 @@ public sealed class UpdateVeiculoCommandHandler : ICommandHandler<UpdateVeiculoC
                 return Result.Failure("Pessoa não encontrada.");
 
             var placaDuplicada = (await _veiculoRepository.GetAllAsync(includePessoa: true, cancellationToken))
-                .FirstOrDefault(v => v.Id != command.Id && v.Placa.Numero == placa.Numero);
+                .FirstOrDefault(v => v.Id != command.VeiculoId && v.Placa.Numero == placa.Numero);
 
             if (placaDuplicada is not null)
                 return Result.Failure("Já existe outro veículo cadastrado com esta placa.");

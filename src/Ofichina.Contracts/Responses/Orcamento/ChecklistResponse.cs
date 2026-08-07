@@ -7,6 +7,10 @@ namespace Ofichina.Contracts.Responses.Orcamento;
 /// </summary>
 public sealed class ChecklistResponse : BaseEntity
 {
+    public Guid ChecklistId { get; set; }
+
+    public Guid AgendamentoId { get; set; }
+
     public Guid VeiculoId { get; set; }
 
     public Guid PessoaId { get; set; }

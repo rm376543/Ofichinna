@@ -142,11 +142,11 @@ public sealed class OrdemServico : Entity
         if (orcamento.Status != StatusOrcamento.Aprovado)
             throw new DomainException("O orçamento precisa estar aprovado para gerar a ordem de serviço.");
 
-        var problemaRelatado = orcamento.Checklist?.ItensVerificados;
+        var problemaRelatado = orcamento.Observacoes;
         if (string.IsNullOrWhiteSpace(problemaRelatado))
             problemaRelatado = orcamento.Observacoes ?? "Orçamento aprovado";
 
-        var hodometroEntrada = orcamento.Checklist?.HodometroEntrada ?? 0;
+        var hodometroEntrada = 0;
 
         var ordemServico = new OrdemServico(
             orcamento.PessoaId,

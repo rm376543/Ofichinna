@@ -9,6 +9,11 @@ namespace Ofichina.Contracts.Responses.OrdensServico;
 public sealed class OrdemServicoResponse : BaseEntity
 {
     /// <summary>
+    /// Identificador da ordem de serviço.
+    /// </summary>
+    public Guid OrdemServicoId { get; set; }
+
+    /// <summary>
     /// Identificador da pessoa vinculada.
     /// </summary>
     public Guid PessoaId { get; set; }

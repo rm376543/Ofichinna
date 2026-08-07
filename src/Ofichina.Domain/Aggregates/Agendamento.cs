@@ -20,36 +20,6 @@ public sealed class Agendamento : Entity
     public Pessoa Cliente { get; private set; } = null!;
 
     /// <summary>
-    /// Dia de disponibilidade associado ao agendamento (legado, nullable para migração).
-    /// </summary>
-    public Guid? DiaDisponibilidadeId { get; private set; }
-
-    /// <summary>
-    /// Dia de disponibilidade associado ao agendamento (legado).
-    /// </summary>
-    public DiaDisponibilidade? DiaDisponibilidade { get; private set; }
-
-    /// <summary>
-    /// Vínculo entre horário e consultor selecionados para o agendamento (legado, nullable para migração).
-    /// </summary>
-    public Guid? HorarioConsultorId { get; private set; }
-
-    /// <summary>
-    /// Vínculo entre horário e consultor selecionados para o agendamento (legado).
-    /// </summary>
-    public HorarioConsultor? HorarioConsultor { get; private set; }
-
-    /// <summary>
-    /// Pessoa consultora vinculada ao agendamento (legado, nullable para migração).
-    /// </summary>
-    public Guid? ConsultorPessoaId { get; private set; }
-
-    /// <summary>
-    /// Pessoa consultora vinculada ao agendamento (legado).
-    /// </summary>
-    public Pessoa? Consultor { get; private set; }
-
-    /// <summary>
     /// Veículo informado para o agendamento.
     /// </summary>
     public Guid VeiculoId { get; private set; }
@@ -60,14 +30,14 @@ public sealed class Agendamento : Entity
     public Veiculo Veiculo { get; private set; } = null!;
 
     /// <summary>
-    /// Identificador do slot de disponibilidade (HorarioConsultorDisponibilidade).
+    /// Identificador do slot de disponibilidade (AgendaConsultor).
     /// </summary>
-    public Guid HorarioConsultorDisponibilidadeId { get; private set; }
+    public Guid AgendaConsultorId { get; private set; }
 
     /// <summary>
     /// Slot de disponibilidade vinculado (Dia + Horário + Consultor).
     /// </summary>
-    public HorarioConsultorDisponibilidade HorarioConsultorDisponibilidade { get; private set; } = null!;
+    public AgendaConsultor AgendaConsultor { get; private set; } = null!;
 
     /// <summary>
     /// Status atual do agendamento.
@@ -87,72 +57,30 @@ public sealed class Agendamento : Entity
     }
 
     /// <summary>
-    /// Cria uma nova instância de agendamento com os parâmetros fornecidos.
-    /// </summary>
-    /// <param name="clientePessoaId"></param>
-    /// <param name="diaDisponibilidadeId"></param>
-    /// <param name="horarioConsultorId"></param>
-    /// <param name="consultorPessoaId"></param>
-    /// <param name="veiculoId"></param>
-    /// <param name="descricao"></param>
-    /// <exception cref="DomainException"></exception>
-    public Agendamento(
-        Guid clientePessoaId,
-        Guid diaDisponibilidadeId,
-        Guid horarioConsultorId,
-        Guid consultorPessoaId,
-        Guid veiculoId,
-        string? descricao = null)
-    {
-        if (clientePessoaId == Guid.Empty)
-            throw new DomainException("A pessoa é obrigatória.");
-
-        if (diaDisponibilidadeId == Guid.Empty)
-            throw new DomainException("O dia de disponibilidade é obrigatório.");
-
-        if (horarioConsultorId == Guid.Empty)
-            throw new DomainException("O horário do consultor é obrigatório.");
-
-        if (consultorPessoaId == Guid.Empty)
-            throw new DomainException("O consultor é obrigatório.");
-
-        if (veiculoId == Guid.Empty)
-            throw new DomainException("O veículo é obrigatório.");
-
-        ClientePessoaId = clientePessoaId;
-        DiaDisponibilidadeId = diaDisponibilidadeId;
-        HorarioConsultorId = horarioConsultorId;
-        ConsultorPessoaId = consultorPessoaId;
-        VeiculoId = veiculoId;
-        Status = StatusAgendamento.AGENDADO;
-        Descricao = string.IsNullOrWhiteSpace(descricao) ? null : descricao.Trim();
-    }
-
-    /// <summary>
     /// Cria uma nova instância de agendamento usando o novo modelo de slot.
     /// </summary>
     /// <param name="clientePessoaId">ID da pessoa cliente.</param>
-    /// <param name="horarioConsultorDisponibilidadeId">ID do slot de disponibilidade.</param>
+    /// <param name="agendaConsultorId">ID do slot de disponibilidade.</param>
     /// <param name="veiculoId">ID do veículo.</param>
     /// <param name="descricao">Descrição opcional.</param>
     /// <exception cref="DomainException"></exception>
     public Agendamento(
         Guid clientePessoaId,
-        Guid horarioConsultorDisponibilidadeId,
+        Guid agendaConsultorId,
         Guid veiculoId,
         string? descricao = null)
     {
         if (clientePessoaId == Guid.Empty)
             throw new DomainException("A pessoa cliente é obrigatória.");
 
-        if (horarioConsultorDisponibilidadeId == Guid.Empty)
+        if (agendaConsultorId == Guid.Empty)
             throw new DomainException("O slot de disponibilidade é obrigatório.");
 
         if (veiculoId == Guid.Empty)
             throw new DomainException("O veículo é obrigatório.");
 
         ClientePessoaId = clientePessoaId;
-        HorarioConsultorDisponibilidadeId = horarioConsultorDisponibilidadeId;
+        AgendaConsultorId = agendaConsultorId;
         VeiculoId = veiculoId;
         Status = StatusAgendamento.AGENDADO;
         Descricao = string.IsNullOrWhiteSpace(descricao) ? null : descricao.Trim();

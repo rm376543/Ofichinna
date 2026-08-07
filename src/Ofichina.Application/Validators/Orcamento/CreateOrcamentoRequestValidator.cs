@@ -16,8 +16,8 @@ public sealed class CreateOrcamentoRequestValidator : AbstractValidator<CreateOr
         RuleFor(x => x.VeiculoId)
             .NotEmpty().WithMessage("O veículo vinculado é obrigatório.");
 
-        RuleFor(x => x.ChecklistId)
-            .NotEmpty().WithMessage("O checklist de origem é obrigatório.");
+        RuleFor(x => x.AgendamentoId)
+            .NotEmpty().WithMessage("O agendamento de origem é obrigatório.");
 
         RuleFor(x => x.ResponsavelId)
             .NotEmpty().WithMessage("O responsável pelo orçamento é obrigatório.");

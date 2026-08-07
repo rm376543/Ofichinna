@@ -11,6 +11,7 @@ public sealed class HorarioDisponibilidadeConfiguration : IEntityTypeConfigurati
         builder.ToTable("HorariosDisponibilidade");
 
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasColumnName("HorarioDisponibilidadeId");
 
         builder.Property(x => x.Hora)
             .HasColumnType("time")

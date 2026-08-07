@@ -1,6 +1,4 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.Permissoes.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Permissoes;
@@ -31,7 +29,7 @@ public sealed class GetPermissaoByIdQueryHandler : IQueryHandler<GetPermissaoByI
 
             return Result.Success(new PermissaoResponse
             {
-                Id = permissao.Id,
+                PermissaoId = permissao.Id,
                 Codigo = permissao.Codigo,
                 Descricao = permissao.Descricao
             });
