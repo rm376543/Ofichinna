@@ -164,6 +164,9 @@ public sealed class Agendamento : Entity
     /// <exception cref="DomainException"></exception>
     public void Iniciar()
     {
+        if (Status == StatusAgendamento.CANCELADO)
+            throw new DomainException("Não é possível iniciar um agendamento cancelado.");
+
         if (Status != StatusAgendamento.AGENDADO)
             throw new DomainException("Apenas agendamentos com status 'AGENDADO' podem ser iniciados.");
 

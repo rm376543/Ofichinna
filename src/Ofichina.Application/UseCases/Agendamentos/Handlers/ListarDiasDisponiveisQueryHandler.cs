@@ -1,14 +1,14 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
+using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Responses.Agendamento;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 
 /// <summary>
 /// Handler para listar dias disponíveis em um período (mês/ano).
 /// </summary>
-public sealed class ListarDiasDisponiveisQueryHandler : IQueryHandler<ListarDiasDisponiveisQuery, IEnumerable<DiaListaDto>>
+public sealed class ListarDiasDisponiveisQueryHandler : IQueryHandler<ListarDiasDisponiveisQuery, Result<IEnumerable<DiaDisponibilidadeResponse>>>
 {
     private readonly IDiaDisponibilidadeRepository _diaDisponibilidadeRepository;
     private readonly ILogger<ListarDiasDisponiveisQueryHandler> _logger;
@@ -21,7 +21,7 @@ public sealed class ListarDiasDisponiveisQueryHandler : IQueryHandler<ListarDias
         _logger = logger;
     }
 
-    public async Task<IEnumerable<DiaListaDto>> HandleAsync(
+    public async Task<Result<IEnumerable<DiaDisponibilidadeResponse>>> HandleAsync(
         ListarDiasDisponiveisQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -34,7 +34,7 @@ public sealed class ListarDiasDisponiveisQueryHandler : IQueryHandler<ListarDias
             var diasFiltrados = todas
                 .Where(d => d.Data.Year == query.Ano && d.Data.Month == query.Mes && d.Data >= DateOnly.FromDateTime(DateTime.UtcNow))
                 .OrderBy(d => d.Data)
-                .Select(d => new DiaListaDto
+                .Select(d => new DiaListaResponse
                 {
                     Id = d.Id,
                     Data = d.Data.ToString("yyyy-MM-dd")
@@ -43,12 +43,19 @@ public sealed class ListarDiasDisponiveisQueryHandler : IQueryHandler<ListarDias
 
             _logger.LogInformation("Encontrados {Count} dias disponíveis para {Mes}/{Ano}", diasFiltrados.Count, query.Mes, query.Ano);
 
-            return diasFiltrados;
+            var resultado = diasFiltrados.Select(d => new DiaDisponibilidadeResponse
+            {
+                Id = d.Id,
+                Data = DateOnly.ParseExact(d.Data, "yyyy-MM-dd")
+            });
+
+            return Result.Success(resultado);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao listar dias disponíveis. Mês: {Mes}, Ano: {Ano}", query.Mes, query.Ano);
-            return Enumerable.Empty<DiaListaDto>();
+            return Result.Failure<IEnumerable<DiaDisponibilidadeResponse>>("Erro ao listar dias disponíveis.");
+
         }
     }
 }

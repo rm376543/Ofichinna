@@ -10,4 +10,9 @@ namespace Ofichina.Application.UseCases.Orcamentos.Queries;
 public sealed class GetOrcamentoByIdQuery : IQuery<Result<OrcamentoResponse>>
 {
     public Guid Id { get; init; }
+
+    public GetOrcamentoByIdQuery(Guid id)
+    {
+        Id = id;
+    }
 }

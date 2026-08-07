@@ -12,4 +12,9 @@ public sealed class DeletePecaCommand : ICommand<Result>
     /// Identificador da peça.
     /// </summary>
     public Guid Id { get; init; }
+
+    public DeletePecaCommand(Guid pecaId)
+    {
+        Id = pecaId;
+    }
 }

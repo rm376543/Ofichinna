@@ -9,4 +9,9 @@ namespace Ofichina.Application.UseCases.Orcamentos.Commands;
 public sealed class FinalizarOrcamentoCommand : ICommand<Result>
 {
     public Guid Id { get; init; }
+
+    public FinalizarOrcamentoCommand(Guid orcamentoId)
+    {
+        Id = orcamentoId;
+    }
 }

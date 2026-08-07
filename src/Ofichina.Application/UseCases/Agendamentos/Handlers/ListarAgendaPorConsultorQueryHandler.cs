@@ -1,7 +1,7 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
+using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Responses.Agendamento;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 
@@ -10,7 +10,7 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 /// <summary>
 /// Handler para listar agenda de um consultor em uma data.
 /// </summary>
-public sealed class ListarAgendaPorConsultorQueryHandler : IQueryHandler<ListarAgendaPorConsultorQuery, IEnumerable<AgendaSlotDto>>
+public sealed class ListarAgendaPorConsultorQueryHandler : IQueryHandler<ListarAgendaPorConsultorQuery, Result<IEnumerable<AgendaConsultorResponse>>>
 {
     private readonly IHorarioConsultorDisponibilidadeRepository _slotRepository;
     private readonly IAgendamentoRepository _agendamentoRepository;
@@ -26,14 +26,13 @@ public sealed class ListarAgendaPorConsultorQueryHandler : IQueryHandler<ListarA
         _logger = logger;
     }
 
-    public async Task<IEnumerable<AgendaSlotDto>> HandleAsync(
+    public async Task<Result<IEnumerable<AgendaConsultorResponse>>> HandleAsync(
         ListarAgendaPorConsultorQuery query,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            _logger.LogInformation("Listando agenda. ConsultorId: {ConsultorId}, Data: {Data}", 
-                query.ConsultorPessoaId, query.Data);
+            _logger.LogInformation("Listando agenda. ConsultorId: {ConsultorId}, Data: {Data}", query.ConsultorPessoaId, query.Data);
 
             var slots = await _slotRepository.GetAllAsync(cancellationToken);
             var agendamentos = await _agendamentoRepository.GetAllAsync(cancellationToken);
@@ -44,7 +43,7 @@ public sealed class ListarAgendaPorConsultorQueryHandler : IQueryHandler<ListarA
 
             var resultado = slotsDoConsultor
                 .OrderBy(s => s.HorarioDisponibilidade.Hora)
-                .Select(slot => new AgendaSlotDto
+                .Select(slot => new AgendaSlotResponse
                 {
                     SlotId = slot.Id,
                     Hora = slot.HorarioDisponibilidade.Hora.ToString("HH:mm"),
@@ -54,15 +53,24 @@ public sealed class ListarAgendaPorConsultorQueryHandler : IQueryHandler<ListarA
                 })
                 .ToList();
 
+            var result = resultado.Select(a => new AgendaConsultorResponse
+            {
+                SlotId = a.SlotId,
+                Hora = a.Hora,
+                Status = a.Status,
+                ClienteNome = a.ClienteNome,
+                Veiculo = a.Veiculo
+            });
+
             _logger.LogInformation("Encontrados {Count} slots na agenda", resultado.Count);
 
-            return resultado;
+            return Result.Success(result);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao listar agenda. ConsultorId: {ConsultorId}, Data: {Data}", 
+            _logger.LogError(ex, "Erro ao listar agenda. ConsultorId: {ConsultorId}, Data: {Data}",
                 query.ConsultorPessoaId, query.Data);
-            return Enumerable.Empty<AgendaSlotDto>();
+            return Result.Failure<IEnumerable<AgendaConsultorResponse>>(ex.Message);
         }
     }
 

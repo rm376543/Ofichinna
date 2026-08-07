@@ -13,4 +13,9 @@ public sealed class GetServicoByIdQuery : IQuery<Result<ServicoResponse>>
     /// Identificador do serviço.
     /// </summary>
     public Guid Id { get; init; }
+
+    public GetServicoByIdQuery(Guid servicoId)
+    {
+        Id = servicoId;
+    }
 }

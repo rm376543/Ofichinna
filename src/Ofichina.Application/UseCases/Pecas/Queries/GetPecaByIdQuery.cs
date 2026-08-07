@@ -13,4 +13,9 @@ public sealed class GetPecaByIdQuery : IQuery<Result<PecaResponse>>
     /// Identificador da peça.
     /// </summary>
     public Guid Id { get; init; }
+
+    public GetPecaByIdQuery(Guid pecaId)
+    {
+        Id = pecaId;
+    }
 }

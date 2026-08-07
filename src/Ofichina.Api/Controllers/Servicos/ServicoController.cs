@@ -46,7 +46,7 @@ public sealed class ServicoController : ControllerBase
     /// <param name="pagination">Parâmetros de paginação.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet]
+    [HttpGet("listar")]
     [ProducesResponseType(typeof(ApiResponse<PagedResponse<ServicoResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -68,21 +68,21 @@ public sealed class ServicoController : ControllerBase
     /// Retorna um serviço pelo identificador.
     /// </summary>
     /// <returns>O serviço correspondente ao identificador fornecido.</returns>
-    /// <param name="id">Identificador do serviço.</param>
+    /// <param name="servicoId">Identificador do serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet("{id:guid}")]
+    [HttpGet("detalhar/{servicoId:guid}")]
     [ProducesResponseType(typeof(ApiResponse<ServicoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<ServicoResponse>>> BuscarServicoPorId(
-        Guid id,
+        [FromRoute] Guid servicoId,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenção do serviço com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a obtenção do serviço com Id: {Id}", servicoId);
 
-        var result = await _mediator.Send(new GetServicoByIdQuery { Id = id }, cancellationToken);
+        var result = await _mediator.Send(new GetServicoByIdQuery(servicoId), cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Serviço não encontrado."));
@@ -97,7 +97,7 @@ public sealed class ServicoController : ControllerBase
     /// <param name="request">Dados do serviço a ser criado.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost]
+    [HttpPost("novo")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -113,12 +113,7 @@ public sealed class ServicoController : ControllerBase
         if (!validation.IsValid)
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
 
-        var result = await _mediator.Send(new CreateServicoCommand
-        {
-            Nome = request.Nome,
-            Descricao = request.Descricao,
-            Valor = request.Valor,
-        }, cancellationToken);
+        var result = await _mediator.Send(new CreateServicoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o serviço."));
@@ -133,7 +128,7 @@ public sealed class ServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Resultado da operação de atualização.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut]
+    [HttpPut("atualizar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -150,19 +145,10 @@ public sealed class ServicoController : ControllerBase
         if (!validation.IsValid)
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
 
-        var result = await _mediator.Send(new UpdateServicoCommand
-        {
-            Id = request.Id,
-            Nome = request.Nome,
-            Descricao = request.Descricao,
-            Valor = request.Valor,
-            Ativo = request.Ativo
-        }, cancellationToken);
+        var result = await _mediator.Send(new UpdateServicoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
-            return result.Error == "Serviço não encontrado."
-                ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o serviço."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o serviço."));
 
         return Ok(ApiResponse.SuccessResponse("Serviço atualizado com sucesso."));
     }
@@ -170,22 +156,22 @@ public sealed class ServicoController : ControllerBase
     /// <summary>
     /// Remove logicamente um serviço.
     /// </summary>
-    /// <param name="id">Identificador do serviço.</param>
+    /// <param name="request">Identificador do serviço.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Resultado da operação de remoção.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("remover")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> RemoverServico(
-        Guid id,
+        [FromBody] RemoveServicoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a remoção do serviço com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a remoção do serviço com Id: {Id}", request.ServicoId);
 
-        var result = await _mediator.Send(new DeleteServicoCommand { Id = id }, cancellationToken);
+        var result = await _mediator.Send(new DeleteServicoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Serviço não encontrado."));

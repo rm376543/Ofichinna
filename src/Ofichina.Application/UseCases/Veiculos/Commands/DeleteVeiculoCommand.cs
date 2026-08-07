@@ -1,5 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Responses.Veiculo;
 
 namespace Ofichina.Application.UseCases.Veiculos.Commands;
 
@@ -9,4 +10,9 @@ namespace Ofichina.Application.UseCases.Veiculos.Commands;
 public sealed class DeleteVeiculoCommand : ICommand<Result>
 {
     public Guid Id { get; init; }
+
+    public DeleteVeiculoCommand(RemoveVeiculoRequest request)
+    {
+        Id = request.Id;
+    }
 }

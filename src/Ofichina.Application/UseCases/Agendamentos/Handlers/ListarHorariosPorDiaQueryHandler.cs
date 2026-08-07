@@ -1,14 +1,14 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
+using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Responses.Agendamento;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 
 /// <summary>
 /// Handler para listar horários disponíveis de um dia.
 /// </summary>
-public sealed class ListarHorariosPorDiaQueryHandler : IQueryHandler<ListarHorariosPorDiaQuery, IEnumerable<HorarioListaDto>>
+public sealed class ListarHorariosPorDiaQueryHandler : IQueryHandler<ListarHorariosPorDiaQuery, Result<IEnumerable<HorarioDisponivelResponse>>>
 {
     private readonly IHorarioDisponibilidadeRepository _horarioRepository;
     private readonly IHorarioConsultorDisponibilidadeRepository _slotRepository;
@@ -24,7 +24,7 @@ public sealed class ListarHorariosPorDiaQueryHandler : IQueryHandler<ListarHorar
         _logger = logger;
     }
 
-    public async Task<IEnumerable<HorarioListaDto>> HandleAsync(
+    public async Task<Result<IEnumerable<HorarioDisponivelResponse>>> HandleAsync(
         ListarHorariosPorDiaQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -32,12 +32,12 @@ public sealed class ListarHorariosPorDiaQueryHandler : IQueryHandler<ListarHorar
         {
             _logger.LogInformation("Listando horários. DiaId: {DiaId}", query.DiaDisponibilidadeId);
 
-            var horarios = await _horarioRepository.GetAllAsync(cancellationToken);
+            var buscarHorarios = await _horarioRepository.GetAllAsync(cancellationToken);
             var slots = await _slotRepository.GetAllAsync(cancellationToken);
 
-            var resultado = horarios
+            var horarios = buscarHorarios
                 .OrderBy(h => h.Hora)
-                .Select(h => new HorarioListaDto
+                .Select(h => new HorarioListaResponse
                 {
                     Id = h.Id,
                     Hora = h.Hora.ToString("HH:mm"),
@@ -45,14 +45,21 @@ public sealed class ListarHorariosPorDiaQueryHandler : IQueryHandler<ListarHorar
                 })
                 .ToList();
 
-            _logger.LogInformation("Encontrados {Count} horários para dia {DiaId}", resultado.Count, query.DiaDisponibilidadeId);
+            _logger.LogInformation("Encontrados {Count} horários para dia {DiaId}", horarios.Count, query.DiaDisponibilidadeId);
 
-            return resultado;
+            var resultado = horarios.Select(h => new HorarioDisponivelResponse
+            {
+                Id = h.Id,
+                Horario = TimeOnly.ParseExact(h.Hora, "HH:mm"),
+                Disponivel = h.Disponivel
+            });
+
+            return Result.Success(resultado);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao listar horários. DiaId: {DiaId}", query.DiaDisponibilidadeId);
-            return Enumerable.Empty<HorarioListaDto>();
+            return Result.Failure<IEnumerable<HorarioDisponivelResponse>>(ex.Message);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Ofichina.Api.Controllers.PerfilUsuario;
 
 [Authorize]
 [ApiController]
-[Route("api/usuario/{usuarioId:guid}/perfil")]
+[Route("api/perfil-usuario")]
 public sealed class PerfilUsuarioController : ControllerBase
 {
     private readonly IValidator<VincularPerfilUsuarioRequest> _vincularValidator;
@@ -34,11 +34,11 @@ public sealed class PerfilUsuarioController : ControllerBase
     /// <param name="usuarioId">Identificador do usuário.</param>
     /// <returns>Lista com os códigos dos perfis vinculados ao usuário.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet]
+    [HttpGet("{usuarioId:guid}/listar")]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<string>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<string>>>> ObterPerfisAsync(Guid usuarioId)
+    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<string>>>> ObterPerfisAsync([FromRoute] Guid usuarioId)
     {
         _logger.LogInformation("Consultando perfis do usuário. UsuarioId: {UsuarioId}", usuarioId);
 
@@ -50,55 +50,42 @@ public sealed class PerfilUsuarioController : ControllerBase
     }
 
     /// <summary>
-    /// Vincula um perfil a um usuário existente.
+    /// Vincula um perfil a um usuario, através do identificador
     /// </summary>
-    /// <param name="usuarioId">Identificador do usuário.</param>
-    /// <param name="perfilId">Identificador do perfil.</param>
-    /// <param name="cancellationToken">Token de cancelamento da operação.</param>
-    /// <returns>
-    /// Retorna sucesso quando o vínculo é criado;
-    /// retorna erro quando usuário, perfil ou vínculo já existirem.
-    /// </returns>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost("{perfilId:guid}")]
+    [HttpPost("vincular")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<ApiResponse>> VincularAsync(
-        Guid usuarioId,
-        Guid perfilId,
+        [FromBody] VincularPerfilUsuarioRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando vinculação de perfil. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}", usuarioId, perfilId);
-
-        var request = new VincularPerfilUsuarioRequest
-        {
-            UsuarioId = usuarioId,
-            PerfilId = perfilId
-        };
+        _logger.LogInformation("Iniciando vinculação de perfil. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}", request.UsuarioId, request.PerfilId);
 
         var validation = await _vincularValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
         {
             _logger.LogWarning("Validação falhou ao vincular perfil. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}, Erros: {Errors}",
-                usuarioId, perfilId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+                request.UsuarioId, request.PerfilId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _mediator.Send(new VincularPerfilUsuarioCommand(
-            request.UsuarioId,
-            request.PerfilId), cancellationToken);
+        var result = await _mediator.Send(new VincularPerfilUsuarioCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
         {
             _logger.LogError("Falha ao vincular perfil. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}, Erro: {Error}",
-                usuarioId, perfilId, result.Error);
+                request.UsuarioId, request.PerfilId, result.Error);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível vincular o perfil."));
         }
 
-        _logger.LogInformation("Perfil vinculado com sucesso. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}", usuarioId, perfilId);
+        _logger.LogInformation("Perfil vinculado com sucesso. UsuarioId: {UsuarioId}, PerfilId: {PerfilId}", request.UsuarioId, request.PerfilId);
         return Ok(ApiResponse.SuccessResponse(result.Value?.Mensagem ?? "Perfil vinculado com sucesso."));
     }
 }

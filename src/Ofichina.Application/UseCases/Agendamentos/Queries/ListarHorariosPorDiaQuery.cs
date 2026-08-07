@@ -1,21 +1,13 @@
 using Ofichina.Application.Abstractions;
+using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Responses.Agendamento;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Queries;
 
 /// <summary>
 /// Query para listar horários disponíveis de um dia.
 /// </summary>
-public sealed class ListarHorariosPorDiaQuery : IQuery<IEnumerable<HorarioListaDto>>
+public sealed class ListarHorariosPorDiaQuery : IQuery<Result<IEnumerable<HorarioDisponivelResponse>>>
 {
     public Guid DiaDisponibilidadeId { get; init; }
-}
-
-/// <summary>
-/// DTO com informações do horário.
-/// </summary>
-public sealed class HorarioListaDto
-{
-    public Guid Id { get; set; }
-    public string Hora { get; set; } = string.Empty; // HH:mm
-    public bool Disponivel { get; set; }
 }

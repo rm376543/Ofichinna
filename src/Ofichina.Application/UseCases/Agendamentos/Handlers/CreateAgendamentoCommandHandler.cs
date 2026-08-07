@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Authentication;
 using Ofichina.Application.Extensions;
@@ -7,9 +6,6 @@ using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Agendamento;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Domain.Entities;
-using Ofichina.Application.Abstractions.Interfaces;
-using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 
@@ -26,7 +22,6 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateAgendamentoCommandHandler> _logger;
 
-#pragma warning disable S107
     public CreateAgendamentoCommandHandler(
         IAgendamentoRepository agendamentoRepository,
         IPessoaRepository pessoaRepository,
@@ -35,7 +30,6 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
         IPerfilAutorizacaoService perfilAutorizacaoService,
         IUnitOfWork unitOfWork,
         ILogger<CreateAgendamentoCommandHandler> logger)
-#pragma warning restore S107
     {
         _agendamentoRepository = agendamentoRepository;
         _pessoaRepository = pessoaRepository;
@@ -50,7 +44,7 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
     {
         try
         {
-            _logger.LogInformation("Iniciando criação de agendamento. PessoaId: {PessoaId}, SlotId: {SlotId}", 
+            _logger.LogInformation("Iniciando criação de agendamento. PessoaId: {PessoaId}, SlotId: {SlotId}",
                 command.PessoaId, command.HorarioConsultorDisponibilidadeId);
 
             // Validar pessoa cliente

@@ -29,7 +29,7 @@ public sealed class HorarioConsultorDisponibilidadeRepository : Repository<Horar
         return await _context.HorariosConsultorDisponibilidade
             .AsNoTracking()
             .FirstOrDefaultAsync(
-                x => x.DiaDisponibilidadeId == diaDisponibilidadeId 
+                x => x.DiaDisponibilidadeId == diaDisponibilidadeId
                     && x.HorarioDisponibilidadeId == horarioDisponibilidadeId
                     && x.ConsultorPessoaId == consultorPessoaId
                     && !x.EstaExcluida(),

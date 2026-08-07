@@ -2,10 +2,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Checklists.Commands;
-using Ofichina.Contracts;
-using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Requests.Checklist;
+using Ofichina.Contracts.Responses;
 
 namespace Ofichina.Api.Controllers.Checklist;
 
@@ -14,7 +12,7 @@ namespace Ofichina.Api.Controllers.Checklist;
 /// </summary>
 [Authorize]
 [ApiController]
-[Route("api/checklists")]
+[Route("api/checklist")]
 public sealed class ChecklistController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -26,8 +24,14 @@ public sealed class ChecklistController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Cria um novo checklist.
+    /// </summary>
+    /// <param name="request">Dados necessários para criar o checklist.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost]
+    [HttpPost("novo")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse>> CriarChecklist(
@@ -44,24 +48,27 @@ public sealed class ChecklistController : ControllerBase
         return StatusCode(StatusCodes.Status201Created, ApiResponse.SuccessResponse("Checklist criado com sucesso."));
     }
 
+    /// <summary>
+    /// Finaliza um checklist existente.
+    /// </summary>
+    /// <param name="request">Identificador do checklist a ser finalizado.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso, erro de validação ou checklist não encontrado.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut("{id:guid}/finalizar")]
+    [HttpPut("{checklistId:guid}/finalizar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> FinalizarChecklist(
-        Guid id,
+        [FromRoute] FinalizarChecklistRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a finalização do checklist com Id: {Id}.", id);
+        _logger.LogInformation("Iniciando a finalização do checklist com Id: {Id}.", request.Id);
 
-        var result = await _mediator.Send(new FinalizarChecklistCommand(new FinalizarChecklistRequest { Id = id }), cancellationToken);
+        var result = await _mediator.Send(new FinalizarChecklistCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
         {
-            if ((result.Error ?? string.Empty).Contains("não encontrado", StringComparison.OrdinalIgnoreCase))
-                return NotFound(ApiResponse.FailureResponse(result.Error ?? "Checklist não encontrado."));
-
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível finalizar o checklist."));
         }
 

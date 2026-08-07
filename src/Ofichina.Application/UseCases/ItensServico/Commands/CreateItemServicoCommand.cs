@@ -1,5 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Requests.ItensServico;
 
 namespace Ofichina.Application.UseCases.ItensServico.Commands;
 
@@ -27,4 +28,12 @@ public sealed class CreateItemServicoCommand : ICommand<Result>
     /// Quantidade de peças utilizadas.
     /// </summary>
     public int Quantidade { get; init; }
+
+    public CreateItemServicoCommand(CreateItemServicoRequest request)
+    {
+        OrdemServicoId = request.OrdemServicoId;
+        ServicoId = request.ServicoId;
+        PecaId = request.PecaId;
+        Quantidade = request.Quantidade;
+    }
 }

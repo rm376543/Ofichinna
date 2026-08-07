@@ -48,7 +48,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         /// <returns>Lista de pessoas.</returns>
         //[Authorize(Policy = UserPolicyEnum.Ler)]
         [Authorize(Roles = "ADMIN")]
-        [HttpGet]
+        [HttpGet("listar")]
         [ProducesResponseType(typeof(ApiResponse<PagedResponse<PessoaResponse>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -75,7 +75,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Pessoa encontrada ou erro 404.</returns>
         [Authorize(Roles = "ADMIN")]
-        [HttpGet("{id:guid}")]
+        [HttpGet("detalhar/{id:guid}")]
         [ProducesResponseType(typeof(ApiResponse<PessoaResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -103,7 +103,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         /// <returns>Mensagem de sucesso ou erro de validação.</returns>
         //[Authorize(Policy = UserPolicyEnum.Escrever)]
         [Authorize(Roles = "ADMIN")]
-        [HttpPost]
+        [HttpPost("nova")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -120,20 +120,7 @@ namespace Ofichina.Api.Controllers.Pessoa
                 return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
             }
 
-            var result = await _mediator.Send(new CreatePessoaCommand
-            {
-                Nome = request.Nome,
-                Documento = request.Documento,
-                Telefone = request.Telefone,
-                Logradouro = request.Logradouro,
-                Numero = request.Numero,
-                Complemento = request.Complemento,
-                Bairro = request.Bairro,
-                Cidade = request.Cidade,
-                Estado = request.Estado,
-                Cep = request.Cep,
-                UsuarioId = request.UsuarioId
-            }, cancellationToken);
+            var result = await _mediator.Send(new CreatePessoaCommand(request), cancellationToken);
 
             if (!result.IsSuccess)
             {
@@ -151,7 +138,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Mensagem de sucesso, erro de validação ou pessoa não encontrada.</returns>
         [Authorize(Roles = "ADMIN")]
-        [HttpPut]
+        [HttpPut("atualizar")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -169,26 +156,12 @@ namespace Ofichina.Api.Controllers.Pessoa
                 return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
             }
 
-            var result = await _mediator.Send(new UpdatePessoaCommand
-            {
-                Id = request.Id,
-                Nome = request.Nome,
-                Telefone = request.Telefone,
-                Logradouro = request.Logradouro,
-                Numero = request.Numero,
-                Complemento = request.Complemento,
-                Bairro = request.Bairro,
-                Cidade = request.Cidade,
-                Estado = request.Estado,
-                Cep = request.Cep
-            }, cancellationToken);
+            var result = await _mediator.Send(new UpdatePessoaCommand(request), cancellationToken);
 
             if (!result.IsSuccess)
             {
                 _logger.LogError("Erro ao atualizar a pessoa com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
-                return result.Error == "Pessoa não encontrada."
-                    ? NotFound(ApiResponse.FailureResponse(result.Error))
-                    : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a pessoa."));
+                return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a pessoa."));
             }
 
             return Ok(ApiResponse.SuccessResponse("Pessoa atualizada com sucesso."));
@@ -197,24 +170,24 @@ namespace Ofichina.Api.Controllers.Pessoa
         /// <summary>
         /// Desativa uma pessoa existente.
         /// </summary>
-        /// <param name="id">Identificador da pessoa.</param>
+        /// <param name="request">Identificador da pessoa.</param>
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Mensagem de sucesso ou erro 404.</returns>
         [Authorize(Roles = "ADMIN")]
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("remover")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ApiResponse>> DeletarPessoa(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiResponse>> DeletarPessoa([FromBody] RemovePessoaRequest request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Iniciando a desativação da pessoa com Id: {Id}", id);
+            _logger.LogInformation("Iniciando a desativação da pessoa com Id: {Id}", request.Id);
 
-            var result = await _mediator.Send(new DeletePessoaCommand { Id = id }, cancellationToken);
+            var result = await _mediator.Send(new DeletePessoaCommand(request), cancellationToken);
 
             if (!result.IsSuccess)
             {
-                _logger.LogError("Erro ao desativar a pessoa com Id: {Id}. Erro: {Erro}", id, result.Error);
+                _logger.LogError("Erro ao desativar a pessoa com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
                 return NotFound(ApiResponse.FailureResponse(result.Error ?? "Pessoa não encontrada."));
             }
 

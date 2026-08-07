@@ -1,5 +1,3 @@
-using Ofichina.Contracts.Requests;
-
 namespace Ofichina.Contracts.Requests.Orcamento;
 
 /// <summary>
@@ -7,5 +5,12 @@ namespace Ofichina.Contracts.Requests.Orcamento;
 /// </summary>
 public sealed class ReprovarOrcamentoRequest : BaseRequest
 {
+    public Guid OrcamentoId { get; set; }
     public string? Motivo { get; init; }
+
+    public ReprovarOrcamentoRequest(Guid orcamentoId, string? motivo)
+    {
+        OrcamentoId = orcamentoId;
+        Motivo = motivo;
+    }
 }

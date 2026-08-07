@@ -39,7 +39,7 @@ public sealed class PerfilPermissaoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de permissões do perfil.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet]
+    [HttpGet("listar")]
     [ProducesResponseType(typeof(ApiResponse<PagedResponse<PerfilPermissaoResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -66,7 +66,7 @@ public sealed class PerfilPermissaoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Resultado da operação.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost]
+    [HttpPost("vincular")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -102,12 +102,13 @@ public sealed class PerfilPermissaoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Resultado da operação.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpDelete("{perfilId:guid}/permissao{permissaoId:guid}")]
+    [HttpDelete("remover")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> DesvincularAsync([FromBody] DesvincularPerfilPermissao request, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse>> DesvincularAsync(
+        [FromBody] DesvincularPerfilPermissao request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando o processo de desvinculação da permissão {PermissaoId} do perfil {PerfilId}.", request.PermissaoId, request.PerfilId);
         var result = await _mediator.Send(new DesvincularPermissaoPerfilCommand(request.PerfilId, request.PermissaoId), cancellationToken);

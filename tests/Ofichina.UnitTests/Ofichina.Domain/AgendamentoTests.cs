@@ -45,6 +45,16 @@ public sealed class AgendamentoTests
     }
 
     [Fact]
+    public void Nao_Deve_Iniciar_Agendamento_Quando_Status_For_Cancelado()
+    {
+        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        agendamento.Cancelar();
+
+        var exception = Assert.Throws<DomainException>(() => agendamento.Iniciar());
+        Assert.Contains("cancelado", exception.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void Deve_Finalizar_Agendamento_Quando_Status_For_Iniciado()
     {
         var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());

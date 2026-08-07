@@ -1,5 +1,6 @@
 ﻿using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Requests.PerfilUsuario;
 using Ofichina.Contracts.Responses.PerfilUsuario;
 
 namespace Ofichina.Application.UseCases.PerfilUsuario.Commands;
@@ -10,9 +11,9 @@ public sealed class VincularPerfilUsuarioCommand : ICommand<Result<VincularPerfi
 
     public Guid PerfilId { get; }
 
-    public VincularPerfilUsuarioCommand(Guid usuarioId, Guid perfilId)
+    public VincularPerfilUsuarioCommand(VincularPerfilUsuarioRequest request)
     {
-        UsuarioId = usuarioId;
-        PerfilId = perfilId;
+        UsuarioId = request.UsuarioId;
+        PerfilId = request.PerfilId;
     }
 }
