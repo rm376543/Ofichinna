@@ -1,4 +1,6 @@
-﻿namespace Ofichina.Contracts.Requests.Orcamento
+﻿using Ofichina.Contracts.Common;
+
+namespace Ofichina.Contracts.Requests.Orcamento
 {
     /// <summary>
     /// Requisição para atualização de orçamento para um usuário.

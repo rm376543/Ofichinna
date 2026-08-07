@@ -1,4 +1,6 @@
-﻿namespace Ofichina.Contracts.Requests.Veiculo;
+﻿using Ofichina.Contracts.Common;
+
+namespace Ofichina.Contracts.Requests.Veiculo;
 
 /// <summary>
 /// Dados necessários para atualização de um veículo.

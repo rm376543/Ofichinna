@@ -3,7 +3,7 @@ using Ofichina.Contracts.Responses.Veiculo;
 
 namespace Ofichina.Contracts.Responses.OrdemServico
 {
-    public sealed class OrdemServicoSimplesResponse : BaseEntity
+    public sealed class OrdemServicoSimplesResponse : BaseResponse
     {
         public Guid OrdemServicoSimplesId { get; set; }
 

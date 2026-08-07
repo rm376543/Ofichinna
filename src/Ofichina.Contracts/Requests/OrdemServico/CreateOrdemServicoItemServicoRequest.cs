@@ -1,4 +1,4 @@
-﻿using Ofichina.Contracts.Requests;
+﻿using Ofichina.Contracts.Common;
 
 namespace Ofichina.Contracts.Requests.OrdensServico;
 

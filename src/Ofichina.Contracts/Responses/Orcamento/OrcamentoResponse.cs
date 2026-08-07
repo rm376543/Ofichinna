@@ -5,7 +5,7 @@ namespace Ofichina.Contracts.Responses.Orcamento;
 /// <summary>
 /// Resposta com os dados de um orçamento.
 /// </summary>
-public sealed class OrcamentoResponse : BaseEntity
+public sealed class OrcamentoResponse : BaseResponse
 {
     public Guid OrcamentoId { get; set; }
 

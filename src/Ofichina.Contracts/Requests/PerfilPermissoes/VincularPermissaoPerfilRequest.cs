@@ -1,3 +1,5 @@
+using Ofichina.Contracts.Common;
+
 namespace Ofichina.Contracts.Requests.PerfilPermissoes;
 
 public sealed class VincularPermissaoPerfilRequest : CreateRequest

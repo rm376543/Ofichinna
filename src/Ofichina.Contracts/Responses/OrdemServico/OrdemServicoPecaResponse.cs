@@ -5,7 +5,7 @@ namespace Ofichina.Contracts.Responses.OrdensServico;
 /// <summary>
 /// Resposta com os dados de uma peça vinculada a um serviço da ordem de serviço.
 /// </summary>
-public sealed class OrdemServicoPecaResponse : BaseEntity
+public sealed class OrdemServicoPecaResponse : BaseResponse
 {
     /// <summary>
     /// Identificador do vínculo resposta.

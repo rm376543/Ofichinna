@@ -2,7 +2,7 @@ using Ofichina.Contracts.Common;
 
 namespace Ofichina.Contracts.Responses.PerfilPermissoes;
 
-public sealed class PerfilPermissaoResponse : BaseEntity
+public sealed class PerfilPermissaoResponse : BaseResponse
 {
     public Guid PerfilPermissaoId { get; set; }
 

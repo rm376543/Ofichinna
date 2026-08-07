@@ -1,6 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses.Veiculo;
+using Ofichina.Contracts.Requests.Veiculo;
 
 namespace Ofichina.Application.UseCases.Veiculos.Commands;
 

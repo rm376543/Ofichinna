@@ -1,4 +1,6 @@
-﻿namespace Ofichina.Contracts.Requests.Pessoa;
+﻿using Ofichina.Contracts.Common;
+
+namespace Ofichina.Contracts.Requests.Pessoa;
 
 /// <summary>
 /// Requisição para cadastro de uma pessoa.

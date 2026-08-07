@@ -1,11 +1,11 @@
 using Ofichina.Contracts.Common;
 
-namespace Ofichina.Contracts.Responses.Orcamento;
+namespace Ofichina.Contracts.Responses.Checklist;
 
 /// <summary>
 /// Resposta com os dados do checklist de entrada do veículo.
 /// </summary>
-public sealed class ChecklistResponse : BaseEntity
+public sealed class ChecklistResponse : BaseResponse
 {
     public Guid ChecklistId { get; set; }
 

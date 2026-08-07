@@ -1,4 +1,4 @@
-﻿namespace Ofichina.Contracts.Responses.Veiculo
+﻿namespace Ofichina.Contracts.Requests.Veiculo
 {
     public class RemoveVeiculoRequest
     {

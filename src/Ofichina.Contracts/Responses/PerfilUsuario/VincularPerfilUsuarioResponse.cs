@@ -2,7 +2,7 @@
 
 namespace Ofichina.Contracts.Responses.PerfilUsuario;
 
-public sealed class VincularPerfilUsuarioResponse : BaseEntity
+public sealed class VincularPerfilUsuarioResponse : BaseResponse
 {
     public Guid VincularPerfilUsuarioId { get; set; }
 

@@ -4,7 +4,7 @@ namespace Ofichina.Contracts.Common;
 /// DTO base para entidades.
 /// Contém apenas propriedades de auditoria compartilhadas.
 /// </summary>
-public abstract class BaseEntity
+public abstract class BaseResponse
 {
     /// <summary>
     /// Data de criação da entidade.
