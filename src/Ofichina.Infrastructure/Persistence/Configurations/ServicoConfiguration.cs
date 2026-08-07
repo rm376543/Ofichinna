@@ -14,6 +14,7 @@ public class ServicoConfiguration : IEntityTypeConfiguration<Servico>
         builder.ToTable("Servicos");
 
         builder.HasKey(s => s.Id);
+        builder.Property(s => s.Id).HasColumnName("ServicoId");
 
         builder.Property(s => s.Nome)
             .HasMaxLength(150)

@@ -2,6 +2,6 @@
 {
     public class RemovePessoaRequest
     {
-        public Guid Id { get; set; }
+        public Guid PessoaId { get; set; }
     }
 }

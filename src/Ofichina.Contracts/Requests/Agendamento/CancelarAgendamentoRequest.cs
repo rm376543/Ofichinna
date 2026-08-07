@@ -5,7 +5,6 @@
     /// </summary>
     public sealed class CancelarAgendamentoRequest
     {
-        public Guid PessoaId { get; set; }
         public Guid AgendamentoId { get; set; }
     }
 }

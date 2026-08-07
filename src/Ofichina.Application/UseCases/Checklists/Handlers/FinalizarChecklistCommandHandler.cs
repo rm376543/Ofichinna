@@ -1,7 +1,4 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Common;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.Checklists.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
@@ -11,8 +8,7 @@ namespace Ofichina.Application.UseCases.Checklists.Handlers;
 
 /// <summary>
 /// Handler para finalização de checklist e integração com agendamento.
-/// Ao finalizar um checklist vinculado a um agendamento, o agendamento é finalizado automaticamente.
-/// Se o checklist estiver vinculado a um agendamento mas o agendamento não existir ou estiver excluído, retorna erro bloqueante.
+/// Ao finalizar um agendamento, todos os checklists vinculados são finalizados antes do encerramento do próprio agendamento.
 /// </summary>
 public sealed class FinalizarChecklistCommandHandler : ICommandHandler<FinalizarChecklistCommand, Result>
 {
@@ -37,48 +33,49 @@ public sealed class FinalizarChecklistCommandHandler : ICommandHandler<Finalizar
     {
         try
         {
-            _logger.LogInformation("Finalizando checklist. ChecklistId: {ChecklistId}", command.Id);
+#pragma warning disable S6664
+            _logger.LogInformation("Finalizando checklists do agendamento. AgendamentoId: {AgendamentoId}", command.AgendamentoId);
+#pragma warning restore S6664
 
-            var checklist = await _checklistRepository.GetByIdAsync(command.Id, cancellationToken, tracking: true);
-            if (checklist is null || checklist.EstaExcluida())
-                return Result.Failure("Checklist não encontrado.");
+            var checklists = (await _checklistRepository.GetAllAsync(cancellationToken))
+                .Where(x => x.AgendamentoId == command.AgendamentoId && !x.EstaExcluida())
+                .ToList();
 
-            checklist.Finalizar();
+            if (checklists.Count == 0)
+                return Result.Failure("Nenhum checklist encontrado para o agendamento informado.");
 
-            // Se o checklist estiver vinculado a um agendamento, finalizar também o agendamento
-            if (checklist.AgendamentoId.HasValue)
+            var agendamento = await _agendamentoRepository.GetByIdAsync(command.AgendamentoId, cancellationToken, tracking: true);
+            if (agendamento is null || agendamento.EstaExcluida())
             {
-                _logger.LogInformation("Checklist vinculado a agendamento. AgendamentoId: {AgendamentoId}", checklist.AgendamentoId);
-
-                var agendamento = await _agendamentoRepository.GetByIdAsync(checklist.AgendamentoId.Value, cancellationToken, tracking: true);
-                if (agendamento is null || agendamento.EstaExcluida())
-                {
-                    _logger.LogError("Agendamento vinculado ao checklist não encontrado ou foi excluído. ChecklistId: {ChecklistId}, AgendamentoId: {AgendamentoId}",
-                        command.Id, checklist.AgendamentoId);
-                    return Result.Failure("Agendamento vinculado não encontrado. A finalização está bloqueada.");
-                }
-
-                agendamento.Finalizar();
-                await _agendamentoRepository.UpdateAsync(agendamento, cancellationToken);
-
-                _logger.LogInformation("Agendamento finalizado junto com o checklist. AgendamentoId: {AgendamentoId}", agendamento.Id);
+                _logger.LogError("Agendamento não encontrado ou foi excluído. AgendamentoId: {AgendamentoId}", command.AgendamentoId);
+                return Result.Failure("Agendamento vinculado não encontrado. A finalização está bloqueada.");
             }
 
-            await _checklistRepository.UpdateAsync(checklist, cancellationToken);
+            foreach (var checklist in checklists.Where(x => !x.Finalizado))
+            {
+                checklist.Finalizar();
+                await _checklistRepository.UpdateAsync(checklist, cancellationToken);
+            }
+
+            _logger.LogInformation("Checklists finalizados para o agendamento. AgendamentoId: {AgendamentoId}, Quantidade: {Quantidade}", command.AgendamentoId, checklists.Count);
+
+            agendamento.Finalizar();
+            await _agendamentoRepository.UpdateAsync(agendamento, cancellationToken);
+
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation("Checklist finalizado com sucesso. ChecklistId: {ChecklistId}", checklist.Id);
+            _logger.LogInformation("Agendamento finalizado junto com os checklists. AgendamentoId: {AgendamentoId}", agendamento.Id);
 
             return Result.Success();
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domínio ao finalizar checklist. ChecklistId: {ChecklistId}", command.Id);
+            _logger.LogWarning(ex, "Erro de domínio ao finalizar checklists. AgendamentoId: {AgendamentoId}", command.AgendamentoId);
             return Result.Failure(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao finalizar checklist. ChecklistId: {ChecklistId}", command.Id);
+            _logger.LogError(ex, "Erro inesperado ao finalizar checklists. AgendamentoId: {AgendamentoId}", command.AgendamentoId);
             return Result.Failure("Não foi possível finalizar o checklist.");
         }
     }

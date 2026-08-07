@@ -1,3 +1,5 @@
+using Ofichina.Contracts.Common;
+
 namespace Ofichina.Contracts.Requests.Orcamento;
 
 /// <summary>

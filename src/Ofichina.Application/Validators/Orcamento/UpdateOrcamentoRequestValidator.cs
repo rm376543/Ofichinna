@@ -10,8 +10,8 @@ public sealed class UpdateOrcamentoRequestValidator : AbstractValidator<UpdateOr
 {
     public UpdateOrcamentoRequestValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("O identificador do orçamento é obrigatório.");
+        RuleFor(x => x.OrcamentoId)
+            .NotEmpty().WithMessage("O Id do orçamento é obrigatório.");
 
         RuleFor(x => x.PessoaId)
             .NotEmpty().WithMessage("A pessoa vinculada é obrigatória.");

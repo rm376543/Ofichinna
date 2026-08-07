@@ -27,7 +27,7 @@ public sealed class GetAllPermissoesPaginadasQueryHandler : IQueryHandler<GetAll
 
             var resultado = permissoes.ToPagedResponse(p => new PermissaoResponse
             {
-                Id = p.Id,
+                PermissaoId = p.Id,
                 Codigo = p.Codigo,
                 Descricao = p.Descricao,
                 CreatedAt = p.CreatedAt,

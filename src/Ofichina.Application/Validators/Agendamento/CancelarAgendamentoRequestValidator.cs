@@ -10,8 +10,6 @@ namespace Ofichina.Application.Validators.Agendamento
     {
         public CancelarAgendamentoRequestValidator()
         {
-            RuleFor(x => x.PessoaId)
-                .NotEmpty().WithMessage("O ID da pessoa é obrigatório.");
             RuleFor(x => x.AgendamentoId)
                 .NotEmpty().WithMessage("O ID do agendamento é obrigatório.");
         }

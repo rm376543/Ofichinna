@@ -14,6 +14,7 @@ public class OrdemServicoConfiguration : IEntityTypeConfiguration<OrdemServico>
         builder.ToTable("OrdensServico");
 
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasColumnName("OrdemServicoId");
 
         builder.Property(x => x.PessoaId).IsRequired();
         builder.Property(x => x.VeiculoId).IsRequired();

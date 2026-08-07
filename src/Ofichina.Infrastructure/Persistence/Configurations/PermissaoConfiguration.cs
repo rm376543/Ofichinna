@@ -11,6 +11,7 @@ public class PermissaoConfiguration : IEntityTypeConfiguration<Permissao>
         builder.ToTable("Permissoes");
 
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasColumnName("PermissaoId");
 
         builder.Property(x => x.Codigo)
             .HasMaxLength(150)

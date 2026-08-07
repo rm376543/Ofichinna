@@ -197,12 +197,12 @@ public sealed class ItemServicoController : ControllerBase
         [FromBody] UpdateItemServicoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualização do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", request.OrdemServicoId, request.Id);
+        _logger.LogInformation("Iniciando a atualização do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", request.OrdemServicoId, request.ItemServicoId);
 
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
         {
-            _logger.LogWarning("Falha na validação de atualização do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erros: {Erros}", request.OrdemServicoId, request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            _logger.LogWarning("Falha na validação de atualização do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erros: {Erros}", request.OrdemServicoId, request.ItemServicoId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
@@ -210,7 +210,7 @@ public sealed class ItemServicoController : ControllerBase
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Falha ao atualizar item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erro: {Erro}", request.OrdemServicoId, request.Id, result.Error);
+            _logger.LogWarning("Falha ao atualizar item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erro: {Erro}", request.OrdemServicoId, request.ItemServicoId, result.Error);
 
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o item de serviço."));
         }
@@ -234,19 +234,21 @@ public sealed class ItemServicoController : ControllerBase
         [FromBody] DeleteItemServicoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a remoção do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", request.OrdemServicoId, request.Id);
+        _logger.LogInformation("Iniciando a remoção do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", request.OrdemServicoId, request.ItemServicoId);
 
         var result = await _mediator.Send(new DeleteItemServicoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogWarning("Falha ao remover item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erro: {Erro}", request.OrdemServicoId, request.Id, result.Error);
+            _logger.LogWarning("Falha ao remover item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erro: {Erro}", request.OrdemServicoId, request.ItemServicoId, result.Error);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível remover o item de serviço."));
         }
 
         return Ok(ApiResponse.SuccessResponse("Item de serviço removido com sucesso."));
     }
 }
+
+
 
 
 

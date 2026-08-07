@@ -5,15 +5,16 @@ using Ofichina.Domain.Entities;
 namespace Ofichina.Infrastructure.Persistence.Configurations;
 
 /// <summary>
-/// Configuração EF Core para HorarioConsultorDisponibilidade.
+/// Configuração EF Core para AgendaConsultor.
 /// </summary>
-public sealed class HorarioConsultorDisponibilidadeConfiguration : IEntityTypeConfiguration<HorarioConsultorDisponibilidade>
+public sealed class AgendaConsultorConfiguration : IEntityTypeConfiguration<AgendaConsultor>
 {
-    public void Configure(EntityTypeBuilder<HorarioConsultorDisponibilidade> builder)
+    public void Configure(EntityTypeBuilder<AgendaConsultor> builder)
     {
-        builder.ToTable("HorariosConsultorDisponibilidade");
+        builder.ToTable("AgendaConsultor");
 
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasColumnName("AgendamentoConsultorId");
 
         builder.Property(x => x.DiaDisponibilidadeId).IsRequired();
         builder.Property(x => x.HorarioDisponibilidadeId).IsRequired();
@@ -37,7 +38,7 @@ public sealed class HorarioConsultorDisponibilidadeConfiguration : IEntityTypeCo
         // Índice único: garante que não haverá duplicação de slot (Dia + Horário + Consultor)
         builder.HasIndex(x => new { x.DiaDisponibilidadeId, x.HorarioDisponibilidadeId, x.ConsultorPessoaId })
             .IsUnique()
-            .HasDatabaseName("IX_HorariosConsultorDisponibilidade_DiaHorarioConsultor");
+            .HasDatabaseName("IX_AgendaConsultor_DiaHorarioConsultor");
 
         // Índices individuais para queries
         builder.HasIndex(x => x.DiaDisponibilidadeId);

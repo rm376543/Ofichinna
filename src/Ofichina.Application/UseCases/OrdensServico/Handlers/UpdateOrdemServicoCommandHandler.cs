@@ -1,11 +1,9 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 
@@ -38,9 +36,9 @@ public sealed class UpdateOrdemServicoCommandHandler : ICommandHandler<UpdateOrd
     {
         try
         {
-            _logger.LogInformation("Iniciando atualização da ordem de serviço. OrdemServicoId: {OrdemServicoId}.", command.Id);
+            _logger.LogInformation("Iniciando atualização da ordem de serviço. OrdemServicoId: {OrdemServicoId}.", command.OrdemServicoId);
 
-            var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.Id, cancellationToken);
+            var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.OrdemServicoId, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
                 return Result.Failure("Ordem de serviço não encontrada.");
 
@@ -67,17 +65,17 @@ public sealed class UpdateOrdemServicoCommandHandler : ICommandHandler<UpdateOrd
             await _ordemServicoRepository.UpdateAsync(ordemServico, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation("Ordem de serviço atualizada com sucesso. OrdemServicoId: {OrdemServicoId}", command.Id);
+            _logger.LogInformation("Ordem de serviço atualizada com sucesso. OrdemServicoId: {OrdemServicoId}", command.OrdemServicoId);
             return Result.Success();
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domínio ao atualizar ordem de serviço. OrdemServicoId: {OrdemServicoId}", command.Id);
+            _logger.LogWarning(ex, "Erro de domínio ao atualizar ordem de serviço. OrdemServicoId: {OrdemServicoId}", command.OrdemServicoId);
             return Result.Failure(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao atualizar ordem de serviço. OrdemServicoId: {OrdemServicoId}", command.Id);
+            _logger.LogError(ex, "Erro inesperado ao atualizar ordem de serviço. OrdemServicoId: {OrdemServicoId}", command.OrdemServicoId);
             return Result.Failure("Não foi possível atualizar a ordem de serviço.");
         }
     }

@@ -1,10 +1,8 @@
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Interfaces;
-using Ofichina.Application.Extensions;
+using Ofichina.Application.UseCases.Orcamentos.Mappings;
 using Ofichina.Application.UseCases.Orcamentos.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Orcamento;
-using Ofichina.Domain.Aggregates;
 
 namespace Ofichina.Application.UseCases.Orcamentos.Handlers;
 
@@ -28,15 +26,18 @@ public sealed class GetOrcamentoByIdQueryHandler : IQueryHandler<GetOrcamentoByI
     {
         try
         {
-            var orcamento = await _orcamentoRepository.GetByIdAsync(query.Id, includeItens: true, cancellationToken);
+            var orcamento = await _orcamentoRepository.GetByIdAsync(query.OrcamentoId, includeItens: true, cancellationToken);
+
             if (orcamento is null || orcamento.EstaExcluida())
+            {
                 return Result.Failure<OrcamentoResponse>("Orçamento não encontrado.");
+            }
 
             return Result.Success(orcamento.ToResponse());
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao obter orçamento por identificador. OrcamentoId: {OrcamentoId}", query.Id);
+            _logger.LogError(ex, "Erro ao obter orçamento por identificador. OrcamentoId: {OrcamentoId}", query.OrcamentoId);
             return Result.Failure<OrcamentoResponse>("Não foi possível obter o orçamento.");
         }
     }

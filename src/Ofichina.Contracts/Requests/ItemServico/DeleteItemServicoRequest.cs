@@ -8,7 +8,7 @@
         /// <summary>
         /// Identificador do item de serviço.
         /// </summary>
-        public Guid Id { get; set; } = Guid.Empty;
+        public Guid ItemServicoId { get; set; } = Guid.Empty;
 
         /// <summary>
         /// Identificador da ordem de serviço.

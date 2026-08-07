@@ -16,6 +16,8 @@ public sealed class Orcamento : Entity
 
     public Guid VeiculoId { get; private set; }
 
+    public Guid AgendamentoId { get; private set; }
+
     public Guid MecanicoDiagnosticoId { get; private set; }
 
     public Guid ResponsavelId { get; private set; }
@@ -26,14 +28,12 @@ public sealed class Orcamento : Entity
 
     public string? Observacoes { get; private set; }
 
-    public Guid? ChecklistId { get; private set; }
-
     public StatusOrcamento Status { get; private set; }
 
     public DateTime DataCriacao => CreatedAt;
 
 #pragma warning disable S1144
-    public Checklist? Checklist { get; private set; }
+    public Agendamento? Agendamento { get; private set; }
 #pragma warning restore S1144
 
     public IReadOnlyCollection<ItemServico> ItensServico => _itensServico.AsReadOnly();
@@ -56,16 +56,17 @@ public sealed class Orcamento : Entity
     public Orcamento(
         Guid pessoaId,
         Guid veiculoId,
+        Guid agendamentoId,
         Guid mecanicoDiagnosticoId,
         Guid responsavelId,
         DateTime dataValidade,
         decimal desconto,
-        string? observacoes,
-        Guid? checklistId = null)
+        string? observacoes)
 #pragma warning restore S107
     {
         ValidarIdentificador(pessoaId, "Pessoa obrigatória.");
         ValidarIdentificador(veiculoId, "Veículo obrigatório.");
+        ValidarIdentificador(agendamentoId, "Agendamento obrigatório.");
         ValidarIdentificador(mecanicoDiagnosticoId, "Mecânico do diagnóstico obrigatório.");
         ValidarIdentificador(responsavelId, "Responsável obrigatório.");
 
@@ -77,12 +78,12 @@ public sealed class Orcamento : Entity
 
         PessoaId = pessoaId;
         VeiculoId = veiculoId;
+        AgendamentoId = agendamentoId;
         MecanicoDiagnosticoId = mecanicoDiagnosticoId;
         ResponsavelId = responsavelId;
         DataValidade = dataValidade;
         Desconto = desconto;
         Observacoes = observacoes;
-        ChecklistId = checklistId;
         Status = StatusOrcamento.Recebida;
     }
 

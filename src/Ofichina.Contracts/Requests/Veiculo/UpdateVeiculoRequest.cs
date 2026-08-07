@@ -1,10 +1,17 @@
-﻿namespace Ofichina.Contracts.Requests.Veiculo;
+﻿using Ofichina.Contracts.Common;
+
+namespace Ofichina.Contracts.Requests.Veiculo;
 
 /// <summary>
 /// Dados necessários para atualização de um veículo.
 /// </summary>
 public sealed class UpdateVeiculoRequest : UpdateRequest
 {
+    /// <summary>
+    /// Identificador do veículo.
+    /// </summary>
+    public Guid VeiculoId { get; init; }
+
     /// <summary>
     /// Identificador da pessoa proprietária.
     /// </summary>

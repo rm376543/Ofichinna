@@ -1,4 +1,6 @@
-﻿namespace Ofichina.Contracts.Requests.Orcamentos;
+﻿using Ofichina.Contracts.Common;
+
+namespace Ofichina.Contracts.Requests.Orcamentos;
 
 /// <summary>
 /// Peça atualizada no orçamento.

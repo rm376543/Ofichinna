@@ -9,6 +9,8 @@ namespace Ofichina.Application.UseCases.Checklists.Commands;
 /// </summary>
 public sealed class CreateChecklistCommand : ICommand<Result>
 {
+    public Guid AgendamentoId { get; init; }
+
     public Guid VeiculoId { get; init; }
 
     public Guid PessoaId { get; init; }
@@ -21,6 +23,7 @@ public sealed class CreateChecklistCommand : ICommand<Result>
 
     public CreateChecklistCommand(CreateChecklistRequest request)
     {
+        AgendamentoId = request.AgendamentoId;
         VeiculoId = request.VeiculoId;
         PessoaId = request.PessoaId;
         HodometroEntrada = request.HodometroEntrada;

@@ -1,22 +1,21 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses.Agendamento;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Commands;
 
 /// <summary>
-/// Comando para criação de agendamento usando o novo modelo com HorarioConsultorDisponibilidade.
+/// Comando para criação de agendamento usando o novo modelo com AgendaConsultor.
 /// </summary>
-public sealed class CreateAgendamentoCommand : ICommand<Result<AgendamentoResponse>>
+public sealed class CreateAgendamentoCommand : ICommand<Result>
 {
     /// <summary>
     /// Identificador único do agendamento.
     /// </summary>
     public Guid PessoaId { get; init; }
     /// <summary>
-    /// ID do slot de disponibilidade (HorarioConsultorDisponibilidade) que consolida dia + horário + consultor.
+    /// ID do slot de disponibilidade (AgendaConsultor) que consolida dia + horário + consultor.
     /// </summary>
-    public Guid HorarioConsultorDisponibilidadeId { get; init; }
+    public Guid AgendaConsultorId { get; init; }
 
     /// <summary>
     /// Identificador do veículo a ser atendido.
@@ -30,12 +29,12 @@ public sealed class CreateAgendamentoCommand : ICommand<Result<AgendamentoRespon
 
     public CreateAgendamentoCommand(
         Guid pessoaId,
-        Guid horarioConsultorDisponibilidadeId,
+        Guid agendaConsultorId,
         Guid veiculoId,
         string? descricao)
     {
         PessoaId = pessoaId;
-        HorarioConsultorDisponibilidadeId = horarioConsultorDisponibilidadeId;
+        AgendaConsultorId = agendaConsultorId;
         VeiculoId = veiculoId;
         Descricao = descricao;
     }

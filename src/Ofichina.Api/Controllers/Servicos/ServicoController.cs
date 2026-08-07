@@ -138,7 +138,7 @@ public sealed class ServicoController : ControllerBase
         [FromBody] UpdateServicoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualização do serviço com Id: {Id}", request.Id);
+        _logger.LogInformation("Iniciando a atualização do serviço com Id: {Id}", request.ServicoId);
 
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
 

@@ -113,7 +113,7 @@ public sealed class OrcamentoController : ControllerBase
         [FromBody] CreateOrcamentoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a criação de um orçamento. PessoaId: {PessoaId}, VeiculoId: {VeiculoId}.", request.PessoaId, request.VeiculoId);
+        _logger.LogInformation("Iniciando a criação de um orçamento. PessoaId: {PessoaId}, VeiculoId: {VeiculoId}, AgendamentoId: {AgendamentoId}.", request.PessoaId, request.VeiculoId, request.AgendamentoId);
 
         var validation = await _createValidator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
@@ -198,7 +198,7 @@ public sealed class OrcamentoController : ControllerBase
         [FromBody] UpdateOrcamentoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualização do orçamento com Id: {Id}", request.Id);
+        _logger.LogInformation("Iniciando a atualização do orçamento com Id: {Id}", request.OrcamentoId);
 
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)

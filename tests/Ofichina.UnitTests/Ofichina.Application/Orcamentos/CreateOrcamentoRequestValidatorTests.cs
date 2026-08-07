@@ -24,7 +24,7 @@ public sealed class CreateOrcamentoRequestValidatorTests
         {
             PessoaId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
-            ChecklistId = Guid.NewGuid(),
+            AgendamentoId = Guid.NewGuid(),
             ResponsavelId = Guid.NewGuid(),
             MecanicoDiagnosticoId = Guid.NewGuid(),
             DataValidade = DateTime.UtcNow.AddDays(10),
@@ -45,7 +45,7 @@ public sealed class CreateOrcamentoRequestValidatorTests
         {
             PessoaId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
-            ChecklistId = Guid.Empty,
+            AgendamentoId = Guid.Empty,
             ResponsavelId = Guid.NewGuid(),
             MecanicoDiagnosticoId = Guid.NewGuid(),
             DataValidade = DateTime.UtcNow.AddDays(10),
@@ -56,7 +56,7 @@ public sealed class CreateOrcamentoRequestValidatorTests
         var result = validator.Validate(request);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, x => x.PropertyName == nameof(CreateOrcamentoRequest.ChecklistId));
+        Assert.Contains(result.Errors, x => x.PropertyName == nameof(CreateOrcamentoRequest.AgendamentoId));
     }
 
     private static CreateOrcamentoRequest CriarRequisicaoValida()
@@ -65,7 +65,7 @@ public sealed class CreateOrcamentoRequestValidatorTests
         {
             PessoaId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
-            ChecklistId = Guid.NewGuid(),
+            AgendamentoId = Guid.NewGuid(),
             ResponsavelId = Guid.NewGuid(),
             MecanicoDiagnosticoId = Guid.NewGuid(),
             DataValidade = DateTime.UtcNow.AddDays(10),

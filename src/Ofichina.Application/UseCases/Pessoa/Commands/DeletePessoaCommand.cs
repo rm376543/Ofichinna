@@ -12,10 +12,10 @@ public sealed class DeletePessoaCommand : ICommand<Result>
     /// <summary>
     /// Identificador da pessoa.
     /// </summary>
-    public Guid Id { get; init; }
+    public Guid PessoaId { get; init; }
 
     public DeletePessoaCommand(RemovePessoaRequest request)
     {
-        Id = request.Id;
+        PessoaId = request.PessoaId;
     }
 }

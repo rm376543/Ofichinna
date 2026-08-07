@@ -9,10 +9,10 @@ namespace Ofichina.Application.UseCases.Checklists.Commands;
 /// </summary>
 public sealed class FinalizarChecklistCommand : ICommand<Result>
 {
-    public Guid Id { get; init; }
+    public Guid AgendamentoId { get; init; }
 
     public FinalizarChecklistCommand(FinalizarChecklistRequest request)
     {
-        Id = request.Id;
+        AgendamentoId = request.AgendamentoId;
     }
 }

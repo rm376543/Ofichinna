@@ -5,7 +5,7 @@
     /// </summary>
     public sealed class DiaListaResponse
     {
-        public Guid Id { get; set; }
+    public Guid DiaListaId { get; set; }
         public string Data { get; set; } = string.Empty; // YYYY-MM-DD
     }
 

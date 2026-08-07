@@ -16,6 +16,7 @@ public sealed class CreateOrcamentoService : ICreateOrcamentoService
 {
     private readonly IRepository<Orcamento> _orcamentoRepository;
     private readonly IRepository<Checklist> _checklistRepository;
+    private readonly IAgendamentoRepository _agendamentoRepository;
     private readonly IRepository<Pessoa> _pessoaRepository;
     private readonly IRepository<Veiculo> _veiculoRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -23,12 +24,14 @@ public sealed class CreateOrcamentoService : ICreateOrcamentoService
     public CreateOrcamentoService(
         IRepository<Orcamento> orcamentoRepository,
         IRepository<Checklist> checklistRepository,
+        IAgendamentoRepository agendamentoRepository,
         IRepository<Pessoa> pessoaRepository,
         IRepository<Veiculo> veiculoRepository,
         IUnitOfWork unitOfWork)
     {
         _orcamentoRepository = orcamentoRepository;
         _checklistRepository = checklistRepository;
+        _agendamentoRepository = agendamentoRepository;
         _pessoaRepository = pessoaRepository;
         _veiculoRepository = veiculoRepository;
         _unitOfWork = unitOfWork;
@@ -46,12 +49,22 @@ public sealed class CreateOrcamentoService : ICreateOrcamentoService
             if (veiculo is null || veiculo.EstaExcluida())
                 return Result.Failure("Veículo não encontrado.");
 
-            var checklist = await _checklistRepository.GetByIdAsync(command.ChecklistId, cancellationToken);
-            if (checklist is null || checklist.EstaExcluida())
-                return Result.Failure("Checklist não encontrado.");
+            var agendamento = await _agendamentoRepository.GetByIdAsync(command.AgendamentoId, cancellationToken);
+            if (agendamento is null || agendamento.EstaExcluida())
+                return Result.Failure("Agendamento não encontrado.");
 
-            if (checklist.PessoaId != command.PessoaId || checklist.VeiculoId != command.VeiculoId)
-                return Result.Failure("O checklist informado não corresponde à pessoa e ao veículo do orçamento.");
+            if (agendamento.ClientePessoaId != command.PessoaId || agendamento.VeiculoId != command.VeiculoId)
+                return Result.Failure("O agendamento informado não corresponde à pessoa e ao veículo do orçamento.");
+
+            var checklists = (await _checklistRepository.GetAllAsync(cancellationToken))
+                .Where(x => x.AgendamentoId == command.AgendamentoId && !x.EstaExcluida())
+                .ToList();
+
+            if (checklists.Count == 0)
+                return Result.Failure("Nenhum checklist encontrado para o agendamento informado.");
+
+            if (checklists.Any(x => !x.Finalizado))
+                return Result.Failure("Existem checklists pendentes para o agendamento informado.");
 
             var mecanicoDiagnostico = await _pessoaRepository.GetByIdAsync(command.MecanicoDiagnosticoId, cancellationToken);
             if (mecanicoDiagnostico is null || mecanicoDiagnostico.EstaExcluida())
@@ -64,12 +77,12 @@ public sealed class CreateOrcamentoService : ICreateOrcamentoService
             var orcamento = new Orcamento(
                 command.PessoaId,
                 command.VeiculoId,
+                command.AgendamentoId,
                 command.MecanicoDiagnosticoId,
                 command.ResponsavelId,
                 command.DataValidade,
                 command.Desconto,
-                command.Observacoes,
-                command.ChecklistId);
+                command.Observacoes);
 
             await _orcamentoRepository.AddAsync(orcamento, cancellationToken);
             await _unitOfWork.SaveChangesAsync();

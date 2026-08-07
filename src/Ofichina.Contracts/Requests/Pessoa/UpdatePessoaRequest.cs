@@ -1,10 +1,17 @@
-﻿namespace Ofichina.Contracts.Requests.Pessoa;
+﻿using Ofichina.Contracts.Common;
+
+namespace Ofichina.Contracts.Requests.Pessoa;
 
 /// <summary>
 /// Requisição para atualização de uma pessoa.
 /// </summary>
 public sealed class UpdatePessoaRequest : UpdateRequest
 {
+    /// <summary>
+    /// Identificador da pessoa.
+    /// </summary>
+    public Guid PessoaId { get; set; }
+
     /// <summary>
     /// Nome completo ou razão social da pessoa.
     /// </summary>

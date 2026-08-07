@@ -11,6 +11,7 @@ public sealed class HistoricoStatusConfiguration : IEntityTypeConfiguration<Hist
         builder.ToTable("HistoricoStatus");
 
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasColumnName("HistoricoStatusId");
 
         builder.Property(x => x.EntidadeId).IsRequired();
         builder.Property(x => x.OrcamentoId);

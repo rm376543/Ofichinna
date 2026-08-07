@@ -2,8 +2,10 @@
 
 namespace Ofichina.Contracts.Responses.PerfilUsuario;
 
-public sealed class DesvincularPerfilUsuarioResponse : BaseEntity
+public sealed class DesvincularPerfilUsuarioResponse : BaseResponse
 {
+    public Guid DesvincularPerfilUsuarioId { get; set; }
+
     public Guid UsuarioId { get; set; }
 
     public Guid PerfilId { get; set; }

@@ -1,4 +1,4 @@
-﻿using Ofichina.Contracts.Requests;
+﻿using Ofichina.Contracts.Common;
 
 namespace Ofichina.Contracts.Requests.Pecas;
 
@@ -7,6 +7,11 @@ namespace Ofichina.Contracts.Requests.Pecas;
 /// </summary>
 public sealed class UpdatePecaRequest : UpdateRequest
 {
+    /// <summary>
+    /// Identificador da peça.
+    /// </summary>
+    public Guid PecaId { get; init; }
+
     /// <summary>
     /// Nome da peça.
     /// </summary>

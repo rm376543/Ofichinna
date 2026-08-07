@@ -116,6 +116,7 @@
 - ✅ Testes de integração do controller de orçamento cobrindo criação, atualização, aprovação, reprovação e reenvio.
 - ✅ Testes de integração do controller de checklist cobrindo criação e finalização.
 - ✅ Build validado após remoção de `OnDelete(DeleteBehavior.Cascade)`.
+- ✅ Refatoração incremental dos mapeadores da Application em andamento, com handlers passando a usar `ToResponse()` para `Peca`, `PerfilPermissao` e `Orcamento`.
 
 ---
 

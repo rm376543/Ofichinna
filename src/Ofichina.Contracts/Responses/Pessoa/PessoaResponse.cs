@@ -5,8 +5,10 @@ namespace Ofichina.Contracts.Responses.Pessoa;
 /// <summary>
 /// Resposta com os dados de uma pessoa.
 /// </summary>
-public class PessoaResponse : BaseEntity
+public class PessoaResponse : BaseResponse
 {
+    public Guid PessoaId { get; set; }
+
     /// <summary>
     /// Nome completo ou razão social.
     /// </summary>

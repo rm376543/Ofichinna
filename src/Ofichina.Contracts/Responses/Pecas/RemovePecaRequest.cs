@@ -2,6 +2,6 @@
 {
     public class RemovePecaRequest
     {
-        public Guid Id { get; set; }
+        public Guid PecaId { get; set; }
     }
 }

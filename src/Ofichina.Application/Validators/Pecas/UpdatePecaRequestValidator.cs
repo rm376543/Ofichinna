@@ -13,8 +13,8 @@ public sealed class UpdatePecaRequestValidator : AbstractValidator<UpdatePecaReq
     /// </summary>
     public UpdatePecaRequestValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("O identificador da peça é obrigatório.");
+        RuleFor(x => x.PecaId)
+            .NotEmpty().WithMessage("O Id da peça é obrigatório.");
 
         RuleFor(x => x.Nome)
             .NotEmpty().WithMessage("O nome da peça é obrigatório.")

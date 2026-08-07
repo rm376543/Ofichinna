@@ -1,5 +1,5 @@
 using NetArchTest.Rules;
-using Ofichina.Contracts.Requests;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.ArchitectureTests.Naming;
 

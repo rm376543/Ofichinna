@@ -21,5 +21,8 @@ public sealed class UpdateItemServicoRequestValidator : AbstractValidator<Update
 
         RuleFor(x => x.Quantidade)
             .GreaterThan(0).WithMessage("A quantidade de peças deve ser maior que zero.");
+
+        RuleFor(x => x.ItemServicoId)
+            .NotEmpty().WithMessage("O Id do item de serviço é obrigatório.");
     }
 }

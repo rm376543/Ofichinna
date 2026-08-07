@@ -5,8 +5,10 @@ namespace Ofichina.Contracts.Responses.Veiculo;
 /// <summary>
 /// Resposta resumida de veículo, sem dados da pessoa.
 /// </summary>
-public sealed class VeiculoResponse : BaseEntity
+public sealed class VeiculoResponse : BaseResponse
 {
+    public Guid VeiculoId { get; set; }
+
     /// <summary>
     /// Número da placa do veículo.
     /// </summary>

@@ -12,10 +12,10 @@ public sealed class GetPecaByIdQuery : IQuery<Result<PecaResponse>>
     /// <summary>
     /// Identificador da peça.
     /// </summary>
-    public Guid Id { get; init; }
+    public Guid PecaId { get; init; }
 
     public GetPecaByIdQuery(Guid pecaId)
     {
-        Id = pecaId;
+        PecaId = pecaId;
     }
 }

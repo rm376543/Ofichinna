@@ -141,25 +141,25 @@ public sealed class PermissaoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> UpdateAsync([FromBody] UpdatePermissaoRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando processo de atualização de permissão com ID: {Id}", request.Id);
+        _logger.LogInformation("Iniciando processo de atualização de permissão com ID: {Id}", request.PermissaoId);
 
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
         {
-            _logger.LogWarning("Validação falhou para a atualização de permissão com ID: {Id}. Erros: {Errors}", request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            _logger.LogWarning("Validação falhou para a atualização de permissão com ID: {Id}. Erros: {Errors}", request.PermissaoId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _mediator.Send(new UpdatePermissaoCommand(request.Id, request.Codigo, request.Descricao), cancellationToken);
+        var result = await _mediator.Send(new UpdatePermissaoCommand(request.PermissaoId, request.Codigo, request.Descricao), cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogInformation("Processo de atualização de permissão com ID: {Id} concluído com erros", request.Id);
+            _logger.LogInformation("Processo de atualização de permissão com ID: {Id} concluído com erros", request.PermissaoId);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a permissão."));
         }
 
-        _logger.LogInformation("Processo de atualização de permissão com ID: {Id} concluído com sucesso", request.Id);
+        _logger.LogInformation("Processo de atualização de permissão com ID: {Id} concluído com sucesso", request.PermissaoId);
         return Ok(ApiResponse.SuccessResponse("Permissão atualizada com sucesso."));
     }
 
@@ -177,16 +177,16 @@ public sealed class PermissaoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> DeleteAsync([FromBody] RemovePermissaoRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando processo de remoção de permissão com ID: {Id}", request.Id);
-        var result = await _mediator.Send(new DeletePermissaoCommand(request.Id), cancellationToken);
+        _logger.LogInformation("Iniciando processo de remoção de permissão com ID: {Id}", request.PermissaoId);
+        var result = await _mediator.Send(new DeletePermissaoCommand(request.PermissaoId), cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogInformation("Processo de remoção de permissão com ID: {Id} concluído com erros", request.Id);
+            _logger.LogInformation("Processo de remoção de permissão com ID: {Id} concluído com erros", request.PermissaoId);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível remover a permissão."));
         }
 
-        _logger.LogInformation("Processo de remoção de permissão com ID: {Id} concluído com sucesso", request.Id);
+        _logger.LogInformation("Processo de remoção de permissão com ID: {Id} concluído com sucesso", request.PermissaoId);
         return Ok(ApiResponse.SuccessResponse("Permissão removida com sucesso."));
     }
 }

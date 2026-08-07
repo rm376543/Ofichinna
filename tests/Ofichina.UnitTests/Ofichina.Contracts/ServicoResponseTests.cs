@@ -11,7 +11,7 @@ public sealed class ServicoResponseTests
 
         var response = new ServicoResponse
         {
-            Id = Guid.Parse("550e8400-e29b-41d4-a716-446655440000"),
+            ServicoId = Guid.Parse("550e8400-e29b-41d4-a716-446655440000"),
             Nome = "Troca de óleo",
             Descricao = "Serviço completo",
             Valor = 149.90m,
@@ -19,7 +19,7 @@ public sealed class ServicoResponseTests
             CreatedAt = createdAt
         };
 
-        Assert.Equal(Guid.Parse("550e8400-e29b-41d4-a716-446655440000"), response.Id);
+        Assert.Equal(Guid.Parse("550e8400-e29b-41d4-a716-446655440000"), response.ServicoId);
         Assert.Equal("Troca de óleo", response.Nome);
         Assert.Equal("Serviço completo", response.Descricao);
         Assert.Equal(149.90m, response.Valor);

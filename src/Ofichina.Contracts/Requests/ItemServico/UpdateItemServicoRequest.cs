@@ -1,3 +1,5 @@
+using Ofichina.Contracts.Common;
+
 namespace Ofichina.Contracts.Requests.ItensServico;
 
 /// <summary>
@@ -5,6 +7,11 @@ namespace Ofichina.Contracts.Requests.ItensServico;
 /// </summary>
 public sealed class UpdateItemServicoRequest : UpdateRequest
 {
+    /// <summary>
+    /// Identificador do item de serviço.
+    /// </summary>
+    public Guid ItemServicoId { get; init; } = Guid.Empty;
+
     /// <summary>
     /// Identificador da ordem de serviço.
     /// </summary>

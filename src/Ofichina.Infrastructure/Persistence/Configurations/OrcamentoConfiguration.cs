@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Ofichina.Domain.Aggregates;
-using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 using Ofichina.Infrastructure.Persistence.Converters;
 
@@ -14,9 +13,11 @@ public class OrcamentoConfiguration : IEntityTypeConfiguration<Orcamento>
         builder.ToTable("Orcamentos");
 
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasColumnName("OrcamentoId");
 
         builder.Property(x => x.PessoaId).IsRequired();
         builder.Property(x => x.VeiculoId).IsRequired();
+        builder.Property(x => x.AgendamentoId).IsRequired();
         builder.Property(x => x.MecanicoDiagnosticoId).IsRequired();
         builder.Property(x => x.ResponsavelId).IsRequired();
         builder.Property(x => x.DataValidade).IsRequired();
@@ -40,6 +41,11 @@ public class OrcamentoConfiguration : IEntityTypeConfiguration<Orcamento>
             .HasForeignKey(x => x.VeiculoId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasOne(x => x.Agendamento)
+            .WithMany()
+            .HasForeignKey(x => x.AgendamentoId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasOne<Ofichina.Domain.Entities.Pessoa>()
             .WithMany()
             .HasForeignKey(x => x.MecanicoDiagnosticoId)
@@ -49,12 +55,5 @@ public class OrcamentoConfiguration : IEntityTypeConfiguration<Orcamento>
             .WithMany()
             .HasForeignKey(x => x.ResponsavelId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Property(x => x.ChecklistId);
-
-        builder.HasOne(x => x.Checklist)
-            .WithMany()
-            .HasForeignKey(x => x.ChecklistId)
-            .OnDelete(DeleteBehavior.SetNull);
     }
 }

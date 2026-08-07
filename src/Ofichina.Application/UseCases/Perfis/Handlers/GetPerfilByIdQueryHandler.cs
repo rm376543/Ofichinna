@@ -36,7 +36,7 @@ public class GetPerfilByIdQueryHandler : IQueryHandler<GetPerfilByIdQuery, Resul
 
             return Result.Success(new PerfilResponse
             {
-                Id = perfil.Id,
+                PerfilId = perfil.Id,
                 Nome = perfil.NomePerfil,
                 Descricao = perfil.Descricao,
                 CreatedAt = perfil.CreatedAt,

@@ -21,6 +21,7 @@ public sealed class ChecklistControllerTests
 
         var request = new CreateChecklistRequest
         {
+            AgendamentoId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
             PessoaId = Guid.NewGuid(),
             HodometroEntrada = 12345,
@@ -33,6 +34,7 @@ public sealed class ChecklistControllerTests
         var createdResult = Assert.IsType<ObjectResult>(result.Result);
         Assert.Equal(StatusCodes.Status201Created, createdResult.StatusCode);
         Assert.NotNull(mediator.CreateCommandEnviado);
+        Assert.Equal(request.AgendamentoId, mediator.CreateCommandEnviado!.AgendamentoId);
         Assert.Equal(request.VeiculoId, mediator.CreateCommandEnviado!.VeiculoId);
         Assert.Equal(request.PessoaId, mediator.CreateCommandEnviado.PessoaId);
         Assert.Equal(request.HodometroEntrada, mediator.CreateCommandEnviado.HodometroEntrada);
@@ -49,14 +51,12 @@ public sealed class ChecklistControllerTests
             NullLogger<ChecklistController>.Instance);
 
         var id = Guid.NewGuid();
-        var result = await controller.FinalizarChecklist(
-            new FinalizarChecklistRequest { Id = id },
-            CancellationToken.None);
+        var result = await controller.FinalizarChecklist(new FinalizarChecklistRequest { AgendamentoId = id }, CancellationToken.None);
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
         Assert.NotNull(mediator.FinalizarCommandEnviado);
-        Assert.Equal(id, mediator.FinalizarCommandEnviado!.Id);
+        Assert.Equal(id, mediator.FinalizarCommandEnviado!.AgendamentoId);
     }
 
     private sealed class FakeMediator : IMediator

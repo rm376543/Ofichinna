@@ -1,4 +1,4 @@
-﻿using Ofichina.Contracts.Requests;
+﻿using Ofichina.Contracts.Common;
 
 namespace Ofichina.Contracts.Requests.OrdensServico;
 
@@ -7,6 +7,11 @@ namespace Ofichina.Contracts.Requests.OrdensServico;
 /// </summary>
 public sealed class UpdateOrdemServicoRequest : UpdateRequest
 {
+    /// <summary>
+    /// Identificador da ordem de serviço.
+    /// </summary>
+    public Guid OrdemServicoId { get; init; }
+
     /// <summary>
     /// Pessoa proprietária do veículo.
     /// </summary>

@@ -1,4 +1,5 @@
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.UseCases.Agendamentos.Mappings;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Agendamento;
@@ -10,12 +11,12 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 /// </summary>
 public sealed class ListarConsultoresPorDiaHorarioQueryHandler : IQueryHandler<ListarConsultoresPorDiaHorarioQuery, Result<IEnumerable<ConsultorDisponibilidadeResponse>>>
 {
-    private readonly IHorarioConsultorDisponibilidadeRepository _slotRepository;
+    private readonly IAgendaConsultorRepository _slotRepository;
     private readonly IPessoaRepository _pessoaRepository;
     private readonly ILogger<ListarConsultoresPorDiaHorarioQueryHandler> _logger;
 
     public ListarConsultoresPorDiaHorarioQueryHandler(
-        IHorarioConsultorDisponibilidadeRepository slotRepository,
+        IAgendaConsultorRepository slotRepository,
         IPessoaRepository pessoaRepository,
         ILogger<ListarConsultoresPorDiaHorarioQueryHandler> logger)
     {
@@ -47,24 +48,12 @@ public sealed class ListarConsultoresPorDiaHorarioQueryHandler : IQueryHandler<L
             var resultado = consultores
                 .Where(c => consultorIds.Contains(c.Id))
                 .OrderBy(c => c.Nome)
-                .Select(c => new ConsultorListaResponse
-                {
-                    PessoaId = c.Id,
-                    Nome = c.Nome,
-                    Documento = c.Documento?.Numero ?? string.Empty
-                })
+                .Select(c => c.ToConsultorDisponibilidadeResponse())
                 .ToList();
-
-            var result = resultado.Select(c => new ConsultorDisponibilidadeResponse
-            {
-                Id = c.PessoaId,
-                Nome = c.Nome,
-                Documento = c.Documento
-            });
 
             _logger.LogInformation("Encontrados {Count} consultores", resultado.Count);
 
-            return Result.Success(result);
+            return Result.Success(resultado.AsEnumerable());
         }
         catch (Exception ex)
         {

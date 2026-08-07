@@ -21,7 +21,7 @@ public sealed class DeleteItemServicoCommand : ICommand<Result>
 
     public DeleteItemServicoCommand(DeleteItemServicoRequest request)
     {
-        Id = request.Id;
+        Id = request.ItemServicoId;
         OrdemServicoId = request.OrdemServicoId;
     }
 }

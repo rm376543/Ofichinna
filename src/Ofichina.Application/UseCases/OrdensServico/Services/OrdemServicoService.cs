@@ -41,7 +41,7 @@ public sealed class OrdemServicoService : IOrdemServicoService
 
         return ordensServico.ToPagedResponse(ordem => new OrdemServicoSimplesResponse
         {
-            Id = ordem.Id,
+            OrdemServicoSimplesId = ordem.Id,
             Cliente = ObterNome(ordem.PessoaId, nomesPorId),
             Funcionario = ObterNome(ordem.FuncionarioId, nomesPorId),
             ProblemaRelatado = ordem.ProblemaRelatado,

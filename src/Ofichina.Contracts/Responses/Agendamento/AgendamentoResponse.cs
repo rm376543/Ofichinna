@@ -5,8 +5,10 @@ namespace Ofichina.Contracts.Responses.Agendamento;
 /// <summary>
 /// Resposta com os dados de um agendamento.
 /// </summary>
-public sealed class AgendamentoResponse : BaseEntity
+public sealed class AgendamentoResponse : BaseResponse
 {
+    public Guid AgendamentoId { get; set; }
+
     public Guid PessoaId { get; set; }
 
     public string ClienteNome { get; set; } = string.Empty;

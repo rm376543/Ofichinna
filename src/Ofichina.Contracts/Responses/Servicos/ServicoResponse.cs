@@ -5,8 +5,10 @@ namespace Ofichina.Contracts.Responses.Servicos;
 /// <summary>
 /// Resposta com os dados completos de um serviço.
 /// </summary>
-public sealed class ServicoResponse : BaseEntity
+public sealed class ServicoResponse : BaseResponse
 {
+    public Guid ServicoId { get; set; }
+
     /// <summary>
     /// Nome do serviço.
     /// </summary>

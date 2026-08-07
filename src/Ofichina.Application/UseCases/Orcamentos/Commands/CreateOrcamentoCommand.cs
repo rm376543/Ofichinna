@@ -13,7 +13,7 @@ public sealed class CreateOrcamentoCommand : ICommand<Result>
 
     public Guid VeiculoId { get; init; }
 
-    public Guid ChecklistId { get; init; }
+    public Guid AgendamentoId { get; init; }
 
     public Guid MecanicoDiagnosticoId { get; init; }
 
@@ -29,7 +29,7 @@ public sealed class CreateOrcamentoCommand : ICommand<Result>
     {
         PessoaId = request.PessoaId;
         VeiculoId = request.VeiculoId;
-        ChecklistId = request.ChecklistId;
+        AgendamentoId = request.AgendamentoId;
         MecanicoDiagnosticoId = request.MecanicoDiagnosticoId;
         ResponsavelId = request.ResponsavelId;
         DataValidade = request.DataValidade;

@@ -11,6 +11,7 @@ public class PerfilConfiguration : IEntityTypeConfiguration<Perfil>
         builder.ToTable("Perfis");
 
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasColumnName("PerfilId");
 
         builder.Property(x => x.NomePerfil)
             .HasMaxLength(50)

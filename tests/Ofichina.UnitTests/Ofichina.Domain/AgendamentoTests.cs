@@ -10,15 +10,15 @@ public sealed class AgendamentoTests
     public void Deve_Criar_Agendamento_Com_Status_Agendado()
     {
         var clienteId = Guid.NewGuid();
-        var slotId = Guid.NewGuid();
+        var agendaId = Guid.NewGuid();
         var veiculoId = Guid.NewGuid();
 
-        var agendamento = new Agendamento(clienteId, slotId, veiculoId, "Revisão completa");
+        var agendamento = new Agendamento(clienteId, agendaId, veiculoId, "Revisão completa");
 
         Assert.NotEqual(Guid.Empty, agendamento.Id);
         Assert.Equal(StatusAgendamento.AGENDADO, agendamento.Status);
         Assert.Equal(clienteId, agendamento.ClientePessoaId);
-        Assert.Equal(slotId, agendamento.HorarioConsultorDisponibilidadeId);
+        Assert.Equal(agendaId, agendamento.AgendaConsultorId);
         Assert.Equal(veiculoId, agendamento.VeiculoId);
         Assert.Equal("Revisão completa", agendamento.Descricao);
     }

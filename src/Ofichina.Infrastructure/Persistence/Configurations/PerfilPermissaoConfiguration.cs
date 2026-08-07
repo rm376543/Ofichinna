@@ -11,6 +11,7 @@ public class PerfilPermissaoConfiguration : IEntityTypeConfiguration<PerfilPermi
         builder.ToTable("PerfisPermissoes");
 
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).HasColumnName("PerfilPermissaoId");
 
         builder.HasIndex(x => new { x.PerfilId, x.PermissaoId })
             .IsUnique();

@@ -1,4 +1,4 @@
-namespace Ofichina.Contracts.Requests;
+namespace Ofichina.Contracts.Common;
 
 /// <summary>
 /// Classe base para requisições de criação e atualização.
@@ -21,5 +21,4 @@ public class CreateRequest : BaseRequest
 /// </summary>
 public class UpdateRequest : BaseRequest
 {
-    public Guid Id { get; set; }
 }

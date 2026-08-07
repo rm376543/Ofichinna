@@ -1,3 +1,4 @@
+using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Domain.Entities;
@@ -7,6 +8,10 @@ namespace Ofichina.Domain.Entities;
 /// </summary>
 public class Checklist : Entity
 {
+    public Guid AgendamentoId { get; private set; }
+
+    public Agendamento? Agendamento { get; private set; }
+
     public Guid VeiculoId { get; private set; }
 
     public Veiculo? Veiculo { get; private set; }
@@ -14,8 +19,6 @@ public class Checklist : Entity
     public Guid PessoaId { get; private set; }
 
     public Pessoa? Pessoa { get; private set; }
-
-    public Guid? AgendamentoId { get; private set; }
 
     public int HodometroEntrada { get; private set; }
 
@@ -29,8 +32,11 @@ public class Checklist : Entity
     {
     }
 
-    public Checklist(Guid veiculoId, Guid pessoaId, int hodometroEntrada, string itensVerificados, string? observacoes)
+    public Checklist(Guid agendamentoId, Guid veiculoId, Guid pessoaId, int hodometroEntrada, string itensVerificados, string? observacoes)
     {
+        if (agendamentoId == Guid.Empty)
+            throw new DomainException("Agendamento obrigatório.");
+
         if (veiculoId == Guid.Empty)
             throw new DomainException("Veículo obrigatório.");
 
@@ -40,6 +46,7 @@ public class Checklist : Entity
         if (hodometroEntrada < 0)
             throw new DomainException("O hodômetro de entrada não pode ser negativo.");
 
+        AgendamentoId = agendamentoId;
         VeiculoId = veiculoId;
         PessoaId = pessoaId;
         HodometroEntrada = hodometroEntrada;

@@ -1,3 +1,5 @@
+using Ofichina.Contracts.Common;
+
 namespace Ofichina.Contracts.Requests.Perfis;
 
 /// <summary>
@@ -5,6 +7,8 @@ namespace Ofichina.Contracts.Requests.Perfis;
 /// </summary>
 public class UpdatePerfilRequest : UpdateRequest
 {
+    public Guid PerfilId { get; set; }
+
     public string NomePerfil { get; set; } = string.Empty;
 
     public string Descricao { get; set; } = string.Empty;

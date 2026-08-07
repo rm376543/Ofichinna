@@ -1,11 +1,8 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pecas.Queries;
+using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Pecas;
-using Ofichina.Domain.Entities;
-using Ofichina.Domain.Common;
-using Ofichina.Contracts;
 
 namespace Ofichina.Application.UseCases.Pecas.Handlers;
 
@@ -43,7 +40,7 @@ public sealed class GetAllPecasPaginadasQueryHandler : IQueryHandler<GetAllPecas
 
             var resultado = pecas.ToPagedResponse(p => new PecaResponse
             {
-                Id = p.Id,
+                PecaId = p.Id,
                 Nome = p.Nome,
                 Descricao = p.Descricao,
                 Codigo = p.Codigo,

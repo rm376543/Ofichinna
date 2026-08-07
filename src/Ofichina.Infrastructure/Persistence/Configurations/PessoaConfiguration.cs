@@ -1,4 +1,3 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Ofichina.Domain.Entities;
@@ -13,6 +12,7 @@ public class PessoaConfiguration : IEntityTypeConfiguration<Pessoa>
         builder.ToTable("Pessoas");
 
         builder.HasKey(c => c.Id);
+        builder.Property(c => c.Id).HasColumnName("PessoaId");
 
         builder.Property(c => c.Nome)
             .HasMaxLength(100)

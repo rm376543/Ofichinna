@@ -30,7 +30,7 @@ public sealed class DeleteVeiculoCommandHandler : ICommandHandler<DeleteVeiculoC
     {
         try
         {
-            var veiculo = await _veiculoRepository.GetByIdAsync(command.Id, cancellationToken);
+            var veiculo = await _veiculoRepository.GetByIdAsync(command.VeiculoId, cancellationToken);
 
             if (veiculo is null || veiculo.EstaExcluida())
                 return Result.Failure("Veículo não encontrado.");
@@ -44,7 +44,7 @@ public sealed class DeleteVeiculoCommandHandler : ICommandHandler<DeleteVeiculoC
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao remover veículo. VeiculoId: {VeiculoId}", command.Id);
+            _logger.LogError(ex, "Erro ao remover veículo. VeiculoId: {VeiculoId}", command.VeiculoId);
             return Result.Failure("Não foi possível remover o veículo.");
         }
     }

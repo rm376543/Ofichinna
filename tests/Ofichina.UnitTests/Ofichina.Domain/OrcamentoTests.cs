@@ -77,10 +77,10 @@ public sealed class OrcamentoTests
             Guid.NewGuid(),
             Guid.NewGuid(),
             Guid.NewGuid(),
+            Guid.NewGuid(),
             DateTime.UtcNow.AddDays(10),
             0,
-            "Orçamento teste",
-            Guid.NewGuid());
+            "Orçamento teste");
 
         if (comItens)
             orcamento.AdicionarServico(Guid.NewGuid(), Guid.NewGuid(), 1, StatusOrcamento.EmDiagnostico);

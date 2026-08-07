@@ -155,29 +155,23 @@ public sealed class PecaController : ControllerBase
     public async Task<ActionResult<ApiResponse>> AtualizarPeca(
         [FromBody] UpdatePecaRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualização da peça com Id: {Id}", request.Id);
+        _logger.LogInformation("Iniciando a atualização da peça com Id: {Id}", request.PecaId);
 
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
         {
-            _logger.LogError("Erro ao validar a atualização da peça com Id: {Id}. Erros: {Erros}", request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            _logger.LogError("Erro ao validar a atualização da peça com Id: {Id}. Erros: {Erros}", request.PecaId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _mediator.Send(new UpdatePecaCommand
-        {
-            Id = request.Id,
-            Nome = request.Nome,
-            Descricao = request.Descricao,
-            Codigo = request.Codigo,
-            Valor = request.Valor,
-            QuantidadeEstoque = request.QuantidadeEstoque
-        }, cancellationToken);
+        var result = await _mediator.Send(
+            new UpdatePecaCommand(request),
+            cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao atualizar a peça com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
+            _logger.LogError("Erro ao atualizar a peça com Id: {Id}. Erro: {Erro}", request.PecaId, result.Error);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar a peça."));
         }
 
@@ -198,13 +192,13 @@ public sealed class PecaController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> DeletarPeca([FromBody] RemovePecaRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a desativação da peça com Id: {Id}", request.Id);
+        _logger.LogInformation("Iniciando a desativação da peça com Id: {Id}", request.PecaId);
 
-        var result = await _mediator.Send(new DeletePecaCommand(request.Id), cancellationToken);
+        var result = await _mediator.Send(new DeletePecaCommand(request.PecaId), cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao desativar a peça com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
+            _logger.LogError("Erro ao desativar a peça com Id: {Id}. Erro: {Erro}", request.PecaId, result.Error);
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Peça não encontrada."));
         }
 

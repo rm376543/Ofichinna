@@ -50,6 +50,6 @@ public sealed class PermissaoRequestValidatorTests
         var result = validator.Validate(request);
 
         Assert.False(result.IsValid);
-        Assert.Contains(result.Errors, x => x.PropertyName == nameof(UpdatePermissaoRequest.Id));
+        Assert.Contains(result.Errors, x => x.PropertyName == nameof(UpdatePermissaoRequest.PermissaoId));
     }
 }

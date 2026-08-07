@@ -141,7 +141,7 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Resultado da operação de criação de agendamento.</returns>
     [HttpPost("pessoa/novo")]
-    [ProducesResponseType(typeof(ApiResponse<AgendamentoResponse>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -151,7 +151,7 @@ public sealed class AgendamentoController : ControllerBase
         [FromBody] CreateAgendamentoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando criação de agendamento. PessoaId: {PessoaId}, SlotId: {SlotId}", request.PessoaId, request.HorarioConsultorDisponibilidadeId);
+        _logger.LogInformation("Iniciando criação de agendamento. PessoaId: {PessoaId}, AgendaId: {AgendaId}", request.PessoaId, request.AgendaConsultorId);
 
         var validation = await _validator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
@@ -159,22 +159,22 @@ public sealed class AgendamentoController : ControllerBase
 
         var result = await _mediator.Send(new CreateAgendamentoCommand(
             request.PessoaId,
-            request.HorarioConsultorDisponibilidadeId,
+            request.AgendaConsultorId,
             request.VeiculoId,
             request.Descricao
         ), cancellationToken);
 
-        if (!result.IsSuccess || result.Value is null)
+        if (!result.IsSuccess)
         {
             var error = result.Error ?? "Não foi possível criar o agendamento.";
 
-            _logger.LogWarning("Falha ao criar agendamento. PessoaId: {PessoaId}, SlotId: {SlotId}, Erro: {Erro}", request.PessoaId, request.HorarioConsultorDisponibilidadeId, error);
+            _logger.LogWarning("Falha ao criar agendamento. PessoaId: {PessoaId}, AgendaId: {AgendaId}, Erro: {Erro}", request.PessoaId, request.AgendaConsultorId, error);
 
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Falha ao criar agendamento."));
 
         }
 
-        return Ok(ApiResponse<AgendamentoResponse>.SuccessResponse(result.Value));
+        return Ok(ApiResponse.SuccessResponse("Agendamento criado com sucesso."));
     }
 
     /// <summary>
@@ -210,12 +210,12 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de dias disponíveis.</returns>
     [HttpGet("listar/dias-disponiveis")]
-    [ProducesResponseType(typeof(ApiResponse<Result<IEnumerable<DiaDisponibilidadeResponse>>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<DiaDisponibilidadeResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<ApiResponse<Result<IEnumerable<DiaDisponibilidadeResponse>>>>> ListarDiasDisponiveisAsync(
-        [FromQuery] int mes,
-        [FromQuery] int ano,
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse<IEnumerable<DiaDisponibilidadeResponse>>>> ListarDiasDisponiveisAsync(
+    [FromQuery] int mes,
+    [FromQuery] int ano,
+    CancellationToken cancellationToken)
     {
         _logger.LogInformation("Listando dias disponíveis. Mês: {Mes}, Ano: {Ano}", mes, ano);
 
@@ -225,7 +225,10 @@ public sealed class AgendamentoController : ControllerBase
             Ano = ano
         }, cancellationToken);
 
-        return Ok(ApiResponse<Result<IEnumerable<DiaDisponibilidadeResponse>>>.SuccessResponse(result));
+        if (!result.IsSuccess || result.Value is null)
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os dias disponíveis."));
+
+        return Ok(ApiResponse<IEnumerable<DiaDisponibilidadeResponse>>.SuccessResponse(result.Value));
     }
 
     /// <summary>
@@ -235,11 +238,11 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de horários disponíveis para o dia especificado.</returns>
     [HttpGet("listar/horarios-por-dia")]
-    [ProducesResponseType(typeof(ApiResponse<Result<IEnumerable<HorarioDisponivelResponse>>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<HorarioDisponivelResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<ApiResponse<Result<IEnumerable<HorarioDisponivelResponse>>>>> ListarHorariosPorDiaAsync(
-        [FromQuery] Guid diaId,
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse<IEnumerable<HorarioDisponivelResponse>>>> ListarHorariosPorDiaAsync(
+    [FromQuery] Guid diaId,
+    CancellationToken cancellationToken)
     {
         _logger.LogInformation("Listando horários para dia. DiaId: {DiaId}", diaId);
 
@@ -248,7 +251,10 @@ public sealed class AgendamentoController : ControllerBase
             DiaDisponibilidadeId = diaId
         }, cancellationToken);
 
-        return Ok(ApiResponse<Result<IEnumerable<HorarioDisponivelResponse>>>.SuccessResponse(result));
+        if (!result.IsSuccess || result.Value is null)
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os horários disponíveis."));
+
+        return Ok(ApiResponse<IEnumerable<HorarioDisponivelResponse>>.SuccessResponse(result.Value));
     }
 
     /// <summary>
@@ -259,12 +265,12 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de consultores disponíveis.</returns>
     [HttpGet("listar/consultores-disponiveis")]
-    [ProducesResponseType(typeof(ApiResponse<Result<IEnumerable<ConsultorDisponibilidadeResponse>>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<ConsultorDisponibilidadeResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<ApiResponse<Result<IEnumerable<ConsultorDisponibilidadeResponse>>>>> ListarConsultoresPorDiaHorarioAsync(
-        [FromQuery] Guid diaId,
-        [FromQuery] Guid horarioId,
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse<IEnumerable<ConsultorDisponibilidadeResponse>>>> ListarConsultoresPorDiaHorarioAsync(
+    [FromQuery] Guid diaId,
+    [FromQuery] Guid horarioId,
+    CancellationToken cancellationToken)
     {
         _logger.LogInformation("Listando consultores. DiaId: {DiaId}, HorarioId: {HorarioId}", diaId, horarioId);
 
@@ -274,7 +280,10 @@ public sealed class AgendamentoController : ControllerBase
             HorarioDisponibilidadeId = horarioId
         }, cancellationToken);
 
-        return Ok(ApiResponse<Result<IEnumerable<ConsultorDisponibilidadeResponse>>>.SuccessResponse(result));
+        if (!result.IsSuccess || result.Value is null)
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os consultores disponíveis."));
+
+        return Ok(ApiResponse<IEnumerable<ConsultorDisponibilidadeResponse>>.SuccessResponse(result.Value));
     }
 
     /// <summary>
@@ -284,10 +293,10 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="data">Data para a qual listar a agenda do consultor.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de compromissos do consultor na data especificada.</returns>
-    [HttpGet("consultor/{consultorId:guid}/listar-agenda")]
-    [ProducesResponseType(typeof(ApiResponse<Result<IEnumerable<AgendaConsultorResponse>>>), StatusCodes.Status200OK)]
+    [HttpGet("consultor/listar-agenda")]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<AgendaConsultorResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<ApiResponse<Result<IEnumerable<AgendaConsultorResponse>>>>> ListarAgendaPorConsultorAsync(
+    public async Task<ActionResult<ApiResponse<IEnumerable<AgendaConsultorResponse>>>> ListarAgendaPorConsultorAsync(
         [FromQuery] Guid consultorId,
         [FromQuery] DateOnly data,
         CancellationToken cancellationToken)
@@ -300,7 +309,10 @@ public sealed class AgendamentoController : ControllerBase
             Data = data
         }, cancellationToken);
 
-        return Ok(ApiResponse<Result<IEnumerable<AgendaConsultorResponse>>>.SuccessResponse(result));
+        if (!result.IsSuccess || result.Value is null)
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter a agenda do consultor."));
+
+        return Ok(ApiResponse<IEnumerable<AgendaConsultorResponse>>.SuccessResponse(result.Value));
     }
 
 

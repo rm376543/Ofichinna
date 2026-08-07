@@ -1,4 +1,4 @@
-using Ofichina.Contracts.Requests;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Contracts.Requests.Checklist;
 
@@ -7,6 +7,8 @@ namespace Ofichina.Contracts.Requests.Checklist;
 /// </summary>
 public sealed class CreateChecklistRequest : CreateRequest
 {
+    public Guid AgendamentoId { get; init; }
+
     public Guid VeiculoId { get; init; }
 
     public Guid PessoaId { get; init; }

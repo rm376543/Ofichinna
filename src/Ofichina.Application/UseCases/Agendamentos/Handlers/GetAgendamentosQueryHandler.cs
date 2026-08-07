@@ -1,9 +1,8 @@
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Extensions;
+using Ofichina.Application.UseCases.Agendamentos.Mappings;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Agendamento;
-using Ofichina.Domain.Aggregates;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 

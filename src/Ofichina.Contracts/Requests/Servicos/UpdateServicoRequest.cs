@@ -1,4 +1,4 @@
-﻿using Ofichina.Contracts.Requests;
+﻿using Ofichina.Contracts.Common;
 
 namespace Ofichina.Contracts.Requests.Servicos;
 
@@ -7,6 +7,11 @@ namespace Ofichina.Contracts.Requests.Servicos;
 /// </summary>
 public sealed class UpdateServicoRequest : UpdateRequest
 {
+    /// <summary>
+    /// Identificador do serviço.
+    /// </summary>
+    public Guid ServicoId { get; init; }
+
     /// <summary>
     /// Nome do serviço.
     /// </summary>

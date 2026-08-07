@@ -11,12 +11,12 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 public sealed class ListarHorariosPorDiaQueryHandler : IQueryHandler<ListarHorariosPorDiaQuery, Result<IEnumerable<HorarioDisponivelResponse>>>
 {
     private readonly IHorarioDisponibilidadeRepository _horarioRepository;
-    private readonly IHorarioConsultorDisponibilidadeRepository _slotRepository;
+    private readonly IAgendaConsultorRepository _slotRepository;
     private readonly ILogger<ListarHorariosPorDiaQueryHandler> _logger;
 
     public ListarHorariosPorDiaQueryHandler(
         IHorarioDisponibilidadeRepository horarioRepository,
-        IHorarioConsultorDisponibilidadeRepository slotRepository,
+        IAgendaConsultorRepository slotRepository,
         ILogger<ListarHorariosPorDiaQueryHandler> logger)
     {
         _horarioRepository = horarioRepository;
@@ -39,7 +39,7 @@ public sealed class ListarHorariosPorDiaQueryHandler : IQueryHandler<ListarHorar
                 .OrderBy(h => h.Hora)
                 .Select(h => new HorarioListaResponse
                 {
-                    Id = h.Id,
+                    HorarioListaId = h.Id,
                     Hora = h.Hora.ToString("HH:mm"),
                     Disponivel = slots.Any(s => s.DiaDisponibilidadeId == query.DiaDisponibilidadeId && s.HorarioDisponibilidadeId == h.Id)
                 })
@@ -49,7 +49,7 @@ public sealed class ListarHorariosPorDiaQueryHandler : IQueryHandler<ListarHorar
 
             var resultado = horarios.Select(h => new HorarioDisponivelResponse
             {
-                Id = h.Id,
+                HorarioDisponivelId = h.HorarioListaId,
                 Horario = TimeOnly.ParseExact(h.Hora, "HH:mm"),
                 Disponivel = h.Disponivel
             });

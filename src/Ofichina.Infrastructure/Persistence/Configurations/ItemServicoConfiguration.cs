@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 
 namespace Ofichina.Infrastructure.Persistence.Configurations;
@@ -12,6 +11,7 @@ public class ItemServicoConfiguration : IEntityTypeConfiguration<ItemServico>
         builder.ToTable("ItensServico");
 
         builder.HasKey(i => i.Id);
+        builder.Property(i => i.Id).HasColumnName("ItemServicoId");
 
         builder.Property(i => i.OrcamentoId);
 

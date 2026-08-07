@@ -138,27 +138,27 @@ public sealed class PerfisController : ControllerBase
         [FromBody] UpdatePerfilRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualização do perfil com Id: {Id}", request.Id);
+        _logger.LogInformation("Iniciando a atualização do perfil com Id: {Id}", request.PerfilId);
         var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
 
         if (!validation.IsValid)
         {
-            _logger.LogError("Erro ao validar a atualização do perfil com Id: {Id}. Erros: {Erros}", request.Id, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            _logger.LogError("Erro ao validar a atualização do perfil com Id: {Id}. Erros: {Erros}", request.PerfilId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
         var result = await _mediator.Send(new UpdatePerfilCommand(
-            request.Id,
+            request.PerfilId,
             request.NomePerfil,
             request.Descricao), cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao atualizar o perfil com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
+            _logger.LogError("Erro ao atualizar o perfil com Id: {Id}. Erro: {Erro}", request.PerfilId, result.Error);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o perfil."));
         }
 
-        _logger.LogInformation("Perfil com Id: {Id} atualizado com sucesso.", request.Id);
+        _logger.LogInformation("Perfil com Id: {Id} atualizado com sucesso.", request.PerfilId);
         return Ok(ApiResponse.SuccessResponse("Perfil atualizado com sucesso."));
     }
 
@@ -178,16 +178,16 @@ public sealed class PerfisController : ControllerBase
         [FromBody] RemovePerfilRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a desativação do perfil com Id: {Id}", request.Id);
-        var result = await _mediator.Send(new DeletePerfilCommand(request.Id), cancellationToken);
+        _logger.LogInformation("Iniciando a desativação do perfil com Id: {Id}", request.PerfilId);
+        var result = await _mediator.Send(new DeletePerfilCommand(request.PerfilId), cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao desativar o perfil com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
+            _logger.LogError("Erro ao desativar o perfil com Id: {Id}. Erro: {Erro}", request.PerfilId, result.Error);
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Perfil não encontrado."));
         }
 
-        _logger.LogInformation("Perfil com Id: {Id} desativado com sucesso.", request.Id);
+        _logger.LogInformation("Perfil com Id: {Id} desativado com sucesso.", request.PerfilId);
         return Ok(ApiResponse.SuccessResponse("Perfil desativado com sucesso."));
     }
 }

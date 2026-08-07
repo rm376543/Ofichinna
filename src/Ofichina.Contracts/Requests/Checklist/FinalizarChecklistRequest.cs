@@ -6,8 +6,8 @@ namespace Ofichina.Contracts.Requests.Checklist;
 public class FinalizarChecklistRequest
 {
     /// <summary>
-    /// Identificador do checklist a ser finalizado.
+    /// Identificador do agendamento cujos checklists devem ser finalizados.
     /// </summary>
-    public Guid Id { get; init; }
+    public Guid AgendamentoId { get; init; }
 
 }

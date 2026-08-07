@@ -12,6 +12,7 @@ public class VeiculoConfiguration : IEntityTypeConfiguration<Veiculo>
         builder.ToTable("Veiculos");
 
         builder.HasKey(v => v.Id);
+        builder.Property(v => v.Id).HasColumnName("VeiculoId");
 
         builder.Property(v => v.PessoaId)
             .IsRequired();

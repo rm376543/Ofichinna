@@ -26,7 +26,7 @@ public sealed class OrcamentoResponseTests
 
         var response = new OrcamentoResponse
         {
-            Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+            OrcamentoId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
             PessoaId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
             MecanicoDiagnosticoId = Guid.NewGuid(),

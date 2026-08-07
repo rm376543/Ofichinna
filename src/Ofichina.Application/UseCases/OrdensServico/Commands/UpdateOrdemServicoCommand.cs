@@ -12,7 +12,7 @@ public sealed class UpdateOrdemServicoCommand : ICommand<Result>
     /// <summary>
     /// Identificador da ordem de serviço.
     /// </summary>
-    public Guid Id { get; init; }
+    public Guid OrdemServicoId { get; init; }
 
     /// <summary>
     /// Identificador da pessoa vinculada.
@@ -46,7 +46,7 @@ public sealed class UpdateOrdemServicoCommand : ICommand<Result>
 
     public UpdateOrdemServicoCommand(UpdateOrdemServicoRequest request)
     {
-        Id = request.Id;
+        OrdemServicoId = request.OrdemServicoId;
         PessoaId = request.PessoaId;
         VeiculoId = request.VeiculoId;
         FuncionarioId = request.FuncionarioId;

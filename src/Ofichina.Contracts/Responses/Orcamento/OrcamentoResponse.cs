@@ -5,13 +5,15 @@ namespace Ofichina.Contracts.Responses.Orcamento;
 /// <summary>
 /// Resposta com os dados de um orçamento.
 /// </summary>
-public sealed class OrcamentoResponse : BaseEntity
+public sealed class OrcamentoResponse : BaseResponse
 {
+    public Guid OrcamentoId { get; set; }
+
     public Guid PessoaId { get; set; }
 
     public Guid VeiculoId { get; set; }
 
-    public Guid? ChecklistId { get; set; }
+    public Guid AgendamentoId { get; set; }
 
     public Guid MecanicoDiagnosticoId { get; set; }
 
@@ -28,8 +30,6 @@ public sealed class OrcamentoResponse : BaseEntity
     public DateTime DataCriacao { get; set; }
 
     public decimal ValorTotal { get; set; }
-
-    public ChecklistResponse? Checklist { get; set; }
 
     public ICollection<OrcamentoItemResponse> ItensServico { get; set; } = [];
 }

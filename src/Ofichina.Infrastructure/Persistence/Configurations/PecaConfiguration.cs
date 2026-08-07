@@ -15,6 +15,7 @@ public sealed class PecaConfiguration : IEntityTypeConfiguration<Peca>
         builder.ToTable("Pecas");
 
         builder.HasKey(p => p.Id);
+        builder.Property(p => p.Id).HasColumnName("PecaId");
 
         builder.Property(p => p.Nome)
             .HasMaxLength(150)
