@@ -49,7 +49,9 @@ public sealed class ChecklistControllerTests
             NullLogger<ChecklistController>.Instance);
 
         var id = Guid.NewGuid();
-        var result = await controller.FinalizarChecklist(id, CancellationToken.None);
+        var result = await controller.FinalizarChecklist(
+            new FinalizarChecklistRequest { Id = id },
+            CancellationToken.None);
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);

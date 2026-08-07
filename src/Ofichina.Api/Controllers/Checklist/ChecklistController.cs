@@ -51,16 +51,15 @@ public sealed class ChecklistController : ControllerBase
     /// <summary>
     /// Finaliza um checklist existente.
     /// </summary>
-    /// <param name="request">Identificador do checklist a ser finalizado.</param>
+    /// <param name="request">Dados necessários para finalizar o checklist.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso, erro de validação ou checklist não encontrado.</returns>
+    /// <returns>Mensagem de sucesso ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut("{checklistId:guid}/finalizar")]
+    [HttpPut("finalizar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> FinalizarChecklist(
-        [FromRoute] FinalizarChecklistRequest request,
+        [FromBody] FinalizarChecklistRequest request,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a finalização do checklist com Id: {Id}.", request.Id);

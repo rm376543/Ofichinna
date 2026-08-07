@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Ofichina.Contracts.Enums;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
 using System.Security.Cryptography;
@@ -57,7 +58,7 @@ public static class DatabaseSeeder
         catch (Exception ex)
         {
             throw new InvalidOperationException(
-                "Erro ao popular banco de dados inicial.",
+                "Erro ao popular banco de dados inicial: Verifique se a migration foi executada corretamente.",
                 ex);
         }
     }
@@ -71,12 +72,12 @@ public static class DatabaseSeeder
     {
         var perfisDesejados = new[]
         {
-            (Nome: "ADMIN", Descricao: "Administrador do sistema"),
-            (Nome: "GERENTE", Descricao: "Gerente da oficina"),
-            (Nome: "MECANICO", Descricao: "Mecânico técnico"),
-            (Nome: "ATENDENTE", Descricao: "Atendente de clientes"),
-            (Nome: "CLIENTE", Descricao: "Cliente da oficina"),
-            (Nome: "CONSULTOR", Descricao: "Consultor de agendamentos")
+            (Nome: PerfilEnum.Administrador, Descricao: "Administrador do sistema"),
+            (Nome: PerfilEnum.Gerente, Descricao: "Gerente da oficina"),
+            (Nome: PerfilEnum.Mecanico, Descricao: "Mecânico técnico"),
+            (Nome: PerfilEnum.Recepcionista, Descricao: "Atendente de clientes"),
+            (Nome: PerfilEnum.Cliente, Descricao: "Cliente da oficina"),
+            (Nome: PerfilEnum.Consultor, Descricao: "Consultor de agendamentos")
         };
 
         var perfisExistentes = await context.Perfis
@@ -114,16 +115,16 @@ public static class DatabaseSeeder
 
         var usuariosDesejados = new[]
         {
-            (Email: "admin@ofichina.com.br", Perfil: "ADMIN"),
-            (Email: "gerente@ofichina.com.br", Perfil: "GERENTE"),
-            (Email: "mecanico.silva@ofichina.com.br", Perfil: "MECANICO"),
-            (Email: "mecanico.santos@ofichina.com.br", Perfil: "MECANICO"),
-            (Email: "atendente.maria@ofichina.com.br", Perfil: "ATENDENTE"),
-            (Email: "atendente.joao@ofichina.com.br", Perfil: "ATENDENTE"),
-            (Email: "cliente.pedro@ofichina.com.br", Perfil: "CLIENTE"),
-            (Email: "cliente.ana@ofichina.com.br", Perfil: "CLIENTE"),
-            (Email: "cliente.carlos@ofichina.com.br", Perfil: "CLIENTE"),
-            (Email: "consultor.lucas@ofichina.com.br", Perfil: "CONSULTOR"),
+            (Email: "admin@ofichina.com.br", Perfil: PerfilEnum.Administrador),
+            (Email: "gerente@ofichina.com.br", Perfil: PerfilEnum.Gerente),
+            (Email: "mecanico.silva@ofichina.com.br", Perfil: PerfilEnum.Mecanico),
+            (Email: "mecanico.santos@ofichina.com.br", Perfil: PerfilEnum.Mecanico),
+            (Email: "atendente.maria@ofichina.com.br", Perfil: PerfilEnum.Recepcionista),
+            (Email: "atendente.joao@ofichina.com.br", Perfil: PerfilEnum.Recepcionista),
+            (Email: "cliente.pedro@ofichina.com.br", Perfil: PerfilEnum.Cliente),
+            (Email: "cliente.ana@ofichina.com.br", Perfil: PerfilEnum.Cliente),
+            (Email: "cliente.carlos@ofichina.com.br", Perfil: PerfilEnum.Cliente),
+            (Email: "consultor.lucas@ofichina.com.br", Perfil: PerfilEnum.Consultor),
         };
 
         var senhaPadrao = HashPassword("111111");
@@ -189,70 +190,70 @@ public static class DatabaseSeeder
         {
             (
                 Nome: "Roberto Almeida",
-                Documento: new Cpf("31415926590"),
+                Documento: new Cpf("33653787076"),
                 Telefone: new Telefone("(11) 98888-0001"),
                 Endereco: new Endereco("Rua do Administrador", "10", "Sala 1", "Centro", "São Paulo", "SP", new Cep("01000-001")),
                 EmailUsuario: "admin@ofichina.com.br"
             ),
             (
                 Nome: "Mariana Ferreira",
-                Documento: new Cpf("24691357963"),
+                Documento: new Cpf("32780420006"),
                 Telefone: new Telefone("(11) 98888-0002"),
                 Endereco: new Endereco("Avenida da Gestão", "200", null, "Bela Vista", "São Paulo", "SP", new Cep("01310-200")),
                 EmailUsuario: "gerente@ofichina.com.br"
             ),
             (
                 Nome: "Carlos Silva",
-                Documento: new Cpf("13579135759"),
+                Documento: new Cpf("36381910011"),
                 Telefone: new Telefone("(11) 98888-0003"),
                 Endereco: new Endereco("Rua da Oficina", "300", "Fundos", "Mooca", "São Paulo", "SP", new Cep("03100-300")),
                 EmailUsuario: "mecanico.silva@ofichina.com.br"
             ),
             (
                 Nome: "Juliana Santos",
-                Documento: new Cpf("24681012190"),
+                Documento: new Cpf("35959541068"),
                 Telefone: new Telefone("(11) 98888-0004"),
                 Endereco: new Endereco("Rua das Ferramentas", "400", null, "Tatuapé", "São Paulo", "SP", new Cep("03040-400")),
                 EmailUsuario: "mecanico.santos@ofichina.com.br"
             ),
             (
                 Nome: "Maria Souza",
-                Documento: new Cpf("52998224725"),
+                Documento: new Cpf("85736502062"),
                 Telefone: new Telefone("(11) 98888-0005"),
                 Endereco: new Endereco("Avenida do Atendimento", "500", "Loja A", "Centro", "São Paulo", "SP", new Cep("01111-500")),
                 EmailUsuario: "atendente.maria@ofichina.com.br"
             ),
             (
                 Nome: "João Lima",
-                Documento: new Cpf("11144477735"),
+                Documento: new Cpf("65778065000"),
                 Telefone: new Telefone("(11) 98888-0006"),
                 Endereco: new Endereco("Rua do Suporte", "600", null, "Santana", "São Paulo", "SP", new Cep("02020-600")),
                 EmailUsuario: "atendente.joao@ofichina.com.br"
             ),
             (
                 Nome: "Lucas Ferreira",
-                Documento: new Cpf("12345678909"),
+                Documento: new Cpf("86419674000"),
                 Telefone: new Telefone("(11) 98888-0007"),
                 Endereco: new Endereco("Rua do Consultor", "700", "Conjunto 7", "Pinheiros", "São Paulo", "SP", new Cep("05432-700")),
                 EmailUsuario: "consultor.lucas@ofichina.com.br"
             ),
             (
                 Nome: "Pedro Silva",
-                Documento: new Cpf("90351003010"),
+                Documento: new Cpf("25228444076"),
                 Telefone: new Telefone("(11) 98765-4321"),
                 Endereco: new Endereco("Rua das Flores", "123", "Apto 101", "Centro", "São Paulo", "SP", new Cep("01310-100")),
                 EmailUsuario: "cliente.pedro@ofichina.com.br"
             ),
             (
                 Nome: "Ana Costa",
-                Documento: new Cpf("90115400001"),
+                Documento: new Cpf("60174914075"),
                 Telefone: new Telefone("(11) 97654-3210"),
                 Endereco: new Endereco("Avenida Paulista", "1000", null, "Bela Vista", "São Paulo", "SP", new Cep("01311-100")),
                 EmailUsuario: "cliente.ana@ofichina.com.br"
             ),
             (
                 Nome: "Carlos Oliveira",
-                Documento: new Cpf("77891063095"),
+                Documento: new Cpf("79266825000"),
                 Telefone: new Telefone("(11) 96543-2109"),
                 Endereco: new Endereco("Rua Augusta", "500", "Loja 5", "Consolação", "São Paulo", "SP", new Cep("01305-100")),
                 EmailUsuario: "cliente.carlos@ofichina.com.br"
@@ -306,10 +307,10 @@ public static class DatabaseSeeder
 
         var veiculosDesejados = new[]
         {
-            (DocumentoPessoa: "90351003010", Placa: "ABC1D23", Marca: "Toyota", Modelo: "Corolla", AnoFabricacao: 2020, Cor: "Preto", Hodometro: 9122),
-            (DocumentoPessoa: "90115400001", Placa: "XYZ9K87", Marca: "Honda", Modelo: "Civic", AnoFabricacao: 2019, Cor: "Prata", Hodometro: 15000),
-            (DocumentoPessoa: "77891063095", Placa: "LMN5Q34", Marca: "Volkswagen", Modelo: "Gol", AnoFabricacao: 2021, Cor: "Vermelho", Hodometro: 110),
-            (DocumentoPessoa: "90351003010", Placa: "OPQ8R56", Marca: "Hyundai", Modelo: "HB20", AnoFabricacao: 2022, Cor: "Branco", Hodometro: 24150),
+            (DocumentoPessoa: "25228444076", Placa: "ABC1D23", Marca: "Toyota", Modelo: "Corolla", AnoFabricacao: 2020, Cor: "Preto", Hodometro: 9122),
+            (DocumentoPessoa: "60174914075", Placa: "XYZ9K87", Marca: "Honda", Modelo: "Civic", AnoFabricacao: 2019, Cor: "Prata", Hodometro: 15000),
+            (DocumentoPessoa: "79266825000", Placa: "LMN5Q34", Marca: "Volkswagen", Modelo: "Gol", AnoFabricacao: 2021, Cor: "Vermelho", Hodometro: 110),
+            (DocumentoPessoa: "25228444076", Placa: "OPQ8R56", Marca: "Hyundai", Modelo: "HB20", AnoFabricacao: 2022, Cor: "Branco", Hodometro: 24150),
         };
 
         foreach (var veiculoDesejado in veiculosDesejados)
@@ -416,41 +417,39 @@ public static class DatabaseSeeder
             .GroupBy(x => x.Codigo, StringComparer.OrdinalIgnoreCase)
             .ToDictionary(x => x.Key, x => x.First(), StringComparer.OrdinalIgnoreCase);
 
-#pragma warning disable S1192
         var permissoesDesejadas = new[]
         {
-            (Codigo: "usuarios.criar", Descricao: "Criar usuários"),
-            (Codigo: "usuarios.editar", Descricao: "Editar usuários"),
-            (Codigo: "usuarios.deletar", Descricao: "Deletar usuários"),
-            (Codigo: "usuarios.listar", Descricao: "Listar usuários"),
-            (Codigo: "pessoas.criar", Descricao: "Criar pessoas"),
-            (Codigo: "pessoas.editar", Descricao: "Editar pessoas"),
-            (Codigo: "pessoas.deletar", Descricao: "Deletar pessoas"),
-            (Codigo: "pessoas.listar", Descricao: "Listar pessoas"),
-            (Codigo: "veiculos.criar", Descricao: "Criar veículos"),
-            (Codigo: "veiculos.editar", Descricao: "Editar veículos"),
-            (Codigo: "veiculos.deletar", Descricao: "Deletar veículos"),
-            (Codigo: "veiculos.listar", Descricao: "Listar veículos"),
-            (Codigo: "ordensservico.criar", Descricao: "Criar ordens de serviço"),
-            (Codigo: "ordensservico.editar", Descricao: "Editar ordens de serviço"),
-            (Codigo: "ordensservico.deletar", Descricao: "Deletar ordens de serviço"),
-            (Codigo: "ordensservico.listar", Descricao: "Listar ordens de serviço"),
-            (Codigo: "orcamentos.criar", Descricao: "Criar orçamentos"),
-            (Codigo: "orcamentos.editar", Descricao: "Editar orçamentos"),
-            (Codigo: "orcamentos.deletar", Descricao: "Deletar orçamentos"),
-            (Codigo: "orcamentos.listar", Descricao: "Listar orçamentos"),
-            (Codigo: "agendamentos.criar", Descricao: "Criar agendamentos"),
-            (Codigo: "agendamentos.editar", Descricao: "Editar agendamentos"),
-            (Codigo: "agendamentos.deletar", Descricao: "Deletar agendamentos"),
-            (Codigo: "agendamentos.listar", Descricao: "Listar agendamentos"),
-            (Codigo: "servicos.criar", Descricao: "Criar serviços"),
-            (Codigo: "servicos.editar", Descricao: "Editar serviços"),
-            (Codigo: "servicos.listar", Descricao: "Listar serviços"),
-            (Codigo: "pecas.criar", Descricao: "Criar peças"),
-            (Codigo: "pecas.editar", Descricao: "Editar peças"),
-            (Codigo: "pecas.listar", Descricao: "Listar peças"),
+            (Codigo: PolicyEnum.UsuariosCriar, Descricao: "Criar usuários"),
+            (Codigo: PolicyEnum.UsuariosEditar, Descricao: "Editar usuários"),
+            (Codigo: PolicyEnum.UsuariosDeletar, Descricao: "Deletar usuários"),
+            (Codigo: PolicyEnum.UsuariosListar, Descricao: "Listar usuários"),
+            (Codigo: PolicyEnum.PessoasCriar, Descricao: "Criar pessoas"),
+            (Codigo: PolicyEnum.PessoasEditar, Descricao: "Editar pessoas"),
+            (Codigo: PolicyEnum.PessoasDeletar, Descricao: "Deletar pessoas"),
+            (Codigo: PolicyEnum.PessoasListar, Descricao: "Listar pessoas"),
+            (Codigo: PolicyEnum.VeiculosCriar, Descricao: "Criar veículos"),
+            (Codigo: PolicyEnum.VeiculosEditar, Descricao: "Editar veículos"),
+            (Codigo: PolicyEnum.VeiculosDeletar, Descricao: "Deletar veículos"),
+            (Codigo: PolicyEnum.VeiculosListar, Descricao: "Listar veículos"),
+            (Codigo: PolicyEnum.OrdensServicoCriar, Descricao: "Criar ordens de serviço"),
+            (Codigo: PolicyEnum.OrdensServicoEditar, Descricao: "Editar ordens de serviço"),
+            (Codigo: PolicyEnum.OrdensServicoDeletar, Descricao: "Deletar ordens de serviço"),
+            (Codigo: PolicyEnum.OrdensServicoListar, Descricao: "Listar ordens de serviço"),
+            (Codigo: PolicyEnum.OrcamentosCriar, Descricao: "Criar orçamentos"),
+            (Codigo: PolicyEnum.OrcamentosEditar, Descricao: "Editar orçamentos"),
+            (Codigo: PolicyEnum.OrcamentosDeletar, Descricao: "Deletar orçamentos"),
+            (Codigo: PolicyEnum.OrcamentosListar, Descricao: "Listar orçamentos"),
+            (Codigo: PolicyEnum.AgendamentosCriar, Descricao: "Criar agendamentos"),
+            (Codigo: PolicyEnum.AgendamentosEditar, Descricao: "Editar agendamentos"),
+            (Codigo: PolicyEnum.AgendamentosDeletar, Descricao: "Deletar agendamentos"),
+            (Codigo: PolicyEnum.AgendamentosListar, Descricao: "Listar agendamentos"),
+            (Codigo: PolicyEnum.ServicosCriar, Descricao: "Criar serviços"),
+            (Codigo: PolicyEnum.ServicosEditar, Descricao: "Editar serviços"),
+            (Codigo: PolicyEnum.ServicosListar, Descricao: "Listar serviços"),
+            (Codigo: PolicyEnum.PecasCriar, Descricao: "Criar peças"),
+            (Codigo: PolicyEnum.PecasEditar, Descricao: "Editar peças"),
+            (Codigo: PolicyEnum.PecasListar, Descricao: "Listar peças"),
         };
-#pragma warning restore S1192
 
         foreach (var permissao in permissoesDesejadas)
         {
@@ -490,71 +489,71 @@ public static class DatabaseSeeder
 
         var matrizPermissoes = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase)
         {
-            ["ADMIN"] = permissoes.Select(x => x.Codigo).ToArray(),
-            ["GERENTE"] = [
-                "pessoas.criar",
-                "pessoas.editar",
-                "pessoas.deletar",
-                "pessoas.listar",
-                "veiculos.criar",
-                "veiculos.editar",
-                "veiculos.deletar",
-                "veiculos.listar",
-                "ordensservico.criar",
-                "ordensservico.editar",
-                "ordensservico.deletar",
-                "ordensservico.listar",
-                "orcamentos.criar",
-                "orcamentos.editar",
-                "orcamentos.deletar",
-                "orcamentos.listar",
-                "agendamentos.criar",
-                "agendamentos.editar",
-                "agendamentos.deletar",
-                "agendamentos.listar",
-                "servicos.criar",
-                "servicos.editar",
-                "servicos.listar",
-                "pecas.criar",
-                "pecas.editar",
-                "pecas.listar"
+            [PerfilEnum.Administrador] = permissoes.Select(x => x.Codigo).ToArray(),
+            [PerfilEnum.Gerente] = [
+                PolicyEnum.UsuariosCriar,
+                PolicyEnum.UsuariosEditar,
+                PolicyEnum.UsuariosDeletar,
+                PolicyEnum.UsuariosListar,
+                PolicyEnum.VeiculosCriar,
+                PolicyEnum.VeiculosEditar,
+                PolicyEnum.VeiculosDeletar,
+                PolicyEnum.VeiculosListar,
+                PolicyEnum.OrdensServicoCriar,
+                PolicyEnum.OrdensServicoEditar,
+                PolicyEnum.OrdensServicoDeletar,
+                PolicyEnum.OrdensServicoListar,
+                PolicyEnum.OrcamentosCriar,
+                PolicyEnum.OrcamentosEditar,
+                PolicyEnum.OrcamentosDeletar,
+                PolicyEnum.OrcamentosListar,
+                PolicyEnum.AgendamentosCriar,
+                PolicyEnum.AgendamentosEditar,
+                PolicyEnum.AgendamentosDeletar,
+                PolicyEnum.AgendamentosListar,
+                PolicyEnum.ServicosCriar,
+                PolicyEnum.ServicosEditar,
+                PolicyEnum.ServicosListar,
+                PolicyEnum.PecasCriar,
+                PolicyEnum.PecasEditar,
+                PolicyEnum.PecasListar
             ],
-            ["MECANICO"] = [
-                "pessoas.listar",
-                "veiculos.listar",
-                "ordensservico.criar",
-                "ordensservico.editar",
-                "ordensservico.listar",
-                "orcamentos.listar",
-                "agendamentos.listar",
-                "servicos.listar",
-                "pecas.listar"
+            [PerfilEnum.Mecanico] = [
+                PolicyEnum.UsuariosListar,
+                PolicyEnum.VeiculosListar,
+                PolicyEnum.OrdensServicoCriar,
+                PolicyEnum.OrdensServicoEditar,
+                PolicyEnum.OrdensServicoListar,
+                PolicyEnum.OrcamentosListar,
+                PolicyEnum.AgendamentosListar,
+                PolicyEnum.ServicosListar,
+                PolicyEnum.PecasListar
             ],
-            ["ATENDENTE"] = [
-                "pessoas.criar",
-                "pessoas.editar",
-                "pessoas.listar",
-                "veiculos.criar",
-                "veiculos.editar",
-                "veiculos.listar",
-                "agendamentos.criar",
-                "agendamentos.editar",
-                "agendamentos.listar",
-                "orcamentos.listar"
+            [PerfilEnum.Recepcionista] = [
+                PolicyEnum.UsuariosCriar,
+                PolicyEnum.UsuariosEditar,
+                PolicyEnum.UsuariosListar,
+                PolicyEnum.VeiculosCriar,
+                PolicyEnum.VeiculosEditar,
+                PolicyEnum.VeiculosListar,
+                PolicyEnum.AgendamentosCriar,
+                PolicyEnum.AgendamentosEditar,
+                PolicyEnum.AgendamentosListar,
+                PolicyEnum.OrcamentosListar
             ],
-            ["CLIENTE"] = [
-                "agendamentos.criar",
-                "agendamentos.listar",
-                "orcamentos.listar",
-                "veiculos.listar"
+            [PerfilEnum.Cliente] = [
+                PolicyEnum.AgendamentosCriar,
+                PolicyEnum.AgendamentosListar,
+                PolicyEnum.OrcamentosListar,
+                PolicyEnum.VeiculosListar
             ],
-            ["CONSULTOR"] = [
-                "pessoas.listar",
-                "veiculos.listar",
-                "agendamentos.criar",
-                "agendamentos.editar",
-                "agendamentos.listar",
-                "orcamentos.listar"
+            [PerfilEnum.Consultor] = [
+                PolicyEnum.UsuariosListar,
+                PolicyEnum.VeiculosListar,
+                PolicyEnum.AgendamentosCriar,
+                PolicyEnum.AgendamentosEditar,
+                PolicyEnum.AgendamentosListar,
+                PolicyEnum.OrcamentosListar
             ]
         };
 
@@ -611,6 +610,11 @@ public static class DatabaseSeeder
         }
     }
 
+    /// <summary>
+    /// Popula a tabela de horários de disponibilidade.
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
     private static async Task SeedHorariosDisponibilidade(ApplicationDbContext context)
     {
         var horariosExistentes = await context.HorariosDisponibilidade

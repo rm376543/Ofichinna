@@ -1,5 +1,6 @@
 ﻿using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Requests.Agendamento;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Commands
 {
@@ -12,9 +13,9 @@ namespace Ofichina.Application.UseCases.Agendamentos.Commands
         /// Identificador único do agendamento a ser cancelado.
         /// </summary>
         public Guid AgendamentoId { get; init; }
-        public CancelarAgendamentoCommand(Guid agendamentoId)
+        public CancelarAgendamentoCommand(CancelarAgendamentoRequest request)
         {
-            AgendamentoId = agendamentoId;
+            AgendamentoId = request.AgendamentoId;
         }
     }
 }

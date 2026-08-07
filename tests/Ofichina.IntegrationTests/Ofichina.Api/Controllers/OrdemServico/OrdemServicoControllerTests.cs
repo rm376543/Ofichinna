@@ -20,7 +20,9 @@ public sealed class OrdemServicoControllerTests
             NullLogger<OrdemServicoController>.Instance);
 
         var id = Guid.NewGuid();
-        var result = await controller.IniciarExecucaoOrdemServico(id, CancellationToken.None);
+        var result = await controller.IniciarExecucaoOrdemServico(
+            new OrdemServicoRequest { OrdemServicoId = id },
+            CancellationToken.None);
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
@@ -38,7 +40,9 @@ public sealed class OrdemServicoControllerTests
             NullLogger<OrdemServicoController>.Instance);
 
         var id = Guid.NewGuid();
-        var result = await controller.CancelarOrdemServico(id, CancellationToken.None);
+        var result = await controller.CancelarOrdemServico(
+            new OrdemServicoRequest { OrdemServicoId = id },
+            CancellationToken.None);
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);

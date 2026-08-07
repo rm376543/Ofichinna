@@ -1,5 +1,3 @@
-using Ofichina.Contracts.Responses;
-
 namespace Ofichina.Contracts.Common;
 
 /// <summary>
@@ -24,8 +22,8 @@ public sealed class Result
     public static Result Failure(IEnumerable<string> errors) => new(false, errors: errors.ToList());
 
     public static Result<T> Success<T>(T value) => new(true, value);
-    public static Result<T> Failure<T>(string error) => new(false, default, error);
-    public static Result<T> Failure<T>(IEnumerable<string> errors) => new(false, default, errors: errors.ToList());
+    public static Result<T> Failure<T>(string error) => new(false, default!, error);
+    public static Result<T> Failure<T>(IEnumerable<string> errors) => new(false, default!, errors: errors.ToList());
 }
 
 /// <summary>

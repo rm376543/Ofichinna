@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Ofichina.Contracts.Responses.Agendamento;
+using Ofichina.Contracts.Requests.Agendamento;
 
 namespace Ofichina.Application.Validators.Agendamento
 {

@@ -307,21 +307,21 @@ public sealed class AgendamentoController : ControllerBase
     /// <summary>
     /// Cancela um agendamento existente.
     /// </summary>
-    /// <param name="agendamentoId">Identificador do agendamento a ser cancelado.</param>
+    /// <param name="request">Objeto contendo o identificador do agendamento a ser cancelado.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Resultado da operação de cancelamento.</returns>
-    [HttpPost("consultor/{agendamentoId:guid}/cancelar-agendamento")]
+    [HttpPost("consultor/cancelar-agendamento")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> CancelarAsync(
-        [FromRoute] Guid agendamentoId,
+    public async Task<ActionResult<ApiResponse>> CancelarAgendamentoAsync(
+        [FromBody] CancelarAgendamentoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Cancelando agendamento. AgendamentoId: {AgendamentoId}", agendamentoId);
+        _logger.LogInformation("Cancelando agendamento. AgendamentoId: {AgendamentoId}", request.AgendamentoId);
 
-        var result = await _mediator.Send(new CancelarAgendamentoCommand(agendamentoId), cancellationToken);
+        var result = await _mediator.Send(new CancelarAgendamentoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível cancelar o agendamento."));

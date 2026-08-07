@@ -198,7 +198,7 @@ public sealed class VeiculoController : ControllerBase
     /// <summary>
     /// Remove logicamente um veículo existente.
     /// </summary>
-    /// <param name="id">Identificador do veículo.</param>
+    /// <param name="request">Identificador do veículo.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]

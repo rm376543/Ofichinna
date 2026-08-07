@@ -1,4 +1,4 @@
-﻿namespace Ofichina.Contracts.Responses.Agendamento
+﻿namespace Ofichina.Contracts.Requests.Agendamento
 {
     /// <summary>
     /// Representa a solicitação para cancelar um agendamento existente.
