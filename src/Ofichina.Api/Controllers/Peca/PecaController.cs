@@ -49,7 +49,7 @@ public sealed class PecaController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de peças.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet]
+    [HttpGet("listar")]
     [ProducesResponseType(typeof(ApiResponse<PagedResponse<PecaResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -73,24 +73,24 @@ public sealed class PecaController : ControllerBase
     /// <summary>
     /// Retorna uma peça pelo identificador.
     /// </summary>
-    /// <param name="id">Identificador da peça.</param>
+    /// <param name="pecaId">Identificador da peça.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Peça encontrada ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet("{id:guid}")]
+    [HttpGet("detalhar/{pecaId:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PecaResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<PecaResponse>>> BuscarPecaPorId(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse<PecaResponse>>> BuscarPecaPorId([FromRoute] Guid pecaId, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenção da peça com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a obtenção da peça com Id: {Id}", pecaId);
 
-        var result = await _mediator.Send(new GetPecaByIdQuery { Id = id }, cancellationToken);
+        var result = await _mediator.Send(new GetPecaByIdQuery(pecaId), cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
         {
-            _logger.LogError("Peça com Id: {Id} não encontrada.", id);
+            _logger.LogError("Peça com Id: {Id} não encontrada.", pecaId);
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Peça não encontrada."));
         }
 
@@ -104,7 +104,7 @@ public sealed class PecaController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Id da peça criada ou erros de validação.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost]
+    [HttpPost("nova")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -146,7 +146,7 @@ public sealed class PecaController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso, erro de validação ou peça não encontrada.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut]
+    [HttpPut("atualizar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -187,24 +187,24 @@ public sealed class PecaController : ControllerBase
     /// <summary>
     /// Desativa e remove logicamente uma peça existente.
     /// </summary>
-    /// <param name="id">Identificador da peça.</param>
+    /// <param name="request">Identificador da peça.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("remover")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> DeletarPeca(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse>> DeletarPeca([FromBody] RemovePecaRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a desativação da peça com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a desativação da peça com Id: {Id}", request.Id);
 
-        var result = await _mediator.Send(new DeletePecaCommand { Id = id }, cancellationToken);
+        var result = await _mediator.Send(new DeletePecaCommand(request.Id), cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao desativar a peça com Id: {Id}. Erro: {Erro}", id, result.Error);
+            _logger.LogError("Erro ao desativar a peça com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Peça não encontrada."));
         }
 

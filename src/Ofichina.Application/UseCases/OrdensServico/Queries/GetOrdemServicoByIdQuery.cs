@@ -13,4 +13,9 @@ public sealed class GetOrdemServicoByIdQuery : IQuery<Result<OrdemServicoRespons
     /// Identificador da ordem de serviço.
     /// </summary>
     public Guid Id { get; init; }
+
+    public GetOrdemServicoByIdQuery(Guid ordemServicoId)
+    {
+        Id = ordemServicoId;
+    }
 }

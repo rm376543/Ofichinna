@@ -43,7 +43,7 @@ public sealed class PermissaoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de permissões.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet]
+    [HttpGet("listar")]
     [ProducesResponseType(typeof(ApiResponse<PagedResponse<PermissaoResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -71,7 +71,7 @@ public sealed class PermissaoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Permissão encontrada ou erro 404 quando não existir.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet("{id:guid}")]
+    [HttpGet("detalhar/{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PermissaoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -98,7 +98,7 @@ public sealed class PermissaoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Id da permissão criada ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost]
+    [HttpPost("nova")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -133,7 +133,7 @@ public sealed class PermissaoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Permissão encontrada ou erro 404 quando não existir.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut]
+    [HttpPut("atualizar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -166,33 +166,27 @@ public sealed class PermissaoController : ControllerBase
     /// <summary>
     /// Remove uma permissão pelo identificador.
     /// </summary>
-    /// <param name="id">Identificador da permissão.</param>
+    /// <param name="request">Identificador da permissão.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Permissão encontrada ou erro 404 quando não existir.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("remover")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> DeleteAsync([FromRoute] Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse>> DeleteAsync([FromBody] RemovePermissaoRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando processo de remoção de permissão com ID: {Id}", id);
-        var result = await _mediator.Send(new DeletePermissaoCommand(id), cancellationToken);
+        _logger.LogInformation("Iniciando processo de remoção de permissão com ID: {Id}", request.Id);
+        var result = await _mediator.Send(new DeletePermissaoCommand(request.Id), cancellationToken);
 
         if (!result.IsSuccess)
         {
-            if (result.Error == "Permissão não encontrada.")
-            {
-                _logger.LogInformation("Permissão com ID: {Id} não encontrada", id);
-                return NotFound(ApiResponse.FailureResponse(result.Error));
-            }
-
-            _logger.LogInformation("Processo de remoção de permissão com ID: {Id} concluído com erros", id);
+            _logger.LogInformation("Processo de remoção de permissão com ID: {Id} concluído com erros", request.Id);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível remover a permissão."));
         }
 
-        _logger.LogInformation("Processo de remoção de permissão com ID: {Id} concluído com sucesso", id);
+        _logger.LogInformation("Processo de remoção de permissão com ID: {Id} concluído com sucesso", request.Id);
         return Ok(ApiResponse.SuccessResponse("Permissão removida com sucesso."));
     }
 }

@@ -77,7 +77,7 @@ public sealed class VeiculoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de veículos.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet]
+    [HttpGet("listar")]
     [ProducesResponseType(typeof(ApiResponse<PagedResponse<VeiculoResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -100,20 +100,20 @@ public sealed class VeiculoController : ControllerBase
     /// <summary>
     /// Retorna um veículo pelo identificador.
     /// </summary>
-    /// <param name="id">Identificador do veículo.</param>
+    /// <param name="veiculoId">Identificador do veículo.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Veículo encontrado ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet("{id:guid}")]
+    [HttpGet("detalhar/{veiculoId:guid}")]
     [ProducesResponseType(typeof(ApiResponse<VeiculoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<VeiculoResponse>>> BuscarVeiculoPorId(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse<VeiculoResponse>>> BuscarVeiculoPorId([FromRoute] Guid veiculoId, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenção do veículo com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a obtenção do veículo com Id: {Id}", veiculoId);
 
-        var result = await _mediator.Send(new GetVeiculoByIdQuery(id), cancellationToken);
+        var result = await _mediator.Send(new GetVeiculoByIdQuery(veiculoId), cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Veículo não encontrado."));
@@ -128,7 +128,7 @@ public sealed class VeiculoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Identificador do veículo criado ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost]
+    [HttpPost("novo")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -148,16 +148,7 @@ public sealed class VeiculoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _mediator.Send(new CreateVeiculoCommand
-        {
-            PessoaId = request.PessoaId,
-            Placa = request.Placa,
-            Marca = request.Marca,
-            Modelo = request.Modelo,
-            AnoFabricacao = request.AnoFabricacao,
-            Cor = request.Cor,
-            Hodometro = request.Hodometro,
-        }, cancellationToken);
+        var result = await _mediator.Send(new CreateVeiculoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -176,7 +167,7 @@ public sealed class VeiculoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso, erro de validação ou veículo não encontrado.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut]
+    [HttpPut("atualizar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -193,17 +184,7 @@ public sealed class VeiculoController : ControllerBase
         if (!validation.IsValid)
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
 
-        var result = await _mediator.Send(new UpdateVeiculoCommand
-        {
-            Id = request.Id,
-            PessoaId = request.PessoaId,
-            Placa = request.Placa,
-            Marca = request.Marca,
-            Modelo = request.Modelo,
-            AnoFabricacao = request.AnoFabricacao,
-            Cor = request.Cor,
-            Hodometro = request.Hodometro,
-        }, cancellationToken);
+        var result = await _mediator.Send(new UpdateVeiculoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -221,18 +202,18 @@ public sealed class VeiculoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("remove")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> RemoverVeiculo(
-        Guid id,
+        [FromBody] RemoveVeiculoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a remoção do veículo com Id: {Id}", id);
+        _logger.LogInformation("Iniciando a remoção do veículo com Id: {Id}", request.Id);
 
-        var result = await _mediator.Send(new DeleteVeiculoCommand { Id = id }, cancellationToken);
+        var result = await _mediator.Send(new DeleteVeiculoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
         {

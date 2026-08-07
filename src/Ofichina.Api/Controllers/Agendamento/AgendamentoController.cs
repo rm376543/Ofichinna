@@ -91,13 +91,13 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="pessoaId">Identificador da pessoa.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de agendamentos da pessoa específica.</returns>
-    [HttpGet("pessoa/listar")]
+    [HttpGet("pessoa/{pessoaId:guid}/listar")]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<AgendamentoResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<IReadOnlyCollection<AgendamentoResponse>>>> ListarAsync(
-        [FromQuery] Guid pessoaId, CancellationToken cancellationToken)
+        [FromRoute] Guid pessoaId, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a listagem de agendamentos da pessoa {PessoaId}.", pessoaId);
 
@@ -116,13 +116,13 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="agendamentoId">Identificador do agendamento.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Detalhes do agendamento específico da pessoa.</returns>
-    [HttpGet("pessoa/detalhar")]
+    [HttpGet("pessoa/{pessoaId:guid}/agendamento/{agendamentoId:guid}/detalhar")]
     [ProducesResponseType(typeof(ApiResponse<AgendamentoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<AgendamentoResponse>>> ObterPorIdAsync(
-        [FromQuery] Guid pessoaId, [FromQuery] Guid agendamentoId, CancellationToken cancellationToken)
+        [FromRoute] Guid pessoaId, [FromRoute] Guid agendamentoId, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção do agendamento {Id} da pessoa {PessoaId}.", agendamentoId, pessoaId);
 
@@ -183,7 +183,7 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="agendamentoId">Identificador do agendamento a ser iniciado.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Resultado da operação de início do agendamento.</returns>
-    [HttpPut("consultor/iniciar")]
+    [HttpPut("consultor/{agendamentoId:guid}/iniciar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -284,7 +284,7 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="data">Data para a qual listar a agenda do consultor.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de compromissos do consultor na data especificada.</returns>
-    [HttpGet("consultor/listar-agenda")]
+    [HttpGet("consultor/{consultorId:guid}/listar-agenda")]
     [ProducesResponseType(typeof(ApiResponse<Result<IEnumerable<AgendaConsultorResponse>>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<ApiResponse<Result<IEnumerable<AgendaConsultorResponse>>>>> ListarAgendaPorConsultorAsync(
@@ -310,13 +310,13 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="agendamentoId">Identificador do agendamento a ser cancelado.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Resultado da operação de cancelamento.</returns>
-    [HttpPost("consultor/cancelar-agendamento")]
+    [HttpPost("consultor/{agendamentoId:guid}/cancelar-agendamento")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> CancelarAsync(
-        [FromQuery] Guid agendamentoId,
+        [FromRoute] Guid agendamentoId,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Cancelando agendamento. AgendamentoId: {AgendamentoId}", agendamentoId);

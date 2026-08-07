@@ -40,7 +40,7 @@ public sealed class PerfisController : ControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns>Lista de perfis.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet]
+    [HttpGet("listar")]
     [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<PerfilResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -67,7 +67,7 @@ public sealed class PerfisController : ControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns>Perfil encontrado ou erro 404 quando não existir.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet("{id:guid}")]
+    [HttpGet("detalhar/{id:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PerfilResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -96,7 +96,7 @@ public sealed class PerfisController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Id do perfil criado ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost]
+    [HttpPost("novo")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -114,16 +114,12 @@ public sealed class PerfisController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var command = new CreatePerfilCommand(
+        await _mediator.Send(new CreatePerfilCommand(
             request.NomePerfil,
-            request.Descricao);
-
-        await _mediator.Send(command, cancellationToken);
+            request.Descricao), cancellationToken);
 
         _logger.LogInformation("Perfil criado com sucesso, Nome: {NomePerfil}", request.NomePerfil);
-        return StatusCode(
-            StatusCodes.Status201Created,
-            ApiResponse.SuccessResponse($"Perfil criado com sucesso, Nome: {request.NomePerfil}"));
+        return ApiResponse.SuccessResponse($"Perfil criado com sucesso, Nome: {request.NomePerfil}");
     }
 
     /// <summary>
@@ -133,7 +129,7 @@ public sealed class PerfisController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso, erro de validação ou perfil não encontrado.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut]
+    [HttpPut("atualizar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -159,9 +155,7 @@ public sealed class PerfisController : ControllerBase
         if (!result.IsSuccess)
         {
             _logger.LogError("Erro ao atualizar o perfil com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
-            return result.Error == "Perfil não encontrado."
-                ? NotFound(ApiResponse.FailureResponse(result.Error))
-                : BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o perfil."));
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o perfil."));
         }
 
         _logger.LogInformation("Perfil com Id: {Id} atualizado com sucesso.", request.Id);
@@ -171,29 +165,29 @@ public sealed class PerfisController : ControllerBase
     /// <summary>
     /// Desativa um perfil existente.
     /// </summary>
-    /// <param name="id">Identificador do perfil.</param>
+    /// <param name="request">Identificador do perfil.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("remover")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> DeleteAsync(
-        Guid id,
+        [FromBody] RemovePerfilRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a desativação do perfil com Id: {Id}", id);
-        var result = await _mediator.Send(new DeletePerfilCommand(id), cancellationToken);
+        _logger.LogInformation("Iniciando a desativação do perfil com Id: {Id}", request.Id);
+        var result = await _mediator.Send(new DeletePerfilCommand(request.Id), cancellationToken);
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Erro ao desativar o perfil com Id: {Id}. Erro: {Erro}", id, result.Error);
+            _logger.LogError("Erro ao desativar o perfil com Id: {Id}. Erro: {Erro}", request.Id, result.Error);
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Perfil não encontrado."));
         }
 
-        _logger.LogInformation("Perfil com Id: {Id} desativado com sucesso.", id);
+        _logger.LogInformation("Perfil com Id: {Id} desativado com sucesso.", request.Id);
         return Ok(ApiResponse.SuccessResponse("Perfil desativado com sucesso."));
     }
 }

@@ -1,5 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Requests.Veiculo;
 
 namespace Ofichina.Application.UseCases.Veiculos.Commands;
 
@@ -21,4 +22,15 @@ public sealed class CreateVeiculoCommand : ICommand<Result>
     public string? Cor { get; init; }
 
     public int Hodometro { get; init; }
+
+    public CreateVeiculoCommand(CreateVeiculoRequest request)
+    {
+        PessoaId = request.PessoaId;
+        Placa = request.Placa;
+        Marca = request.Marca;
+        Modelo = request.Modelo;
+        AnoFabricacao = request.AnoFabricacao;
+        Cor = request.Cor;
+        Hodometro = request.Hodometro;
+    }
 }

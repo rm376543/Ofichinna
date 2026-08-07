@@ -9,4 +9,9 @@ namespace Ofichina.Application.UseCases.Orcamentos.Commands;
 public sealed class IniciarDiagnosticoOrcamentoCommand : ICommand<Result>
 {
     public Guid Id { get; init; }
+
+    public IniciarDiagnosticoOrcamentoCommand(Guid orcamentoId)
+    {
+        Id = orcamentoId;
+    }
 }

@@ -18,4 +18,10 @@ public sealed class AlterarStatusOrdemServicoCommand : ICommand<Result>
     /// Status de destino da ordem de serviço.
     /// </summary>
     public StatusOrdemServico StatusDestino { get; init; }
+
+    public AlterarStatusOrdemServicoCommand(Guid ordemServicoId, StatusOrdemServico statusDestino)
+    {
+        Id = ordemServicoId;
+        StatusDestino = statusDestino;
+    }
 }

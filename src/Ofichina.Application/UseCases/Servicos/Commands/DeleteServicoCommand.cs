@@ -1,5 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Responses.Servicos;
 
 namespace Ofichina.Application.UseCases.Servicos.Commands;
 
@@ -12,4 +13,9 @@ public sealed class DeleteServicoCommand : ICommand<Result>
     /// Identificador do serviço.
     /// </summary>
     public Guid Id { get; init; }
+
+    public DeleteServicoCommand(RemoveServicoRequest request)
+    {
+        Id = request.ServicoId;
+    }
 }
