@@ -1,4 +1,5 @@
 using Ofichina.Domain.Aggregates;
+using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 using Ofichina.Domain.Exceptions;
 
@@ -116,6 +117,19 @@ public sealed class AgendamentoTests
 
         var exception = Assert.Throws<DomainException>(() => agendamento.Cancelar());
         Assert.Contains("já cancelado", exception.Message);
+    }
+
+    [Fact]
+    public void Deve_Criar_Checklist_Vinculado_Ao_Agendamento()
+    {
+        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+
+        var checklist = agendamento.CriarChecklist("Pneu dianteiro esquerdo careca", "Trocar pneu");
+
+        Assert.IsType<Checklist>(checklist);
+        Assert.Equal(agendamento.Id, checklist.AgendamentoId);
+        Assert.Equal("Pneu dianteiro esquerdo careca", checklist.ItensVerificados);
+        Assert.Equal("Trocar pneu", checklist.Observacoes);
     }
 
     [Fact]

@@ -12,7 +12,7 @@ namespace Ofichina.IntegrationTests.Api.Controllers.Checklist;
 public sealed class ChecklistControllerTests
 {
     [Fact]
-    public async Task CriarChecklist_Deve_Enviar_Payload_Completo()
+    public async Task CriarChecklist_Deve_Enviar_Payload_Reduzido()
     {
         var mediator = new FakeMediator();
         var controller = new ChecklistController(
@@ -22,9 +22,6 @@ public sealed class ChecklistControllerTests
         var request = new CreateChecklistRequest
         {
             AgendamentoId = Guid.NewGuid(),
-            VeiculoId = Guid.NewGuid(),
-            PessoaId = Guid.NewGuid(),
-            HodometroEntrada = 12345,
             ItensVerificados = "Luzes, freios e pneus",
             Observacoes = "Checklist inicial"
         };
@@ -35,9 +32,6 @@ public sealed class ChecklistControllerTests
         Assert.Equal(StatusCodes.Status201Created, createdResult.StatusCode);
         Assert.NotNull(mediator.CreateCommandEnviado);
         Assert.Equal(request.AgendamentoId, mediator.CreateCommandEnviado!.AgendamentoId);
-        Assert.Equal(request.VeiculoId, mediator.CreateCommandEnviado!.VeiculoId);
-        Assert.Equal(request.PessoaId, mediator.CreateCommandEnviado.PessoaId);
-        Assert.Equal(request.HodometroEntrada, mediator.CreateCommandEnviado.HodometroEntrada);
         Assert.Equal(request.ItensVerificados, mediator.CreateCommandEnviado.ItensVerificados);
         Assert.Equal(request.Observacoes, mediator.CreateCommandEnviado.Observacoes);
     }

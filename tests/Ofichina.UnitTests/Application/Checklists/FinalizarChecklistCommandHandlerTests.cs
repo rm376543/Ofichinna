@@ -85,9 +85,6 @@ public sealed class FinalizarChecklistCommandHandlerTests
     {
         return new Checklist(
             agendamentoId,
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            12000,
             "Luzes, freios e pneus",
             "Checklist inicial");
     }

@@ -21,24 +21,17 @@ public sealed class CreateChecklistCommandHandlerTests
         var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
         var checklistRepository = new FakeChecklistRepository();
         var agendamentoRepository = new FakeAgendamentoRepository(agendamento);
-        var veiculoRepository = new FakeVeiculoRepository(CriarVeiculo());
-        var pessoaRepository = new FakePessoaRepository(CriarPessoa());
         var unitOfWork = new FakeUnitOfWork();
 
         var handler = new CreateChecklistCommandHandler(
             checklistRepository,
             agendamentoRepository,
-            veiculoRepository,
-            pessoaRepository,
             unitOfWork,
             NullLogger<CreateChecklistCommandHandler>.Instance);
 
         var command = new CreateChecklistCommand(new CreateChecklistRequest
         {
             AgendamentoId = agendamento.Id,
-            VeiculoId = veiculoRepository.Entity!.Id,
-            PessoaId = pessoaRepository.Entity!.Id,
-            HodometroEntrada = 12000,
             ItensVerificados = "Luzes, freios e pneus",
             Observacoes = "Checklist de entrada"
         });
@@ -59,24 +52,17 @@ public sealed class CreateChecklistCommandHandlerTests
 
         var checklistRepository = new FakeChecklistRepository();
         var agendamentoRepository = new FakeAgendamentoRepository(agendamento);
-        var veiculoRepository = new FakeVeiculoRepository(CriarVeiculo());
-        var pessoaRepository = new FakePessoaRepository(CriarPessoa());
         var unitOfWork = new FakeUnitOfWork();
 
         var handler = new CreateChecklistCommandHandler(
             checklistRepository,
             agendamentoRepository,
-            veiculoRepository,
-            pessoaRepository,
             unitOfWork,
             NullLogger<CreateChecklistCommandHandler>.Instance);
 
         var command = new CreateChecklistCommand(new CreateChecklistRequest
         {
             AgendamentoId = agendamento.Id,
-            VeiculoId = veiculoRepository.Entity!.Id,
-            PessoaId = pessoaRepository.Entity!.Id,
-            HodometroEntrada = 12000,
             ItensVerificados = "Luzes, freios e pneus",
             Observacoes = "Checklist de entrada"
         });
@@ -94,24 +80,17 @@ public sealed class CreateChecklistCommandHandlerTests
     {
         var checklistRepository = new FakeChecklistRepository();
         var agendamentoRepository = new FakeAgendamentoRepository(null);
-        var veiculoRepository = new FakeVeiculoRepository(CriarVeiculo());
-        var pessoaRepository = new FakePessoaRepository(CriarPessoa());
         var unitOfWork = new FakeUnitOfWork();
 
         var handler = new CreateChecklistCommandHandler(
             checklistRepository,
             agendamentoRepository,
-            veiculoRepository,
-            pessoaRepository,
             unitOfWork,
             NullLogger<CreateChecklistCommandHandler>.Instance);
 
         var command = new CreateChecklistCommand(new CreateChecklistRequest
         {
             AgendamentoId = Guid.NewGuid(),
-            VeiculoId = veiculoRepository.Entity!.Id,
-            PessoaId = pessoaRepository.Entity!.Id,
-            HodometroEntrada = 12000,
             ItensVerificados = "Luzes, freios e pneus",
             Observacoes = "Checklist de entrada"
         });

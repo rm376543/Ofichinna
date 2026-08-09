@@ -252,9 +252,6 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Property<bool>("Finalizado")
                         .HasColumnType("bit");
 
-                    b.Property<int>("HodometroEntrada")
-                        .HasColumnType("int");
-
                     b.Property<string>("ItensVerificados")
                         .IsRequired()
                         .HasMaxLength(2000)
@@ -264,22 +261,12 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<Guid>("PessoaId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("VeiculoId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AgendamentoId");
-
-                    b.HasIndex("PessoaId");
-
-                    b.HasIndex("VeiculoId");
 
                     b.ToTable("Checklists", (string)null);
                 });
@@ -986,23 +973,7 @@ namespace Ofichina.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Ofichina.Domain.Entities.Pessoa", "Pessoa")
-                        .WithMany()
-                        .HasForeignKey("PessoaId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Ofichina.Domain.Entities.Veiculo", "Veiculo")
-                        .WithMany()
-                        .HasForeignKey("VeiculoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Agendamento");
-
-                    b.Navigation("Pessoa");
-
-                    b.Navigation("Veiculo");
                 });
 
             modelBuilder.Entity("Ofichina.Domain.Entities.DiaHorarioDisponibilidade", b =>
