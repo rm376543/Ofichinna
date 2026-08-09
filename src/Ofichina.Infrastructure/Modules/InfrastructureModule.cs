@@ -22,6 +22,7 @@ public static class InfrastructureModule
         IConfiguration configuration)
     {
         services.AddDatabase(configuration);
+        services.AddDatabase(configuration);
         services.AddRepositories();
         services.AddInfrastructureServices();
 
