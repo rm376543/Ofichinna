@@ -97,7 +97,7 @@ public sealed class ServicoController : ControllerBase
     /// <param name="request">Dados do serviço a ser criado.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost("novo")]
+    [HttpPost("adicionar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
