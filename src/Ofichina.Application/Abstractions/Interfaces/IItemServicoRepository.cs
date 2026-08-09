@@ -59,6 +59,19 @@ public interface IItemServicoRepository : IRepository<ItemServico>
         bool tracking = false,
         bool includeRelacionados = false);
 
+    Task<IReadOnlyCollection<ItemServico>> GetByOrcamentoIdAsync(
+        Guid orcamentoId,
+        CancellationToken cancellationToken = default,
+        bool includeRelacionados = false,
+        bool tracking = false);
+
+    Task<ItemServico?> GetByOrcamentoIdAndItemServicoIdAsync(
+        Guid orcamentoId,
+        Guid itemServicoId,
+        CancellationToken cancellationToken = default,
+        bool includeRelacionados = false,
+        bool tracking = false);
+
     /// <summary>
     /// Obtém um item de serviço pelo identificador do orçamento, serviço e peça.
     /// </summary>

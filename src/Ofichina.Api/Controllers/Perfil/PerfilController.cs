@@ -63,29 +63,29 @@ public sealed class PerfisController : ControllerBase
     /// <summary>
     /// Retorna um perfil pelo identificador.
     /// </summary>
-    /// <param name="id">Identificador do perfil.</param>
+    /// <param name="perfilId">Identificador do perfil.</param>
     /// <param name="cancellationToken"></param>
     /// <returns>Perfil encontrado ou erro 404 quando não existir.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet("detalhar/{id:guid}")]
+    [HttpGet("detalhar/{perfilId:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PerfilResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<PerfilResponse>>> GetByIdAsync(
-    Guid id,
+    Guid perfilId,
     CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenção do perfil com Id: {Id}", id);
-        var result = await _mediator.Send(new GetPerfilByIdQuery(id), cancellationToken);
+        _logger.LogInformation("Iniciando a obtenção do perfil com Id: {perfilId}", perfilId);
+        var result = await _mediator.Send(new GetPerfilByIdQuery(perfilId), cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
         {
-            _logger.LogError("Perfil com Id: {Id} não encontrado.", id);
+            _logger.LogError("Perfil com Id: {perfilId} não encontrado.", perfilId);
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Perfil não encontrado."));
         }
 
-        _logger.LogInformation("Perfil com Id: {Id} obtido com sucesso.", id);
+        _logger.LogInformation("Perfil com Id: {perfilId} obtido com sucesso.", perfilId);
         return Ok(ApiResponse<PerfilResponse>.SuccessResponse(result.Value));
     }
 

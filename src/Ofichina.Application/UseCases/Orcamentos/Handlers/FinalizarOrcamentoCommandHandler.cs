@@ -9,7 +9,7 @@ using Ofichina.Domain.Exceptions;
 namespace Ofichina.Application.UseCases.Orcamentos.Handlers;
 
 /// <summary>
-/// Handler para finalizar o orçamento.
+/// Handler para finalizar o orçamento e movê-lo para aguardar envio.
 /// </summary>
 public sealed class FinalizarOrcamentoCommandHandler : ICommandHandler<FinalizarOrcamentoCommand, Result>
 {

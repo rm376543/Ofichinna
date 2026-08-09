@@ -100,13 +100,16 @@ public sealed class Orcamento : Entity
         ValidarStatus(StatusOrcamento.EmDiagnostico);
         ValidarItensCadastrados();
 
-        Status = StatusOrcamento.AguardandoAprovacao;
+        Status = StatusOrcamento.AguardandoEnvio;
         AtualizarDataModificacao();
     }
 
     public void EnviarParaCliente()
     {
-        ValidarStatus(StatusOrcamento.AguardandoAprovacao);
+        ValidarStatus(StatusOrcamento.AguardandoEnvio);
+
+        Status = StatusOrcamento.AguardandoAprovacao;
+        AtualizarDataModificacao();
     }
 
     public void Aprovar()

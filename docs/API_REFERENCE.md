@@ -343,28 +343,54 @@ Desativa uma peça do serviço. **Perfis permitidos:** `ADMIN` | **Respostas:** 
 ### DELETE /api/servicos-pecas/{servicoId}/pecas
 Desativa todas as peças do serviço. **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`, `409`.
 
-### GET /api/item-servico?ordemServicoId={ordemServicoId}
+### GET /api/item-servico/buscar-por/{ordemServicoId}
 Lista itens de serviço de uma ordem. **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `401`, `403`, `404`.
 
-### GET /api/item-servico/{id}?ordemServicoId={ordemServicoId}
-Retorna um item de serviço. **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `401`, `403`, `404`.
+### GET /api/item-servico/buscar-por/{ordemServicoId}/{itemServicoId}
+Retorna um item de serviço de uma ordem. **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `401`, `403`, `404`.
 
-### POST /api/item-servico
-Cria item de serviço e suas peças.
+### GET /api/item-servico/buscar-por-orcamento/{orcamentoId}
+Lista itens de serviço de um orçamento. **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `401`, `403`, `404`.
+
+### GET /api/item-servico/buscar-por-orcamento/{orcamentoId}/{itemServicoId}
+Retorna um item de serviço de um orçamento. **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `401`, `403`, `404`.
+
+### POST /api/item-servico/adicionar
+Cria item de serviço para a ordem de serviço.
 
 #### Requisição
 ```json
-{ "ordemServicoId": "550e8400-e29b-41d4-a716-446655440000", "pecas": [{ "servicoPecaId": "660e8400-e29b-41d4-a716-446655440000", "quantidade": 1 }] }
+{ "ordemServicoId": "550e8400-e29b-41d4-a716-446655440000", "servicoId": "660e8400-e29b-41d4-a716-446655440000", "pecaId": "770e8400-e29b-41d4-a716-446655440000", "quantidade": 1 }
 ```
 
 **Perfis permitidos:** `ADMIN` | **Respostas:** `201`, `400`, `401`, `403`, `404`.
 
-### PUT /api/item-servico
-Atualiza o serviço de um item.
+### POST /api/item-servico/adicionar/para-orcamento
+Cria item de serviço para o orçamento.
 
 #### Requisição
 ```json
-{ "id": "550e8400-e29b-41d4-a716-446655440000", "ordemServicoId": "660e8400-e29b-41d4-a716-446655440000", "servicoPecaId": "770e8400-e29b-41d4-a716-446655440000" }
+{ "orcamentoId": "550e8400-e29b-41d4-a716-446655440000", "servicoId": "660e8400-e29b-41d4-a716-446655440000", "pecaId": null, "quantidade": 1 }
+```
+
+**Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
+
+### PUT /api/item-servico/atualizar
+Atualiza item de serviço da ordem.
+
+#### Requisição
+```json
+{ "itemServicoId": "550e8400-e29b-41d4-a716-446655440000", "ordemServicoId": "660e8400-e29b-41d4-a716-446655440000", "servicoId": "770e8400-e29b-41d4-a716-446655440000", "pecaId": "880e8400-e29b-41d4-a716-446655440000", "quantidade": 1 }
+```
+
+**Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`, `409`.
+
+### PUT /api/item-servico/atualizar/para-orcamento
+Atualiza item de serviço do orçamento.
+
+#### Requisição
+```json
+{ "itemServicoId": "550e8400-e29b-41d4-a716-446655440000", "orcamentoId": "660e8400-e29b-41d4-a716-446655440000", "servicoId": "770e8400-e29b-41d4-a716-446655440000", "pecaId": null, "quantidade": 1 }
 ```
 
 **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`, `409`.
@@ -426,7 +452,7 @@ Adiciona um ou mais itens ao orçamento.
 **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
 ### PUT /api/orcamento/atualizar
-Atualiza um orçamento.
+Atualiza apenas os dados de cabeçalho de um orçamento.
 
 #### Requisição
 ```json
@@ -439,10 +465,10 @@ Atualiza um orçamento.
 Inicia o diagnóstico do orçamento, alterando o status de `Criado` para `EmDiagnostico`. O orçamento precisa ter ao menos um item ativo. **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
 ### POST /api/orcamento/finalizar
-Finaliza o orçamento após o diagnóstico, alterando o status para `AguardandoAprovacao`. **Respostas:** `200`, `400`, `401`, `403`, `404`.
+Finaliza o orçamento após o diagnóstico, alterando o status para `AguardandoEnvio`. **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
 ### POST /api/orcamento/enviar
-Marca o orçamento como enviado para o cliente e registra o histórico de status. O orçamento precisa estar finalizado antes desse passo. **Respostas:** `200`, `400`, `401`, `403`, `404`.
+Marca o orçamento como enviado para o cliente, alterando o status para `AguardandoAprovacao` e registrando o histórico de status. O orçamento precisa estar finalizado antes desse passo. **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
 ### POST /api/orcamento/aprovar
 Aprova o orçamento, seleciona automaticamente o mecânico de reparo quando disponível e gera a ordem de serviço vinculada. **Respostas:** `200`, `400`, `401`, `403`, `404`.
