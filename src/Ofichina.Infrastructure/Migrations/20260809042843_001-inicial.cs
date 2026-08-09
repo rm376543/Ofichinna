@@ -415,9 +415,6 @@ namespace Ofichina.Infrastructure.Migrations
                 {
                     ChecklistId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AgendamentoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    VeiculoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PessoaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    HodometroEntrada = table.Column<int>(type: "int", nullable: false),
                     ItensVerificados = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
                     Observacoes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Finalizado = table.Column<bool>(type: "bit", nullable: false),
@@ -433,18 +430,6 @@ namespace Ofichina.Infrastructure.Migrations
                         column: x => x.AgendamentoId,
                         principalTable: "Agendamentos",
                         principalColumn: "AgendamentosId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Checklists_Pessoas_PessoaId",
-                        column: x => x.PessoaId,
-                        principalTable: "Pessoas",
-                        principalColumn: "PessoaId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Checklists_Veiculos_VeiculoId",
-                        column: x => x.VeiculoId,
-                        principalTable: "Veiculos",
-                        principalColumn: "VeiculoId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -645,16 +630,6 @@ namespace Ofichina.Infrastructure.Migrations
                 name: "IX_Checklists_AgendamentoId",
                 table: "Checklists",
                 column: "AgendamentoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Checklists_PessoaId",
-                table: "Checklists",
-                column: "PessoaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Checklists_VeiculoId",
-                table: "Checklists",
-                column: "VeiculoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DiasDisponibilidade_Data",
