@@ -38,7 +38,7 @@ public sealed class ChecklistController : ControllerBase
         [FromBody] CreateChecklistRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a criação de um checklist. AgendamentoId: {AgendamentoId}, VeiculoId: {VeiculoId}, PessoaId: {PessoaId}.", request.AgendamentoId, request.VeiculoId, request.PessoaId);
+        _logger.LogInformation("Iniciando a criação de um checklist. AgendamentoId: {AgendamentoId}.", request.AgendamentoId);
 
         var result = await _mediator.Send(new CreateChecklistCommand(request), cancellationToken);
 

@@ -11,12 +11,6 @@ public sealed class ChecklistResponse : BaseResponse
 
     public Guid AgendamentoId { get; set; }
 
-    public Guid VeiculoId { get; set; }
-
-    public Guid PessoaId { get; set; }
-
-    public int HodometroEntrada { get; set; }
-
     public string ItensVerificados { get; set; } = string.Empty;
 
     public string? Observacoes { get; set; }

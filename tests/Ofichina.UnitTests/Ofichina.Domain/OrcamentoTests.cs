@@ -7,27 +7,27 @@ namespace Ofichina.UnitTests.Domain;
 public sealed class OrcamentoTests
 {
     [Fact]
-    public void Deve_Criar_Orcamento_Com_Status_Recebida()
+    public void Deve_Criar_Orcamento_Com_Status_Criado()
     {
         var orcamento = CriarOrcamento();
 
-        Assert.Equal(StatusOrcamento.Recebida, orcamento.Status);
+        Assert.Equal(StatusOrcamento.Criado, orcamento.Status);
     }
 
     [Fact]
-    public void Deve_Permitir_Adicionar_Servico_Quando_Status_For_Recebida()
+    public void Deve_Permitir_Adicionar_Servico_Quando_Status_For_Criado()
     {
         var orcamento = CriarOrcamento(comItens: false);
 
-        var item = orcamento.AdicionarServico(Guid.NewGuid(), Guid.NewGuid(), 1, StatusOrcamento.EmDiagnostico);
+        var item = orcamento.AdicionarServico(Guid.NewGuid(), Guid.NewGuid(), 1, StatusOrcamento.Criado);
 
         Assert.NotNull(item);
         Assert.Single(orcamento.ItensServico);
-        Assert.Equal(StatusOrcamento.Recebida, orcamento.Status);
+        Assert.Equal(StatusOrcamento.Criado, orcamento.Status);
     }
 
     [Fact]
-    public void Deve_Rejeitar_Alteracao_De_Itens_Quando_Status_Nao_For_Recebida()
+    public void Deve_Rejeitar_Alteracao_De_Itens_Quando_Status_Nao_For_Criado()
     {
         var orcamento = CriarOrcamento();
         orcamento.IniciarDiagnostico();
@@ -42,9 +42,9 @@ public sealed class OrcamentoTests
     {
         var orcamento = CriarOrcamento(comItens: false);
 
-        var ex = Assert.Throws<DomainException>(() => orcamento.IniciarDiagnostico());
+        orcamento.IniciarDiagnostico();
 
-        Assert.Equal("O orçamento precisa ter ao menos um serviço cadastrado para iniciar o diagnóstico.", ex.Message);
+        Assert.Equal(StatusOrcamento.EmDiagnostico, orcamento.Status);
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public sealed class OrcamentoTests
             "Orçamento teste");
 
         if (comItens)
-            orcamento.AdicionarServico(Guid.NewGuid(), Guid.NewGuid(), 1, StatusOrcamento.EmDiagnostico);
+            orcamento.AdicionarServico(Guid.NewGuid(), Guid.NewGuid(), 1, StatusOrcamento.Criado);
 
         return orcamento;
     }

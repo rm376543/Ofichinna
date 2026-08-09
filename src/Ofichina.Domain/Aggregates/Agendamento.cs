@@ -131,4 +131,18 @@ public sealed class Agendamento : Entity
         Status = StatusAgendamento.CANCELADO;
         AtualizarDataModificacao();
     }
+
+    /// <summary>
+    /// Cria um checklist vinculado ao agendamento.
+    /// </summary>
+    /// <param name="itensVerificados">Itens verificados no checklist.</param>
+    /// <param name="observacoes">Observações complementares.</param>
+    /// <returns>Uma nova instância de checklist vinculada ao agendamento.</returns>
+    public Checklist CriarChecklist(string itensVerificados, string? observacoes)
+    {
+        if (Status == StatusAgendamento.CANCELADO)
+            throw new DomainException("Não é possível criar checklist para um agendamento cancelado.");
+
+        return new Checklist(Id, itensVerificados, observacoes);
+    }
 }

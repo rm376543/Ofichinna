@@ -84,12 +84,12 @@ public sealed class Orcamento : Entity
         DataValidade = dataValidade;
         Desconto = desconto;
         Observacoes = observacoes;
-        Status = StatusOrcamento.Recebida;
+        Status = StatusOrcamento.Criado;
     }
 
     public void IniciarDiagnostico()
     {
-        ValidarStatus(StatusOrcamento.Recebida);
+        ValidarStatus(StatusOrcamento.Criado);
 
         Status = StatusOrcamento.EmDiagnostico;
         AtualizarDataModificacao();

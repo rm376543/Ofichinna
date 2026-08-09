@@ -33,7 +33,7 @@ public sealed class OrcamentoResponseTests
             ResponsavelId = Guid.NewGuid(),
             DataValidade = DateTime.UtcNow.AddDays(10),
             Desconto = 15m,
-            Status = "RECEBIDA",
+            Status = "CRIADO",
             DataCriacao = createdAt,
             ValorTotal = 179.90m,
             ItensServico = [item]
