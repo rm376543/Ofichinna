@@ -71,23 +71,23 @@ public sealed class PermissaoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Permissão encontrada ou erro 404 quando não existir.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpGet("detalhar/{id:guid}")]
+    [HttpGet("detalhar/{permissaoId:guid}")]
     [ProducesResponseType(typeof(ApiResponse<PermissaoResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<PermissaoResponse>>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiResponse<PermissaoResponse>>> GetByIdAsync(Guid permissaoId, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando processo de busca de permissão por ID: {Id}", id);
-        var result = await _mediator.Send(new GetPermissaoByIdQuery(id), cancellationToken);
+        _logger.LogInformation("Iniciando processo de busca de permissão por ID: {permissaoId}", permissaoId);
+        var result = await _mediator.Send(new GetPermissaoByIdQuery(permissaoId), cancellationToken);
 
         if (!result.IsSuccess || result.Value is null)
         {
-            _logger.LogError("Ocorreu um erro ao buscar a permissão por ID: {Id}. Erro: {Error}", id, result.Error);
+            _logger.LogError("Ocorreu um erro ao buscar a permissão por ID: {Id}. Erro: {Error}", permissaoId, result.Error);
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Permissão não encontrada."));
         }
 
-        _logger.LogInformation("Processo de busca de permissão por ID: {Id} concluído com sucesso", id);
+        _logger.LogInformation("Processo de busca de permissão por ID: {Id} concluído com sucesso", permissaoId);
         return Ok(ApiResponse<PermissaoResponse>.SuccessResponse(result.Value));
     }
 

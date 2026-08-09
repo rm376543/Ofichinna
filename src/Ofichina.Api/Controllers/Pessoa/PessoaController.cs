@@ -71,24 +71,24 @@ namespace Ofichina.Api.Controllers.Pessoa
         /// <summary>
         /// Retorna uma pessoa pelo identificador.
         /// </summary>
-        /// <param name="id">Identificador da pessoa.</param>
+        /// <param name="pessoaId">Identificador da pessoa.</param>
         /// <param name="cancellationToken">Token de cancelamento.</param>
         /// <returns>Pessoa encontrada ou erro 404.</returns>
         [Authorize(Roles = "ADMIN")]
-        [HttpGet("detalhar/{id:guid}")]
+        [HttpGet("detalhar/{pessoaId:guid}")]
         [ProducesResponseType(typeof(ApiResponse<PessoaResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ApiResponse<PessoaResponse>>> BuscarPessoaPorId(Guid id, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiResponse<PessoaResponse>>> BuscarPessoaPorId(Guid pessoaId, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Iniciando a obtenção da pessoa com Id: {Id}", id);
+            _logger.LogInformation("Iniciando a obtenção da pessoa com Id: {pessoaId}", pessoaId);
 
-            var result = await _mediator.Send(new GetPessoaByIdQuery(id), cancellationToken);
+            var result = await _mediator.Send(new GetPessoaByIdQuery(pessoaId), cancellationToken);
 
             if (!result.IsSuccess || result.Value is null)
             {
-                _logger.LogError("Pessoa com Id: {Id} não encontrada.", id);
+                _logger.LogError("Pessoa com Id: {pessoaId} não encontrada.", pessoaId);
                 return NotFound(ApiResponse.FailureResponse(result.Error ?? "Pessoa não encontrada."));
             }
 

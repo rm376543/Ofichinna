@@ -82,6 +82,29 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IReadOnlyCollection<ItemServico>> GetByOrcamentoIdAsync(
+        Guid orcamentoId,
+        CancellationToken cancellationToken = default,
+        bool includeRelacionados = false,
+        bool tracking = false)
+    {
+        IQueryable<ItemServico> query = _context.Set<ItemServico>();
+
+        if (!tracking)
+            query = query.AsNoTracking();
+
+        if (includeRelacionados)
+        {
+            query = query
+                .Include(x => x.Servico)
+                .Include(x => x.Peca);
+        }
+
+        return await query
+            .Where(x => x.OrcamentoId == orcamentoId)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<ItemServico> AddAsync(
         Guid ordemServicoId,
         Guid servicoId,
@@ -132,6 +155,30 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
 
         return await query.FirstOrDefaultAsync(
             x => x.OrcamentoId == orcamentoId && x.ServicoId == servicoId && x.PecaId == pecaId,
+            cancellationToken);
+    }
+
+    public async Task<ItemServico?> GetByOrcamentoIdAndItemServicoIdAsync(
+        Guid orcamentoId,
+        Guid itemServicoId,
+        CancellationToken cancellationToken = default,
+        bool includeRelacionados = false,
+        bool tracking = false)
+    {
+        IQueryable<ItemServico> query = _context.Set<ItemServico>();
+
+        if (!tracking)
+            query = query.AsNoTracking();
+
+        if (includeRelacionados)
+        {
+            query = query
+                .Include(x => x.Servico)
+                .Include(x => x.Peca);
+        }
+
+        return await query.FirstOrDefaultAsync(
+            x => x.OrcamentoId == orcamentoId && x.Id == itemServicoId,
             cancellationToken);
     }
 }

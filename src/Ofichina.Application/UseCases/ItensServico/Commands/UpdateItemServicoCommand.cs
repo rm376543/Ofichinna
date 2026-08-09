@@ -36,8 +36,6 @@ public sealed class UpdateItemServicoCommand : ICommand<Result>
 
     public UpdateItemServicoCommand(UpdateItemServicoRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request);
-
         ItemServicoId = request.ItemServicoId;
         OrdemServicoId = request.OrdemServicoId;
         ServicoId = request.ServicoId;

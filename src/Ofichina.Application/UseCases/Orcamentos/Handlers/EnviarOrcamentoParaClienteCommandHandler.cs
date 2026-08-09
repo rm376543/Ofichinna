@@ -13,7 +13,7 @@ using Ofichina.Domain.Exceptions;
 namespace Ofichina.Application.UseCases.Orcamentos.Handlers;
 
 /// <summary>
-/// Handler para enviar orçamento ao cliente.
+/// Handler para enviar orçamento ao cliente e movê-lo para aprovação.
 /// </summary>
 public sealed class EnviarOrcamentoParaClienteCommandHandler : ICommandHandler<EnviarOrcamentoParaClienteCommand, Result>
 {

@@ -29,6 +29,7 @@ public sealed class OrcamentoResponseMappingExtensionsTests
         DefinirPropriedade(item, nameof(ItemServico.Peca), peca);
 
         orcamento.IniciarDiagnostico();
+        orcamento.FinalizarDiagnostico();
         orcamento.AtualizarDesconto(12m);
 
         var response = orcamento.ToResponse();
@@ -42,7 +43,7 @@ public sealed class OrcamentoResponseMappingExtensionsTests
         Assert.Equal(DateOnly.FromDateTime(orcamento.DataValidade), response.DataValidade);
         Assert.Equal(12m, response.Desconto);
         Assert.Equal(orcamento.Observacoes, response.Observacoes);
-        Assert.Equal("EM_DIAGNOSTICO", response.Status);
+        Assert.Equal("AGUARDANDO_ENVIO", response.Status);
         Assert.Equal(orcamento.DataCriacao, response.DataCriacao);
         Assert.Equal(orcamento.ValorTotal, response.ValorTotal);
         Assert.Single(response.ItensServico);

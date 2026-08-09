@@ -2,7 +2,6 @@ using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Orcamentos.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Enums;
 using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Application.UseCases.Orcamentos.Handlers;
@@ -15,8 +14,6 @@ public sealed class UpdateOrcamentoCommandHandler : ICommandHandler<UpdateOrcame
     private readonly IOrcamentoRepository _orcamentoRepository;
     private readonly IRepository<Pessoa> _pessoaRepository;
     private readonly IRepository<Veiculo> _veiculoRepository;
-    private readonly IRepository<Servico> _servicoRepository;
-    private readonly IRepository<Peca> _pecaRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UpdateOrcamentoCommandHandler> _logger;
 
@@ -24,16 +21,12 @@ public sealed class UpdateOrcamentoCommandHandler : ICommandHandler<UpdateOrcame
         IOrcamentoRepository orcamentoRepository,
         IRepository<Pessoa> pessoaRepository,
         IRepository<Veiculo> veiculoRepository,
-        IRepository<Servico> servicoRepository,
-        IRepository<Peca> pecaRepository,
         IUnitOfWork unitOfWork,
         ILogger<UpdateOrcamentoCommandHandler> logger)
     {
         _orcamentoRepository = orcamentoRepository;
         _pessoaRepository = pessoaRepository;
         _veiculoRepository = veiculoRepository;
-        _servicoRepository = servicoRepository;
-        _pecaRepository = pecaRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -69,25 +62,6 @@ public sealed class UpdateOrcamentoCommandHandler : ICommandHandler<UpdateOrcame
                 command.ConsultorId,
                 command.DataValidade.ToDateTime(TimeOnly.MinValue),
                 command.Observacoes);
-
-            foreach (var item in orcamento.ItensServico.ToList())
-                orcamento.RemoverServico(item.Id, StatusOrcamento.EmDiagnostico);
-
-            foreach (var item in command.ItensServico)
-            {
-                var servico = await _servicoRepository.GetByIdAsync(item.ServicoId, cancellationToken);
-                if (servico is null || servico.EstaExcluida())
-                    return Result.Failure("Serviço não encontrado.");
-
-                if (item.PecaId.HasValue)
-                {
-                    var peca = await _pecaRepository.GetByIdAsync(item.PecaId.Value, cancellationToken);
-                    if (peca is null || peca.EstaExcluida())
-                        return Result.Failure("Peça não encontrada.");
-                }
-
-                orcamento.AdicionarServico(item.ServicoId, item.PecaId, item.Quantidade, StatusOrcamento.EmDiagnostico);
-            }
 
             await _orcamentoRepository.UpdateAsync(orcamento, cancellationToken);
             await _unitOfWork.SaveChangesAsync();

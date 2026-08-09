@@ -32,7 +32,7 @@ public sealed class OrcamentoTests
         var orcamento = CriarOrcamento();
         orcamento.IniciarDiagnostico();
 
-        var ex = Assert.Throws<DomainException>(() => orcamento.AdicionarServico(Guid.NewGuid(), Guid.NewGuid(), 1, StatusOrcamento.EmDiagnostico));
+        var ex = Assert.Throws<DomainException>(() => orcamento.AdicionarServico(Guid.NewGuid(), Guid.NewGuid(), 1, StatusOrcamento.Criado));
 
         Assert.Equal("Não é possível alterar itens nesta etapa do orçamento.", ex.Message);
     }
@@ -54,6 +54,8 @@ public sealed class OrcamentoTests
         orcamento.IniciarDiagnostico();
         orcamento.FinalizarDiagnostico();
 
+        Assert.Equal(StatusOrcamento.AguardandoEnvio, orcamento.Status);
+
         orcamento.EnviarParaCliente();
 
         Assert.Equal(StatusOrcamento.AguardandoAprovacao, orcamento.Status);
@@ -64,8 +66,9 @@ public sealed class OrcamentoTests
     {
         var orcamento = CriarOrcamento();
         orcamento.IniciarDiagnostico();
+        orcamento.FinalizarDiagnostico();
 
-        var ex = Assert.Throws<DomainException>(() => orcamento.EnviarParaCliente());
+        var ex = Assert.Throws<DomainException>(() => orcamento.Aprovar());
 
         Assert.Equal("O orçamento precisa estar no status AguardandoAprovacao.", ex.Message);
     }

@@ -3,7 +3,7 @@
 namespace Ofichina.Contracts.Requests.Orcamento
 {
     /// <summary>
-    /// Requisição para atualização de orçamento para um usuário.
+    /// Requisição para atualização do cabeçalho de orçamento para um usuário.
     /// </summary>
     public class UpdateOrcamentoRequest : UpdateRequest
     {
@@ -41,10 +41,5 @@ namespace Ofichina.Contracts.Requests.Orcamento
         /// Observações.
         /// </summary>
         public string? Observacoes { get; init; }
-
-        /// <summary>
-        /// Lista atualizada de itens de serviço.
-        /// </summary>
-        public ICollection<OrcamentoItemServicoRequest> ItensServico { get; init; } = [];
     }
 }

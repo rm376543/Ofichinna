@@ -5,7 +5,7 @@ using Ofichina.Contracts.Requests.Orcamento;
 namespace Ofichina.Application.UseCases.Orcamentos.Commands;
 
 /// <summary>
-/// Comando para atualização de orçamento.
+/// Comando para atualização do cabeçalho de orçamento.
 /// </summary>
 public sealed class UpdateOrcamentoCommand : ICommand<Result>
 {
@@ -23,8 +23,6 @@ public sealed class UpdateOrcamentoCommand : ICommand<Result>
 
     public string? Observacoes { get; init; }
 
-    public ICollection<OrcamentoItemServicoRequest> ItensServico { get; init; } = [];
-
     public UpdateOrcamentoCommand(UpdateOrcamentoRequest request)
     {
         OrcamentoId = request.OrcamentoId;
@@ -34,6 +32,5 @@ public sealed class UpdateOrcamentoCommand : ICommand<Result>
         ConsultorId = request.ConsultorId;
         DataValidade = request.DataValidade;
         Observacoes = request.Observacoes;
-        ItensServico = request.ItensServico;
     }
 }

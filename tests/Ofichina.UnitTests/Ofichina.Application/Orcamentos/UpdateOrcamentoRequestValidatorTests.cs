@@ -28,16 +28,7 @@ public sealed class UpdateOrcamentoRequestValidatorTests
             ConsultorId = Guid.NewGuid(),
             MecanicoId = Guid.NewGuid(),
             DataValidade = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(5)),
-            Observacoes = "Orçamento atualizado",
-            ItensServico =
-            [
-                new OrcamentoItemServicoRequest
-                {
-                    ServicoId = Guid.NewGuid(),
-                    PecaId = Guid.NewGuid(),
-                    Quantidade = 1
-                }
-            ]
+            Observacoes = "Orçamento atualizado"
         };
 
         var result = validator.Validate(request);
@@ -56,16 +47,7 @@ public sealed class UpdateOrcamentoRequestValidatorTests
             ConsultorId = Guid.NewGuid(),
             MecanicoId = Guid.NewGuid(),
             DataValidade = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(5)),
-            Observacoes = "Orçamento atualizado",
-            ItensServico =
-            [
-                new OrcamentoItemServicoRequest
-                {
-                    ServicoId = Guid.NewGuid(),
-                    PecaId = Guid.NewGuid(),
-                    Quantidade = 1
-                }
-            ]
+            Observacoes = "Orçamento atualizado"
         };
     }
 }
