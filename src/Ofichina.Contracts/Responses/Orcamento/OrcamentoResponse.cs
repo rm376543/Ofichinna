@@ -15,11 +15,11 @@ public sealed class OrcamentoResponse : BaseResponse
 
     public Guid AgendamentoId { get; set; }
 
-    public Guid MecanicoDiagnosticoId { get; set; }
+    public Guid MecanicoId { get; set; }
 
-    public Guid ResponsavelId { get; set; }
+    public Guid ConsultorId { get; set; }
 
-    public DateTime DataValidade { get; set; }
+    public DateOnly DataValidade { get; set; }
 
     public decimal Desconto { get; set; }
 

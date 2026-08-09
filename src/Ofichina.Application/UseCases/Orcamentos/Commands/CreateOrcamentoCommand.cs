@@ -15,13 +15,11 @@ public sealed class CreateOrcamentoCommand : ICommand<Result>
 
     public Guid AgendamentoId { get; init; }
 
-    public Guid MecanicoDiagnosticoId { get; init; }
+    public Guid MecanicoId { get; init; }
 
-    public Guid ResponsavelId { get; init; }
+    public Guid ConsultorId { get; init; }
 
-    public DateTime DataValidade { get; init; }
-
-    public decimal Desconto { get; init; }
+    public DateOnly DataValidade { get; init; }
 
     public string? Observacoes { get; init; }
 
@@ -30,10 +28,9 @@ public sealed class CreateOrcamentoCommand : ICommand<Result>
         PessoaId = request.PessoaId;
         VeiculoId = request.VeiculoId;
         AgendamentoId = request.AgendamentoId;
-        MecanicoDiagnosticoId = request.MecanicoDiagnosticoId;
-        ResponsavelId = request.ResponsavelId;
+        MecanicoId = request.MecanicoId;
+        ConsultorId = request.ConsultorId;
         DataValidade = request.DataValidade;
-        Desconto = request.Desconto;
         Observacoes = request.Observacoes;
     }
 }

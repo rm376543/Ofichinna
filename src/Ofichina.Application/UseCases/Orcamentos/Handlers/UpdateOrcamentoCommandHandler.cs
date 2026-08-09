@@ -54,21 +54,20 @@ public sealed class UpdateOrcamentoCommandHandler : ICommandHandler<UpdateOrcame
             if (veiculo is null || veiculo.EstaExcluida())
                 return Result.Failure("Veículo não encontrado.");
 
-            var mecanicoDiagnostico = await _pessoaRepository.GetByIdAsync(command.MecanicoDiagnosticoId, cancellationToken);
+            var mecanicoDiagnostico = await _pessoaRepository.GetByIdAsync(command.MecanicoId, cancellationToken);
             if (mecanicoDiagnostico is null || mecanicoDiagnostico.EstaExcluida())
                 return Result.Failure("Mecânico do diagnóstico não encontrado.");
 
-            var responsavel = await _pessoaRepository.GetByIdAsync(command.ResponsavelId, cancellationToken);
-            if (responsavel is null || responsavel.EstaExcluida())
-                return Result.Failure("Responsável não encontrado.");
+            var consultor = await _pessoaRepository.GetByIdAsync(command.ConsultorId, cancellationToken);
+            if (consultor is null || consultor.EstaExcluida())
+                return Result.Failure("Consultor não encontrado.");
 
             orcamento.AtualizarDados(
                 command.PessoaId,
                 command.VeiculoId,
-                command.MecanicoDiagnosticoId,
-                command.ResponsavelId,
-                command.DataValidade,
-                command.Desconto,
+                command.MecanicoId,
+                command.ConsultorId,
+                command.DataValidade.ToDateTime(TimeOnly.MinValue),
                 command.Observacoes);
 
             foreach (var item in orcamento.ItensServico.ToList())

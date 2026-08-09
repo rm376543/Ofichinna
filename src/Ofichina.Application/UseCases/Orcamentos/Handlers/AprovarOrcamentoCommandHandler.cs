@@ -55,7 +55,7 @@ public sealed class AprovarOrcamentoCommandHandler : ICommandHandler<AprovarOrca
             orcamento.Aprovar();
 
             var mecanicoReparoId = await _mecanicoDisponibilidadeService.ObterMecanicoDisponivelAsync(cancellationToken)
-                ?? orcamento.MecanicoDiagnosticoId;
+                ?? orcamento.MecanicoId;
 
             var ordemServico = OrdemServico.CriarAPartirDoOrcamento(orcamento, mecanicoReparoId);
             ordemServico.IniciarExecucao();

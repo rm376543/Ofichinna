@@ -19,17 +19,14 @@ public sealed class UpdateOrcamentoRequestValidator : AbstractValidator<UpdateOr
         RuleFor(x => x.VeiculoId)
             .NotEmpty().WithMessage("O veículo vinculado é obrigatório.");
 
-        RuleFor(x => x.ResponsavelId)
-            .NotEmpty().WithMessage("O responsável pelo orçamento é obrigatório.");
+        RuleFor(x => x.ConsultorId)
+            .NotEmpty().WithMessage("O consultor do orçamento é obrigatório.");
 
-        RuleFor(x => x.MecanicoDiagnosticoId)
+        RuleFor(x => x.MecanicoId)
             .NotEmpty().WithMessage("O mecânico do diagnóstico é obrigatório.");
 
         RuleFor(x => x.DataValidade)
             .NotEmpty().WithMessage("A data de validade é obrigatória.");
-
-        RuleFor(x => x.Desconto)
-            .GreaterThanOrEqualTo(0).WithMessage("O desconto não pode ser negativo.");
 
         RuleFor(x => x.Observacoes)
             .MaximumLength(1000).WithMessage("As observações não podem exceder 1000 caracteres.")

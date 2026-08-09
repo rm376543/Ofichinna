@@ -24,17 +24,20 @@ public sealed class OrcamentoController : ControllerBase
 {
     private readonly IValidator<CreateOrcamentoRequest> _createValidator;
     private readonly IValidator<UpdateOrcamentoRequest> _updateValidator;
+    private readonly IValidator<UpdateOrcamentoDescontoRequest> _updateDescontoValidator;
     private readonly IMediator _mediator;
     private readonly ILogger<OrcamentoController> _logger;
 
     public OrcamentoController(
         IValidator<CreateOrcamentoRequest> createValidator,
         IValidator<UpdateOrcamentoRequest> updateValidator,
+        IValidator<UpdateOrcamentoDescontoRequest> updateDescontoValidator,
         IMediator mediator,
         ILogger<OrcamentoController> logger)
     {
         _createValidator = createValidator;
         _updateValidator = updateValidator;
+        _updateDescontoValidator = updateDescontoValidator;
         _mediator = mediator;
         _logger = logger;
     }
@@ -210,6 +213,39 @@ public sealed class OrcamentoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o orçamento."));
 
         return Ok(ApiResponse.SuccessResponse("Orçamento atualizado com sucesso."));
+    }
+
+    /// <summary>
+    /// Atualiza o desconto de um orçamento.
+    /// </summary>
+    /// <param name="orcamentoId">Identificador do orçamento.</param>
+    /// <param name="request">Dados do desconto.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso ou erro de validação.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpPut("{orcamentoId:guid}/desconto")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> AtualizarDescontoOrcamento(
+        [FromRoute] Guid orcamentoId,
+        [FromBody] UpdateOrcamentoDescontoRequest request,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando a atualização do desconto do orçamento com Id: {Id}.", orcamentoId);
+
+        var validation = await _updateDescontoValidator.ValidateAsync(request, cancellationToken);
+        if (!validation.IsValid)
+            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
+
+        var result = await _mediator.Send(new UpdateOrcamentoDescontoCommand(orcamentoId, request.Desconto), cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o desconto do orçamento."));
+
+        return Ok(ApiResponse.SuccessResponse("Desconto do orçamento atualizado com sucesso."));
     }
 
     /// <summary>

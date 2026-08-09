@@ -66,22 +66,22 @@ public sealed class CreateOrcamentoService : ICreateOrcamentoService
             if (checklists.Any(x => !x.Finalizado))
                 return Result.Failure("Existem checklists pendentes para o agendamento informado.");
 
-            var mecanicoDiagnostico = await _pessoaRepository.GetByIdAsync(command.MecanicoDiagnosticoId, cancellationToken);
+            var mecanicoDiagnostico = await _pessoaRepository.GetByIdAsync(command.MecanicoId, cancellationToken);
             if (mecanicoDiagnostico is null || mecanicoDiagnostico.EstaExcluida())
                 return Result.Failure("Mecânico do diagnóstico não encontrado.");
 
-            var responsavel = await _pessoaRepository.GetByIdAsync(command.ResponsavelId, cancellationToken);
-            if (responsavel is null || responsavel.EstaExcluida())
-                return Result.Failure("Responsável não encontrado.");
+            var consultor = await _pessoaRepository.GetByIdAsync(command.ConsultorId, cancellationToken);
+            if (consultor is null || consultor.EstaExcluida())
+                return Result.Failure("Consultor não encontrado.");
 
             var orcamento = new Orcamento(
                 command.PessoaId,
                 command.VeiculoId,
                 command.AgendamentoId,
-                command.MecanicoDiagnosticoId,
-                command.ResponsavelId,
-                command.DataValidade,
-                command.Desconto,
+                command.MecanicoId,
+                command.ConsultorId,
+                command.DataValidade.ToDateTime(TimeOnly.MinValue),
+                0,
                 command.Observacoes);
 
             await _orcamentoRepository.AddAsync(orcamento, cancellationToken);

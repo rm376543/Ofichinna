@@ -383,7 +383,7 @@ Remove um item de serviço.
 
 Todos os endpoints desta seção exigem `[Authorize(Roles = "ADMIN")]`.
 
-### GET /api/orcamentos
+### GET /api/orcamento
 Lista orçamentos com paginação.
 
 #### Resposta 200
@@ -393,27 +393,27 @@ Lista orçamentos com paginação.
 
 **Respostas:** `200`, `400`, `401`, `403`.
 
-### GET /api/orcamentos/{id}
+### GET /api/orcamento/detalhar/{id}
 Retorna o orçamento detalhado com checklist e serviços previstos, incluindo `valorTotal` líquido com desconto.
 
 #### Resposta 200
 ```json
-{ "success": true, "data": { "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "mecanicoDiagnosticoId": "...", "responsavelId": "...", "dataValidade": "2026-08-10T12:00:00Z", "desconto": 10, "valorTotal": 1120.00, "observacoes": "Avaliar ruído", "status": "EmDiagnostico", "checklist": { "id": "...", "orcamentoId": "...", "hodometroEntrada": 35000, "itensVerificados": "Pneus, freios", "observacoes": "Sem vazamentos" }, "itensServico": [{ "orcamentoId": "...", "servicos": [{ "servicoId": "...", "descricao": "Troca de óleo", "valorServico": 120, "valorTotal": 180, "pecas": [{ "pecaId": "...", "descricao": "Filtro de óleo", "quantidade": 1, "valorUnitario": 60, "valorTotal": 60 }] }] }] } }
+{ "success": true, "data": { "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "mecanicoId": "...", "consultorId": "...", "dataValidade": "2026-08-10T12:00:00Z", "desconto": 10, "valorTotal": 1120.00, "observacoes": "Avaliar ruído", "status": "EmDiagnostico", "checklist": { "id": "...", "orcamentoId": "...", "hodometroEntrada": 35000, "itensVerificados": "Pneus, freios", "observacoes": "Sem vazamentos" }, "itensServico": [{ "orcamentoId": "...", "servicos": [{ "servicoId": "...", "descricao": "Troca de óleo", "valorServico": 120, "valorTotal": 180, "pecas": [{ "pecaId": "...", "descricao": "Filtro de óleo", "quantidade": 1, "valorUnitario": 60, "valorTotal": 60 }] }] }] } }
 ```
 
 **Respostas:** `200`, `401`, `403`, `404`.
 
-### POST /api/orcamentos
-Cria um orçamento com dados básicos. Os itens são adicionados em seguida no endpoint `POST /api/orcamentos/{id}/itens`.
+### POST /api/orcamento/adicionar
+Cria um orçamento com dados básicos. Os itens são adicionados em seguida no endpoint `POST /api/orcamento/{id}/itens`.
 
 #### Requisição
 ```json
-{ "pessoaId": "550e8400-e29b-41d4-a716-446655440000", "veiculoId": "660e8400-e29b-41d4-a716-446655440000", "checklistId": "990e8400-e29b-41d4-a716-446655440000", "responsavelId": "770e8400-e29b-41d4-a716-446655440000", "mecanicoDiagnosticoId": "880e8400-e29b-41d4-a716-446655440000", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Avaliar ruído", "desconto": 10 }
+{ "pessoaId": "550e8400-e29b-41d4-a716-446655440000", "veiculoId": "660e8400-e29b-41d4-a716-446655440000", "agendamentoId": "990e8400-e29b-41d4-a716-446655440000", "consultorId": "770e8400-e29b-41d4-a716-446655440000", "mecanicoId": "880e8400-e29b-41d4-a716-446655440000", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Avaliar ruído" }
 ```
 
 **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
-### POST /api/orcamentos/{id}/itens
+### POST /api/orcamento/{id}/itens
 Adiciona um ou mais itens ao orçamento.
 
 #### Requisição
@@ -425,32 +425,32 @@ Adiciona um ou mais itens ao orçamento.
 
 **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
-### PUT /api/orcamentos
+### PUT /api/orcamento/atualizar
 Atualiza um orçamento.
 
 #### Requisição
 ```json
-{ "id": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "responsavelId": "...", "mecanicoDiagnosticoId": "...", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Atualizado", "desconto": 12, "itensServico": [{ "servicoId": "...", "pecaId": null, "quantidade": 1 }] }
+{ "orcamentoId": "550e8400-e29b-41d4-a716-446655440000", "pessoaId": "...", "veiculoId": "...", "consultorId": "...", "mecanicoId": "...", "dataValidade": "2026-08-10T12:00:00Z", "observacoes": "Atualizado", "itensServico": [{ "servicoId": "...", "pecaId": null, "quantidade": 1 }] }
 ```
 
 **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
-### PUT /api/orcamentos/{id}/iniciar-diagnostico
-Inicia o diagnóstico do orçamento, alterando o status de `Recebida` para `EmDiagnostico`. O orçamento precisa ter ao menos um item ativo. **Respostas:** `200`, `400`, `401`, `403`, `404`.
+### POST /api/orcamento/iniciar-diagnostico
+Inicia o diagnóstico do orçamento, alterando o status de `Criado` para `EmDiagnostico`. O orçamento precisa ter ao menos um item ativo. **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
-### PUT /api/orcamentos/{id}/finalizar
+### POST /api/orcamento/finalizar
 Finaliza o orçamento após o diagnóstico, alterando o status para `AguardandoAprovacao`. **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
-### PUT /api/orcamentos/{id}/enviar
+### POST /api/orcamento/enviar
 Marca o orçamento como enviado para o cliente e registra o histórico de status. O orçamento precisa estar finalizado antes desse passo. **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
-### PUT /api/orcamentos/{id}/aprovar
+### POST /api/orcamento/aprovar
 Aprova o orçamento, seleciona automaticamente o mecânico de reparo quando disponível e gera a ordem de serviço vinculada. **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
-### PUT /api/orcamentos/{id}/reprovar
+### POST /api/orcamento/reprovar
 Reprova o orçamento com motivo opcional, persistindo `MotivoRecusaOrcamento` e histórico de status. **Respostas:** `200`, `401`, `403`, `404`.
 
-### PUT /api/orcamentos/{id}/reenviar
+### POST /api/orcamento/reenviar-para-diagnostico
 Reenvia o orçamento após reprovação, retornando o fluxo para diagnóstico e registrando histórico de status. **Respostas:** `200`, `401`, `403`, `404`.
 
 ## 🧾 Ordens de serviço

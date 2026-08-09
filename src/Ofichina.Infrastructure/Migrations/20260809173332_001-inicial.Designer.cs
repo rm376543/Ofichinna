@@ -12,7 +12,7 @@ using Ofichina.Infrastructure.Persistence;
 namespace Ofichina.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260809042843_001-inicial")]
+    [Migration("20260809173332_001-inicial")]
     partial class _001inicial
     {
         /// <inheritdoc />
@@ -82,6 +82,9 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Property<Guid>("AgendamentoId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("ConsultorId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -95,7 +98,7 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid>("MecanicoDiagnosticoId")
+                    b.Property<Guid>("MecanicoId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Observacoes")
@@ -103,9 +106,6 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<Guid>("PessoaId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ResponsavelId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
@@ -123,11 +123,11 @@ namespace Ofichina.Infrastructure.Migrations
 
                     b.HasIndex("AgendamentoId");
 
-                    b.HasIndex("MecanicoDiagnosticoId");
+                    b.HasIndex("ConsultorId");
+
+                    b.HasIndex("MecanicoId");
 
                     b.HasIndex("PessoaId");
-
-                    b.HasIndex("ResponsavelId");
 
                     b.HasIndex("VeiculoId");
 
@@ -895,19 +895,19 @@ namespace Ofichina.Infrastructure.Migrations
 
                     b.HasOne("Ofichina.Domain.Entities.Pessoa", null)
                         .WithMany()
-                        .HasForeignKey("MecanicoDiagnosticoId")
+                        .HasForeignKey("ConsultorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Ofichina.Domain.Entities.Pessoa", null)
+                        .WithMany()
+                        .HasForeignKey("MecanicoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Ofichina.Domain.Entities.Pessoa", null)
                         .WithMany()
                         .HasForeignKey("PessoaId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Ofichina.Domain.Entities.Pessoa", null)
-                        .WithMany()
-                        .HasForeignKey("ResponsavelId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

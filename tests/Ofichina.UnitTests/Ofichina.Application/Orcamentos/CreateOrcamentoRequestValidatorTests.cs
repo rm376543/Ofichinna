@@ -25,10 +25,9 @@ public sealed class CreateOrcamentoRequestValidatorTests
             PessoaId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
             AgendamentoId = Guid.NewGuid(),
-            ResponsavelId = Guid.NewGuid(),
-            MecanicoDiagnosticoId = Guid.NewGuid(),
-            DataValidade = DateTime.UtcNow.AddDays(10),
-            Desconto = 10,
+            ConsultorId = Guid.NewGuid(),
+            MecanicoId = Guid.NewGuid(),
+            DataValidade = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(10)),
             Observacoes = "Orçamento sem itens"
         };
 
@@ -46,10 +45,9 @@ public sealed class CreateOrcamentoRequestValidatorTests
             PessoaId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
             AgendamentoId = Guid.Empty,
-            ResponsavelId = Guid.NewGuid(),
-            MecanicoDiagnosticoId = Guid.NewGuid(),
-            DataValidade = DateTime.UtcNow.AddDays(10),
-            Desconto = 10,
+            ConsultorId = Guid.NewGuid(),
+            MecanicoId = Guid.NewGuid(),
+            DataValidade = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(10)),
             Observacoes = "Orçamento inicial"
         };
 
@@ -66,10 +64,9 @@ public sealed class CreateOrcamentoRequestValidatorTests
             PessoaId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
             AgendamentoId = Guid.NewGuid(),
-            ResponsavelId = Guid.NewGuid(),
-            MecanicoDiagnosticoId = Guid.NewGuid(),
-            DataValidade = DateTime.UtcNow.AddDays(10),
-            Desconto = 10,
+            ConsultorId = Guid.NewGuid(),
+            MecanicoId = Guid.NewGuid(),
+            DataValidade = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(10)),
             Observacoes = "Orçamento inicial"
         };
     }

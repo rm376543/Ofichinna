@@ -25,10 +25,9 @@ public sealed class UpdateOrcamentoRequestValidatorTests
             OrcamentoId = Guid.Empty,
             PessoaId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
-            ResponsavelId = Guid.NewGuid(),
-            MecanicoDiagnosticoId = Guid.NewGuid(),
-            DataValidade = DateTime.UtcNow.AddDays(5),
-            Desconto = 5,
+            ConsultorId = Guid.NewGuid(),
+            MecanicoId = Guid.NewGuid(),
+            DataValidade = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(5)),
             Observacoes = "Orçamento atualizado",
             ItensServico =
             [
@@ -54,10 +53,9 @@ public sealed class UpdateOrcamentoRequestValidatorTests
             OrcamentoId = Guid.NewGuid(),
             PessoaId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
-            ResponsavelId = Guid.NewGuid(),
-            MecanicoDiagnosticoId = Guid.NewGuid(),
-            DataValidade = DateTime.UtcNow.AddDays(5),
-            Desconto = 5,
+            ConsultorId = Guid.NewGuid(),
+            MecanicoId = Guid.NewGuid(),
+            DataValidade = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(5)),
             Observacoes = "Orçamento atualizado",
             ItensServico =
             [

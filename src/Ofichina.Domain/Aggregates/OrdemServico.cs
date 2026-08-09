@@ -151,12 +151,12 @@ public sealed class OrdemServico : Entity
         var ordemServico = new OrdemServico(
             orcamento.PessoaId,
             orcamento.VeiculoId,
-            orcamento.ResponsavelId,
+            orcamento.ConsultorId,
             hodometroEntrada,
             problemaRelatado,
             orcamento.Observacoes);
 
-        ordemServico.DesignarMecanicoReparo(mecanicoReparoId, orcamento.MecanicoDiagnosticoId);
+        ordemServico.DesignarMecanicoReparo(mecanicoReparoId, orcamento.MecanicoId);
 
         foreach (var item in orcamento.ItensServico.Where(x => !x.EstaExcluida()))
             ordemServico.AdicionarServico(item.ServicoId, item.PecaId, item.Quantidade);
@@ -203,7 +203,7 @@ public sealed class OrdemServico : Entity
     /// <summary>
     /// Desenha o mecânico responsável pelo reparo.
     /// </summary>
-    public void DesignarMecanicoReparo(Guid mecanicoReparoId, Guid mecanicoDiagnosticoId)
+    public void DesignarMecanicoReparo(Guid mecanicoReparoId, Guid mecanicoId)
     {
         if (mecanicoReparoId == Guid.Empty)
             throw new DomainException("Mecânico de reparo obrigatório.");
