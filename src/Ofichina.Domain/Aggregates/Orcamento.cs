@@ -18,9 +18,9 @@ public sealed class Orcamento : Entity
 
     public Guid AgendamentoId { get; private set; }
 
-    public Guid MecanicoDiagnosticoId { get; private set; }
+    public Guid MecanicoId { get; private set; }
 
-    public Guid ResponsavelId { get; private set; }
+    public Guid ConsultorId { get; private set; }
 
     public DateTime DataValidade { get; private set; }
 
@@ -57,8 +57,8 @@ public sealed class Orcamento : Entity
         Guid pessoaId,
         Guid veiculoId,
         Guid agendamentoId,
-        Guid mecanicoDiagnosticoId,
-        Guid responsavelId,
+        Guid mecanicoId,
+        Guid consultorId,
         DateTime dataValidade,
         decimal desconto,
         string? observacoes)
@@ -67,8 +67,8 @@ public sealed class Orcamento : Entity
         ValidarIdentificador(pessoaId, "Pessoa obrigatória.");
         ValidarIdentificador(veiculoId, "Veículo obrigatório.");
         ValidarIdentificador(agendamentoId, "Agendamento obrigatório.");
-        ValidarIdentificador(mecanicoDiagnosticoId, "Mecânico do diagnóstico obrigatório.");
-        ValidarIdentificador(responsavelId, "Responsável obrigatório.");
+        ValidarIdentificador(mecanicoId, "Mecânico obrigatório.");
+        ValidarIdentificador(consultorId, "Consultor obrigatório.");
 
         if (desconto < 0)
             throw new DomainException("O desconto não pode ser negativo.");
@@ -79,8 +79,8 @@ public sealed class Orcamento : Entity
         PessoaId = pessoaId;
         VeiculoId = veiculoId;
         AgendamentoId = agendamentoId;
-        MecanicoDiagnosticoId = mecanicoDiagnosticoId;
-        ResponsavelId = responsavelId;
+        MecanicoId = mecanicoId;
+        ConsultorId = consultorId;
         DataValidade = dataValidade;
         Desconto = desconto;
         Observacoes = observacoes;
@@ -136,31 +136,35 @@ public sealed class Orcamento : Entity
     public void AtualizarDados(
         Guid pessoaId,
         Guid veiculoId,
-        Guid mecanicoDiagnosticoId,
-        Guid responsavelId,
+        Guid mecanicoId,
+        Guid consultorId,
         DateTime dataValidade,
-        decimal desconto,
         string? observacoes)
     {
         ValidarIdentificador(pessoaId, "Pessoa obrigatória.");
         ValidarIdentificador(veiculoId, "Veículo obrigatório.");
-        ValidarIdentificador(mecanicoDiagnosticoId, "Mecânico do diagnóstico obrigatório.");
-        ValidarIdentificador(responsavelId, "Responsável obrigatório.");
-
-        if (desconto < 0)
-            throw new DomainException("O desconto não pode ser negativo.");
+        ValidarIdentificador(mecanicoId, "Mecânico obrigatório.");
+        ValidarIdentificador(consultorId, "Consultor obrigatório.");
 
         if (dataValidade == default)
             throw new DomainException("A data de validade é obrigatória.");
 
         PessoaId = pessoaId;
         VeiculoId = veiculoId;
-        MecanicoDiagnosticoId = mecanicoDiagnosticoId;
-        ResponsavelId = responsavelId;
+        MecanicoId = mecanicoId;
+        ConsultorId = consultorId;
         DataValidade = dataValidade;
-        Desconto = desconto;
         Observacoes = observacoes;
 
+        AtualizarDataModificacao();
+    }
+
+    public void AtualizarDesconto(decimal desconto)
+    {
+        if (desconto < 0)
+            throw new DomainException("O desconto não pode ser negativo.");
+
+        Desconto = desconto;
         AtualizarDataModificacao();
     }
 

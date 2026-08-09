@@ -11,9 +11,9 @@ public sealed class OrcamentoSimplesResponse : BaseResponse
 
     public string Cliente { get; set; } = string.Empty;
 
-    public string Responsavel { get; set; } = string.Empty;
+    public string Consultor { get; set; } = string.Empty;
 
-    public string MecanicoDiagnostico { get; set; } = string.Empty;
+    public string Mecanico { get; set; } = string.Empty;
 
     public string Status { get; set; } = string.Empty;
 

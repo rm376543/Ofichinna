@@ -27,7 +27,7 @@ public sealed class OrcamentoService : IOrcamentoService
         var orcamentos = await _orcamentoRepository.GetPagedAsync(pagination, cancellationToken);
 
         var pessoasIds = orcamentos.Items
-            .SelectMany(orcamento => new[] { orcamento.PessoaId, orcamento.ResponsavelId, orcamento.MecanicoDiagnosticoId })
+            .SelectMany(orcamento => new[] { orcamento.PessoaId, orcamento.ConsultorId, orcamento.MecanicoId })
             .Where(id => id != Guid.Empty)
             .Distinct()
             .ToArray();
@@ -39,12 +39,12 @@ public sealed class OrcamentoService : IOrcamentoService
         {
             OrcamentoSimplesId = orcamento.Id,
             Cliente = ObterNome(orcamento.PessoaId, nomesPorId),
-            Responsavel = ObterNome(orcamento.ResponsavelId, nomesPorId),
-            MecanicoDiagnostico = ObterNome(orcamento.MecanicoDiagnosticoId, nomesPorId),
+            Consultor = ObterNome(orcamento.ConsultorId, nomesPorId),
+            Mecanico = ObterNome(orcamento.MecanicoId, nomesPorId),
             Status = orcamento.Status.ToUpperSnakeCase(),
             DataCriacao = orcamento.DataCriacao.ToString("dd/MM/yyyy"),
             DataValidade = orcamento.DataValidade.ToString("dd/MM/yyyy"),
-            Desconto = orcamento.Desconto,
+            Desconto = orcamento.ValorBruto - orcamento.ValorTotal,
             ValorTotal = orcamento.ValorTotal,
             CreatedAt = orcamento.CreatedAt,
             UpdatedAt = orcamento.UpdatedAt,

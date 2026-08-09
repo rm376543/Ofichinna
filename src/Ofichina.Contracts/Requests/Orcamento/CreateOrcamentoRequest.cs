@@ -24,28 +24,23 @@ public sealed class CreateOrcamentoRequest : CreateRequest
     public Guid AgendamentoId { get; init; }
 
     /// <summary>
-    /// Responsável.
+    /// Consultor.
     /// </summary>
-    public Guid ResponsavelId { get; init; }
+    public Guid ConsultorId { get; init; }
 
     /// <summary>
     /// Mecânico responsável pelo diagnóstico.
     /// </summary>
-    public Guid MecanicoDiagnosticoId { get; init; }
+    public Guid MecanicoId { get; init; }
 
     /// <summary>
     /// Data de validade do orçamento.
     /// </summary>
-    public DateTime DataValidade { get; init; }
+    public DateOnly DataValidade { get; init; }
 
     /// <summary>
     /// Observações.
     /// </summary>
     public string? Observacoes { get; init; }
-
-    /// <summary>
-    /// Percentual de desconto.
-    /// </summary>
-    public decimal Desconto { get; init; }
 
 }

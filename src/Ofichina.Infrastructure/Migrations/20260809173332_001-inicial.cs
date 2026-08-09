@@ -441,8 +441,8 @@ namespace Ofichina.Infrastructure.Migrations
                     PessoaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     VeiculoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AgendamentoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MecanicoDiagnosticoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ResponsavelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MecanicoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ConsultorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DataValidade = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Desconto = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Observacoes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
@@ -461,20 +461,20 @@ namespace Ofichina.Infrastructure.Migrations
                         principalColumn: "AgendamentosId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Orcamentos_Pessoas_MecanicoDiagnosticoId",
-                        column: x => x.MecanicoDiagnosticoId,
+                        name: "FK_Orcamentos_Pessoas_ConsultorId",
+                        column: x => x.ConsultorId,
+                        principalTable: "Pessoas",
+                        principalColumn: "PessoaId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orcamentos_Pessoas_MecanicoId",
+                        column: x => x.MecanicoId,
                         principalTable: "Pessoas",
                         principalColumn: "PessoaId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Orcamentos_Pessoas_PessoaId",
                         column: x => x.PessoaId,
-                        principalTable: "Pessoas",
-                        principalColumn: "PessoaId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Orcamentos_Pessoas_ResponsavelId",
-                        column: x => x.ResponsavelId,
                         principalTable: "Pessoas",
                         principalColumn: "PessoaId",
                         onDelete: ReferentialAction.Restrict);
@@ -711,19 +711,19 @@ namespace Ofichina.Infrastructure.Migrations
                 column: "AgendamentoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orcamentos_MecanicoDiagnosticoId",
+                name: "IX_Orcamentos_ConsultorId",
                 table: "Orcamentos",
-                column: "MecanicoDiagnosticoId");
+                column: "ConsultorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orcamentos_MecanicoId",
+                table: "Orcamentos",
+                column: "MecanicoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orcamentos_PessoaId",
                 table: "Orcamentos",
                 column: "PessoaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orcamentos_ResponsavelId",
-                table: "Orcamentos",
-                column: "ResponsavelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orcamentos_VeiculoId",

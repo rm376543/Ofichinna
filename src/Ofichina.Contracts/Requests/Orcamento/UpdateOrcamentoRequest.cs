@@ -23,24 +23,19 @@ namespace Ofichina.Contracts.Requests.Orcamento
         public Guid VeiculoId { get; init; }
 
         /// <summary>
-        /// Responsável pelo orçamento.
+        /// Consultor do orçamento.
         /// </summary>
-        public Guid ResponsavelId { get; init; }
+        public Guid ConsultorId { get; init; }
 
         /// <summary>
         /// Mecânico responsável pelo diagnóstico.
         /// </summary>
-        public Guid MecanicoDiagnosticoId { get; init; }
+        public Guid MecanicoId { get; init; }
 
         /// <summary>
         /// Data de validade.
         /// </summary>
-        public DateTime DataValidade { get; init; }
-
-        /// <summary>
-        /// Percentual de desconto geral.
-        /// </summary>
-        public decimal Desconto { get; init; }
+        public DateOnly DataValidade { get; init; }
 
         /// <summary>
         /// Observações.

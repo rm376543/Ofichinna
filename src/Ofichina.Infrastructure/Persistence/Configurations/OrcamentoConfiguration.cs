@@ -18,8 +18,8 @@ public class OrcamentoConfiguration : IEntityTypeConfiguration<Orcamento>
         builder.Property(x => x.PessoaId).IsRequired();
         builder.Property(x => x.VeiculoId).IsRequired();
         builder.Property(x => x.AgendamentoId).IsRequired();
-        builder.Property(x => x.MecanicoDiagnosticoId).IsRequired();
-        builder.Property(x => x.ResponsavelId).IsRequired();
+        builder.Property(x => x.MecanicoId).IsRequired();
+        builder.Property(x => x.ConsultorId).IsRequired();
         builder.Property(x => x.DataValidade).IsRequired();
         builder.Property(x => x.Desconto).HasPrecision(18, 2).IsRequired();
         builder.Property(x => x.Observacoes).HasMaxLength(1000);
@@ -48,12 +48,12 @@ public class OrcamentoConfiguration : IEntityTypeConfiguration<Orcamento>
 
         builder.HasOne<Ofichina.Domain.Entities.Pessoa>()
             .WithMany()
-            .HasForeignKey(x => x.MecanicoDiagnosticoId)
+            .HasForeignKey(x => x.MecanicoId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne<Ofichina.Domain.Entities.Pessoa>()
             .WithMany()
-            .HasForeignKey(x => x.ResponsavelId)
+            .HasForeignKey(x => x.ConsultorId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

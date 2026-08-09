@@ -1,0 +1,12 @@
+namespace Ofichina.Contracts.Requests.Orcamento;
+
+/// <summary>
+/// Requisição para atualização do desconto de um orçamento.
+/// </summary>
+public sealed class UpdateOrcamentoDescontoRequest
+{
+    /// <summary>
+    /// Valor do desconto.
+    /// </summary>
+    public decimal Desconto { get; init; }
+}
