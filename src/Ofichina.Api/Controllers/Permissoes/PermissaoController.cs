@@ -98,7 +98,7 @@ public sealed class PermissaoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Id da permissão criada ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost("nova")]
+    [HttpPost("adicionar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]

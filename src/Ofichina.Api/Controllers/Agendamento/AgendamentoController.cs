@@ -140,7 +140,7 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="request">Objeto contendo os dados necessários para criar um novo agendamento.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Resultado da operação de criação de agendamento.</returns>
-    [HttpPost("pessoa/novo")]
+    [HttpPost("pessoa/adicionar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]

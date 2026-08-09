@@ -103,7 +103,7 @@ namespace Ofichina.Api.Controllers.Pessoa
         /// <returns>Mensagem de sucesso ou erro de validação.</returns>
         //[Authorize(Policy = UserPolicyEnum.Escrever)]
         [Authorize(Roles = "ADMIN")]
-        [HttpPost("nova")]
+        [HttpPost("adicionar")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
