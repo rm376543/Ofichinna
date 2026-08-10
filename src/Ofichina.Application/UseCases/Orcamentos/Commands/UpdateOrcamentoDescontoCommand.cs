@@ -12,9 +12,12 @@ public sealed class UpdateOrcamentoDescontoCommand : ICommand<Result>
 
     public decimal Desconto { get; init; }
 
-    public UpdateOrcamentoDescontoCommand(Guid orcamentoId, decimal desconto)
+    public bool DescontoEmDinheiro { get; init; }
+
+    public UpdateOrcamentoDescontoCommand(Guid orcamentoId, decimal desconto, bool descontoEmDinheiro)
     {
         OrcamentoId = orcamentoId;
         Desconto = desconto;
+        DescontoEmDinheiro = descontoEmDinheiro;
     }
 }

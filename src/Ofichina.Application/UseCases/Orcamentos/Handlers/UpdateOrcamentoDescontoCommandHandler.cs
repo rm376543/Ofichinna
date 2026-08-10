@@ -1,7 +1,4 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Common;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.Orcamentos.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Exceptions;
@@ -35,7 +32,7 @@ public sealed class UpdateOrcamentoDescontoCommandHandler : ICommandHandler<Upda
             if (orcamento is null || orcamento.EstaExcluida())
                 return Result.Failure("Orçamento não encontrado.");
 
-            orcamento.AtualizarDesconto(command.Desconto);
+            orcamento.AtualizarDesconto(command.Desconto, command.DescontoEmDinheiro);
 
             await _orcamentoRepository.UpdateAsync(orcamento, cancellationToken);
             await _unitOfWork.SaveChangesAsync();

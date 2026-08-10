@@ -38,7 +38,7 @@ public sealed class CreateOrdemServicoService : ICreateOrdemServicoService
             if (pessoa is null || pessoa.EstaExcluida())
                 return Result.Failure("Pessoa não encontrada.");
 
-            var funcionario = await _pessoaRepository.GetByIdAsync(command.FuncionarioId, cancellationToken);
+            var funcionario = await _pessoaRepository.GetByIdAsync(command.ConsultorId, cancellationToken);
             if (funcionario is null || funcionario.EstaExcluida())
                 return Result.Failure("Funcionário não encontrado.");
 
@@ -49,8 +49,8 @@ public sealed class CreateOrdemServicoService : ICreateOrdemServicoService
             var ordemServico = new OrdemServico(
                 command.PessoaId,
                 command.VeiculoId,
-                command.FuncionarioId,
-                command.HodometroEntrada,
+                command.ConsultorId,
+                command.Hodometro,
                 command.ProblemaRelatado,
                 command.Observacoes);
 

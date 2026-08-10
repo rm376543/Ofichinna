@@ -49,7 +49,7 @@ public sealed class ListarHorariosPorDiaQueryHandler : IQueryHandler<ListarHorar
 
             var resultado = horarios.Select(h => new HorarioDisponivelResponse
             {
-                HorarioDisponivelId = h.HorarioListaId,
+                HorarioId = h.HorarioListaId,
                 Horario = TimeOnly.ParseExact(h.Hora, "HH:mm"),
                 Disponivel = h.Disponivel
             });

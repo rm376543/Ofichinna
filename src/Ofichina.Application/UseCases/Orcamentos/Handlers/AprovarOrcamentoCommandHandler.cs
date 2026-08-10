@@ -51,17 +51,23 @@ public sealed class AprovarOrcamentoCommandHandler : ICommandHandler<AprovarOrca
             if (orcamento is null || orcamento.EstaExcluida())
                 return Result.Failure("Orçamento não encontrado.");
 
+            if (orcamento.Agendamento is null || orcamento.Agendamento.EstaExcluida())
+                return Result.Failure("Agendamento não encontrado.");
+
             var statusAnterior = orcamento.Status;
             orcamento.Aprovar();
 
             var mecanicoReparoId = await _mecanicoDisponibilidadeService.ObterMecanicoDisponivelAsync(cancellationToken)
                 ?? orcamento.MecanicoId;
 
-            var ordemServico = OrdemServico.CriarAPartirDoOrcamento(orcamento, mecanicoReparoId);
-            ordemServico.IniciarExecucao();
+            var ordemServico = OrdemServico.CriarAPartirDoOrcamento(orcamento, orcamento.Agendamento, mecanicoReparoId, command.Hodometro);
 
             await _orcamentoRepository.UpdateAsync(orcamento, cancellationToken);
             await _ordemServicoRepository.AddAsync(ordemServico, cancellationToken);
+
+            foreach (var itemServico in orcamento.ItensServico.Where(x => !x.EstaExcluida()))
+                itemServico.VincularAOrdemServico(ordemServico.Id);
+
             await _historicoStatusRepository.AddAsync(
                 HistoricoStatus.ParaOrcamento(
                     orcamento.Id,

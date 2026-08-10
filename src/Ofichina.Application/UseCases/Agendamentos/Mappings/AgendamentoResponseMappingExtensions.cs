@@ -16,9 +16,9 @@ public static class AgendamentoResponseMappingExtensions
             AgendamentoId = agendamento.Id,
             PessoaId = agendamento.ClientePessoaId,
             ClienteNome = agendamento.Cliente.Nome,
-            DiaDisponibilidadeId = agendamento.AgendaConsultor?.DiaDisponibilidadeId,
-            HorarioConsultorId = agendamento.AgendaConsultor?.HorarioDisponibilidadeId,
-            ConsultorPessoaId = agendamento.AgendaConsultor?.ConsultorPessoaId,
+            DiaId = agendamento.AgendaConsultor?.DiaDisponibilidadeId,
+            HorarioId = agendamento.AgendaConsultor?.HorarioDisponibilidadeId,
+            ConsultorId = agendamento.AgendaConsultor?.ConsultorPessoaId,
             ConsultorNome = agendamento.AgendaConsultor?.Consultor?.Nome ?? string.Empty,
             VeiculoId = agendamento.VeiculoId,
             VeiculoPlaca = agendamento.Veiculo.Placa.Numero,
@@ -37,7 +37,7 @@ public static class AgendamentoResponseMappingExtensions
 
         return new ConsultorDisponibilidadeResponse
         {
-            ConsultorDisponibilidadeId = consultor.Id,
+            ConsultorId = consultor.Id,
             Nome = consultor.Nome,
             Documento = consultor.Documento?.Numero ?? string.Empty
         };

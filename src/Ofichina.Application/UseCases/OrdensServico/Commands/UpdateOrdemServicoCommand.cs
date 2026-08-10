@@ -25,14 +25,14 @@ public sealed class UpdateOrdemServicoCommand : ICommand<Result>
     public Guid VeiculoId { get; init; }
 
     /// <summary>
-    /// Identificador do funcionário responsável.
+    /// Identificador do consultor responsável.
     /// </summary>
-    public Guid FuncionarioId { get; init; }
+    public Guid ConsultorId { get; init; }
 
     /// <summary>
     /// Hodômetro de entrada do veículo.
     /// </summary>
-    public int HodometroEntrada { get; init; }
+    public int Hodometro { get; init; }
 
     /// <summary>
     /// Problema relatado atualizado.
@@ -49,8 +49,8 @@ public sealed class UpdateOrdemServicoCommand : ICommand<Result>
         OrdemServicoId = request.OrdemServicoId;
         PessoaId = request.PessoaId;
         VeiculoId = request.VeiculoId;
-        FuncionarioId = request.FuncionarioId;
-        HodometroEntrada = request.HodometroEntrada;
+        ConsultorId = request.ConsultorId;
+        Hodometro = request.Hodometro;
         ProblemaRelatado = request.ProblemaRelatado;
         Observacoes = request.Observacoes;
     }

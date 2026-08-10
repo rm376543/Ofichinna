@@ -35,7 +35,7 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers
 
                 var response = horariosDisponiveis.ToPagedResponse(h => new HorarioDisponivelResponse
                 {
-                    HorarioDisponivelId = h.Id,
+                    HorarioId = h.Id,
                     Horario = h.Hora,
                     Disponivel = h.DeletedAt is null
                 });

@@ -21,11 +21,12 @@ public static class OrcamentoResponseMappingExtensions
             MecanicoId = orcamento.MecanicoId,
             ConsultorId = orcamento.ConsultorId,
             DataValidade = DateOnly.FromDateTime(orcamento.DataValidade),
-            Desconto = orcamento.ValorBruto - orcamento.ValorTotal,
+            Desconto = orcamento.Desconto,
             Observacoes = orcamento.Observacoes,
             Status = orcamento.Status.ToUpperSnakeCase(),
             DataCriacao = orcamento.DataCriacao,
             ValorTotal = orcamento.ValorTotal,
+            ValorTotalDesconto = orcamento.ValorTotalDesconto,
             CreatedAt = orcamento.CreatedAt,
             UpdatedAt = orcamento.UpdatedAt,
             DeletedAt = orcamento.DeletedAt,
@@ -35,20 +36,24 @@ public static class OrcamentoResponseMappingExtensions
 
     private static ICollection<OrcamentoItemResponse> MapearItensServico(IEnumerable<ItemServico> servicos)
     {
-        return servicos
-            .Where(x => !x.EstaExcluida())
-            .GroupBy(x => new { x.ServicoId, Nome = x.Servico?.Nome ?? string.Empty, Valor = x.Servico?.Valor ?? 0m })
-            .Select(g => new OrcamentoItemResponse
+        return [
+            new OrcamentoItemResponse
             {
-                OrcamentoId = g.First().OrcamentoId ?? Guid.Empty,
-                Servicos =
-                [
-                    new ServicoItemResponse
+                OrcamentoId = servicos.FirstOrDefault()?.OrcamentoId ?? Guid.Empty,
+                Servicos = servicos
+                    .Where(x => !x.EstaExcluida())
+                    .GroupBy(x => new
                     {
-                        ServicoId = g.Key.ServicoId,
-                        Descricao = g.Key.Nome,
-                        ValorServico = g.Key.Valor,
-                        Pecas = g
+                        x.ServicoId,
+                        Nome = x.Servico?.Nome ?? string.Empty,
+                        Valor = x.Servico?.Valor ?? 0m
+                    })
+                    .Select(servico => new ServicoItemResponse
+                    {
+                        ServicoId = servico.Key.ServicoId,
+                        Descricao = servico.Key.Nome,
+                        ValorServico = servico.Key.Valor,
+                        Pecas = servico
                             .Where(p => p.PecaId.HasValue)
                             .Select(p => new PecaItemResponse
                             {
@@ -59,10 +64,10 @@ public static class OrcamentoResponseMappingExtensions
                                 ValorTotal = (p.Peca?.Valor ?? 0m) * p.Quantidade
                             })
                             .ToList(),
-                        ValorTotal = g.Key.Valor + g.Sum(p => (p.Peca?.Valor ?? 0m) * p.Quantidade)
-                    }
-                ]
-            })
-            .ToList();
+                        ValorTotal = servico.Key.Valor + servico.Sum(p => (p.Peca?.Valor ?? 0m) * p.Quantidade)
+                    })
+                    .ToList()
+            }
+        ];
     }
 }

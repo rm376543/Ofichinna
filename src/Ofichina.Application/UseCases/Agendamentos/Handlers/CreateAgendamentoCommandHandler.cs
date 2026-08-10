@@ -96,6 +96,7 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
                 command.PessoaId,
                 command.AgendaConsultorId,
                 command.VeiculoId,
+                command.Hodometro,
                 command.Descricao);
 
             await _agendamentoRepository.AddAsync(agendamento, cancellationToken);
