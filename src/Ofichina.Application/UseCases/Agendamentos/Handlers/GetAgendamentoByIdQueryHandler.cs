@@ -10,7 +10,7 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 /// <summary>
 /// Handler para obter um agendamento por Id.
 /// </summary>
-public sealed class GetAgendamentoByIdQueryHandler : IQueryHandler<GetAgendamentoByIdQuery, Result<AgendamentoResponse>>
+public sealed class GetAgendamentoByIdQueryHandler : IQueryHandler<GetAgendamentoByIdQuery, Result<AgendamentoUsuarioDetalheResponse>>
 {
     private readonly IAgendamentoRepository _agendamentoRepository;
     private readonly IPessoaRepository _pessoaRepository;
@@ -26,26 +26,26 @@ public sealed class GetAgendamentoByIdQueryHandler : IQueryHandler<GetAgendament
         _logger = logger;
     }
 
-    public async Task<Result<AgendamentoResponse>> HandleAsync(GetAgendamentoByIdQuery query, CancellationToken cancellationToken = default)
+    public async Task<Result<AgendamentoUsuarioDetalheResponse>> HandleAsync(GetAgendamentoByIdQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
             var pessoa = await _pessoaRepository.GetByIdAsync(query.PessoaId, cancellationToken);
 
             if (pessoa is null || pessoa.EstaExcluida())
-                return Result.Failure<AgendamentoResponse>("Pessoa não encontrada.");
+                return Result.Failure<AgendamentoUsuarioDetalheResponse>("Pessoa não encontrada.");
 
-            var agendamento = await _agendamentoRepository.GetByIdAndPessoaAsync(query.Id, query.PessoaId, cancellationToken);
+            var agendamento = await _agendamentoRepository.GetAgendamentoUsuarioViewByIdAsync(query.PessoaId, query.Id, cancellationToken);
 
             if (agendamento is null)
-                return Result.Failure<AgendamentoResponse>("Agendamento não encontrado.");
+                return Result.Failure<AgendamentoUsuarioDetalheResponse>("Agendamento não encontrado.");
 
-            return Result.Success(agendamento.ToResponse());
+            return Result.Success(agendamento.ToDetalheResponse());
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao obter agendamento por Id. AgendamentoId: {AgendamentoId}", query.Id);
-            return Result.Failure<AgendamentoResponse>("Não foi possível obter o agendamento.");
+            return Result.Failure<AgendamentoUsuarioDetalheResponse>("Não foi possível obter o agendamento.");
         }
     }
 }

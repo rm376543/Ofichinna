@@ -1,8 +1,8 @@
-using System.Reflection;
 using Ofichina.Application.UseCases.Agendamentos.Mappings;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
+using System.Reflection;
 
 namespace Ofichina.UnitTests.Application;
 
@@ -37,6 +37,52 @@ public sealed class ResponseMappingExtensionsTests
         Assert.Equal(veiculo.Id, response.VeiculoId);
         Assert.Equal("ABC1D23", response.VeiculoPlaca);
         Assert.Equal("Toyota Corolla 2024", response.VeiculoDescricao);
+    }
+
+    [Fact]
+    public void ToUsuarioResponse_Deve_Mapear_View_Sem_Expor_AgendamentosId_E_PessoaId()
+    {
+        var view = new AgendamentoUsuarioView
+        {
+            AgendamentosId = Guid.NewGuid(),
+            PessoaId = Guid.NewGuid(),
+            Nome = "João Silva",
+            Documento = "12345678909",
+            Telefone = "11987654321",
+            Placa = "ABC1D23",
+            Marca = "Fiat",
+            Modelo = "Uno",
+            AnoFabricacao = 2020,
+            Cor = "Branco",
+            Hodometro = 45000,
+            Consultor = "Maria Souza",
+            DtAgendamento = "15/08/2026",
+            HorarioAgendamento = new TimeOnly(14, 30),
+            CreatedAt = "10/08/2026",
+            UpdatedAt = "10/08/2026",
+            DeletedAt = null
+        };
+
+        var response = view.ToUsuarioResponse();
+
+        Assert.Equal("João Silva", response.Nome);
+        Assert.Equal("12345678909", response.Documento);
+        Assert.Equal("11987654321", response.Telefone);
+        Assert.Equal("ABC1D23", response.Placa);
+        Assert.Equal("Fiat", response.Marca);
+        Assert.Equal("Uno", response.Modelo);
+        Assert.Equal(2020, response.AnoFabricacao);
+        Assert.Equal("Branco", response.Cor);
+        Assert.Equal(45000, response.Hodometro);
+        Assert.Equal("Maria Souza", response.Consultor);
+        Assert.Equal("15/08/2026", response.DtAgendamento);
+        Assert.Equal(new TimeOnly(14, 30), response.HorarioAgendamento);
+
+        var responseType = response.GetType();
+        Assert.Null(responseType.GetProperty("AgendamentosId"));
+        Assert.Null(responseType.GetProperty("PessoaId"));
+        Assert.Null(responseType.GetProperty("UpdatedAt"));
+        Assert.Null(responseType.GetProperty("DeletedAt"));
     }
 
     private static Pessoa CriarPessoa(string nome, string cpf, string telefone)

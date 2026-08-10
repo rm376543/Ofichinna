@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Ofichina.Contracts.Enums;
+using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
 using System.Security.Cryptography;
@@ -53,6 +54,10 @@ public static class DatabaseSeeder
             await SeedHorariosConsultores(context);
             await SeedHorariosConsultorDisponibilidade(context);
 
+            await context.SaveChangesAsync();
+
+            // Agendamentos
+            await SeedAgendamentos(context);
             await context.SaveChangesAsync();
         }
         catch (Exception ex)
@@ -818,6 +823,96 @@ public static class DatabaseSeeder
         }
     }
 
+    /// <summary>
+    /// Popula a tabela de agendamentos.
+    /// </summary>
+    private static async Task SeedAgendamentos(ApplicationDbContext context)
+    {
+        var clientes = await ObterClientesAsync(context);
+        var veiculos = await context.Veiculos
+            .IgnoreQueryFilters()
+            .ToListAsync();
+
+        var agendas = await context.HorariosConsultorDisponibilidade
+            .IgnoreQueryFilters()
+            .Include(x => x.DiaDisponibilidade)
+            .Include(x => x.HorarioDisponibilidade)
+            .OrderBy(x => x.DiaDisponibilidade.Data)
+            .ThenBy(x => x.HorarioDisponibilidade.Hora)
+            .ToListAsync();
+
+        if (!clientes.Any() || !veiculos.Any() || !agendas.Any())
+            return;
+
+        var clientesPorDocumento = clientes
+            .GroupBy(x => x.Documento.Numero, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(x => x.Key, x => x.First(), StringComparer.OrdinalIgnoreCase);
+
+        var veiculosPorPlaca = veiculos
+            .GroupBy(x => x.Placa.Numero, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(x => x.Key, x => x.First(), StringComparer.OrdinalIgnoreCase);
+
+        var agendasOcupadas = (await context.Agendamentos
+            .IgnoreQueryFilters()
+            .Select(x => x.AgendaConsultorId)
+            .ToListAsync())
+            .ToHashSet();
+
+        var slots = agendas
+            .GroupBy(x => x.DiaDisponibilidade.Data)
+            .Select(x => x.OrderBy(y => y.HorarioDisponibilidade.Hora).First())
+            .Take(4)
+            .ToList();
+
+        if (slots.Count < 4)
+            return;
+
+        var agendamentosDesejados = new[]
+        {
+            (ClienteDocumento: "25228444076", Placa: "ABC1D23", Slot: slots[0], Hodometro: 9200, Descricao: "Revisão preventiva"),
+            (ClienteDocumento: "60174914075", Placa: "XYZ9K87", Slot: slots[1], Hodometro: 15100, Descricao: "Troca de óleo e filtros"),
+            (ClienteDocumento: "79266825000", Placa: "LMN5Q34", Slot: slots[2], Hodometro: 250, Descricao: "Diagnóstico de suspensão"),
+            (ClienteDocumento: "25228444076", Placa: "OPQ8R56", Slot: slots[3], Hodometro: 24200, Descricao: "Alinhamento e freios"),
+        };
+
+        foreach (var desejado in agendamentosDesejados)
+        {
+            if (agendasOcupadas.Contains(desejado.Slot.Id))
+                continue;
+
+            if (!clientesPorDocumento.TryGetValue(desejado.ClienteDocumento, out var cliente))
+                continue;
+
+            if (!veiculosPorPlaca.TryGetValue(desejado.Placa, out var veiculo))
+                continue;
+
+            await context.Agendamentos.AddAsync(new Agendamento(
+                cliente.Id,
+                desejado.Slot.Id,
+                veiculo.Id,
+                desejado.Hodometro,
+                desejado.Descricao));
+
+            agendasOcupadas.Add(desejado.Slot.Id);
+        }
+    }
+
+    /// <summary>
+    /// Obtém os clientes cadastrados no sistema.
+    /// </summary>
+    private static async Task<IReadOnlyCollection<Pessoa>> ObterClientesAsync(ApplicationDbContext context)
+    {
+        var pessoas = await context.Pessoas
+            .IgnoreQueryFilters()
+            .Include(x => x.Usuario)
+                .ThenInclude(x => x.Perfis)
+                    .ThenInclude(x => x.Perfil)
+            .ToListAsync();
+
+        return pessoas
+            .Where(x => x.Usuario.Perfis.Any(p => p.Perfil.NomePerfil.Equals(PerfilEnum.Cliente, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+    }
     #endregion
 
     #region Private Helper Methods

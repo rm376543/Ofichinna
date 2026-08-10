@@ -1,10 +1,12 @@
+using Microsoft.Extensions.Logging.Abstractions;
+using Ofichina.Application.Abstractions.Authentication.Repository;
+using Ofichina.Application.Abstractions.Authentication.Service;
 using Ofichina.Application.UseCases.Autenticacao.Commands;
 using Ofichina.Application.UseCases.Autenticacao.Handlers;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Responses.Authentication;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
-using Microsoft.Extensions.Logging.Abstractions;
-using Ofichina.Contracts.Responses.Authentication;
 
 namespace Ofichina.UnitTests.Application.Autenticacao;
 

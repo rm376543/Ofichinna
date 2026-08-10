@@ -8,6 +8,7 @@ using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Agendamento;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Enums;
+using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.UnitTests.Application.Agendamentos;
@@ -140,6 +141,12 @@ public sealed class CancelarAgendamentoCommandHandlerTests
 
         public Task<Agendamento?> BuscarAgendamentosPorPessoaId(Guid pessoaId, CancellationToken cancellationToken = default)
             => Task.FromResult<Agendamento?>(_agendamento);
+
+        public Task<AgendamentoUsuarioView?> GetAgendamentoUsuarioViewByIdAsync(Guid pessoaId, Guid agendamentosId, CancellationToken cancellationToken = default)
+            => Task.FromResult<AgendamentoUsuarioView?>(null);
+
+        public Task<IReadOnlyCollection<AgendamentoUsuarioView>> GetAgendamentosUsuarioViewByPessoaAsync(Guid pessoaId, CancellationToken cancellationToken = default)
+            => Task.FromResult<IReadOnlyCollection<AgendamentoUsuarioView>>([]);
     }
 
     private sealed class FakeUnitOfWork : IUnitOfWork

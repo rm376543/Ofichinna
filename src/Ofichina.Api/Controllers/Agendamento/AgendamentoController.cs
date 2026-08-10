@@ -92,11 +92,11 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de agendamentos da pessoa específica.</returns>
     [HttpGet("pessoa/{pessoaId:guid}/listar")]
-    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<AgendamentoResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<AgendamentoUsuarioResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<AgendamentoResponse>>>> ListarAsync(
+    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<AgendamentoUsuarioResponse>>>> ListarAsync(
         [FromRoute] Guid pessoaId, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a listagem de agendamentos da pessoa {PessoaId}.", pessoaId);
@@ -106,7 +106,7 @@ public sealed class AgendamentoController : ControllerBase
         if (!result.IsSuccess)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os agendamentos."));
 
-        return Ok(ApiResponse<IReadOnlyCollection<AgendamentoResponse>>.SuccessResponse(result.Value));
+        return Ok(ApiResponse<IReadOnlyCollection<AgendamentoUsuarioResponse>>.SuccessResponse(result.Value));
     }
 
     /// <summary>
@@ -117,11 +117,11 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Detalhes do agendamento específico da pessoa.</returns>
     [HttpGet("pessoa/{pessoaId:guid}/agendamento/{agendamentoId:guid}/detalhar")]
-    [ProducesResponseType(typeof(ApiResponse<AgendamentoResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<AgendamentoUsuarioDetalheResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<AgendamentoResponse>>> ObterPorIdAsync(
+    public async Task<ActionResult<ApiResponse<AgendamentoUsuarioDetalheResponse>>> ObterPorIdAsync(
         [FromRoute] Guid pessoaId, [FromRoute] Guid agendamentoId, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção do agendamento {Id} da pessoa {PessoaId}.", agendamentoId, pessoaId);
@@ -131,7 +131,7 @@ public sealed class AgendamentoController : ControllerBase
         if (!result.IsSuccess || result.Value is null)
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Agendamento não encontrado."));
 
-        return Ok(ApiResponse<AgendamentoResponse>.SuccessResponse(result.Value));
+        return Ok(ApiResponse<AgendamentoUsuarioDetalheResponse>.SuccessResponse(result.Value));
     }
 
     /// <summary>

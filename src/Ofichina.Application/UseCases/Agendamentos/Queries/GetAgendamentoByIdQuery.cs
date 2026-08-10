@@ -7,7 +7,7 @@ namespace Ofichina.Application.UseCases.Agendamentos.Queries;
 /// <summary>
 /// Consulta para obter um agendamento por Id.
 /// </summary>
-public sealed class GetAgendamentoByIdQuery : IQuery<Result<AgendamentoResponse>>
+public sealed class GetAgendamentoByIdQuery : IQuery<Result<AgendamentoUsuarioDetalheResponse>>
 {
     public Guid PessoaId { get; init; }
 

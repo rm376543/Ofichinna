@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging.Abstractions;
-using Ofichina.Application.Abstractions.Common;
 using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Checklists.Commands;
 using Ofichina.Application.UseCases.Checklists.Handlers;
@@ -168,6 +167,14 @@ public sealed class FinalizarChecklistCommandHandlerTests
         public Task<bool> ExisteConflitoVeiculoAsync(Guid veiculoId, Guid diaDisponibilidadeId, Guid horarioConsultorId, CancellationToken cancellationToken = default) => Task.FromResult(false);
 
         public Task<Agendamento?> BuscarAgendamentosPorPessoaId(Guid pessoaId, CancellationToken cancellationToken = default) => Task.FromResult<Agendamento?>(_agendamento);
+
+        public Task<IReadOnlyCollection<AgendamentoUsuarioView>> GetAgendamentosUsuarioViewByPessoaAsync(Guid pessoaId, CancellationToken cancellationToken = default)
+            => Task.FromResult<IReadOnlyCollection<AgendamentoUsuarioView>>([]);
+
+        public Task<AgendamentoUsuarioView?> GetAgendamentoUsuarioViewByIdAsync(Guid pessoaId, Guid agendamentosId, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     private sealed class FakeUnitOfWork : IUnitOfWork

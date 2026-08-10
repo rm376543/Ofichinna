@@ -124,6 +124,11 @@ public class ApplicationDbContext : DbContext
     /// </summary>
     public DbSet<PerfilPermissao> PerfisPermissoes { get; set; } = null!;
 
+    /// <summary>
+    /// DbSet para a view de agendamentos de usuários (vwAgendamentosUsuario).
+    /// </summary>
+    public DbSet<AgendamentoUsuarioView> AgendamentosUsuarioView { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
