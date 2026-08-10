@@ -8,7 +8,7 @@ namespace Ofichina.Application.UseCases.Agendamentos.Queries;
 /// <summary>
 /// Consulta para listar agendamentos de uma pessoa específica.
 /// </summary>
-public sealed class GetAgendamentosQuery : IQuery<Result<IReadOnlyCollection<AgendamentoResponse>>>
+public sealed class GetAgendamentosQuery : IQuery<Result<IReadOnlyCollection<AgendamentoUsuarioResponse>>>
 {
     public Guid PessoaId { get; init; }
 

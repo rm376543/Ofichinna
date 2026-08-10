@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Ofichina.Domain.Common;
 using Ofichina.Domain.Aggregates;
+using Ofichina.Domain.Entities;
 using Ofichina.Infrastructure.Persistence;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
@@ -109,5 +110,21 @@ public sealed class AgendamentoRepository : Repository<Agendamento>, IAgendament
             .Include(x => x.AgendaConsultor)
                 .ThenInclude(x => x.Consultor)
             .FirstOrDefaultAsync(x => x.ClientePessoaId == pessoaId && x.DeletedAt == null, cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<AgendamentoUsuarioView>> GetAgendamentosUsuarioViewByPessoaAsync(Guid pessoaId, CancellationToken cancellationToken = default)
+    {
+        return await _context.AgendamentosUsuarioView
+            .AsNoTracking()
+            .Where(x => x.PessoaId == pessoaId)
+            .OrderBy(x => x.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<AgendamentoUsuarioView?> GetAgendamentoUsuarioViewByIdAsync(Guid pessoaId, Guid agendamentosId, CancellationToken cancellationToken = default)
+    {
+        return await _context.AgendamentosUsuarioView
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.PessoaId == pessoaId && x.AgendamentosId == agendamentosId, cancellationToken);
     }
 }

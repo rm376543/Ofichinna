@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging.Abstractions;
+using Ofichina.Application.Abstractions.Authentication.Service;
 using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.Abstractions.Interfaces.Service;
 using Ofichina.Application.UseCases.Orcamentos.Commands;

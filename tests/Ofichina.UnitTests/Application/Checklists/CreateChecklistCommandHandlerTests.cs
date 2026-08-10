@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Logging.Abstractions;
-using Ofichina.Application.Abstractions.Common;
 using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Checklists.Commands;
 using Ofichina.Application.UseCases.Checklists.Handlers;
@@ -8,7 +7,6 @@ using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Checklist;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Enums;
 using Ofichina.Domain.ValueObjects;
 
 namespace Ofichina.UnitTests.Application.Checklists;
@@ -183,9 +181,19 @@ public sealed class CreateChecklistCommandHandlerTests
         public Task<bool> ExisteConflitoVeiculoAsync(Guid veiculoId, Guid diaDisponibilidadeId, Guid horarioConsultorId, CancellationToken cancellationToken = default) => Task.FromResult(false);
 
         public Task<Agendamento?> BuscarAgendamentosPorPessoaId(Guid pessoaId, CancellationToken cancellationToken = default) => Task.FromResult<Agendamento?>(_agendamento);
+
+        public Task<IReadOnlyCollection<AgendamentoUsuarioView>> GetAgendamentosUsuarioViewByPessoaAsync(Guid pessoaId, CancellationToken cancellationToken = default)
+            => Task.FromResult<IReadOnlyCollection<AgendamentoUsuarioView>>([]);
+
+        public Task<AgendamentoUsuarioView?> GetAgendamentoUsuarioViewByIdAsync(Guid pessoaId, Guid agendamentosId, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 
+#pragma warning disable S1144
     private sealed class FakeVeiculoRepository : IRepository<Veiculo>
+#pragma warning restore S1144
     {
         public Veiculo? Entity { get; }
 

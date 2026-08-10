@@ -10,7 +10,7 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 /// <summary>
 /// Handler para listar agendamentos do usuário autenticado.
 /// </summary>
-public sealed class GetAgendamentosQueryHandler : IQueryHandler<GetAgendamentosQuery, Result<IReadOnlyCollection<AgendamentoResponse>>>
+public sealed class GetAgendamentosQueryHandler : IQueryHandler<GetAgendamentosQuery, Result<IReadOnlyCollection<AgendamentoUsuarioResponse>>>
 {
     private readonly IAgendamentoRepository _agendamentoRepository;
     private readonly IPessoaRepository _pessoaRepository;
@@ -26,27 +26,27 @@ public sealed class GetAgendamentosQueryHandler : IQueryHandler<GetAgendamentosQ
         _logger = logger;
     }
 
-    public async Task<Result<IReadOnlyCollection<AgendamentoResponse>>> HandleAsync(GetAgendamentosQuery query, CancellationToken cancellationToken = default)
+    public async Task<Result<IReadOnlyCollection<AgendamentoUsuarioResponse>>> HandleAsync(GetAgendamentosQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
             var pessoa = await _pessoaRepository.GetByIdAsync(query.PessoaId, cancellationToken);
 
             if (pessoa is null || pessoa.EstaExcluida())
-                return Result.Failure<IReadOnlyCollection<AgendamentoResponse>>("Pessoa não encontrada.");
+                return Result.Failure<IReadOnlyCollection<AgendamentoUsuarioResponse>>("Pessoa não encontrada.");
 
-            var paged = await _agendamentoRepository.GetPagedByClientePessoaAsync(query.PessoaId, query.Pagination, cancellationToken);
+            var agendamentosView = await _agendamentoRepository.GetAgendamentosUsuarioViewByPessoaAsync(query.PessoaId, cancellationToken);
 
-            var resultado = paged.Items
-                .Select(agendamento => agendamento.ToResponse())
+            var resultado = agendamentosView
+                .Select(agendamento => agendamento.ToUsuarioResponse())
                 .ToList();
 
-            return Result.Success<IReadOnlyCollection<AgendamentoResponse>>(resultado);
+            return Result.Success<IReadOnlyCollection<AgendamentoUsuarioResponse>>(resultado);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao listar agendamentos.");
-            return Result.Failure<IReadOnlyCollection<AgendamentoResponse>>("Não foi possível obter os agendamentos.");
+            return Result.Failure<IReadOnlyCollection<AgendamentoUsuarioResponse>>("Não foi possível obter os agendamentos.");
         }
     }
 }

@@ -31,6 +31,53 @@ public static class AgendamentoResponseMappingExtensions
         };
     }
 
+    public static AgendamentoUsuarioResponse ToUsuarioResponse(this AgendamentoUsuarioView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+
+        return new AgendamentoUsuarioResponse
+        {
+            Nome = view.Nome,
+            Documento = view.Documento,
+            Telefone = view.Telefone,
+            Placa = view.Placa,
+            Marca = view.Marca,
+            Modelo = view.Modelo,
+            AnoFabricacao = view.AnoFabricacao,
+            Cor = view.Cor,
+            Hodometro = view.Hodometro,
+            Consultor = view.Consultor,
+            DtAgendamento = view.DtAgendamento,
+            HorarioAgendamento = view.HorarioAgendamento
+        };
+    }
+
+    public static AgendamentoUsuarioDetalheResponse ToDetalheResponse(this AgendamentoUsuarioView view)
+    {
+        ArgumentNullException.ThrowIfNull(view);
+
+        return new AgendamentoUsuarioDetalheResponse
+        {
+            AgendamentosId = view.AgendamentosId,
+            PessoaId = view.PessoaId,
+            Nome = view.Nome,
+            Documento = view.Documento,
+            Telefone = view.Telefone,
+            Placa = view.Placa,
+            Marca = view.Marca,
+            Modelo = view.Modelo,
+            AnoFabricacao = view.AnoFabricacao,
+            Cor = view.Cor,
+            Hodometro = view.Hodometro,
+            Consultor = view.Consultor,
+            DtAgendamento = view.DtAgendamento,
+            HorarioAgendamento = view.HorarioAgendamento,
+            CreatedAt = view.CreatedAt,
+            UpdatedAt = view.UpdatedAt,
+            DeletedAt = view.DeletedAt
+        };
+    }
+
     public static ConsultorDisponibilidadeResponse ToConsultorDisponibilidadeResponse(this Pessoa consultor)
     {
         ArgumentNullException.ThrowIfNull(consultor);
