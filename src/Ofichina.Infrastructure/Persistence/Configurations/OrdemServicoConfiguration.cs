@@ -18,8 +18,9 @@ public class OrdemServicoConfiguration : IEntityTypeConfiguration<OrdemServico>
 
         builder.Property(x => x.PessoaId).IsRequired();
         builder.Property(x => x.VeiculoId).IsRequired();
-        builder.Property(x => x.FuncionarioId).IsRequired();
-        builder.Property(x => x.HodometroEntrada).IsRequired();
+        builder.Property(x => x.ConsultorId).IsRequired();
+        builder.Property(x => x.MecanicoId).IsRequired();
+        builder.Property(x => x.Hodometro).IsRequired();
         builder.Property(x => x.ProblemaRelatado).IsRequired().HasMaxLength(500);
         builder.Property(x => x.Status)
             .HasConversion(new EnumParaTextoConverter<StatusOrdemServico>())
@@ -44,7 +45,12 @@ public class OrdemServicoConfiguration : IEntityTypeConfiguration<OrdemServico>
 
         builder.HasOne<Pessoa>()
             .WithMany()
-            .HasForeignKey(x => x.FuncionarioId)
+            .HasForeignKey(x => x.ConsultorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne<Pessoa>()
+            .WithMany()
+            .HasForeignKey(x => x.MecanicoId)
             .OnDelete(DeleteBehavior.Restrict);
 
     }
