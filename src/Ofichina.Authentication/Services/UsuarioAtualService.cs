@@ -1,11 +1,11 @@
+using Microsoft.AspNetCore.Http;
+using Ofichina.Application.Abstractions.Authentication.Service;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using Ofichina.Application.Abstractions.Authentication;
 
 namespace Ofichina.Authentication.Services;
 
-public sealed class UsuarioAtualService : IUsuarioAtualService
+public sealed class UsuarioAtualService : IUserService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 

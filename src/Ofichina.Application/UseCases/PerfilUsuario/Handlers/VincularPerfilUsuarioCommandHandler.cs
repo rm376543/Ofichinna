@@ -4,9 +4,9 @@ using Ofichina.Application.UseCases.PerfilUsuario.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.PerfilUsuario;
 using Ofichina.Domain.Entities;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Domain.Common;
 using Ofichina.Application.Abstractions.Common;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 
 namespace Ofichina.Application.UseCases.PerfilUsuario.Handlers;
 

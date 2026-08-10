@@ -1,4 +1,5 @@
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Abstractions.Interfaces.Service;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using Ofichina.Application.Abstractions.Common;
-using Ofichina.Application.Abstractions.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Checklists.Commands;
 using Ofichina.Application.UseCases.Checklists.Handlers;
 using Ofichina.Contracts;

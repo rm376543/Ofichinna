@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Logging.Abstractions;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
+using Ofichina.Application.Abstractions.Interfaces.Service;
 using Ofichina.Application.UseCases.Orcamentos.Commands;
 using Ofichina.Application.UseCases.Orcamentos.Handlers;
 using Ofichina.Contracts;
@@ -144,7 +146,7 @@ public sealed class AprovarOrcamentoCommandHandlerTests
         public Task HardDeleteAsync(HistoricoStatus entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 
-    private sealed class FakeUsuarioAtualService : IUsuarioAtualService
+    private sealed class FakeUsuarioAtualService : IUserService
     {
         private readonly Guid? _usuarioId;
 

@@ -1,7 +1,7 @@
 using Ofichina.Domain.Entities;
 using Ofichina.Application.Abstractions.Common;
 
-namespace Ofichina.Application.Abstractions.Interfaces;
+namespace Ofichina.Application.Abstractions.Interfaces.Repository;
 
 /// <summary>
 /// Interface do repositório para gerenciar AgendaConsultor.

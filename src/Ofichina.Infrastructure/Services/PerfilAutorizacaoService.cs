@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Application.Abstractions.Authentication.Service;
 using Ofichina.Infrastructure.Persistence;
 
 namespace Ofichina.Infrastructure.Services;
 
-public sealed class PerfilAutorizacaoService : IPerfilAutorizacaoService
+public sealed class PerfilAutorizacaoService : IProfileAuthService
 {
     private readonly ApplicationDbContext _context;
 

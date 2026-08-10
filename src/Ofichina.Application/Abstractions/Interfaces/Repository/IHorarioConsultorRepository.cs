@@ -1,6 +1,6 @@
 using Ofichina.Domain.Entities;
 
-namespace Ofichina.Application.Abstractions.Interfaces;
+namespace Ofichina.Application.Abstractions.Interfaces.Repository;
 
 public interface IHorarioConsultorRepository : IRepository<HorarioConsultor>
 {

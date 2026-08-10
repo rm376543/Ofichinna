@@ -109,7 +109,7 @@ public sealed class CadastrarUsuarioCommandHandlerTests
         public Task HardDeleteAsync(Usuario entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 
-    private sealed class FakeUsuarioAutenticacaoRepository : IUsuarioAutenticacaoRepository
+    private sealed class FakeUsuarioAutenticacaoRepository : IUserAuthRepository
     {
         private readonly List<Usuario> _usuarios;
 
@@ -140,7 +140,7 @@ public sealed class CadastrarUsuarioCommandHandlerTests
         }
     }
 
-    private sealed class FakePerfilAutorizacaoService : IPerfilAutorizacaoService
+    private sealed class FakePerfilAutorizacaoService : IProfileAuthService
     {
         public Task<IReadOnlyCollection<string>> ObterPerfisAsync(Guid usuarioId, CancellationToken cancellationToken = default)
         {
@@ -163,7 +163,7 @@ public sealed class CadastrarUsuarioCommandHandlerTests
         }
     }
 
-    private sealed class FakeSenhaHasher : ISenhaHasher
+    private sealed class FakeSenhaHasher : IPasswordHasherService
     {
         public string GerarHash(string senha) => $"hash:{senha}";
 

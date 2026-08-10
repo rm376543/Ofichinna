@@ -1,8 +1,9 @@
 using Ofichina.Domain.Common;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.OrdemServico;
+using Ofichina.Application.Abstractions.Interfaces.Service;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Services;
 

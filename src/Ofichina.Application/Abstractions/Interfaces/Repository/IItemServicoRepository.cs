@@ -1,6 +1,6 @@
 using Ofichina.Domain.Entities;
 
-namespace Ofichina.Application.Abstractions.Interfaces;
+namespace Ofichina.Application.Abstractions.Interfaces.Repository;
 
 /// <summary>
 /// Repositório específico para persistência de itens de serviço.

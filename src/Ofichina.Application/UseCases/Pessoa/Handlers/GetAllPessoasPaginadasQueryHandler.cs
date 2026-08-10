@@ -3,8 +3,8 @@ using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Pessoas.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Pessoa;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Contracts;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 
 namespace Ofichina.Application.UseCases.Pessoas.Handlers;
 

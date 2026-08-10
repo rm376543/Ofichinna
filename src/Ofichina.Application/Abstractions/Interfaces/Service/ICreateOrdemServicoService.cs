@@ -1,7 +1,7 @@
 using Ofichina.Contracts.Common;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 
-namespace Ofichina.Application.Abstractions.Interfaces;
+namespace Ofichina.Application.Abstractions.Interfaces.Service;
 
 /// <summary>
 /// Serviço responsável pela criação de ordens de serviço.

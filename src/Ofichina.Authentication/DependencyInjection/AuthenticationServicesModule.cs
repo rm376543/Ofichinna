@@ -1,6 +1,6 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Application.Abstractions.Authentication.Service;
 using Ofichina.Authentication.Services;
 
 namespace Ofichina.Authentication.DependencyInjection;
@@ -14,10 +14,10 @@ public static class AuthenticationServicesModule
     {
         services.AddValidatorsFromAssembly(typeof(AuthenticationServicesModule).Assembly, includeInternalTypes: true);
         services.AddHttpContextAccessor();
-        services.AddScoped<IAutenticacaoService, AutenticacaoService>();
-        services.AddScoped<IUsuarioAtualService, UsuarioAtualService>();
+        services.AddScoped<IAuthService, AutenticacaoService>();
+        services.AddScoped<IUserService, UsuarioAtualService>();
         services.AddSingleton<IJwtTokenService, JwtTokenService>();
-        services.AddSingleton<ISenhaHasher, SenhaHasherService>();
+        services.AddSingleton<IPasswordHasherService, SenhaHasherService>();
 
         return services;
     }

@@ -3,10 +3,10 @@ using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Common;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Domain.Entities;
 using Ofichina.Application.Abstractions.Common;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 

@@ -1,6 +1,6 @@
 using Ofichina.Domain.Aggregates;
 
-namespace Ofichina.Application.Abstractions.Interfaces;
+namespace Ofichina.Application.Abstractions.Interfaces.Repository;
 
 /// <summary>
 /// Repositório específico para consultas de orçamento com seus itens e checklist.

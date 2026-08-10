@@ -2,8 +2,8 @@ using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Contracts.Common;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Domain.Common;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 
 namespace Ofichina.Application.UseCases.Veiculos.Handlers;
 

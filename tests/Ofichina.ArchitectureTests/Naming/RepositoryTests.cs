@@ -10,7 +10,7 @@ public class RepositoryTests
     public void Repositories_Devem_Ser_Interfaces()
     {
         AssertRepositoryInterfaces(typeof(IRepository<>).Assembly);
-        AssertRepositoryInterfaces(typeof(IUsuarioAutenticacaoRepository).Assembly);
+        AssertRepositoryInterfaces(typeof(IUserAuthRepository).Assembly);
     }
 
     private static void AssertRepositoryInterfaces(Assembly assembly)

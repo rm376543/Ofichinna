@@ -1,4 +1,5 @@
 ﻿using Ofichina.Application.Abstractions;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Pessoas.Mappings;
 using Ofichina.Application.UseCases.Pessoas.Queries;
 using Ofichina.Contracts.Common;

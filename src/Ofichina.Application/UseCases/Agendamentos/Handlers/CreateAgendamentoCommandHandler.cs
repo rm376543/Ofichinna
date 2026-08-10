@@ -1,5 +1,6 @@
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Application.Abstractions.Authentication.Service;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Agendamentos.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Aggregates;
@@ -16,7 +17,7 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
     private readonly IPessoaRepository _pessoaRepository;
     private readonly IVeiculoRepository _veiculoRepository;
     private readonly IAgendaConsultorRepository _agendaConsultorRepository;
-    private readonly IPerfilAutorizacaoService _perfilAutorizacaoService;
+    private readonly IProfileAuthService _perfilAutorizacaoService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateAgendamentoCommandHandler> _logger;
 
@@ -25,7 +26,7 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
         IPessoaRepository pessoaRepository,
         IVeiculoRepository veiculoRepository,
         IAgendaConsultorRepository agendaConsultorRepository,
-        IPerfilAutorizacaoService perfilAutorizacaoService,
+        IProfileAuthService perfilAutorizacaoService,
         IUnitOfWork unitOfWork,
         ILogger<CreateAgendamentoCommandHandler> logger)
     {

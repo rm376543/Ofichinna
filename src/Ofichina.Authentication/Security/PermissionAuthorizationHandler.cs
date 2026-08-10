@@ -1,14 +1,14 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using Ofichina.Application.Abstractions.Authentication;
+﻿using Microsoft.AspNetCore.Authorization;
+using Ofichina.Application.Abstractions.Authentication.Service;
+using System.Security.Claims;
 
 namespace Ofichina.Authentication.Security;
 
 public sealed class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
 {
-    private readonly IPerfilAutorizacaoService _perfilAutorizacaoService;
+    private readonly IProfileAuthService _perfilAutorizacaoService;
 
-    public PermissionAuthorizationHandler(IPerfilAutorizacaoService perfilAutorizacaoService)
+    public PermissionAuthorizationHandler(IProfileAuthService perfilAutorizacaoService)
     {
         _perfilAutorizacaoService = perfilAutorizacaoService;
     }

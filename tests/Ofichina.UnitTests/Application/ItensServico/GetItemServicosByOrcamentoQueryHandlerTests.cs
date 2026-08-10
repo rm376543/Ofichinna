@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging.Abstractions;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.ItensServico.Handlers;
 using Ofichina.Application.UseCases.ItensServico.Queries;
 using Ofichina.Contracts;

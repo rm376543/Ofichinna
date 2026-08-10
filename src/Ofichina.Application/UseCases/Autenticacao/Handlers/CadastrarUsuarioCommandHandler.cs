@@ -1,5 +1,6 @@
 ﻿using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Application.Abstractions.Authentication.Repository;
+using Ofichina.Application.Abstractions.Authentication.Service;
 using Ofichina.Application.Exceptions;
 using Ofichina.Application.UseCases.Autenticacao.Commands;
 using Ofichina.Contracts.Common;
@@ -14,17 +15,17 @@ public sealed class CadastrarUsuarioCommandHandler : ICommandHandler<CadastrarUs
 {
     private readonly IRepository<Usuario> _usuarioRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IUsuarioAutenticacaoRepository _usuarioAutenticacaoRepository;
+    private readonly IUserAuthRepository _usuarioAutenticacaoRepository;
     private readonly IJwtTokenService _jwtTokenService;
-    private readonly ISenhaHasher _senhaHasher;
+    private readonly IPasswordHasherService _senhaHasher;
     private readonly ILogger<CadastrarUsuarioCommandHandler> _logger;
 
     public CadastrarUsuarioCommandHandler(
         IRepository<Usuario> usuarioRepository,
         IUnitOfWork unitOfWork,
-        IUsuarioAutenticacaoRepository usuarioAutenticacaoRepository,
+        IUserAuthRepository usuarioAutenticacaoRepository,
         IJwtTokenService jwtTokenService,
-        ISenhaHasher senhaHasher,
+        IPasswordHasherService senhaHasher,
         ILogger<CadastrarUsuarioCommandHandler> logger)
     {
         _usuarioRepository = usuarioRepository;

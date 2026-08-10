@@ -1,4 +1,5 @@
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;

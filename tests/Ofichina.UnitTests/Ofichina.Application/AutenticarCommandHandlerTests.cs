@@ -77,7 +77,7 @@ public class AutenticarCommandHandlerTests
         return usuario;
     }
 
-    private sealed class FakeUsuarioAutenticacaoRepository : IUsuarioAutenticacaoRepository
+    private sealed class FakeUsuarioAutenticacaoRepository : IUserAuthRepository
     {
         private readonly Usuario? _usuario;
 
@@ -95,7 +95,7 @@ public class AutenticarCommandHandlerTests
         }
     }
 
-    private sealed class FakePerfilAutorizacaoService : IPerfilAutorizacaoService
+    private sealed class FakePerfilAutorizacaoService : IProfileAuthService
     {
         private readonly IReadOnlyCollection<string> _perfis;
 
@@ -145,7 +145,7 @@ public class AutenticarCommandHandlerTests
         }
     }
 
-    private sealed class FakeSenhaHasher : ISenhaHasher
+    private sealed class FakeSenhaHasher : IPasswordHasherService
     {
         private readonly bool _resultado;
 

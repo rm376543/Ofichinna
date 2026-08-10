@@ -1,11 +1,11 @@
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Ofichina.Application.Abstractions.Authentication.Service;
+using Ofichina.Contracts.Responses.Authentication;
+using Ofichina.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Ofichina.Domain.Entities;
-using Ofichina.Application.Abstractions.Authentication;
-using Ofichina.Contracts.Responses.Authentication;
 
 namespace Ofichina.Authentication.Services;
 
