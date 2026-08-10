@@ -13,8 +13,8 @@ public sealed class CreateOrdemServicoRequestValidatorTests
         {
             PessoaId = Guid.NewGuid(),
             VeiculoId = Guid.NewGuid(),
-            FuncionarioId = Guid.NewGuid(),
-            HodometroEntrada = 77290,
+            ConsultorId = Guid.NewGuid(),
+            Hodometro = 77290,
             ProblemaRelatado = "Barulhos durante a aceleração",
             Observacoes = "carro de dev"
         };
@@ -35,7 +35,7 @@ public sealed class CreateOrdemServicoRequestValidatorTests
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, x => x.PropertyName == nameof(CreateOrdemServicoRequest.PessoaId));
         Assert.Contains(result.Errors, x => x.PropertyName == nameof(CreateOrdemServicoRequest.VeiculoId));
-        Assert.Contains(result.Errors, x => x.PropertyName == nameof(CreateOrdemServicoRequest.FuncionarioId));
+        Assert.Contains(result.Errors, x => x.PropertyName == nameof(CreateOrdemServicoRequest.ConsultorId));
         Assert.Contains(result.Errors, x => x.PropertyName == nameof(CreateOrdemServicoRequest.ProblemaRelatado));
     }
 }

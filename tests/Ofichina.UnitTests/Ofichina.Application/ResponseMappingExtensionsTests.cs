@@ -21,7 +21,7 @@ public sealed class ResponseMappingExtensionsTests
         DefinirPropriedade(agendaConsultor, nameof(AgendaConsultor.HorarioDisponibilidade), horario);
         DefinirPropriedade(agendaConsultor, nameof(AgendaConsultor.Consultor), consultor);
 
-        var agendamento = new Agendamento(cliente.Id, agendaConsultor.Id, veiculo.Id, "Revisão agendada");
+        var agendamento = new Agendamento(cliente.Id, agendaConsultor.Id, veiculo.Id, 12500, "Revisão agendada");
         DefinirPropriedade(agendamento, nameof(Agendamento.Cliente), cliente);
         DefinirPropriedade(agendamento, nameof(Agendamento.Veiculo), veiculo);
         DefinirPropriedade(agendamento, nameof(Agendamento.AgendaConsultor), agendaConsultor);
@@ -30,9 +30,9 @@ public sealed class ResponseMappingExtensionsTests
 
         Assert.Equal(cliente.Id, response.PessoaId);
         Assert.Equal("Cliente Teste", response.ClienteNome);
-        Assert.Equal(dia.Id, response.DiaDisponibilidadeId);
-        Assert.Equal(horario.Id, response.HorarioConsultorId);
-        Assert.Equal(consultor.Id, response.ConsultorPessoaId);
+        Assert.Equal(dia.Id, response.DiaId);
+        Assert.Equal(horario.Id, response.HorarioId);
+        Assert.Equal(consultor.Id, response.ConsultorId);
         Assert.Equal("Consultor Teste", response.ConsultorNome);
         Assert.Equal(veiculo.Id, response.VeiculoId);
         Assert.Equal("ABC1D23", response.VeiculoPlaca);

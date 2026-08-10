@@ -1,14 +1,10 @@
 using Microsoft.Extensions.Logging.Abstractions;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.Handlers;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.OrdensServico;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Enums;
 using Ofichina.Domain.ValueObjects;
-using OrdemServicoAggregate = Ofichina.Domain.Aggregates.OrdemServico;
 
 namespace Ofichina.UnitTests.Application.OrdensServico;
 
@@ -30,8 +26,8 @@ public sealed class CreateOrdemServicoCommandHandlerTests
         {
             PessoaId = pessoa.Id,
             VeiculoId = veiculo.Id,
-            FuncionarioId = funcionario.Id,
-            HodometroEntrada = 77290,
+            ConsultorId = funcionario.Id,
+            Hodometro = 77290,
             ProblemaRelatado = "Barulhos durante a aceleração",
             Observacoes = "carro de dev"
         });
@@ -42,8 +38,8 @@ public sealed class CreateOrdemServicoCommandHandlerTests
         Assert.NotNull(createService.CommandRecebido);
         Assert.Equal(pessoa.Id, createService.CommandRecebido!.PessoaId);
         Assert.Equal(veiculo.Id, createService.CommandRecebido.VeiculoId);
-        Assert.Equal(funcionario.Id, createService.CommandRecebido.FuncionarioId);
-        Assert.Equal(77290, createService.CommandRecebido.HodometroEntrada);
+        Assert.Equal(funcionario.Id, createService.CommandRecebido.ConsultorId);
+        Assert.Equal(77290, createService.CommandRecebido.Hodometro);
         Assert.Equal("Barulhos durante a aceleração", createService.CommandRecebido.ProblemaRelatado);
         Assert.Equal("carro de dev", createService.CommandRecebido.Observacoes);
     }
