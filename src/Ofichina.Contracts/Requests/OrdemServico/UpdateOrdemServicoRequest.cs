@@ -23,14 +23,14 @@ public sealed class UpdateOrdemServicoRequest : UpdateRequest
     public Guid VeiculoId { get; init; }
 
     /// <summary>
-    /// Funcionário responsável pelo atendimento.
+    /// Consultor responsável pelo atendimento.
     /// </summary>
-    public Guid FuncionarioId { get; init; }
+    public Guid ConsultorId { get; init; }
 
     /// <summary>
     /// Hodometro atual do veículo na entrada.
     /// </summary>
-    public int HodometroEntrada { get; init; }
+    public int Hodometro { get; init; }
 
     /// <summary>
     /// Descrição do problema informado pela pessoa.

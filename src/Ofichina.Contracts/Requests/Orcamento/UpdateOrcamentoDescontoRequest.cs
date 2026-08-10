@@ -9,4 +9,9 @@ public sealed class UpdateOrcamentoDescontoRequest
     /// Valor do desconto.
     /// </summary>
     public decimal Desconto { get; init; }
+
+    /// <summary>
+    /// Indica se o desconto é percentual.
+    /// </summary>
+    public bool DescontoEmDinheiro { get; init; }
 }

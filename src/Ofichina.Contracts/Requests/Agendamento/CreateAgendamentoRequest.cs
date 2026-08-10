@@ -22,6 +22,11 @@ public sealed class CreateAgendamentoRequest : CreateRequest
     public Guid VeiculoId { get; init; }
 
     /// <summary>
+    /// Hodômetro de entrada informado no agendamento.
+    /// </summary>
+    public int Hodometro { get; init; }
+
+    /// <summary>
     /// Descrição opcional do agendamento.
     /// </summary>
     public string? Descricao { get; init; }

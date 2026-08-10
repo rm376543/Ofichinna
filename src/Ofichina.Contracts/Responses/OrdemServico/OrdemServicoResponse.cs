@@ -24,14 +24,19 @@ public sealed class OrdemServicoResponse : BaseResponse
     public Guid VeiculoId { get; set; }
 
     /// <summary>
-    /// Identificador do funcionário responsável.
+    /// Identificador do consultor responsável.
     /// </summary>
-    public Guid FuncionarioId { get; set; }
+    public Guid ConsultorId { get; set; }
+
+    /// <summary>
+    /// Identificador do mecânico responsável pelo reparo.
+    /// </summary>
+    public Guid MecanicoId { get; set; }
 
     /// <summary>
     /// Hodômetro de entrada do veículo.
     /// </summary>
-    public int HodometroEntrada { get; set; }
+    public int Hodometro { get; set; }
 
     /// <summary>
     /// Problema relatado na abertura da ordem de serviço.

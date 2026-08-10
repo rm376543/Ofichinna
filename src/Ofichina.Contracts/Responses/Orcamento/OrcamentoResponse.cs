@@ -31,5 +31,7 @@ public sealed class OrcamentoResponse : BaseResponse
 
     public decimal ValorTotal { get; set; }
 
+    public decimal ValorTotalDesconto { get; set; }
+
     public ICollection<OrcamentoItemResponse> ItensServico { get; set; } = [];
 }

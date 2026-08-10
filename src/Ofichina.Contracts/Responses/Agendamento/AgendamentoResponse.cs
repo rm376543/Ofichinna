@@ -13,11 +13,11 @@ public sealed class AgendamentoResponse : BaseResponse
 
     public string ClienteNome { get; set; } = string.Empty;
 
-    public Guid? DiaDisponibilidadeId { get; set; }
+    public Guid? DiaId { get; set; }
 
-    public Guid? HorarioConsultorId { get; set; }
+    public Guid? HorarioId { get; set; }
 
-    public Guid? ConsultorPessoaId { get; set; }
+    public Guid? ConsultorId { get; set; }
 
     public string ConsultorNome { get; set; } = string.Empty;
 
