@@ -1,30 +1,31 @@
+using Ofichina.Application.Abstractions.Authentication.Repository;
+using Ofichina.Application.Abstractions.Authentication.Service;
+using Ofichina.Application.Abstractions.Common;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Autenticacao;
 using Ofichina.Contracts.Requests.Usuario;
-using Ofichina.Application.Abstractions.Common;
+using Ofichina.Contracts.Responses.Authentication;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
-using Ofichina.Application.Abstractions.Authentication;
-using Ofichina.Contracts.Responses.Authentication;
 
 namespace Ofichina.Authentication.Services;
 
-public sealed class AutenticacaoService : IAutenticacaoService
+public sealed class AutenticacaoService : IAuthService
 {
     private readonly IRepository<Usuario> _usuarioRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IUsuarioAutenticacaoRepository _usuarioAutenticacaoRepository;
-    private readonly IPerfilAutorizacaoService _perfilService;
+    private readonly IUserAuthRepository _usuarioAutenticacaoRepository;
+    private readonly IProfileAuthService _perfilService;
     private readonly IJwtTokenService _jwtTokenService;
-    private readonly ISenhaHasher _senhaHasher;
+    private readonly IPasswordHasherService _senhaHasher;
 
     public AutenticacaoService(
         IRepository<Usuario> usuarioRepository,
         IUnitOfWork unitOfWork,
-        IUsuarioAutenticacaoRepository usuarioAutenticacaoRepository,
-        IPerfilAutorizacaoService perfilService,
+        IUserAuthRepository usuarioAutenticacaoRepository,
+        IProfileAuthService perfilService,
         IJwtTokenService jwtTokenService,
-        ISenhaHasher senhaHasher)
+        IPasswordHasherService senhaHasher)
     {
         _usuarioRepository = usuarioRepository;
         _unitOfWork = unitOfWork;

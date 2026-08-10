@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Extensions\**" />
     <Compile Remove="UseCases\OrdensServico\ItemPeca\**" />
+    <EmbeddedResource Remove="Extensions\**" />
     <EmbeddedResource Remove="UseCases\OrdensServico\ItemPeca\**" />
+    <None Remove="Extensions\**" />
     <None Remove="UseCases\OrdensServico\ItemPeca\**" />
   </ItemGroup>
 
@@ -24,10 +27,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Ofichina.Domain\Ofichina.Domain.csproj" />
     <ProjectReference Include="..\Ofichina.Contracts\Ofichina.Contracts.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Extensions\" />
   </ItemGroup>
 
 </Project>

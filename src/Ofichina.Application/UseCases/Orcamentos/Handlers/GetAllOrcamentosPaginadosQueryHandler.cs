@@ -1,5 +1,5 @@
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces.Service;
 using Ofichina.Application.UseCases.Orcamentos.Queries;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;

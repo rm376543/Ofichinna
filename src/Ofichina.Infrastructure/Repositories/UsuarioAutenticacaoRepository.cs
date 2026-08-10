@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Ofichina.Application.Abstractions.Authentication.Repository;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
 using Ofichina.Infrastructure.Persistence;
-using Ofichina.Application.Abstractions.Authentication;
 
 namespace Ofichina.Infrastructure.Repositories;
 
-public sealed class UsuarioAutenticacaoRepository : IUsuarioAutenticacaoRepository
+public sealed class UsuarioAutenticacaoRepository : IUserAuthRepository
 {
     private readonly ApplicationDbContext _context;
 

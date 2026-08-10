@@ -4,7 +4,7 @@ using Ofichina.Application.Abstractions.Common;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 
-namespace Ofichina.Application.Abstractions.Interfaces;
+namespace Ofichina.Application.Abstractions.Interfaces.Repository;
 
 /// <summary>
 /// Interface específica para o repositório de Veiculo.

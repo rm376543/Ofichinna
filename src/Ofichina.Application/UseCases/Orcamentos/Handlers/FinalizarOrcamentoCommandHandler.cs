@@ -1,5 +1,6 @@
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Application.Abstractions.Authentication.Service;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Orcamentos.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Common;
@@ -15,14 +16,14 @@ public sealed class FinalizarOrcamentoCommandHandler : ICommandHandler<Finalizar
 {
     private readonly IOrcamentoRepository _orcamentoRepository;
     private readonly IRepository<HistoricoStatus> _historicoStatusRepository;
-    private readonly IUsuarioAtualService _usuarioAtualService;
+    private readonly IUserService _usuarioAtualService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<FinalizarOrcamentoCommandHandler> _logger;
 
     public FinalizarOrcamentoCommandHandler(
         IOrcamentoRepository orcamentoRepository,
         IRepository<HistoricoStatus> historicoStatusRepository,
-        IUsuarioAtualService usuarioAtualService,
+        IUserService usuarioAtualService,
         IUnitOfWork unitOfWork,
         ILogger<FinalizarOrcamentoCommandHandler> logger)
     {

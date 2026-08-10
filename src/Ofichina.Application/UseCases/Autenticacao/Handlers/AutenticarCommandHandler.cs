@@ -1,5 +1,6 @@
 ﻿using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Application.Abstractions.Authentication.Repository;
+using Ofichina.Application.Abstractions.Authentication.Service;
 using Ofichina.Application.UseCases.Autenticacao.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Authentication;
@@ -10,17 +11,17 @@ namespace Ofichina.Application.UseCases.Autenticacao.Handlers;
 
 public sealed class AutenticarCommandHandler : ICommandHandler<AutenticarCommand, Result<AuthenticationResponse>>
 {
-    private readonly IUsuarioAutenticacaoRepository _usuarioAutenticacaoRepository;
-    private readonly IPerfilAutorizacaoService _perfilService;
+    private readonly IUserAuthRepository _usuarioAutenticacaoRepository;
+    private readonly IProfileAuthService _perfilService;
     private readonly IJwtTokenService _jwtTokenService;
-    private readonly ISenhaHasher _senhaHasher;
+    private readonly IPasswordHasherService _senhaHasher;
     private readonly ILogger<AutenticarCommandHandler> _logger;
 
     public AutenticarCommandHandler(
-        IUsuarioAutenticacaoRepository usuarioAutenticacaoRepository,
-        IPerfilAutorizacaoService perfilService,
+        IUserAuthRepository usuarioAutenticacaoRepository,
+        IProfileAuthService perfilService,
         IJwtTokenService jwtTokenService,
-        ISenhaHasher senhaHasher,
+        IPasswordHasherService senhaHasher,
         ILogger<AutenticarCommandHandler> logger)
     {
         _usuarioAutenticacaoRepository = usuarioAutenticacaoRepository;

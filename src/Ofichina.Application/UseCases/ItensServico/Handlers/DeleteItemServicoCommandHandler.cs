@@ -2,10 +2,10 @@ using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Application.Abstractions.Interfaces;
 using Ofichina.Domain.Common;
 using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Domain.Enums;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 
 namespace Ofichina.Application.UseCases.ItensServico.Handlers;
 

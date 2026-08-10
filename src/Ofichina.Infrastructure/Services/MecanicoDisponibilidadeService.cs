@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Ofichina.Application.Abstractions.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces.Service;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 using Ofichina.Infrastructure.Persistence;

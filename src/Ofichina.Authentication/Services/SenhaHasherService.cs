@@ -1,9 +1,9 @@
-using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Application.Abstractions.Authentication.Service;
 using Ofichina.Authentication.Security;
 
 namespace Ofichina.Authentication.Services;
 
-public sealed class SenhaHasherService : ISenhaHasher
+public sealed class SenhaHasherService : IPasswordHasherService
 {
     public string GerarHash(string senha)
     {

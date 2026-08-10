@@ -1,7 +1,7 @@
 using Ofichina.Application.UseCases.Orcamentos.Commands;
 using Ofichina.Contracts.Common;
 
-namespace Ofichina.Application.Abstractions.Interfaces;
+namespace Ofichina.Application.Abstractions.Interfaces.Service;
 
 /// <summary>
 /// Serviço responsável pela criação de orçamentos.

@@ -1,6 +1,6 @@
 ﻿using Ofichina.Domain.Entities;
 
-namespace Ofichina.Application.Abstractions.Interfaces;
+namespace Ofichina.Application.Abstractions.Interfaces.Repository;
 
 /// <summary>
 /// Interface específica para o repositório de Perfil.

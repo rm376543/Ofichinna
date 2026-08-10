@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Ofichina.Application.Abstractions.Interfaces;
-using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Application.Abstractions.Authentication.Repository;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Infrastructure.Repositories;
 
 namespace Ofichina.Infrastructure.DependencyInjection;
@@ -25,7 +25,7 @@ public static class RepositoryModule
         // Registra o Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        services.AddScoped<IUsuarioAutenticacaoRepository, UsuarioAutenticacaoRepository>();
+        services.AddScoped<IUserAuthRepository, UsuarioAutenticacaoRepository>();
 
         services.AddScoped<IPerfilRepository, PerfilRepository>();
 
@@ -40,6 +40,7 @@ public static class RepositoryModule
         services.AddScoped<IVeiculoRepository, VeiculoRepository>();
 
         services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
+
         services.AddScoped<IOrcamentoRepository, OrcamentoRepository>();
 
         services.AddScoped<IItemServicoRepository, ItemServicoRepository>();

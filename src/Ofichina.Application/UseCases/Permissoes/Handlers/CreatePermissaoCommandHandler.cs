@@ -3,6 +3,7 @@ using Ofichina.Application.UseCases.Permissoes.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.Entities;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 
 namespace Ofichina.Application.UseCases.Permissoes.Handlers;
 

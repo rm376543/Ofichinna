@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Ofichina.Application.Abstractions.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces.Service;
 using Ofichina.Application.UseCases.Orcamentos.Services;
 using Ofichina.Application.UseCases.OrdensServico.Services;
 

@@ -1,5 +1,5 @@
 ﻿using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Application.Abstractions.Authentication.Service;
 using Ofichina.Application.UseCases.PerfilUsuario.Queries;
 
 namespace Ofichina.Application.UseCases.PerfilUsuario.Handlers;
@@ -7,9 +7,9 @@ namespace Ofichina.Application.UseCases.PerfilUsuario.Handlers;
 public sealed class ObterPerfisDoUsuarioQueryHandler
     : IQueryHandler<ObterPerfisDoUsuarioQuery, IReadOnlyCollection<string>>
 {
-    private readonly IPerfilAutorizacaoService _perfilService;
+    private readonly IProfileAuthService _perfilService;
 
-    public ObterPerfisDoUsuarioQueryHandler(IPerfilAutorizacaoService perfilService)
+    public ObterPerfisDoUsuarioQueryHandler(IProfileAuthService perfilService)
     {
         _perfilService = perfilService;
     }

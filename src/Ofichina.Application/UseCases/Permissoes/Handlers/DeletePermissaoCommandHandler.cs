@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Interfaces;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Permissoes.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Common;

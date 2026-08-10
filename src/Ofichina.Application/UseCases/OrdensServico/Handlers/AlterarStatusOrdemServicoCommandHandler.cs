@@ -1,11 +1,10 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Application.Abstractions.Authentication;
+using Ofichina.Application.Abstractions.Authentication.Service;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Enums;
-using Ofichina.Domain.Common;
 using Ofichina.Domain.Aggregates;
+using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
 
@@ -18,14 +17,14 @@ public sealed class AlterarStatusOrdemServicoCommandHandler : ICommandHandler<Al
 {
     private readonly IRepository<OrdemServico> _ordemServicoRepository;
     private readonly IRepository<HistoricoStatus> _historicoStatusRepository;
-    private readonly IUsuarioAtualService _usuarioAtualService;
+    private readonly IUserService _usuarioAtualService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<AlterarStatusOrdemServicoCommandHandler> _logger;
 
     public AlterarStatusOrdemServicoCommandHandler(
         IRepository<OrdemServico> ordemServicoRepository,
         IRepository<HistoricoStatus> historicoStatusRepository,
-        IUsuarioAtualService usuarioAtualService,
+        IUserService usuarioAtualService,
         IUnitOfWork unitOfWork,
         ILogger<AlterarStatusOrdemServicoCommandHandler> logger)
     {

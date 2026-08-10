@@ -2,7 +2,7 @@ using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Orcamento;
 
-namespace Ofichina.Application.Abstractions.Interfaces;
+namespace Ofichina.Application.Abstractions.Interfaces.Service;
 
 /// <summary>
 /// Serviço de leitura para orçamentos.
