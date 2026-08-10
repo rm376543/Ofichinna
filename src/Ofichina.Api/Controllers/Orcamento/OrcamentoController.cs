@@ -240,7 +240,12 @@ public sealed class OrcamentoController : ControllerBase
         if (!validation.IsValid)
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
 
-        var result = await _mediator.Send(new UpdateOrcamentoDescontoCommand(orcamentoId, request.Desconto), cancellationToken);
+        var result = await _mediator.Send(
+            new UpdateOrcamentoDescontoCommand(
+                orcamentoId,
+                request.Desconto,
+                request.DescontoEmDinheiro),
+            cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o desconto do orçamento."));
@@ -288,12 +293,12 @@ public sealed class OrcamentoController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> AprovarOrcamento(
-        [FromBody] OrcamentoRequest request,
+        [FromBody] AprovarOrcamentoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a aprovação do orçamento com Id: {Id}.", request.OrcamentoId);
+        _logger.LogInformation("Iniciando a aprovação do orçamento com Id: {Id} e hodômetro {Hodometro}.", request.OrcamentoId, request.Hodometro);
 
-        var result = await _mediator.Send(new AprovarOrcamentoCommand(request.OrcamentoId), cancellationToken);
+        var result = await _mediator.Send(new AprovarOrcamentoCommand(request.OrcamentoId, request.Hodometro), cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível aprovar o orçamento."));
