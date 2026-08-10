@@ -61,7 +61,7 @@ Garantir que toda mudança de estado e toda alteração de itens respeite as inv
 - Criação, consulta e atualização da ordem de serviço.
 - Consulta paginada e consulta detalhada.
 - Transições de diagnóstico, aprovação, execução, finalização, entrega e cancelamento.
-- Relacionamento com `Pessoa`, `Veiculo`, `FuncionarioId` e `ItemServico`.
+- Relacionamento com `Pessoa`, `Veiculo`, `ConsultorId` e `ItemServico`.
 - Cálculo de `ValorTotal` a partir de itens e peças ativas.
 - Validação de regras do agregado e requests.
 - Documentação de API, testes e autorização.
@@ -151,7 +151,7 @@ O método `Cancelar()` rejeita cancelamento quando o status é `Finalizada` ou `
 
 ### Invariantes do agregado
 
-- `PessoaId`, `VeiculoId` e `FuncionarioId` não podem ser `Guid.Empty`.
+- `PessoaId`, `VeiculoId` e `ConsultorId` não podem ser `Guid.Empty`.
 - `HodometroEntrada` não pode ser negativo.
 - `ProblemaRelatado` é obrigatório.
 - Uma OS nova inicia com `StatusOrdemServico.Recebida` e `DataAbertura` em UTC.
@@ -178,7 +178,7 @@ O método `Cancelar()` rejeita cancelamento quando o status é `Finalizada` ou `
 {
   "pessoaId": "550e8400-e29b-41d4-a716-446655440000",
   "veiculoId": "660e8400-e29b-41d4-a716-446655440000",
-  "funcionarioId": "770e8400-e29b-41d4-a716-446655440000",
+	"consultorId": "770e8400-e29b-41d4-a716-446655440000",
   "hodometroEntrada": 35000,
   "problemaRelatado": "Ruído no motor",
   "observacoes": "Avaliar correia"
@@ -194,7 +194,7 @@ O método `Cancelar()` rejeita cancelamento quando o status é `Finalizada` ou `
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "pessoaId": "660e8400-e29b-41d4-a716-446655440000",
   "veiculoId": "770e8400-e29b-41d4-a716-446655440000",
-  "funcionarioId": "880e8400-e29b-41d4-a716-446655440000",
+	"consultorId": "880e8400-e29b-41d4-a716-446655440000",
   "hodometroEntrada": 35000,
   "problemaRelatado": "Ruído no motor",
   "observacoes": "Dados revisados"

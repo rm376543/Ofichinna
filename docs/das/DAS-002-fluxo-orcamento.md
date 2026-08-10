@@ -144,6 +144,14 @@ stateDiagram-v2
 - `PUT /api/ordem-servico/{id}/cancelar`
 - `DELETE /api/ordem-servico/{id}`
 
+### 5.4 Contrato esperado da ordem de serviço
+
+O contrato da ordem de serviço deve refletir o problema relatado e os dados operacionais do atendimento.
+
+- `OrdemServicoSimplesResponse` é a resposta da listagem e deve expor `ordemServicoId`, `cliente`, `consultor`, `problemaRelatado`, `status`, `dataAbetura`, `dataFinalizacao`, `observacao`, `valorTotal`, `createdAt`, `updatedAt` e `deletedAt`.
+- `OrdemServicoResponse` é a resposta detalhada e deve expor `ordemServicoId`, `pessoaId`, `veiculoId`, `consultorId`, `mecanicoId`, `hodometro`, `problemaRelatado`, `status`, `dataAbertura`, `dataFinalizacao`, `observacao`, `valorTotal`, `servicos`, `createdAt`, `updatedAt` e `deletedAt`.
+- A criação da OS a partir da aprovação do orçamento deve preservar o `problemaRelatado` e vincular os itens do orçamento à nova OS.
+
 ---
 
 ## 6. Validação e testes
@@ -153,10 +161,14 @@ stateDiagram-v2
 - Testes de integração para os controllers de checklist e orçamento.
 - Testes de integração para o controller de ordem de serviço ajustado.
 - Build completo da solução para validar o contrato e a composição.
+- Testes unitários de contrato para os responses de OS.
+- Teste de integração do fluxo orçamento aprovado → criação da OS.
 
 ### Critérios de aceite
 
 - Os endpoints de checklist e orçamento retornam payloads coerentes com os contratos.
+- As respostas de OS expõem `problemaRelatado` nos contratos simplificado e detalhado.
+- A OS criada a partir da aprovação do orçamento mantém status inicial `CRIADO` e os vínculos esperados.
 - O status persistido usa texto em UPPER_SNAKE_CASE e o histórico de mudanças é gravado.
 - `MotivoRecusaOrcamento` mantém vínculo explícito com o orçamento e `HistoricoStatus` registra orçamento ou OS conforme o fluxo.
 - A solução compila sem erros.
