@@ -31,7 +31,7 @@ public sealed class OrdemServicoService : IOrdemServicoService
             cancellationToken);
 
         var pessoasIds = ordensServico.Items
-            .SelectMany(ordem => new[] { ordem.PessoaId, ordem.FuncionarioId })
+            .SelectMany(ordem => new[] { ordem.PessoaId, ordem.ConsultorId })
             .Where(id => id != Guid.Empty)
             .Distinct()
             .ToArray();
@@ -41,9 +41,9 @@ public sealed class OrdemServicoService : IOrdemServicoService
 
         return ordensServico.ToPagedResponse(ordem => new OrdemServicoSimplesResponse
         {
-            OrdemServicoSimplesId = ordem.Id,
+            OrdemServicoId = ordem.Id,
             Cliente = ObterNome(ordem.PessoaId, nomesPorId),
-            Funcionario = ObterNome(ordem.FuncionarioId, nomesPorId),
+            Consultor = ObterNome(ordem.ConsultorId, nomesPorId),
             ProblemaRelatado = ordem.ProblemaRelatado,
             Status = ordem.Status.ToUpperSnakeCase(),
             DataAbetura = ordem.DataAbertura.ToString("dd/MM/yyyy"),

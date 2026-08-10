@@ -181,7 +181,7 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Identificador do item criado ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost("adicionar")]
+    [HttpPost("adicionar/para-ordem-servico")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]

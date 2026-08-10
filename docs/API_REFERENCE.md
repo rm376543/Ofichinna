@@ -414,7 +414,7 @@ Lista orçamentos com paginação.
 
 #### Resposta 200
 ```json
-{ "success": true, "data": { "items": [{ "id": "550e8400-e29b-41d4-a716-446655440000", "cliente": "João da Silva", "responsavel": "Maria Souza", "mecanicoDiagnostico": "Carlos Lima", "status": "EmDiagnostico", "dataCriacao": "2026-08-01T12:00:00Z", "dataValidade": "2026-08-10T12:00:00Z", "desconto": 10, "valorTotal": 1250.00 }], "pageNumber": 1, "pageSize": 10, "totalCount": 1 } }
+{ "success": true, "data": { "items": [{ "id": "550e8400-e29b-41d4-a716-446655440000", "cliente": "João da Silva", "responsavel": "Maria Souza", "mecanicoDiagnostico": "Carlos Lima", "status": "EmDiagnostico", "dataCriacao": "2026-08-01T12:00:00Z", "dataValidade": "2026-08-10T12:00:00Z", "desconto": 10, "valorTotal": 1120.00 }], "pageNumber": 1, "pageSize": 10, "totalCount": 1 } }
 ```
 
 **Respostas:** `200`, `400`, `401`, `403`.
@@ -471,7 +471,12 @@ Finaliza o orçamento após o diagnóstico, alterando o status para `AguardandoE
 Marca o orçamento como enviado para o cliente, alterando o status para `AguardandoAprovacao` e registrando o histórico de status. O orçamento precisa estar finalizado antes desse passo. **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
 ### POST /api/orcamento/aprovar
-Aprova o orçamento, seleciona automaticamente o mecânico de reparo quando disponível e gera a ordem de serviço vinculada. **Respostas:** `200`, `400`, `401`, `403`, `404`.
+Aprova o orçamento informando o hodômetro de entrada, cria a ordem de serviço com status inicial `CRIADO` e vincula os itens do orçamento à nova OS. A execução passa a ser iniciada manualmente em seguida. **Respostas:** `200`, `400`, `401`, `403`, `404`.
+
+#### Requisição
+```json
+{ "orcamentoId": "550e8400-e29b-41d4-a716-446655440000", "hodometro": 78123 }
+```
 
 ### POST /api/orcamento/reprovar
 Reprova o orçamento com motivo opcional, persistindo `MotivoRecusaOrcamento` e histórico de status. **Respostas:** `200`, `401`, `403`, `404`.
@@ -482,10 +487,20 @@ Reenvia o orçamento após reprovação, retornando o fluxo para diagnóstico e 
 ## 🧾 Ordens de serviço
 
 ### GET /api/ordem-servico
-Lista ordens paginadas. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`.
+Lista ordens paginadas com o contrato simplificado `OrdemServicoSimplesResponse`, incluindo `problemaRelatado`, status, datas e valor total formatado. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`.
+
+#### Resposta 200
+```json
+{ "success": true, "data": { "items": [{ "ordemServicoId": "660e8400-e29b-41d4-a716-446655440000", "cliente": "João da Silva", "consultor": "Maria Souza", "problemaRelatado": "Barulhos durante a aceleração", "status": "CRIADO", "dataAbetura": "16/08/2026", "dataFinalizacao": "", "observacao": "carro de dev", "valorTotal": "R$ 1.120,00" }], "pageNumber": 1, "pageSize": 10, "totalCount": 1 } }
+```
 
 ### GET /api/ordem-servico/{id}
-Retorna uma ordem detalhada. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `401`, `403`, `404`.
+Retorna uma ordem detalhada com `OrdemServicoResponse`, expondo `problemaRelatado`, datas, valor total e os serviços vinculados. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `401`, `403`, `404`.
+
+#### Resposta 200
+```json
+{ "success": true, "data": { "ordemServicoId": "660e8400-e29b-41d4-a716-446655440000", "pessoaId": "550e8400-e29b-41d4-a716-446655440000", "veiculoId": "770e8400-e29b-41d4-a716-446655440000", "consultorId": "880e8400-e29b-41d4-a716-446655440000", "mecanicoId": "990e8400-e29b-41d4-a716-446655440000", "hodometro": 78123, "problemaRelatado": "Barulhos durante a aceleração", "status": "CRIADO", "dataAbertura": "2026-08-16T12:00:00Z", "dataFinalizacao": null, "observacao": "carro de dev", "valorTotal": 1120.00, "servicos": [{ "ordemServicoId": "660e8400-e29b-41d4-a716-446655440000", "servicos": [{ "servicoId": "11111111-2222-3333-4444-555555555555", "descricao": "Troca de óleo", "valorServico": 120, "valorTotal": 180, "pecas": [{ "pecaId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee", "descricao": "Filtro de óleo", "quantidade": 1, "valorUnitario": 60, "valorTotal": 60 }] }] }, "createdAt": "2026-08-16T12:00:00Z", "updatedAt": null, "deletedAt": null } }
+```
 
 ### PUT /api/ordem-servico/{id}/execucao
 Inicia a execução da OS. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
@@ -506,6 +521,20 @@ Remove logicamente uma OS. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` 
 ```json
 { "success": true, "message": "Ordem de serviço atualizada com sucesso.", "errors": [], "data": null }
 ```
+
+### Contratos relacionados ao fluxo de aprovação do orçamento
+
+Ao aprovar um orçamento, a API cria uma OS com status inicial `CRIADO`, preserva o `problemaRelatado` a partir do orçamento/observações e vincula os itens do orçamento à nova OS. Esse fluxo deve manter coerência entre:
+
+- `POST /api/orcamento/aprovar`
+- `GET /api/ordem-servico`
+- `GET /api/ordem-servico/{id}`
+
+Os testes automatizados devem validar:
+
+1. o contrato detalhado expõe `problemaRelatado`;
+2. o contrato simplificado expõe `problemaRelatado` e as demais informações da listagem;
+3. a OS gerada a partir da aprovação do orçamento mantém o vínculo com os itens e o status inicial esperado.
 
 ## 📊 Códigos de resposta
 

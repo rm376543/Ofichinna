@@ -47,7 +47,7 @@ public sealed class ListarAgendaPorConsultorQueryHandler : IQueryHandler<ListarA
                 .OrderBy(s => s.HorarioDisponibilidade.Hora)
                 .Select(slot => new AgendaConsultorResponse
                 {
-                    AgendaId = slot.Id,
+                    AgendaConsultorId = slot.Id,
                     Hora = slot.HorarioDisponibilidade.Hora.ToString("HH:mm"),
                     Status = DeterminarStatus(slot, agendamentosPorSlot),
                     ClienteNome = ObterClienteNome(slot, agendamentosPorSlot),

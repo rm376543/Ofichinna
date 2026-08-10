@@ -24,19 +24,19 @@ public sealed class OrdemServico : Entity
     public Guid VeiculoId { get; private set; }
 
     /// <summary>
-    /// Funcionário responsável pelo atendimento.
+    /// Consultor responsável pelo atendimento.
     /// </summary>
-    public Guid FuncionarioId { get; private set; }
+    public Guid ConsultorId { get; private set; }
 
     /// <summary>
     /// Mecânico responsável pelo reparo.
     /// </summary>
-    public Guid MecanicoReparoId { get; private set; }
+    public Guid MecanicoId { get; private set; }
 
     /// <summary>
     /// Hodômetro de entrada do veículo na ordem de serviço.
     /// </summary>
-    public int HodometroEntrada { get; private set; }
+    public int Hodometro { get; private set; }
 
     /// <summary>
     /// Problema relatado na abertura da ordem de serviço.
@@ -89,9 +89,9 @@ public sealed class OrdemServico : Entity
     public OrdemServico(
         Guid pessoaId,
         Guid veiculoId,
-        Guid funcionarioId,
+        Guid consultorId,
         string? observacao)
-        : this(pessoaId, veiculoId, funcionarioId, 0, string.Empty, observacao)
+        : this(pessoaId, veiculoId, consultorId, 0, string.Empty, observacao)
     {
     }
 
@@ -101,8 +101,8 @@ public sealed class OrdemServico : Entity
     public OrdemServico(
         Guid pessoaId,
         Guid veiculoId,
-        Guid funcionarioId,
-        int hodometroEntrada,
+        Guid consultorId,
+        int hodometro,
         string problemaRelatado,
         string? observacao)
     {
@@ -112,10 +112,10 @@ public sealed class OrdemServico : Entity
         if (veiculoId == Guid.Empty)
             throw new DomainException("Veículo obrigatório.");
 
-        if (funcionarioId == Guid.Empty)
-            throw new DomainException("Funcionário obrigatório.");
+        if (consultorId == Guid.Empty)
+            throw new DomainException("Consultor obrigatório.");
 
-        if (hodometroEntrada < 0)
+        if (hodometro < 0)
             throw new DomainException("A quilometragem não pode ser negativa.");
 
         if (string.IsNullOrWhiteSpace(problemaRelatado))
@@ -123,11 +123,11 @@ public sealed class OrdemServico : Entity
 
         PessoaId = pessoaId;
         VeiculoId = veiculoId;
-        FuncionarioId = funcionarioId;
-        HodometroEntrada = hodometroEntrada;
+        ConsultorId = consultorId;
+        Hodometro = hodometro;
         ProblemaRelatado = problemaRelatado;
         Observacao = observacao;
-        MecanicoReparoId = Guid.Empty;
+        MecanicoId = Guid.Empty;
         Status = StatusOrdemServico.Recebida;
         DataAbertura = DateTime.UtcNow;
     }
@@ -135,7 +135,7 @@ public sealed class OrdemServico : Entity
     /// <summary>
     /// Cria uma ordem de serviço a partir de um orçamento aprovado.
     /// </summary>
-    public static OrdemServico CriarAPartirDoOrcamento(Orcamento orcamento, Guid mecanicoReparoId)
+    public static OrdemServico CriarAPartirDoOrcamento(Orcamento orcamento, Agendamento? agendamento, Guid mecanicoId, int hodometro)
     {
         ArgumentNullException.ThrowIfNull(orcamento);
 
@@ -146,20 +146,17 @@ public sealed class OrdemServico : Entity
         if (string.IsNullOrWhiteSpace(problemaRelatado))
             problemaRelatado = orcamento.Observacoes ?? "Orçamento aprovado";
 
-        var hodometroEntrada = 0;
-
         var ordemServico = new OrdemServico(
             orcamento.PessoaId,
             orcamento.VeiculoId,
             orcamento.ConsultorId,
-            hodometroEntrada,
+            hodometro,
             problemaRelatado,
             orcamento.Observacoes);
 
-        ordemServico.DesignarMecanicoReparo(mecanicoReparoId, orcamento.MecanicoId);
+        ordemServico.Status = StatusOrdemServico.Criado;
 
-        foreach (var item in orcamento.ItensServico.Where(x => !x.EstaExcluida()))
-            ordemServico.AdicionarServico(item.ServicoId, item.PecaId, item.Quantidade);
+        ordemServico.DesignarMecanico(mecanicoId, orcamento.MecanicoId);
 
         return ordemServico;
     }
@@ -170,8 +167,8 @@ public sealed class OrdemServico : Entity
     public void AtualizarDados(
         Guid pessoaId,
         Guid veiculoId,
-        Guid funcionarioId,
-        int hodometroEntrada,
+        Guid consultorId,
+        int hodometro,
         string problemaRelatado,
         string? observacao)
     {
@@ -181,10 +178,10 @@ public sealed class OrdemServico : Entity
         if (veiculoId == Guid.Empty)
             throw new DomainException("Veículo obrigatório.");
 
-        if (funcionarioId == Guid.Empty)
-            throw new DomainException("Funcionário obrigatório.");
+        if (consultorId == Guid.Empty)
+            throw new DomainException("Consultor obrigatório.");
 
-        if (hodometroEntrada < 0)
+        if (hodometro < 0)
             throw new DomainException("A quilometragem não pode ser negativa.");
 
         if (string.IsNullOrWhiteSpace(problemaRelatado))
@@ -192,8 +189,8 @@ public sealed class OrdemServico : Entity
 
         PessoaId = pessoaId;
         VeiculoId = veiculoId;
-        FuncionarioId = funcionarioId;
-        HodometroEntrada = hodometroEntrada;
+        ConsultorId = consultorId;
+        Hodometro = hodometro;
         ProblemaRelatado = problemaRelatado;
         Observacao = observacao;
 
@@ -203,12 +200,12 @@ public sealed class OrdemServico : Entity
     /// <summary>
     /// Desenha o mecânico responsável pelo reparo.
     /// </summary>
-    public void DesignarMecanicoReparo(Guid mecanicoReparoId, Guid mecanicoId)
+    public void DesignarMecanico(Guid mecanicoReparoId, Guid mecanicoId)
     {
         if (mecanicoReparoId == Guid.Empty)
             throw new DomainException("Mecânico de reparo obrigatório.");
 
-        MecanicoReparoId = mecanicoReparoId;
+        MecanicoId = mecanicoReparoId;
         AtualizarDataModificacao();
     }
 
@@ -217,7 +214,8 @@ public sealed class OrdemServico : Entity
     /// </summary>
     public void IniciarExecucao()
     {
-        ValidarStatus(StatusOrdemServico.Recebida);
+        if (Status != StatusOrdemServico.Recebida && Status != StatusOrdemServico.Criado)
+            throw new DomainException($"A OS precisa estar no status {StatusOrdemServico.Recebida} ou {StatusOrdemServico.Criado}.");
 
         Status = StatusOrdemServico.EmExecucao;
         AtualizarDataModificacao();

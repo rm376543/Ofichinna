@@ -16,10 +16,10 @@ public sealed class CreateOrdemServicoRequestValidator : AbstractValidator<Creat
         RuleFor(x => x.VeiculoId)
             .NotEmpty().WithMessage("O veículo vinculado é obrigatório.");
 
-        RuleFor(x => x.FuncionarioId)
-            .NotEmpty().WithMessage("O funcionário responsável é obrigatório.");
+        RuleFor(x => x.ConsultorId)
+            .NotEmpty().WithMessage("O consultor responsável é obrigatório.");
 
-        RuleFor(x => x.HodometroEntrada)
+        RuleFor(x => x.Hodometro)
             .GreaterThanOrEqualTo(0).WithMessage("O hodômetro de entrada não pode ser negativo.");
 
         RuleFor(x => x.ProblemaRelatado)

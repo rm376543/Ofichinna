@@ -7,6 +7,6 @@ namespace Ofichina.Contracts.Responses.Agendamento;
 /// </summary>
 public sealed class DiaDisponibilidadeResponse : BaseRequest
 {
-    public Guid DiaDisponibilidadeId { get; set; }
-    public DateOnly Data { get; set; }
+    public Guid DiaId { get; set; }
+    public DateOnly Dia { get; set; }
 }

@@ -12,7 +12,7 @@ using Ofichina.Infrastructure.Persistence;
 namespace Ofichina.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260809173332_001-inicial")]
+    [Migration("20260810021948_001-inicial")]
     partial class _001inicial
     {
         /// <inheritdoc />
@@ -47,6 +47,9 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Property<string>("Descricao")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("Hodometro")
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -98,6 +101,9 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<bool>("DescontoEmDinheiro")
+                        .HasColumnType("bit");
+
                     b.Property<Guid>("MecanicoId")
                         .HasColumnType("uniqueidentifier");
 
@@ -141,6 +147,9 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("OrdemServicoId");
 
+                    b.Property<Guid>("ConsultorId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -153,13 +162,10 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("FuncionarioId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("HodometroEntrada")
+                    b.Property<int>("Hodometro")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("MecanicoReparoId")
+                    b.Property<Guid>("MecanicoId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Observacao")
@@ -187,7 +193,9 @@ namespace Ofichina.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FuncionarioId");
+                    b.HasIndex("ConsultorId");
+
+                    b.HasIndex("MecanicoId");
 
                     b.HasIndex("PessoaId");
 
@@ -924,7 +932,13 @@ namespace Ofichina.Infrastructure.Migrations
                 {
                     b.HasOne("Ofichina.Domain.Entities.Pessoa", null)
                         .WithMany()
-                        .HasForeignKey("FuncionarioId")
+                        .HasForeignKey("ConsultorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Ofichina.Domain.Entities.Pessoa", null)
+                        .WithMany()
+                        .HasForeignKey("MecanicoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

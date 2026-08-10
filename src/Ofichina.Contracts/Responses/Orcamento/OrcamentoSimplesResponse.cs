@@ -24,4 +24,6 @@ public sealed class OrcamentoSimplesResponse : BaseResponse
     public decimal Desconto { get; set; }
 
     public decimal ValorTotal { get; set; }
+
+    public decimal ValorTotalDesconto { get; set; }
 }

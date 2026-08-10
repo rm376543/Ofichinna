@@ -340,6 +340,7 @@ namespace Ofichina.Infrastructure.Migrations
                     AgendaConsultorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     Descricao = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Hodometro = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -374,9 +375,9 @@ namespace Ofichina.Infrastructure.Migrations
                     OrdemServicoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PessoaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     VeiculoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FuncionarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MecanicoReparoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    HodometroEntrada = table.Column<int>(type: "int", nullable: false),
+                    ConsultorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MecanicoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Hodometro = table.Column<int>(type: "int", nullable: false),
                     ProblemaRelatado = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     DataAbertura = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -390,8 +391,14 @@ namespace Ofichina.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_OrdensServico", x => x.OrdemServicoId);
                     table.ForeignKey(
-                        name: "FK_OrdensServico_Pessoas_FuncionarioId",
-                        column: x => x.FuncionarioId,
+                        name: "FK_OrdensServico_Pessoas_ConsultorId",
+                        column: x => x.ConsultorId,
+                        principalTable: "Pessoas",
+                        principalColumn: "PessoaId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrdensServico_Pessoas_MecanicoId",
+                        column: x => x.MecanicoId,
                         principalTable: "Pessoas",
                         principalColumn: "PessoaId",
                         onDelete: ReferentialAction.Restrict);
@@ -445,6 +452,7 @@ namespace Ofichina.Infrastructure.Migrations
                     ConsultorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DataValidade = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Desconto = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    DescontoEmDinheiro = table.Column<bool>(type: "bit", nullable: false),
                     Observacoes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     Status = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -731,9 +739,14 @@ namespace Ofichina.Infrastructure.Migrations
                 column: "VeiculoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrdensServico_FuncionarioId",
+                name: "IX_OrdensServico_ConsultorId",
                 table: "OrdensServico",
-                column: "FuncionarioId");
+                column: "ConsultorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdensServico_MecanicoId",
+                table: "OrdensServico",
+                column: "MecanicoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrdensServico_PessoaId",

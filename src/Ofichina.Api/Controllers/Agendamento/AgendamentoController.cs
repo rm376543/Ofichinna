@@ -161,6 +161,7 @@ public sealed class AgendamentoController : ControllerBase
             request.PessoaId,
             request.AgendaConsultorId,
             request.VeiculoId,
+            request.Hodometro,
             request.Descricao
         ), cancellationToken);
 
@@ -289,8 +290,8 @@ public sealed class AgendamentoController : ControllerBase
     /// <summary>
     /// Lista a agenda de um consultor em uma data específica.
     /// </summary>
-    /// <param name="consultorId"></param>
-    /// <param name="data">Data para a qual listar a agenda do consultor.</param>
+    /// <param name="consultorId">Identificador do consultor</param>
+    /// <param name="data">Data para a qual listar a agenda do consultor. Ex: YYYY-MM-DD</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de compromissos do consultor na data especificada.</returns>
     [HttpGet("consultor/listar-agenda")]

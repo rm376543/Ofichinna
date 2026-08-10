@@ -16,6 +16,9 @@ public sealed class CreateAgendamentoRequestValidator : AbstractValidator<Create
         RuleFor(x => x.VeiculoId)
             .NotEmpty().WithMessage("O veículo é obrigatório.");
 
+        RuleFor(x => x.Hodometro)
+            .GreaterThanOrEqualTo(0).WithMessage("A quilometragem de entrada não pode ser negativa.");
+
         RuleFor(x => x.Descricao)
             .MaximumLength(1000).WithMessage("A descrição do agendamento não pode exceder 1000 caracteres.");
     }

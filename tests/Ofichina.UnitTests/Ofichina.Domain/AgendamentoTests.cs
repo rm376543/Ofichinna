@@ -14,7 +14,7 @@ public sealed class AgendamentoTests
         var agendaId = Guid.NewGuid();
         var veiculoId = Guid.NewGuid();
 
-        var agendamento = new Agendamento(clienteId, agendaId, veiculoId, "Revisão completa");
+        var agendamento = new Agendamento(clienteId, agendaId, veiculoId, 12500, "Revisão completa");
 
         Assert.NotEqual(Guid.Empty, agendamento.Id);
         Assert.Equal(StatusAgendamento.AGENDADO, agendamento.Status);
@@ -27,7 +27,7 @@ public sealed class AgendamentoTests
     [Fact]
     public void Deve_Iniciar_Agendamento_Quando_Status_For_Agendado()
     {
-        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 0);
 
         agendamento.Iniciar();
 
@@ -38,7 +38,7 @@ public sealed class AgendamentoTests
     [Fact]
     public void Nao_Deve_Iniciar_Agendamento_Quando_Status_Nao_For_Agendado()
     {
-        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 0);
         agendamento.Iniciar();
 
         var exception = Assert.Throws<DomainException>(() => agendamento.Iniciar());
@@ -48,7 +48,7 @@ public sealed class AgendamentoTests
     [Fact]
     public void Nao_Deve_Iniciar_Agendamento_Quando_Status_For_Cancelado()
     {
-        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 0);
         agendamento.Cancelar();
 
         var exception = Assert.Throws<DomainException>(() => agendamento.Iniciar());
@@ -58,7 +58,7 @@ public sealed class AgendamentoTests
     [Fact]
     public void Deve_Finalizar_Agendamento_Quando_Status_For_Iniciado()
     {
-        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 0);
         agendamento.Iniciar();
 
         agendamento.Finalizar();
@@ -70,7 +70,7 @@ public sealed class AgendamentoTests
     [Fact]
     public void Nao_Deve_Finalizar_Agendamento_Quando_Status_Nao_For_Iniciado()
     {
-        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 0);
 
         var exception = Assert.Throws<DomainException>(() => agendamento.Finalizar());
         Assert.Contains("'INICIADO'", exception.Message);
@@ -79,7 +79,7 @@ public sealed class AgendamentoTests
     [Fact]
     public void Deve_Cancelar_Agendamento_Quando_Status_For_Agendado()
     {
-        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 0);
 
         agendamento.Cancelar();
 
@@ -90,7 +90,7 @@ public sealed class AgendamentoTests
     [Fact]
     public void Deve_Cancelar_Agendamento_Quando_Status_For_Iniciado()
     {
-        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 0);
         agendamento.Iniciar();
 
         agendamento.Cancelar();
@@ -101,7 +101,7 @@ public sealed class AgendamentoTests
     [Fact]
     public void Nao_Deve_Cancelar_Agendamento_Quando_Status_For_Finalizado()
     {
-        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 0);
         agendamento.Iniciar();
         agendamento.Finalizar();
 
@@ -112,7 +112,7 @@ public sealed class AgendamentoTests
     [Fact]
     public void Nao_Deve_Cancelar_Agendamento_Quando_Status_For_Cancelado()
     {
-        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid());
+        var agendamento = new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), 0);
         agendamento.Cancelar();
 
         var exception = Assert.Throws<DomainException>(() => agendamento.Cancelar());
@@ -135,8 +135,8 @@ public sealed class AgendamentoTests
     [Fact]
     public void Nao_Deve_Criar_Agendamento_Com_Parametros_Invalidos()
     {
-        Assert.Throws<DomainException>(() => new Agendamento(Guid.Empty, Guid.NewGuid(), Guid.NewGuid()));
-        Assert.Throws<DomainException>(() => new Agendamento(Guid.NewGuid(), Guid.Empty, Guid.NewGuid()));
-        Assert.Throws<DomainException>(() => new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.Empty));
+        Assert.Throws<DomainException>(() => new Agendamento(Guid.Empty, Guid.NewGuid(), Guid.NewGuid(), 0));
+        Assert.Throws<DomainException>(() => new Agendamento(Guid.NewGuid(), Guid.Empty, Guid.NewGuid(), 0));
+        Assert.Throws<DomainException>(() => new Agendamento(Guid.NewGuid(), Guid.NewGuid(), Guid.Empty, 0));
     }
 }

@@ -7,7 +7,7 @@ namespace Ofichina.Contracts.Responses.Agendamento
     /// </summary>
     public sealed class HorarioDisponivelResponse : BaseRequest
     {
-    public Guid HorarioDisponivelId { get; set; }
+        public Guid HorarioId { get; set; }
         public TimeOnly Horario { get; set; }
         public bool Disponivel { get; set; } = true;
 

@@ -43,8 +43,8 @@ public sealed class GetItemServicosByOrcamentoQueryHandler : IQueryHandler<GetIt
                     .GroupBy(x => new
                     {
                         x.ServicoId,
-                        Nome = x.Servico!.Nome,
-                        Valor = x.Servico!.Valor
+                        Nome = x.Servico?.Nome ?? string.Empty,
+                        Valor = x.Servico?.Valor ?? 0m
                     })
                     .Select(servico => new ServicoItemResponse
                     {

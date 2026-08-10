@@ -31,7 +31,7 @@ public sealed class MecanicoDisponibilidadeService : IMecanicoDisponibilidadeSer
 
         var possuiOrdemEmExecucao = await _context.OrdensServico
             .AsNoTracking()
-            .AnyAsync(x => x.MecanicoReparoId == mecanico.Id && x.Status == StatusOrdemServico.EmExecucao, cancellationToken);
+            .AnyAsync(x => x.MecanicoId == mecanico.Id && x.Status == StatusOrdemServico.EmExecucao, cancellationToken);
 
         return possuiOrdemEmExecucao ? null : mecanico.Id;
     }

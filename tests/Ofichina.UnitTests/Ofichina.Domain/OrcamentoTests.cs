@@ -73,6 +73,30 @@ public sealed class OrcamentoTests
         Assert.Equal("O orçamento precisa estar no status AguardandoAprovacao.", ex.Message);
     }
 
+    [Fact]
+    public void Deve_Calcular_Desconto_Fixo_E_Total_Final()
+    {
+        var orcamento = CriarOrcamento();
+
+        orcamento.AtualizarDesconto(10m, false);
+
+        Assert.Equal(10m, orcamento.Desconto);
+        Assert.False(orcamento.DescontoEmDinheiro);
+        Assert.Equal(0m, orcamento.ValorTotal);
+        Assert.Equal(orcamento.ValorTotal, orcamento.ValorTotalDesconto);
+    }
+
+    [Fact]
+    public void Deve_Calcular_Desconto_Percentual()
+    {
+        var orcamento = CriarOrcamento();
+
+        orcamento.AtualizarDesconto(10m, true);
+
+        Assert.True(orcamento.DescontoEmDinheiro);
+        Assert.Equal(orcamento.ValorBruto * 0.10m, orcamento.ValorBruto - orcamento.ValorTotalDesconto);
+    }
+
     private static Orcamento CriarOrcamento(bool comItens = true)
     {
         var orcamento = new Orcamento(

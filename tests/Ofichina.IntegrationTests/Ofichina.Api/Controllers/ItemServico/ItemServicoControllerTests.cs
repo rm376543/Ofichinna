@@ -8,6 +8,7 @@ using Ofichina.Application.UseCases.ItensServico.Commands;
 using Ofichina.Application.UseCases.ItensServico.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.ItensServico;
+using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Orcamento;
 using Ofichina.Contracts.Responses.OrdemServico;
 
@@ -34,6 +35,89 @@ public sealed class ItemServicoControllerTests
         Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
         Assert.NotNull(mediator.QueryEnviada);
         Assert.Equal(orcamentoId, mediator.QueryEnviada!.OrcamentoId);
+    }
+
+    [Fact]
+    public async Task BuscarItensOrcamento_Deve_Preservar_Agrupamento_De_Servicos_E_Pecas()
+    {
+        var orcamentoId = Guid.NewGuid();
+        var responseEsperada = new List<OrcamentoItemResponse>
+        {
+            new()
+            {
+                OrcamentoId = orcamentoId,
+                Servicos =
+                [
+                    new ServicoItemResponse
+                    {
+                        ServicoId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                        Descricao = "Troca de óleo",
+                        ValorServico = 120m,
+                        ValorTotal = 210m,
+                        Pecas =
+                        [
+                            new PecaItemResponse
+                            {
+                                PecaId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                                Descricao = "Filtro de óleo",
+                                Quantidade = 1,
+                                ValorUnitario = 60m,
+                                ValorTotal = 60m
+                            },
+                            new PecaItemResponse
+                            {
+                                PecaId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                                Descricao = "Anel de vedação",
+                                Quantidade = 2,
+                                ValorUnitario = 15m,
+                                ValorTotal = 30m
+                            }
+                        ]
+                    },
+                    new ServicoItemResponse
+                    {
+                        ServicoId = Guid.Parse("44444444-4444-4444-4444-444444444444"),
+                        Descricao = "Alinhamento",
+                        ValorServico = 80m,
+                        ValorTotal = 80m,
+                        Pecas = []
+                    }
+                ]
+            }
+        };
+
+        var mediator = new FakeMediator
+        {
+            ItensOrcamentoResponse = responseEsperada
+        };
+        var controller = new ItemServicoController(
+            new InlineValidator<CreateItemServicoRequest>(),
+            new InlineValidator<CreateItemOrcamentoRequest>(),
+            new InlineValidator<UpdateItemOrcamentoRequest>(),
+            new InlineValidator<UpdateItemServicoRequest>(),
+            mediator,
+            NullLogger<ItemServicoController>.Instance);
+
+        var result = await controller.BuscarItensOrcamento(orcamentoId, CancellationToken.None);
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+
+        var response = Assert.IsType<ApiResponse<IReadOnlyCollection<OrcamentoItemResponse>>>(okResult.Value);
+        Assert.True(response.Success);
+        Assert.Single(response.Data!);
+
+        var orcamentoResponse = response.Data!.Single();
+        Assert.Equal(orcamentoId, orcamentoResponse.OrcamentoId);
+        Assert.Equal(2, orcamentoResponse.Servicos.Count);
+
+        var trocaOleo = Assert.Single(orcamentoResponse.Servicos.Where(x => x.Descricao == "Troca de óleo"));
+        Assert.Equal(210m, trocaOleo.ValorTotal);
+        Assert.Equal(2, trocaOleo.Pecas.Count);
+
+        var alinhamento = Assert.Single(orcamentoResponse.Servicos.Where(x => x.Descricao == "Alinhamento"));
+        Assert.Empty(alinhamento.Pecas);
+        Assert.Equal(80m, alinhamento.ValorTotal);
     }
 
     [Fact]
@@ -98,13 +182,14 @@ public sealed class ItemServicoControllerTests
         public GetItemServicosByOrcamentoQuery? QueryEnviada { get; private set; }
         public GetItemServicoByOrcamentoIdQuery? QueryPorIdEnviada { get; private set; }
         public UpdateItemOrcamentoCommand? UpdateItemOrcamentoCommandEnviado { get; private set; }
+        public IReadOnlyCollection<OrcamentoItemResponse>? ItensOrcamentoResponse { get; init; }
 
         public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
         {
             if (request is GetItemServicosByOrcamentoQuery query)
             {
                 QueryEnviada = query;
-                return Task.FromResult((TResponse)(object)Result.Success<IReadOnlyCollection<OrcamentoItemResponse>>([]));
+                return Task.FromResult((TResponse)(object)Result.Success<IReadOnlyCollection<OrcamentoItemResponse>>(ItensOrcamentoResponse ?? []));
             }
 
             if (request is GetItemServicoByOrcamentoIdQuery queryById)

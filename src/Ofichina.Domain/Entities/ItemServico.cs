@@ -148,6 +148,23 @@ public class ItemServico : Entity
         AtualizarDataModificacao();
     }
 
+    /// <summary>
+    /// Vincula o item a uma ordem de serviço existente.
+    /// </summary>
+    public void VincularAOrdemServico(Guid ordemServicoId)
+    {
+        ValidarNaoExcluido();
+
+        if (ordemServicoId == Guid.Empty)
+            throw new DomainException("Ordem de serviço obrigatória.");
+
+        if (OrdemServicoId.HasValue && OrdemServicoId.Value != ordemServicoId)
+            throw new DomainException("O item de serviço já está vinculado a outra ordem de serviço.");
+
+        OrdemServicoId = ordemServicoId;
+        AtualizarDataModificacao();
+    }
+
     private void ValidarNaoExcluido()
     {
         if (EstaExcluida())

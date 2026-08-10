@@ -18,6 +18,7 @@ public class AgendamentoConfiguration : IEntityTypeConfiguration<Agendamento>
         builder.Property(x => x.ClientePessoaId).IsRequired();
         builder.Property(x => x.VeiculoId).IsRequired();
         builder.Property(x => x.AgendaConsultorId).IsRequired();
+        builder.Property(x => x.Hodometro).IsRequired();
 
         builder.Property(x => x.Status)
             .HasConversion(new EnumParaTextoConverter<StatusAgendamento>())

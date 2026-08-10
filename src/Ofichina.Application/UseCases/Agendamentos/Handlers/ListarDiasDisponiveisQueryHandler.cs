@@ -45,8 +45,8 @@ public sealed class ListarDiasDisponiveisQueryHandler : IQueryHandler<ListarDias
 
             var resultado = diasFiltrados.Select(d => new DiaDisponibilidadeResponse
             {
-                DiaDisponibilidadeId = d.DiaListaId,
-                Data = DateOnly.ParseExact(d.Data, "yyyy-MM-dd"),
+                DiaId = d.DiaListaId,
+                Dia = DateOnly.ParseExact(d.Data, "yyyy-MM-dd"),
             });
 
             return Result.Success(resultado);
