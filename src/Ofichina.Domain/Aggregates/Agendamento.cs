@@ -50,6 +50,11 @@ public sealed class Agendamento : Entity
     public string? Descricao { get; private set; }
 
     /// <summary>
+    /// Hodômetro de entrada informado no agendamento.
+    /// </summary>
+    public int Hodometro { get; private set; }
+
+    /// <summary>
     /// Construtor privado para uso interno da entidade.
     /// </summary>
     private Agendamento()
@@ -68,6 +73,7 @@ public sealed class Agendamento : Entity
         Guid clientePessoaId,
         Guid agendaConsultorId,
         Guid veiculoId,
+        int hodometro = 0,
         string? descricao = null)
     {
         if (clientePessoaId == Guid.Empty)
@@ -79,9 +85,13 @@ public sealed class Agendamento : Entity
         if (veiculoId == Guid.Empty)
             throw new DomainException("O veículo é obrigatório.");
 
+        if (hodometro < 0)
+            throw new DomainException("A quilometragem não pode ser negativa.");
+
         ClientePessoaId = clientePessoaId;
         AgendaConsultorId = agendaConsultorId;
         VeiculoId = veiculoId;
+        Hodometro = hodometro;
         Status = StatusAgendamento.AGENDADO;
         Descricao = string.IsNullOrWhiteSpace(descricao) ? null : descricao.Trim();
     }

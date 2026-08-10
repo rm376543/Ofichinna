@@ -1,7 +1,6 @@
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 using Ofichina.Domain.Exceptions;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ofichina.Domain.Aggregates;
 
@@ -26,6 +25,8 @@ public sealed class Orcamento : Entity
 
     public decimal Desconto { get; private set; }
 
+    public bool DescontoEmDinheiro { get; private set; }
+
     public string? Observacoes { get; private set; }
 
     public StatusOrcamento Status { get; private set; }
@@ -42,11 +43,7 @@ public sealed class Orcamento : Entity
 
     public decimal ValorTotal => CalcularValorTotal();
 
-    [NotMapped]
-    public IReadOnlyCollection<ItemServico> Servicos => ItensServico;
-
-    [NotMapped]
-    public IReadOnlyCollection<ItemServico> ItensPrevistos => ItensServico;
+    public decimal ValorTotalDesconto => CalcularValorTotalDesconto();
 
     private Orcamento()
     {
@@ -83,6 +80,7 @@ public sealed class Orcamento : Entity
         ConsultorId = consultorId;
         DataValidade = dataValidade;
         Desconto = desconto;
+        DescontoEmDinheiro = false;
         Observacoes = observacoes;
         Status = StatusOrcamento.Criado;
     }
@@ -164,10 +162,16 @@ public sealed class Orcamento : Entity
 
     public void AtualizarDesconto(decimal desconto)
     {
+        AtualizarDesconto(desconto, false);
+    }
+
+    public void AtualizarDesconto(decimal desconto, bool descontoEmDinheiro)
+    {
         if (desconto < 0)
             throw new DomainException("O desconto não pode ser negativo.");
 
         Desconto = desconto;
+        DescontoEmDinheiro = descontoEmDinheiro;
         AtualizarDataModificacao();
     }
 
@@ -235,7 +239,19 @@ public sealed class Orcamento : Entity
 
     private decimal CalcularValorTotal()
     {
-        return ValorBruto - Desconto;
+        return CalcularValorTotalDesconto();
+    }
+
+    private decimal CalcularValorTotalDesconto()
+    {
+        if (Desconto == 0)
+            return ValorBruto;
+
+        var valorDescontoAplicado = DescontoEmDinheiro
+            ? ValorBruto * (Desconto / 100m)
+            : Desconto;
+
+        return Math.Max(0m, ValorBruto - valorDescontoAplicado);
     }
 
     private void ValidarStatus(StatusOrcamento statusEsperado)
