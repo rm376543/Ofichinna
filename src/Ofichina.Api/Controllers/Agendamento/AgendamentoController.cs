@@ -58,34 +58,6 @@ public sealed class AgendamentoController : ControllerBase
     }
 
     /// <summary>
-    /// Cadastra horários disponíveis para agendamento.
-    /// </summary>
-    /// <param name="horario">Horário a ser cadastrado.</param>
-    /// <returns>Resultado da operação de cadastro de horário.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpPost("cadastrar-horario")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> CadastrarHorarioParaAgendamento(
-        [FromBody] TimeOnly horario)
-    {
-        _logger.LogInformation("Iniciando o cadastro de horários disponíveis para agendamento.");
-
-        var result = await _mediator.Send(new CadastraHorarioAgendamentoCommand(horario));
-
-        if (!result.IsSuccess)
-        {
-            _logger.LogWarning("Falha ao cadastrar horários disponíveis para agendamento. Erro: {Erro}", result.Error);
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível cadastrar os horários disponíveis."));
-        }
-
-        _logger.LogInformation("Horário cadastrado com sucesso.");
-
-        return Ok(ApiResponse.SuccessResponse("Horário cadastrado com sucesso."));
-    }
-
-    /// <summary>
     /// Lista todos os agendamentos de uma pessoa específica.
     /// </summary>
     /// <param name="pessoaId">Identificador da pessoa.</param>
@@ -132,75 +104,6 @@ public sealed class AgendamentoController : ControllerBase
             return NotFound(ApiResponse.FailureResponse(result.Error ?? "Agendamento não encontrado."));
 
         return Ok(ApiResponse<AgendamentoUsuarioDetalheResponse>.SuccessResponse(result.Value));
-    }
-
-    /// <summary>
-    /// Cria um novo agendamento para uma pessoa.
-    /// </summary>
-    /// <param name="request">Objeto contendo os dados necessários para criar um novo agendamento.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Resultado da operação de criação de agendamento.</returns>
-    [HttpPost("pessoa/adicionar")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<ApiResponse<AgendamentoResponse>>> CriarAsync(
-        [FromBody] CreateAgendamentoRequest request,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando criação de agendamento. PessoaId: {PessoaId}, AgendaId: {AgendaId}", request.PessoaId, request.AgendaConsultorId);
-
-        var validation = await _validator.ValidateAsync(request, cancellationToken);
-        if (!validation.IsValid)
-            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
-
-        var result = await _mediator.Send(new CreateAgendamentoCommand(
-            request.PessoaId,
-            request.AgendaConsultorId,
-            request.VeiculoId,
-            request.Hodometro,
-            request.Descricao
-        ), cancellationToken);
-
-        if (!result.IsSuccess)
-        {
-            var error = result.Error ?? "Não foi possível criar o agendamento.";
-
-            _logger.LogWarning("Falha ao criar agendamento. PessoaId: {PessoaId}, AgendaId: {AgendaId}, Erro: {Erro}", request.PessoaId, request.AgendaConsultorId, error);
-
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Falha ao criar agendamento."));
-
-        }
-
-        return Ok(ApiResponse.SuccessResponse("Agendamento criado com sucesso."));
-    }
-
-    /// <summary>
-    /// Inicia um agendamento existente.
-    /// </summary>
-    /// <param name="agendamentoId">Identificador do agendamento a ser iniciado.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Resultado da operação de início do agendamento.</returns>
-    [HttpPut("consultor/{agendamentoId:guid}/iniciar")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> IniciarAsync(
-        [FromRoute] Guid agendamentoId,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando agendamento. AgendamentoId: {AgendamentoId}", agendamentoId);
-
-        var result = await _mediator.Send(new IniciarAgendamentoCommand(agendamentoId), cancellationToken);
-
-        if (!result.IsSuccess)
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível iniciar o agendamento."));
-
-        return Ok(ApiResponse.SuccessResponse("Agendamento iniciado com sucesso."));
     }
 
     /// <summary>
@@ -316,6 +219,77 @@ public sealed class AgendamentoController : ControllerBase
         return Ok(ApiResponse<IEnumerable<AgendaConsultorResponse>>.SuccessResponse(result.Value));
     }
 
+    /// <summary>
+    /// Cadastra horários disponíveis para agendamento.
+    /// </summary>
+    /// <param name="horario">Horário a ser cadastrado.</param>
+    /// <returns>Resultado da operação de cadastro de horário.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpPost("cadastrar-horario")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> CadastrarHorarioParaAgendamento(
+        [FromBody] TimeOnly horario)
+    {
+        _logger.LogInformation("Iniciando o cadastro de horários disponíveis para agendamento.");
+
+        var result = await _mediator.Send(new CadastraHorarioAgendamentoCommand(horario));
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Falha ao cadastrar horários disponíveis para agendamento. Erro: {Erro}", result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível cadastrar os horários disponíveis."));
+        }
+
+        _logger.LogInformation("Horário cadastrado com sucesso.");
+
+        return Ok(ApiResponse.SuccessResponse("Horário cadastrado com sucesso."));
+    }
+
+    /// <summary>
+    /// Cria um novo agendamento para uma pessoa.
+    /// </summary>
+    /// <param name="request">Objeto contendo os dados necessários para criar um novo agendamento.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Resultado da operação de criação de agendamento.</returns>
+    [HttpPost("pessoa/adicionar")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<ApiResponse<AgendamentoResponse>>> CriarAsync(
+        [FromBody] CreateAgendamentoRequest request,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando criação de agendamento. PessoaId: {PessoaId}, AgendaId: {AgendaId}", request.PessoaId, request.AgendaConsultorId);
+
+        var validation = await _validator.ValidateAsync(request, cancellationToken);
+        if (!validation.IsValid)
+            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
+
+        var result = await _mediator.Send(new CreateAgendamentoCommand(
+            request.PessoaId,
+            request.AgendaConsultorId,
+            request.VeiculoId,
+            request.Hodometro,
+            request.Descricao
+        ), cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            var error = result.Error ?? "Não foi possível criar o agendamento.";
+
+            _logger.LogWarning("Falha ao criar agendamento. PessoaId: {PessoaId}, AgendaId: {AgendaId}, Erro: {Erro}", request.PessoaId, request.AgendaConsultorId, error);
+
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Falha ao criar agendamento."));
+
+        }
+
+        return Ok(ApiResponse.SuccessResponse("Agendamento criado com sucesso."));
+    }
 
     /// <summary>
     /// Cancela um agendamento existente.
@@ -341,6 +315,32 @@ public sealed class AgendamentoController : ControllerBase
 
         return Ok(ApiResponse.SuccessResponse("Agendamento cancelado com sucesso."));
     }
+
+    /// <summary>
+    /// Inicia um agendamento existente.
+    /// </summary>
+    /// <param name="agendamentoId">Identificador do agendamento a ser iniciado.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Resultado da operação de início do agendamento.</returns>
+    [HttpPut("consultor/{agendamentoId:guid}/iniciar")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> IniciarAsync(
+        [FromRoute] Guid agendamentoId,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando agendamento. AgendamentoId: {AgendamentoId}", agendamentoId);
+
+        var result = await _mediator.Send(new IniciarAgendamentoCommand(agendamentoId), cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível iniciar o agendamento."));
+
+        return Ok(ApiResponse.SuccessResponse("Agendamento iniciado com sucesso."));
+    }
+
 }
 
 
