@@ -1,7 +1,7 @@
 namespace Ofichina.Contracts.Responses.Agendamento;
 
 /// <summary>
-/// Resposta enxuta com os dados de agendamento de usuário provenientes da view vwAgendamentosUsuario.
+/// Resposta enxuta com os dados de agendamento de usuário provenientes da view vwAgendamentoCliente.
 /// Não expõe AgendamentosId, PessoaId nem campos de auditoria.
 /// </summary>
 public sealed class AgendamentoUsuarioResponse

@@ -9,15 +9,15 @@ public abstract class BaseResponse
     /// <summary>
     /// Data de criação da entidade.
     /// </summary>
-    public DateTime CreatedAt { get; set; }
+    public string CreatedAt { get; set; } = string.Empty;
 
     /// <summary>
     /// Data da última atualização da entidade.
     /// </summary>
-    public DateTime? UpdatedAt { get; set; }
+    public string? UpdatedAt { get; set; }
 
     /// <summary>
     /// Data de exclusão (soft-delete) da entidade.
     /// </summary>
-    public DateTime? DeletedAt { get; set; }
+    public string? DeletedAt { get; set; }
 }
