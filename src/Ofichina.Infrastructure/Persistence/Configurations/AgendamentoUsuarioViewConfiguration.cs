@@ -5,14 +5,16 @@ using Ofichina.Domain.Entities;
 namespace Ofichina.Infrastructure.Persistence.Configurations;
 
 /// <summary>
-/// Configuração EF para a view vwAgendamentosUsuario.
+/// Configuração EF para a view vwAgendamentoPessoa.
 /// </summary>
-public sealed class AgendamentoUsuarioViewConfiguration : IEntityTypeConfiguration<AgendamentoUsuarioView>
+public sealed class AgendamentoUsuarioViewConfiguration : IEntityTypeConfiguration<VwAgendamentoPessoa>
 {
-    public void Configure(EntityTypeBuilder<AgendamentoUsuarioView> builder)
+    public void Configure(EntityTypeBuilder<VwAgendamentoPessoa> builder)
     {
         builder.HasNoKey();
-        builder.ToView("vwAgendamentosUsuario");
+        builder.ToView("vwAgendamentoPessoa");
+
+        builder.Ignore(x => x.Id);
 
         builder.Property(x => x.AgendamentosId).HasColumnName("AgendamentosId");
         builder.Property(x => x.PessoaId).HasColumnName("PessoaId");
