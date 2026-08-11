@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi;
 using System.Reflection;
-using Ofichina.Contracts.Responses;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Api.Modules;
 
