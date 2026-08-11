@@ -3,7 +3,6 @@ using Ofichina.Application.Abstractions.Authentication.Service;
 using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.Handlers;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;

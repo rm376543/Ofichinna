@@ -1,4 +1,4 @@
-﻿using Ofichina.Contracts.Responses;
+﻿using Ofichina.Contracts.Common;
 
 namespace Ofichina.UnitTests.Contracts;
 

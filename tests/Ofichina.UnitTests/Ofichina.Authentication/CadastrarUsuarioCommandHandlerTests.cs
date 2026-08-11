@@ -1,7 +1,6 @@
 using Ofichina.Application.Abstractions.Authentication.Repository;
 using Ofichina.Application.Abstractions.Authentication.Service;
 using Ofichina.Authentication.Services;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Usuario;
 using Ofichina.Contracts.Responses.Authentication;
@@ -131,10 +130,10 @@ public sealed class CadastrarUsuarioCommandHandlerTests
     {
         public IReadOnlyCollection<string> PerfisRecebidos { get; private set; } = [];
 
-        public Task<TokenJwtResponse> GerarTokenAsync(Usuario usuario, IReadOnlyCollection<string> perfis, CancellationToken cancellationToken = default)
+        public Task<JwtResponse> GerarTokenAsync(Usuario usuario, IReadOnlyCollection<string> perfis, CancellationToken cancellationToken = default)
         {
             PerfisRecebidos = perfis;
-            return Task.FromResult(new TokenJwtResponse
+            return Task.FromResult(new JwtResponse
             {
                 AccessToken = "fake-token",
                 ExpiraEm = DateTime.UtcNow.AddHours(1)

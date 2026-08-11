@@ -31,6 +31,6 @@ public class AutenticacaoRequestTests
     {
         var response = new AuthenticationResponse();
 
-        Assert.IsAssignableFrom<TokenJwtResponse>(response);
+        Assert.IsAssignableFrom<JwtResponse>(response);
     }
 }
