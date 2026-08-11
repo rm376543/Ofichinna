@@ -12,7 +12,7 @@ using Ofichina.Infrastructure.Persistence;
 namespace Ofichina.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260811021807_001-inicial")]
+    [Migration("20260811143332_001-inicial")]
     partial class _001inicial
     {
         /// <inheritdoc />
@@ -899,9 +899,8 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Documento");
 
-                    b.Property<string>("DtAgendamento")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<DateTime>("DtAgendamento")
+                        .HasColumnType("datetime2")
                         .HasColumnName("DtAgendamento");
 
                     b.Property<int>("Hodometro")

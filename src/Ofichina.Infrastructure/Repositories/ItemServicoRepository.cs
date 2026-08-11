@@ -49,6 +49,16 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
         CancellationToken cancellationToken = default,
         bool tracking = false)
     {
+        return await GetByOrdemServicoComPecaAsync(ordemServicoId, servicoId, pecaId, cancellationToken, tracking);
+    }
+
+    public async Task<ItemServico?> GetByOrdemServicoComPecaAsync(
+        Guid ordemServicoId,
+        Guid servicoId,
+        Guid pecaId,
+        CancellationToken cancellationToken = default,
+        bool tracking = false)
+    {
         IQueryable<ItemServico> query = _context.Set<ItemServico>();
 
         if (!tracking)
@@ -56,6 +66,22 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
 
         return await query.FirstOrDefaultAsync(
             x => x.OrdemServicoId == ordemServicoId && x.ServicoId == servicoId && x.PecaId == pecaId,
+            cancellationToken);
+    }
+
+    public async Task<ItemServico?> GetByOrdemServicoSemPecaAsync(
+        Guid ordemServicoId,
+        Guid servicoId,
+        CancellationToken cancellationToken = default,
+        bool tracking = false)
+    {
+        IQueryable<ItemServico> query = _context.Set<ItemServico>();
+
+        if (!tracking)
+            query = query.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync(
+            x => x.OrdemServicoId == ordemServicoId && x.ServicoId == servicoId && x.PecaId == null,
             cancellationToken);
     }
 
@@ -148,6 +174,19 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
     public async Task<ItemServico?> GetByOrcamentoServicoPecaIdAsync(
         Guid orcamentoId, Guid servicoId, Guid? pecaId, CancellationToken cancellationToken = default, bool tracking = false)
     {
+        if (pecaId.HasValue)
+            return await GetByOrcamentoComPecaAsync(orcamentoId, servicoId, pecaId.Value, cancellationToken, tracking);
+
+        return await GetByOrcamentoSemPecaAsync(orcamentoId, servicoId, cancellationToken, tracking);
+    }
+
+    public async Task<ItemServico?> GetByOrcamentoComPecaAsync(
+        Guid orcamentoId,
+        Guid servicoId,
+        Guid pecaId,
+        CancellationToken cancellationToken = default,
+        bool tracking = false)
+    {
         IQueryable<ItemServico> query = _context.Set<ItemServico>();
 
         if (!tracking)
@@ -155,6 +194,22 @@ public sealed class ItemServicoRepository : Repository<ItemServico>, IItemServic
 
         return await query.FirstOrDefaultAsync(
             x => x.OrcamentoId == orcamentoId && x.ServicoId == servicoId && x.PecaId == pecaId,
+            cancellationToken);
+    }
+
+    public async Task<ItemServico?> GetByOrcamentoSemPecaAsync(
+        Guid orcamentoId,
+        Guid servicoId,
+        CancellationToken cancellationToken = default,
+        bool tracking = false)
+    {
+        IQueryable<ItemServico> query = _context.Set<ItemServico>();
+
+        if (!tracking)
+            query = query.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync(
+            x => x.OrcamentoId == orcamentoId && x.ServicoId == servicoId && x.PecaId == null,
             cancellationToken);
     }
 

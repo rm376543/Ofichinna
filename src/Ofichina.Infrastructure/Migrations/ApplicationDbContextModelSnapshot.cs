@@ -896,9 +896,8 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Documento");
 
-                    b.Property<string>("DtAgendamento")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                    b.Property<DateTime>("DtAgendamento")
+                        .HasColumnType("datetime2")
                         .HasColumnName("DtAgendamento");
 
                     b.Property<int>("Hodometro")
