@@ -1,7 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Permissoes.Queries;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Permissoes;

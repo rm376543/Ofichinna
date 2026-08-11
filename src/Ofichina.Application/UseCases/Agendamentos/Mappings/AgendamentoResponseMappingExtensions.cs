@@ -1,5 +1,6 @@
 using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Agendamento;
+using Ofichina.Contracts.Responses.Agendamento.Consultor;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;

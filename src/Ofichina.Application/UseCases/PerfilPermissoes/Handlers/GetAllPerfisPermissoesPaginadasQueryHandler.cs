@@ -2,7 +2,6 @@ using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.PerfilPermissoes.Mappings;
 using Ofichina.Application.UseCases.PerfilPermissoes.Queries;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.PerfilPermissoes;
 

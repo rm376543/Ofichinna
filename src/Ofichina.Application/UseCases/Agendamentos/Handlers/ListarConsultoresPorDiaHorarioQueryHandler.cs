@@ -3,7 +3,7 @@ using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Agendamentos.Mappings;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses.Agendamento;
+using Ofichina.Contracts.Responses.Agendamento.Consultor;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 
