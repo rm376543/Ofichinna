@@ -296,9 +296,9 @@ public sealed class OrcamentoController : ControllerBase
         [FromBody] AprovarOrcamentoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a aprovação do orçamento com Id: {Id} e hodômetro {Hodometro}.", request.OrcamentoId, request.Hodometro);
+        _logger.LogInformation("Iniciando a aprovação do orçamento com Id: {Id}.", request.OrcamentoId);
 
-        var result = await _mediator.Send(new AprovarOrcamentoCommand(request.OrcamentoId, request.Hodometro), cancellationToken);
+        var result = await _mediator.Send(new AprovarOrcamentoCommand(request.OrcamentoId), cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível aprovar o orçamento."));

@@ -5,7 +5,6 @@ using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Enums;
 using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.OrdemServico;
 using Ofichina.Contracts.Responses.OrdensServico;
@@ -20,6 +19,11 @@ namespace Ofichina.Api.Controllers.OrdensServico;
 [Route("api/ordem-servico")]
 public sealed class OrdemServicoController : ControllerBase
 {
+    private const string StatusEmExecucao = "EmExecucao";
+    private const string StatusFinalizada = "Finalizada";
+    private const string StatusEntregue = "Entregue";
+    private const string StatusCancelada = "Cancelada";
+
     private readonly IMediator _mediator;
     private readonly ILogger<OrdemServicoController> _logger;
 
@@ -103,7 +107,7 @@ public sealed class OrdemServicoController : ControllerBase
     public Task<ActionResult<ApiResponse>> IniciarExecucaoOrdemServico(
         [FromBody] OrdemServicoRequest request,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(request, StatusOrdemServico.EmExecucao, "Execução da ordem de serviço iniciada com sucesso.", cancellationToken);
+        => AlterarStatusAsync(request, StatusEmExecucao, "Execução da ordem de serviço iniciada com sucesso.", cancellationToken);
 
     /// <summary>
     /// Finaliza a ordem de serviço.
@@ -121,7 +125,7 @@ public sealed class OrdemServicoController : ControllerBase
     public Task<ActionResult<ApiResponse>> FinalizarOrdemServico(
         [FromBody] OrdemServicoRequest request,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(request, StatusOrdemServico.Finalizada, "Ordem de serviço finalizada com sucesso.", cancellationToken);
+        => AlterarStatusAsync(request, StatusFinalizada, "Ordem de serviço finalizada com sucesso.", cancellationToken);
 
     /// <summary>
     /// Marca a ordem de serviço como entregue.
@@ -139,7 +143,7 @@ public sealed class OrdemServicoController : ControllerBase
     public Task<ActionResult<ApiResponse>> EntregarOrdemServico(
         [FromBody] OrdemServicoRequest request,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(request, StatusOrdemServico.Entregue, "Ordem de serviço entregue com sucesso.", cancellationToken);
+        => AlterarStatusAsync(request, StatusEntregue, "Ordem de serviço entregue com sucesso.", cancellationToken);
 
     /// <summary>
     /// Cancela a ordem de serviço.
@@ -157,11 +161,11 @@ public sealed class OrdemServicoController : ControllerBase
     public Task<ActionResult<ApiResponse>> CancelarOrdemServico(
         [FromBody] OrdemServicoRequest request,
         CancellationToken cancellationToken)
-        => AlterarStatusAsync(request, StatusOrdemServico.Cancelada, "Ordem de serviço cancelada com sucesso.", cancellationToken);
+        => AlterarStatusAsync(request, StatusCancelada, "Ordem de serviço cancelada com sucesso.", cancellationToken);
 
     private async Task<ActionResult<ApiResponse>> AlterarStatusAsync(
         OrdemServicoRequest request,
-        StatusOrdemServico statusDestino,
+        string statusDestino,
         string mensagemSucesso,
         CancellationToken cancellationToken)
     {

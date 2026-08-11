@@ -67,7 +67,7 @@ public sealed class PermissaoController : ControllerBase
     /// <summary>
     /// Retorna uma permissão pelo identificador.
     /// </summary>
-    /// <param name="id">Identificador da permissão.</param>
+    /// <param name="permissaoId">Identificador da permissão.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Permissão encontrada ou erro 404 quando não existir.</returns>
     [Authorize(Roles = "ADMIN")]

@@ -293,7 +293,7 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso, erro de validação ou item não encontrado.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut("atualizar")]
+    [HttpPut("atualizar/para-ordem-servico")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -332,7 +332,7 @@ public sealed class ItemServicoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpDelete("remover")]
+    [HttpDelete("remover/para-ordem-servico")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
