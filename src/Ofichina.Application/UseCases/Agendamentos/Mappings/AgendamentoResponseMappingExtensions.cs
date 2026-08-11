@@ -1,3 +1,4 @@
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Agendamento;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Common;
@@ -7,6 +8,11 @@ namespace Ofichina.Application.UseCases.Agendamentos.Mappings;
 
 public static class AgendamentoResponseMappingExtensions
 {
+    /// <summary>
+    /// Mapeia uma entidade Agendamento para um DTO de resposta AgendamentoResponse.
+    /// </summary>
+    /// <param name="agendamento"></param>
+    /// <returns>Retorna um DTO de resposta AgendamentoResponse</returns>
     public static AgendamentoResponse ToResponse(this Agendamento agendamento)
     {
         ArgumentNullException.ThrowIfNull(agendamento);
@@ -25,13 +31,18 @@ public static class AgendamentoResponseMappingExtensions
             VeiculoDescricao = $"{agendamento.Veiculo.Marca} {agendamento.Veiculo.Modelo} {agendamento.Veiculo.AnoFabricacao}",
             Status = agendamento.Status.ToUpperSnakeCase(),
             Descricao = agendamento.Descricao,
-            CreatedAt = agendamento.CreatedAt,
-            UpdatedAt = agendamento.UpdatedAt,
-            DeletedAt = agendamento.DeletedAt
+            CreatedAt = agendamento.CreatedAt.ToDateString(),
+            UpdatedAt = agendamento.UpdatedAt.ToDateString(),
+            DeletedAt = agendamento.DeletedAt.ToDateString()
         };
     }
 
-    public static AgendamentoUsuarioResponse ToUsuarioResponse(this AgendamentoUsuarioView view)
+    /// <summary>
+    /// Mapeia uma entidade VwAgendamentoPessoa para um DTO de resposta AgendamentoUsuarioResponse.
+    /// </summary>
+    /// <param name="view"></param>
+    /// <returns>Retorna um DTO de resposta AgendamentoUsuarioResponse</returns>
+    public static AgendamentoUsuarioResponse ToUsuarioResponse(this VwAgendamentoPessoa view)
     {
         ArgumentNullException.ThrowIfNull(view);
 
@@ -47,12 +58,17 @@ public static class AgendamentoResponseMappingExtensions
             Cor = view.Cor,
             Hodometro = view.Hodometro,
             Consultor = view.Consultor,
-            DtAgendamento = view.DtAgendamento,
+            DtAgendamento = view.DtAgendamento.ToDateString(),
             HorarioAgendamento = view.HorarioAgendamento
         };
     }
 
-    public static AgendamentoUsuarioDetalheResponse ToDetalheResponse(this AgendamentoUsuarioView view)
+    /// <summary>
+    /// Mapeia uma entidade VwAgendamentoPessoa para um DTO de resposta AgendamentoUsuarioDetalheResponse.
+    /// </summary>
+    /// <param name="view"></param>
+    /// <returns>Retorna um DTO de resposta AgendamentoUsuarioDetalheResponse</returns>
+    public static AgendamentoUsuarioDetalheResponse ToDetalheResponse(this VwAgendamentoPessoa view)
     {
         ArgumentNullException.ThrowIfNull(view);
 
@@ -70,14 +86,19 @@ public static class AgendamentoResponseMappingExtensions
             Cor = view.Cor,
             Hodometro = view.Hodometro,
             Consultor = view.Consultor,
-            DtAgendamento = view.DtAgendamento,
+            DtAgendamento = view.DtAgendamento.ToDateString(),
             HorarioAgendamento = view.HorarioAgendamento,
-            CreatedAt = view.CreatedAt,
-            UpdatedAt = view.UpdatedAt,
-            DeletedAt = view.DeletedAt
+            CreatedAt = view.CreatedAt.ToDateString(),
+            UpdatedAt = view.UpdatedAt.ToDateString(),
+            DeletedAt = view.DeletedAt.ToDateString()
         };
     }
 
+    /// <summary>
+    /// Mapeia uma entidade Pessoa para um DTO de resposta ConsultorDisponibilidadeResponse.
+    /// </summary>
+    /// <param name="consultor"></param>
+    /// <returns>Retorna um DTO de resposta ConsultorDisponibilidadeResponse</returns>
     public static ConsultorDisponibilidadeResponse ToConsultorDisponibilidadeResponse(this Pessoa consultor)
     {
         ArgumentNullException.ThrowIfNull(consultor);

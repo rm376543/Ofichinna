@@ -1,9 +1,9 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Perfis.Queries;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Perfis;
-using Ofichina.Application.Abstractions.Interfaces.Repository;
 
 namespace Ofichina.Application.UseCases.Perfis.Handlers;
 
@@ -39,9 +39,9 @@ public class GetPerfilByIdQueryHandler : IQueryHandler<GetPerfilByIdQuery, Resul
                 PerfilId = perfil.Id,
                 Nome = perfil.NomePerfil,
                 Descricao = perfil.Descricao,
-                CreatedAt = perfil.CreatedAt,
-                UpdatedAt = perfil.UpdatedAt,
-                DeletedAt = perfil.DeletedAt
+                CreatedAt = perfil.CreatedAt.ToDateString(),
+                UpdatedAt = perfil.UpdatedAt?.ToDateString(),
+                DeletedAt = perfil.DeletedAt?.ToDateString()
             });
         }
         catch (Exception ex)

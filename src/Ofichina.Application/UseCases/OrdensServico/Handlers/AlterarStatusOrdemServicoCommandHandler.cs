@@ -1,12 +1,13 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Authentication.Service;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Enums;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
+using Ofichina.Domain.Enums;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 
@@ -15,14 +16,14 @@ namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 /// </summary>
 public sealed class AlterarStatusOrdemServicoCommandHandler : ICommandHandler<AlterarStatusOrdemServicoCommand, Result>
 {
-    private readonly IRepository<OrdemServico> _ordemServicoRepository;
+    private readonly IOrdemServicoRepository _ordemServicoRepository;
     private readonly IRepository<HistoricoStatus> _historicoStatusRepository;
     private readonly IUserService _usuarioAtualService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<AlterarStatusOrdemServicoCommandHandler> _logger;
 
     public AlterarStatusOrdemServicoCommandHandler(
-        IRepository<OrdemServico> ordemServicoRepository,
+        IOrdemServicoRepository ordemServicoRepository,
         IRepository<HistoricoStatus> historicoStatusRepository,
         IUserService usuarioAtualService,
         IUnitOfWork unitOfWork,
@@ -41,12 +42,14 @@ public sealed class AlterarStatusOrdemServicoCommandHandler : ICommandHandler<Al
         {
             _logger.LogInformation("Iniciando alteração de status da ordem de serviço. OrdemServicoId: {OrdemServicoId}, StatusDestino: {StatusDestino}.", command.Id, command.StatusDestino);
 
-            var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.Id, cancellationToken);
+            var statusDestino = MapearStatus(command.StatusDestino);
+            var incluirItens = statusDestino == StatusOrdemServico.Finalizada;
+            var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.Id, incluirItens, true, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
                 return Result.Failure("Ordem de serviço não encontrada.");
 
             var statusAnterior = ordemServico.Status;
-            AlterarStatus(ordemServico, MapearStatus(command.StatusDestino));
+            AlterarStatus(ordemServico, statusDestino);
 
             await _ordemServicoRepository.UpdateAsync(ordemServico, cancellationToken);
             await _historicoStatusRepository.AddAsync(
@@ -94,17 +97,11 @@ public sealed class AlterarStatusOrdemServicoCommandHandler : ICommandHandler<Al
         }
     }
 
-    private static StatusOrdemServico MapearStatus(StatusOrdemServico statusDestino)
+    private static StatusOrdemServico MapearStatus(string statusDestino)
     {
-        return statusDestino switch
-        {
-            StatusOrdemServico.Recebida => StatusOrdemServico.Recebida,
-            StatusOrdemServico.EmExecucao => StatusOrdemServico.EmExecucao,
-            StatusOrdemServico.Finalizada => StatusOrdemServico.Finalizada,
-            StatusOrdemServico.Entregue => StatusOrdemServico.Entregue,
-            StatusOrdemServico.Cancelada => StatusOrdemServico.Cancelada,
-            _ => throw new DomainException("Status de destino inválido.")
-        };
+        return Enum.TryParse<StatusOrdemServico>(statusDestino, true, out var status)
+            ? status
+            : throw new DomainException("Status de destino inválido.");
     }
 }
 

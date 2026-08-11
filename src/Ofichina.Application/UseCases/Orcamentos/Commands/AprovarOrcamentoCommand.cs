@@ -10,11 +10,8 @@ public sealed class AprovarOrcamentoCommand : ICommand<Result>
 {
     public Guid Id { get; init; }
 
-    public int Hodometro { get; init; }
-
-    public AprovarOrcamentoCommand(Guid orcamentoId, int hodometro)
+    public AprovarOrcamentoCommand(Guid orcamentoId)
     {
         Id = orcamentoId;
-        Hodometro = hodometro;
     }
 }

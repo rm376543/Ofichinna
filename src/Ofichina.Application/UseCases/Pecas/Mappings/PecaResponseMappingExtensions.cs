@@ -1,3 +1,4 @@
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Pecas;
 using Ofichina.Domain.Entities;
 
@@ -17,9 +18,9 @@ public static class PecaResponseMappingExtensions
             Codigo = peca.Codigo,
             Valor = peca.Valor,
             QuantidadeEstoque = peca.QuantidadeEstoque,
-            CreatedAt = peca.CreatedAt,
-            UpdatedAt = peca.UpdatedAt,
-            DeletedAt = peca.DeletedAt
+            CreatedAt = peca.CreatedAt.ToDateString(),
+            UpdatedAt = peca.UpdatedAt?.ToDateString(),
+            DeletedAt = peca.DeletedAt?.ToDateString()
         };
     }
 }

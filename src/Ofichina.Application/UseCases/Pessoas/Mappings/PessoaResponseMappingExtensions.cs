@@ -1,3 +1,4 @@
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Pessoa;
 using Ofichina.Domain.Entities;
 
@@ -23,9 +24,9 @@ public static class PessoaResponseMappingExtensions
             Estado = pessoa.Endereco.Estado,
             Cep = pessoa.Endereco.Cep.ToString(),
             UsuarioId = pessoa.UsuarioId,
-            CreatedAt = pessoa.CreatedAt,
-            UpdatedAt = pessoa.UpdatedAt,
-            DeletedAt = pessoa.DeletedAt
+            CreatedAt = pessoa.CreatedAt.ToDateString(),
+            UpdatedAt = pessoa.UpdatedAt?.ToDateString(),
+            DeletedAt = pessoa.DeletedAt?.ToDateString()
         };
     }
 }

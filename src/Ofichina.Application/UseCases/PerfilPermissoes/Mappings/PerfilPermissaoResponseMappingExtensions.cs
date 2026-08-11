@@ -1,3 +1,4 @@
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.PerfilPermissoes;
 using Ofichina.Domain.Entities;
 
@@ -16,9 +17,9 @@ public static class PerfilPermissaoResponseMappingExtensions
             PermissaoId = perfilPermissao.PermissaoId,
             Codigo = perfilPermissao.Permissao?.Codigo ?? string.Empty,
             Descricao = perfilPermissao.Permissao?.Descricao ?? string.Empty,
-            CreatedAt = perfilPermissao.CreatedAt,
-            UpdatedAt = perfilPermissao.UpdatedAt,
-            DeletedAt = perfilPermissao.DeletedAt
+            CreatedAt = perfilPermissao.CreatedAt.ToDateString(),
+            UpdatedAt = perfilPermissao.UpdatedAt?.ToDateString(),
+            DeletedAt = perfilPermissao.DeletedAt?.ToDateString()
         };
     }
 }

@@ -1,8 +1,8 @@
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.OrdemServico;
 using Ofichina.Contracts.Responses.OrdensServico;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Common;
-using Ofichina.Domain.Entities;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Mappings;
 
@@ -26,14 +26,14 @@ public static class OrdemServicoResponseMappingExtensions
             DataFinalizacao = ordemServico.DataFinalizacao,
             Observacao = ordemServico.Observacao,
             ValorTotal = ordemServico.ValorTotal,
-            CreatedAt = ordemServico.CreatedAt,
-            UpdatedAt = ordemServico.UpdatedAt,
-            DeletedAt = ordemServico.DeletedAt,
+            CreatedAt = ordemServico.CreatedAt.ToDateString(),
+            UpdatedAt = ordemServico.UpdatedAt?.ToDateString(),
+            DeletedAt = ordemServico.DeletedAt?.ToDateString(),
             Servicos = MapearServicos(ordemServico)
         };
     }
 
-    private static ICollection<OrdemServicoItensResponse> MapearServicos(OrdemServico ordemServico)
+    private static List<OrdemServicoItensResponse> MapearServicos(OrdemServico ordemServico)
     {
         return ordemServico.Servicos
             .Where(x => !x.EstaExcluida())

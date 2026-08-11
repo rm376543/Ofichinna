@@ -1,9 +1,10 @@
-using Ofichina.Domain.Common;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
+using Ofichina.Application.Abstractions.Interfaces.Service;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Orcamento;
-using Ofichina.Application.Abstractions.Interfaces.Service;
-using Ofichina.Application.Abstractions.Interfaces.Repository;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Orcamentos.Services;
 
@@ -48,13 +49,13 @@ public sealed class OrcamentoService : IOrcamentoService
             Desconto = orcamento.Desconto,
             ValorTotal = orcamento.ValorTotal,
             ValorTotalDesconto = orcamento.ValorTotalDesconto,
-            CreatedAt = orcamento.CreatedAt,
-            UpdatedAt = orcamento.UpdatedAt,
-            DeletedAt = orcamento.DeletedAt
+            CreatedAt = orcamento.CreatedAt.ToDateString(),
+            UpdatedAt = orcamento.UpdatedAt?.ToDateString(),
+            DeletedAt = orcamento.DeletedAt?.ToDateString()
         });
     }
 
-    private static string ObterNome(Guid pessoaId, IReadOnlyDictionary<Guid, string> nomesPorId)
+    private static string ObterNome(Guid pessoaId, Dictionary<Guid, string> nomesPorId)
     {
         return nomesPorId.TryGetValue(pessoaId, out var nome)
             ? nome

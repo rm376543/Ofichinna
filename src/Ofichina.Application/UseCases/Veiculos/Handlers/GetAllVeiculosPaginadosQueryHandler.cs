@@ -3,7 +3,7 @@ using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Veiculos.Queries;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses.Pessoa;
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Veiculo;
 
 namespace Ofichina.Application.UseCases.Veiculos.Handlers;
@@ -51,9 +51,9 @@ public sealed class GetAllVeiculosPaginadosQueryHandler
                 Cor = v.Cor,
                 Hodometro = v.Hodometro.Valor,
                 HodometroFormatado = v.Hodometro.ToString(),
-                CreatedAt = v.CreatedAt,
-                UpdatedAt = v.UpdatedAt,
-                DeletedAt = v.DeletedAt
+                CreatedAt = v.CreatedAt.ToDateString(),
+                UpdatedAt = v.UpdatedAt?.ToDateString(),
+                DeletedAt = v.DeletedAt?.ToDateString()
             });
 
             _logger.LogInformation("Veículos paginados obtidos com sucesso.");

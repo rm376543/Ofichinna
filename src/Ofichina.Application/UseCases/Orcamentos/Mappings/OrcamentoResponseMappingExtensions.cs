@@ -1,3 +1,4 @@
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Orcamento;
 using Ofichina.Contracts.Responses.OrdemServico;
 using Ofichina.Domain.Aggregates;
@@ -22,14 +23,16 @@ public static class OrcamentoResponseMappingExtensions
             ConsultorId = orcamento.ConsultorId,
             DataValidade = DateOnly.FromDateTime(orcamento.DataValidade),
             Desconto = orcamento.Desconto,
+            DescontoEmDinheiro = orcamento.DescontoEmDinheiro,
+            ValorDesconto = orcamento.ValorDesconto,
             Observacoes = orcamento.Observacoes,
             Status = orcamento.Status.ToUpperSnakeCase(),
             DataCriacao = orcamento.DataCriacao,
             ValorTotal = orcamento.ValorTotal,
             ValorTotalDesconto = orcamento.ValorTotalDesconto,
-            CreatedAt = orcamento.CreatedAt,
-            UpdatedAt = orcamento.UpdatedAt,
-            DeletedAt = orcamento.DeletedAt,
+            CreatedAt = orcamento.CreatedAt.ToDateString(),
+            UpdatedAt = orcamento.UpdatedAt?.ToDateString(),
+            DeletedAt = orcamento.DeletedAt?.ToDateString(),
             ItensServico = MapearItensServico(orcamento.ItensServico)
         };
     }
