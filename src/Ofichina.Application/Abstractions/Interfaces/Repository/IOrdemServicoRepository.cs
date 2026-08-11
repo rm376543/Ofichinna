@@ -10,7 +10,7 @@ public interface IOrdemServicoRepository : IRepository<OrdemServico>
     /// <summary>
     /// Obtém uma ordem de serviço pelo identificador, carregando os itens quando necessário.
     /// </summary>
-    Task<OrdemServico?> GetByIdAsync(Guid id, bool includeItens = false, CancellationToken cancellationToken = default, bool tracking = false);
+    Task<OrdemServico?> GetByIdAsync(Guid id, bool includeItens = false, bool tracking = false, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Obtém todas as ordens de serviço, carregando os itens quando necessário.

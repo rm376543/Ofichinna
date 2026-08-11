@@ -1,5 +1,7 @@
 using Ofichina.Domain.Aggregates;
+using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
+using Ofichina.Domain.Exceptions;
 using System.Reflection;
 
 namespace Ofichina.UnitTests.Domain;
@@ -35,6 +37,34 @@ public sealed class OrdemServicoTests
         Assert.Equal(StatusOrdemServico.EmExecucao, ordemServico.Status);
     }
 
+    [Fact]
+    public void Finalizar_Deve_Permitir_Quando_Houver_Servicos_Ativos()
+    {
+        var orcamento = CriarOrcamentoAprovado();
+        var ordemServico = OrdemServico.CriarAPartirDoOrcamento(orcamento, null, Guid.NewGuid(), 78123);
+
+        AdicionarServicoVinculado(ordemServico);
+
+        ordemServico.IniciarExecucao();
+        ordemServico.Finalizar();
+
+        Assert.Equal(StatusOrdemServico.Finalizada, ordemServico.Status);
+        Assert.NotNull(ordemServico.DataFinalizacao);
+    }
+
+    [Fact]
+    public void Finalizar_Deve_Falhar_Quando_Nao_Houver_Servicos_Ativos()
+    {
+        var orcamento = CriarOrcamentoAprovado();
+        var ordemServico = OrdemServico.CriarAPartirDoOrcamento(orcamento, null, Guid.NewGuid(), 78123);
+
+        ordemServico.IniciarExecucao();
+
+        var exception = Assert.Throws<DomainException>(ordemServico.Finalizar);
+
+        Assert.Equal("A ordem de serviço precisa possuir itens cadastrados.", exception.Message);
+    }
+
     private static Orcamento CriarOrcamentoAprovado()
     {
         var orcamento = new Orcamento(
@@ -65,5 +95,28 @@ public sealed class OrdemServicoTests
 
         Assert.NotNull(property);
         property!.SetValue(orcamento, agendamento);
+    }
+
+    private static void AdicionarServicoVinculado(OrdemServico ordemServico)
+    {
+        var field = typeof(OrdemServico).GetField("_servicos", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        Assert.NotNull(field);
+
+        var servicos = (List<ItemServico>)field!.GetValue(ordemServico)!;
+        servicos.Add(ConstruirItemServico(ordemServico.Id));
+    }
+
+    private static ItemServico ConstruirItemServico(Guid ordemServicoId)
+    {
+        var constructor = typeof(ItemServico).GetConstructor(
+            BindingFlags.Instance | BindingFlags.NonPublic,
+            null,
+            [typeof(Guid?), typeof(Guid?), typeof(Guid), typeof(Guid?), typeof(int)],
+            null);
+
+        Assert.NotNull(constructor);
+
+        return (ItemServico)constructor!.Invoke([null, ordemServicoId, Guid.NewGuid(), null, 1]);
     }
 }

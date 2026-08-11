@@ -1,11 +1,11 @@
 namespace Ofichina.Domain.Entities;
 
 /// <summary>
-/// Entidade keyless mapeada para a view vwAgendamentosUsuario.
+/// Entidade keyless mapeada para a view vwAgendamentoPessoa.
 /// Representa os dados de agendamentos de usuários prontos para consulta.
-/// Não herda de Entity para evitar aplicação de query filter de soft delete.
+/// Herda de Entity para manter o contrato de auditoria do domínio.
 /// </summary>
-public class AgendamentoUsuarioView
+public class VwAgendamentoPessoa : Entity
 {
     public Guid AgendamentosId { get; set; }
 
@@ -31,13 +31,7 @@ public class AgendamentoUsuarioView
 
     public string Consultor { get; set; } = string.Empty;
 
-    public string DtAgendamento { get; set; } = string.Empty;
+    public DateTime DtAgendamento { get; set; }
 
     public TimeOnly HorarioAgendamento { get; set; }
-
-    public string CreatedAt { get; set; } = string.Empty;
-
-    public string? UpdatedAt { get; set; }
-
-    public string? DeletedAt { get; set; }
 }

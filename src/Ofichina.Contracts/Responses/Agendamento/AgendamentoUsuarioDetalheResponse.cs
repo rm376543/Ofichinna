@@ -1,10 +1,12 @@
+using Ofichina.Contracts.Common;
+
 namespace Ofichina.Contracts.Responses.Agendamento;
 
 /// <summary>
-/// Resposta detalhada com os dados de agendamento de usuário provenientes da view vwAgendamentosUsuario.
+/// Resposta detalhada com os dados de agendamento de usuário provenientes da view vwAgendamentoPessoa.
 /// Expõe os identificadores internos e a auditoria completa para detalhamento.
 /// </summary>
-public sealed class AgendamentoUsuarioDetalheResponse
+public sealed class AgendamentoUsuarioDetalheResponse : BaseResponse
 {
     public Guid AgendamentosId { get; set; }
 
@@ -33,10 +35,4 @@ public sealed class AgendamentoUsuarioDetalheResponse
     public string DtAgendamento { get; set; } = string.Empty;
 
     public TimeOnly HorarioAgendamento { get; set; }
-
-    public string CreatedAt { get; set; } = string.Empty;
-
-    public string? UpdatedAt { get; set; }
-
-    public string? DeletedAt { get; set; }
 }

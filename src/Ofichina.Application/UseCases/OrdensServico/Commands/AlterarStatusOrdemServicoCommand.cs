@@ -1,6 +1,5 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Enums;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Commands;
 
@@ -17,9 +16,9 @@ public sealed class AlterarStatusOrdemServicoCommand : ICommand<Result>
     /// <summary>
     /// Status de destino da ordem de serviço.
     /// </summary>
-    public StatusOrdemServico StatusDestino { get; init; }
+    public string StatusDestino { get; init; }
 
-    public AlterarStatusOrdemServicoCommand(Guid ordemServicoId, StatusOrdemServico statusDestino)
+    public AlterarStatusOrdemServicoCommand(Guid ordemServicoId, string statusDestino)
     {
         Id = ordemServicoId;
         StatusDestino = statusDestino;

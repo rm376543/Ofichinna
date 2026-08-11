@@ -1,12 +1,9 @@
-using Microsoft.Extensions.Logging;
 using Ofichina.Application.Abstractions;
-using Ofichina.Contracts.Common;
-using Ofichina.Domain.Common;
-using Ofichina.Domain.Exceptions;
-using Ofichina.Application.UseCases.OrdensServico.Commands;
-using Ofichina.Domain.Entities;
-using Ofichina.Application.Abstractions.Common;
 using Ofichina.Application.Abstractions.Interfaces.Repository;
+using Ofichina.Application.UseCases.OrdensServico.Commands;
+using Ofichina.Contracts.Common;
+using Ofichina.Domain.Entities;
+using Ofichina.Domain.Exceptions;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 
@@ -41,7 +38,7 @@ public sealed class UtilizarPecaCommandHandler : ICommandHandler<UtilizarPecaCom
         {
             _logger.LogInformation("Iniciando utilização de peça na ordem de serviço. OrdemServicoId: {OrdemServicoId}, PecaId: {PecaId}.", command.OrdemServicoId, command.Id);
 
-            var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.OrdemServicoId, includeItens: true, cancellationToken, tracking: true);
+            var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.OrdemServicoId, true, true, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
                 return Result.Failure("Ordem de serviço não encontrada.");
 

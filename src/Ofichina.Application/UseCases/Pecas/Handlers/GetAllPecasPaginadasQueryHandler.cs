@@ -3,6 +3,7 @@ using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Pecas.Queries;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Pecas;
 
 namespace Ofichina.Application.UseCases.Pecas.Handlers;
@@ -47,9 +48,9 @@ public sealed class GetAllPecasPaginadasQueryHandler : IQueryHandler<GetAllPecas
                 Codigo = p.Codigo,
                 Valor = p.Valor,
                 QuantidadeEstoque = p.QuantidadeEstoque,
-                CreatedAt = p.CreatedAt,
-                UpdatedAt = p.UpdatedAt,
-                DeletedAt = p.DeletedAt
+                CreatedAt = p.CreatedAt.ToDateString(),
+                UpdatedAt = p.UpdatedAt?.ToDateString(),
+                DeletedAt = p.DeletedAt?.ToDateString()
             });
 
             return Result.Success(resultado);

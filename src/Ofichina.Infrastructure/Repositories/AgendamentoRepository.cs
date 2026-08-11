@@ -1,11 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Ofichina.Domain.Common;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
+using Ofichina.Contracts;
+using Ofichina.Contracts.Common;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Infrastructure.Persistence;
-using Ofichina.Contracts;
-using Ofichina.Contracts.Common;
-using Ofichina.Application.Abstractions.Interfaces.Repository;
 
 namespace Ofichina.Infrastructure.Repositories;
 
@@ -112,19 +111,19 @@ public sealed class AgendamentoRepository : Repository<Agendamento>, IAgendament
             .FirstOrDefaultAsync(x => x.ClientePessoaId == pessoaId && x.DeletedAt == null, cancellationToken);
     }
 
-    public async Task<IReadOnlyCollection<AgendamentoUsuarioView>> GetAgendamentosUsuarioViewByPessoaAsync(Guid pessoaId, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyCollection<VwAgendamentoPessoa>> GetAgendamentosUsuarioViewByPessoaAsync(Guid pessoaId, CancellationToken cancellationToken = default)
     {
         return await _context.AgendamentosUsuarioView
             .AsNoTracking()
-            .Where(x => x.PessoaId == pessoaId)
+            .Where(x => x.PessoaId == pessoaId && x.DeletedAt == null)
             .OrderBy(x => x.CreatedAt)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<AgendamentoUsuarioView?> GetAgendamentoUsuarioViewByIdAsync(Guid pessoaId, Guid agendamentosId, CancellationToken cancellationToken = default)
+    public async Task<VwAgendamentoPessoa?> GetAgendamentoUsuarioViewByIdAsync(Guid pessoaId, Guid agendamentosId, CancellationToken cancellationToken = default)
     {
         return await _context.AgendamentosUsuarioView
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.PessoaId == pessoaId && x.AgendamentosId == agendamentosId, cancellationToken);
+            .FirstOrDefaultAsync(x => x.PessoaId == pessoaId && x.AgendamentosId == agendamentosId && x.DeletedAt == null, cancellationToken);
     }
 }

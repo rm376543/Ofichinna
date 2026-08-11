@@ -1,3 +1,4 @@
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Servicos;
 
 namespace Ofichina.UnitTests.Contracts;
@@ -16,7 +17,7 @@ public sealed class ServicoResponseTests
             Descricao = "Serviço completo",
             Valor = 149.90m,
             Ativo = true,
-            CreatedAt = createdAt
+            CreatedAt = createdAt.ToDateString()
         };
 
         Assert.Equal(Guid.Parse("550e8400-e29b-41d4-a716-446655440000"), response.ServicoId);
@@ -24,6 +25,6 @@ public sealed class ServicoResponseTests
         Assert.Equal("Serviço completo", response.Descricao);
         Assert.Equal(149.90m, response.Valor);
         Assert.True(response.Ativo);
-        Assert.Equal(createdAt, response.CreatedAt);
+        Assert.Equal(createdAt.ToDateString(), response.CreatedAt);
     }
 }

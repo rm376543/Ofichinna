@@ -3,6 +3,7 @@ using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Permissoes.Queries;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Permissoes;
 
 namespace Ofichina.Application.UseCases.Permissoes.Handlers;
@@ -31,8 +32,8 @@ public sealed class GetAllPermissoesPaginadasQueryHandler : IQueryHandler<GetAll
                 PermissaoId = p.Id,
                 Codigo = p.Codigo,
                 Descricao = p.Descricao,
-                CreatedAt = p.CreatedAt,
-                UpdatedAt = p.UpdatedAt
+                CreatedAt = p.CreatedAt.ToDateString(),
+                UpdatedAt = p.UpdatedAt?.ToDateString()
             });
 
             return Result.Success(resultado);

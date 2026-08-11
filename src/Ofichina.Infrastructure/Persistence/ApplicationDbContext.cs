@@ -1,7 +1,7 @@
-﻿using System.Reflection;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
+using System.Reflection;
 
 namespace Ofichina.Infrastructure.Persistence;
 
@@ -125,9 +125,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<PerfilPermissao> PerfisPermissoes { get; set; } = null!;
 
     /// <summary>
-    /// DbSet para a view de agendamentos de usuários (vwAgendamentosUsuario).
+    /// DbSet para a view de agendamentos de usuários (vwAgendamentoPessoa).
     /// </summary>
-    public DbSet<AgendamentoUsuarioView> AgendamentosUsuarioView { get; set; } = null!;
+    public DbSet<VwAgendamentoPessoa> AgendamentosUsuarioView { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

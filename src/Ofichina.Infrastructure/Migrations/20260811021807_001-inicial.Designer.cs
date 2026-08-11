@@ -12,7 +12,7 @@ using Ofichina.Infrastructure.Persistence;
 namespace Ofichina.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260810134628_001-inicial")]
+    [Migration("20260811021807_001-inicial")]
     partial class _001inicial
     {
         /// <inheritdoc />
@@ -242,90 +242,6 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasDatabaseName("IX_AgendaConsultor_DiaHorarioConsultor");
 
                     b.ToTable("AgendaConsultor", (string)null);
-                });
-
-            modelBuilder.Entity("Ofichina.Domain.Entities.AgendamentoUsuarioView", b =>
-                {
-                    b.Property<Guid>("AgendamentosId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("AgendamentosId");
-
-                    b.Property<int>("AnoFabricacao")
-                        .HasColumnType("int")
-                        .HasColumnName("AnoFabricacao");
-
-                    b.Property<string>("Consultor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Consultor");
-
-                    b.Property<string>("Cor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Cor");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("CreatedAt");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("DeletedAt");
-
-                    b.Property<string>("Documento")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Documento");
-
-                    b.Property<string>("DtAgendamento")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("DtAgendamento");
-
-                    b.Property<int>("Hodometro")
-                        .HasColumnType("int")
-                        .HasColumnName("Hodometro");
-
-                    b.Property<TimeOnly>("HorarioAgendamento")
-                        .HasColumnType("time")
-                        .HasColumnName("HorarioAgendamento");
-
-                    b.Property<string>("Marca")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Marca");
-
-                    b.Property<string>("Modelo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Modelo");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Nome");
-
-                    b.Property<Guid>("PessoaId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("PessoaId");
-
-                    b.Property<string>("Placa")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Placa");
-
-                    b.Property<string>("Telefone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Telefone");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("UpdatedAt");
-
-                    b.ToTable((string)null);
-
-                    b.ToView("vwAgendamentosUsuario", (string)null);
                 });
 
             modelBuilder.Entity("Ofichina.Domain.Entities.Checklist", b =>
@@ -948,6 +864,90 @@ namespace Ofichina.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Veiculos", (string)null);
+                });
+
+            modelBuilder.Entity("Ofichina.Domain.Entities.VwAgendamentoPessoa", b =>
+                {
+                    b.Property<Guid>("AgendamentosId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("AgendamentosId");
+
+                    b.Property<int>("AnoFabricacao")
+                        .HasColumnType("int")
+                        .HasColumnName("AnoFabricacao");
+
+                    b.Property<string>("Consultor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Consultor");
+
+                    b.Property<string>("Cor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Cor");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletedAt");
+
+                    b.Property<string>("Documento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Documento");
+
+                    b.Property<string>("DtAgendamento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("DtAgendamento");
+
+                    b.Property<int>("Hodometro")
+                        .HasColumnType("int")
+                        .HasColumnName("Hodometro");
+
+                    b.Property<TimeOnly>("HorarioAgendamento")
+                        .HasColumnType("time")
+                        .HasColumnName("HorarioAgendamento");
+
+                    b.Property<string>("Marca")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Marca");
+
+                    b.Property<string>("Modelo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Modelo");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Nome");
+
+                    b.Property<Guid>("PessoaId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("PessoaId");
+
+                    b.Property<string>("Placa")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Placa");
+
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Telefone");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("UpdatedAt");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vwAgendamentoPessoa", (string)null);
                 });
 
             modelBuilder.Entity("Ofichina.Domain.Aggregates.Agendamento", b =>

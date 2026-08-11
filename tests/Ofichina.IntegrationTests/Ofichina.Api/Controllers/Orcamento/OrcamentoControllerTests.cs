@@ -49,14 +49,13 @@ public sealed class OrcamentoControllerTests
 
         var orcamentoId = Guid.NewGuid();
         var result = await controller.AprovarOrcamento(
-            new AprovarOrcamentoRequest(orcamentoId, 77880),
+            new AprovarOrcamentoRequest(orcamentoId),
             CancellationToken.None);
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
         Assert.NotNull(mediator.AprovarCommandEnviado);
         Assert.Equal(orcamentoId, mediator.AprovarCommandEnviado!.Id);
-        Assert.Equal(77880, mediator.AprovarCommandEnviado.Hodometro);
     }
 
     private sealed class FakeMediator : IMediator

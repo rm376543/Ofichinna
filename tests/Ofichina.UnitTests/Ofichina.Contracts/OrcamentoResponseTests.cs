@@ -33,6 +33,8 @@ public sealed class OrcamentoResponseTests
             ConsultorId = Guid.NewGuid(),
             DataValidade = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(10)),
             Desconto = 15m,
+            DescontoEmDinheiro = false,
+            ValorDesconto = 15m,
             Status = "CRIADO",
             DataCriacao = createdAt,
             ValorTotal = 179.90m,
@@ -44,6 +46,7 @@ public sealed class OrcamentoResponseTests
         Assert.Equal(item, response.ItensServico.First());
         Assert.Equal(179.90m, response.ValorTotal);
         Assert.Equal(164.90m, response.ValorTotalDesconto);
+        Assert.Equal(15m, response.ValorDesconto);
         Assert.Null(typeof(OrcamentoResponse).GetProperty("Servicos"));
         Assert.NotNull(typeof(OrcamentoResponse).GetProperty("ItensServico"));
     }

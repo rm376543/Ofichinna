@@ -1,3 +1,4 @@
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Veiculo;
 using Ofichina.Domain.Entities;
 
@@ -19,9 +20,9 @@ public static class VeiculoResponseMappingExtensions
             Cor = veiculo.Cor,
             Hodometro = veiculo.Hodometro.Valor,
             HodometroFormatado = veiculo.Hodometro.ToString(),
-            CreatedAt = veiculo.CreatedAt,
-            UpdatedAt = veiculo.UpdatedAt,
-            DeletedAt = veiculo.DeletedAt
+            CreatedAt = veiculo.CreatedAt.ToDateString(),
+            UpdatedAt = veiculo.UpdatedAt?.ToDateString(),
+            DeletedAt = veiculo.DeletedAt?.ToDateString()
         };
     }
 }

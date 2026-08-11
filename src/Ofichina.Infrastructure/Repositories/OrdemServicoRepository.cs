@@ -20,7 +20,7 @@ public sealed class OrdemServicoRepository : Repository<OrdemServico>, IOrdemSer
         _context = context;
     }
 
-    public async Task<OrdemServico?> GetByIdAsync(Guid id, bool includeItens = false, CancellationToken cancellationToken = default, bool tracking = false)
+    public async Task<OrdemServico?> GetByIdAsync(Guid id, bool includeItens = false, bool tracking = false, CancellationToken cancellationToken = default)
     {
         IQueryable<OrdemServico> query = _context.Set<OrdemServico>();
 

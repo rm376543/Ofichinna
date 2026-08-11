@@ -4,6 +4,7 @@ using Ofichina.Application.UseCases.Agendamentos.Handlers;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Extension;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
@@ -16,7 +17,7 @@ public sealed class GetAgendamentoByIdQueryHandlerTests
     public async Task Deve_Retornar_Detalhe_A_Partir_Da_View_Quando_Existir()
     {
         var pessoa = CriarPessoa();
-        var view = new AgendamentoUsuarioView
+        var view = new VwAgendamentoPessoa
         {
             AgendamentosId = Guid.NewGuid(),
             PessoaId = pessoa.Id,
@@ -30,10 +31,10 @@ public sealed class GetAgendamentoByIdQueryHandlerTests
             Cor = "Branco",
             Hodometro = 45000,
             Consultor = "Maria Souza",
-            DtAgendamento = "15/08/2026",
+            DtAgendamento = new DateTime(2026, 8, 15, 0, 0, 0, DateTimeKind.Utc),
             HorarioAgendamento = new TimeOnly(14, 30),
-            CreatedAt = "10/08/2026",
-            UpdatedAt = "11/08/2026",
+            CreatedAt = new DateTime(2026, 8, 10, 0, 0, 0, DateTimeKind.Utc),
+            UpdatedAt = new DateTime(2026, 8, 11, 0, 0, 0, DateTimeKind.Utc),
             DeletedAt = null
         };
 
@@ -60,11 +61,11 @@ public sealed class GetAgendamentoByIdQueryHandlerTests
         Assert.Equal(view.Cor, result.Value.Cor);
         Assert.Equal(view.Hodometro, result.Value.Hodometro);
         Assert.Equal(view.Consultor, result.Value.Consultor);
-        Assert.Equal(view.DtAgendamento, result.Value.DtAgendamento);
+        Assert.Equal(view.DtAgendamento.ToDateString(), result.Value.DtAgendamento);
         Assert.Equal(view.HorarioAgendamento, result.Value.HorarioAgendamento);
-        Assert.Equal(view.CreatedAt, result.Value.CreatedAt);
-        Assert.Equal(view.UpdatedAt, result.Value.UpdatedAt);
-        Assert.Equal(view.DeletedAt, result.Value.DeletedAt);
+        Assert.Equal(view.CreatedAt.ToString("dd/MM/yyyy"), result.Value.CreatedAt);
+        Assert.Equal(view.UpdatedAt?.ToString("dd/MM/yyyy"), result.Value.UpdatedAt);
+        Assert.Equal(view.DeletedAt?.ToString("dd/MM/yyyy"), result.Value.DeletedAt);
     }
 
     [Fact]
@@ -129,9 +130,9 @@ public sealed class GetAgendamentoByIdQueryHandlerTests
 
     private sealed class FakeAgendamentoRepository : IAgendamentoRepository
     {
-        private readonly AgendamentoUsuarioView? _view;
+        private readonly VwAgendamentoPessoa? _view;
 
-        public FakeAgendamentoRepository(AgendamentoUsuarioView? view)
+        public FakeAgendamentoRepository(VwAgendamentoPessoa? view)
         {
             _view = view;
         }
@@ -162,9 +163,9 @@ public sealed class GetAgendamentoByIdQueryHandlerTests
 
         public Task<Agendamento?> BuscarAgendamentosPorPessoaId(Guid pessoaId, CancellationToken cancellationToken = default) => Task.FromResult<Agendamento?>(null);
 
-        public Task<IReadOnlyCollection<AgendamentoUsuarioView>> GetAgendamentosUsuarioViewByPessoaAsync(Guid pessoaId, CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyCollection<AgendamentoUsuarioView>>(_view is null ? [] : [_view]);
+        public Task<IReadOnlyCollection<VwAgendamentoPessoa>> GetAgendamentosUsuarioViewByPessoaAsync(Guid pessoaId, CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyCollection<VwAgendamentoPessoa>>(_view is null ? [] : [_view]);
 
-        public Task<AgendamentoUsuarioView?> GetAgendamentoUsuarioViewByIdAsync(Guid pessoaId, Guid agendamentosId, CancellationToken cancellationToken = default)
+        public Task<VwAgendamentoPessoa?> GetAgendamentoUsuarioViewByIdAsync(Guid pessoaId, Guid agendamentosId, CancellationToken cancellationToken = default)
             => Task.FromResult(_view is not null && _view.PessoaId == pessoaId && _view.AgendamentosId == agendamentosId ? _view : null);
     }
 }

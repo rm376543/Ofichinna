@@ -23,6 +23,10 @@ public sealed class OrcamentoResponse : BaseResponse
 
     public decimal Desconto { get; set; }
 
+    public bool DescontoEmDinheiro { get; set; }
+
+    public decimal ValorDesconto { get; set; }
+
     public string? Observacoes { get; set; }
 
     public string Status { get; set; } = string.Empty;

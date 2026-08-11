@@ -1,9 +1,10 @@
-using Ofichina.Domain.Common;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
+using Ofichina.Application.Abstractions.Interfaces.Service;
 using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.OrdemServico;
-using Ofichina.Application.Abstractions.Interfaces.Service;
-using Ofichina.Application.Abstractions.Interfaces.Repository;
+using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Services;
 
@@ -51,13 +52,13 @@ public sealed class OrdemServicoService : IOrdemServicoService
             DataFinalizacao = ordem.DataFinalizacao?.ToString("dd/MM/yyyy") ?? "",
             Observacao = ordem.Observacao,
             ValorTotal = ordem.ValorTotal.ToString("C"),
-            CreatedAt = ordem.CreatedAt,
-            UpdatedAt = ordem.UpdatedAt,
-            DeletedAt = ordem.DeletedAt
+            CreatedAt = ordem.CreatedAt.ToDateString(),
+            UpdatedAt = ordem.UpdatedAt?.ToDateString(),
+            DeletedAt = ordem.DeletedAt?.ToDateString()
         });
     }
 
-    private static string ObterNome(Guid pessoaId, IReadOnlyDictionary<Guid, string> nomesPorId)
+    private static string ObterNome(Guid pessoaId, Dictionary<Guid, string> nomesPorId)
     {
         return nomesPorId.TryGetValue(pessoaId, out var nome)
             ? nome

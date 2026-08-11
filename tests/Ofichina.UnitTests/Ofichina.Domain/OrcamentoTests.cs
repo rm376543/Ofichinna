@@ -1,4 +1,6 @@
+using System.Reflection;
 using Ofichina.Domain.Aggregates;
+using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 using Ofichina.Domain.Exceptions;
 
@@ -76,25 +78,27 @@ public sealed class OrcamentoTests
     [Fact]
     public void Deve_Calcular_Desconto_Fixo_E_Total_Final()
     {
-        var orcamento = CriarOrcamento();
+        var orcamento = CriarOrcamentoComValores();
 
-        orcamento.AtualizarDesconto(10m, false);
+        orcamento.AtualizarDesconto(10m, true);
 
         Assert.Equal(10m, orcamento.Desconto);
-        Assert.False(orcamento.DescontoEmDinheiro);
-        Assert.Equal(0m, orcamento.ValorTotal);
-        Assert.Equal(orcamento.ValorTotal, orcamento.ValorTotalDesconto);
+        Assert.True(orcamento.DescontoEmDinheiro);
+        Assert.Equal(200m, orcamento.ValorTotal);
+        Assert.Equal(10m, orcamento.ValorDesconto);
+        Assert.Equal(190m, orcamento.ValorTotalDesconto);
     }
 
     [Fact]
     public void Deve_Calcular_Desconto_Percentual()
     {
-        var orcamento = CriarOrcamento();
+        var orcamento = CriarOrcamentoComValores();
 
-        orcamento.AtualizarDesconto(10m, true);
+        orcamento.AtualizarDesconto(10m, false);
 
-        Assert.True(orcamento.DescontoEmDinheiro);
-        Assert.Equal(orcamento.ValorBruto * 0.10m, orcamento.ValorBruto - orcamento.ValorTotalDesconto);
+        Assert.False(orcamento.DescontoEmDinheiro);
+        Assert.Equal(20m, orcamento.ValorDesconto);
+        Assert.Equal(180m, orcamento.ValorTotalDesconto);
     }
 
     private static Orcamento CriarOrcamento(bool comItens = true)
@@ -113,5 +117,25 @@ public sealed class OrcamentoTests
             orcamento.AdicionarServico(Guid.NewGuid(), Guid.NewGuid(), 1, StatusOrcamento.Criado);
 
         return orcamento;
+    }
+
+    private static Orcamento CriarOrcamentoComValores()
+    {
+        var orcamento = CriarOrcamento(comItens: false);
+
+        var item = orcamento.AdicionarServico(Guid.NewGuid(), Guid.NewGuid(), 2, StatusOrcamento.Criado);
+        DefinirPropriedade(item, nameof(ItemServico.Servico), new Servico("Serviço teste", null, 100m));
+        DefinirPropriedade(item, nameof(ItemServico.Peca), new Peca("Peça teste", null, "PEC-001", 50m, 10));
+
+        return orcamento;
+    }
+
+    private static void DefinirPropriedade<T>(T instancia, string propriedade, object? valor)
+        where T : class
+    {
+        var property = typeof(T).GetProperty(propriedade, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+        Assert.NotNull(property);
+        property!.SetValue(instancia, valor);
     }
 }

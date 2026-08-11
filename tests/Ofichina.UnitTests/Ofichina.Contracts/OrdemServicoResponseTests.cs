@@ -1,3 +1,4 @@
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.OrdemServico;
 using Ofichina.Contracts.Responses.OrdensServico;
 
@@ -25,8 +26,8 @@ public sealed class OrdemServicoResponseTests
             DataFinalizacao = null,
             Observacao = "carro de dev",
             ValorTotal = 1120.00m,
-            CreatedAt = createdAt,
-            UpdatedAt = updatedAt,
+            CreatedAt = createdAt.ToDateString(),
+            UpdatedAt = updatedAt.ToDateString(),
             DeletedAt = null,
             Servicos = []
         };
@@ -35,7 +36,7 @@ public sealed class OrdemServicoResponseTests
         Assert.Equal("CRIADO", response.Status);
         Assert.Equal(78123, response.Hodometro);
         Assert.Equal(createdAt, response.DataAbertura);
-        Assert.Equal(updatedAt, response.UpdatedAt);
+        Assert.Equal(updatedAt.ToDateString(), response.UpdatedAt);
         Assert.Empty(response.Servicos);
     }
 
@@ -55,13 +56,13 @@ public sealed class OrdemServicoResponseTests
             DataFinalizacao = string.Empty,
             Observacao = "carro de dev",
             ValorTotal = "R$ 1.120,00",
-            CreatedAt = createdAt
+            CreatedAt = createdAt.ToDateString()
         };
 
         Assert.Equal("Barulhos durante a aceleração", response.ProblemaRelatado);
         Assert.Equal("CRIADO", response.Status);
         Assert.Equal("16/08/2026", response.DataAbetura);
         Assert.Equal("R$ 1.120,00", response.ValorTotal);
-        Assert.Equal(createdAt, response.CreatedAt);
+        Assert.Equal(createdAt.ToDateString(), response.CreatedAt);
     }
 }

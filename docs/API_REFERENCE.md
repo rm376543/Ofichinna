@@ -420,7 +420,7 @@ Lista orçamentos com paginação.
 **Respostas:** `200`, `400`, `401`, `403`.
 
 ### GET /api/orcamento/detalhar/{id}
-Retorna o orçamento detalhado com checklist e serviços previstos, incluindo `valorTotal` líquido com desconto.
+Retorna o orçamento detalhado com checklist e serviços previstos, incluindo `valorTotal` bruto, `valorTotalDesconto` com desconto aplicado, `valorDesconto` e `descontoEmDinheiro`.
 
 #### Resposta 200
 ```json
@@ -470,12 +470,12 @@ Finaliza o orçamento após o diagnóstico, alterando o status para `AguardandoE
 ### POST /api/orcamento/enviar
 Marca o orçamento como enviado para o cliente, alterando o status para `AguardandoAprovacao` e registrando o histórico de status. O orçamento precisa estar finalizado antes desse passo. **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
-### POST /api/orcamento/aprovar
-Aprova o orçamento informando o hodômetro de entrada, cria a ordem de serviço com status inicial `CRIADO` e vincula os itens do orçamento à nova OS. A execução passa a ser iniciada manualmente em seguida. **Respostas:** `200`, `400`, `401`, `403`, `404`.
+### POST /api/orcamento/aprova
+Aprova o orçamento, busca automaticamente o hodômetro do agendamento vinculado ao orçamento, cria a ordem de serviço com status inicial `CRIADO` e vincula os itens do orçamento à nova OS. A execução passa a ser iniciada manualmente em seguida. **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
 #### Requisição
 ```json
-{ "orcamentoId": "550e8400-e29b-41d4-a716-446655440000", "hodometro": 78123 }
+{ "orcamentoId": "550e8400-e29b-41d4-a716-446655440000" }
 ```
 
 ### POST /api/orcamento/reprovar
@@ -526,7 +526,7 @@ Remove logicamente uma OS. **Policy:** nenhuma | **Perfis permitidos:** `ADMIN` 
 
 Ao aprovar um orçamento, a API cria uma OS com status inicial `CRIADO`, preserva o `problemaRelatado` a partir do orçamento/observações e vincula os itens do orçamento à nova OS. Esse fluxo deve manter coerência entre:
 
-- `POST /api/orcamento/aprovar`
+- `POST /api/orcamento/aprova`
 - `GET /api/ordem-servico`
 - `GET /api/ordem-servico/{id}`
 

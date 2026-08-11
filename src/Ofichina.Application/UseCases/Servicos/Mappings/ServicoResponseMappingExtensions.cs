@@ -1,3 +1,4 @@
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Servicos;
 using Ofichina.Domain.Entities;
 
@@ -16,9 +17,9 @@ public static class ServicoResponseMappingExtensions
             Descricao = servico.Descricao,
             Valor = servico.Valor,
             Ativo = !servico.EstaExcluida(),
-            CreatedAt = servico.CreatedAt,
-            UpdatedAt = servico.UpdatedAt,
-            DeletedAt = servico.DeletedAt
+            CreatedAt = servico.CreatedAt.ToDateString(),
+            UpdatedAt = servico.UpdatedAt?.ToDateString(),
+            DeletedAt = servico.DeletedAt?.ToDateString()
         };
     }
 }

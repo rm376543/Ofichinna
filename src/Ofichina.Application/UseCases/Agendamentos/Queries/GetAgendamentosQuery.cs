@@ -1,7 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Agendamento;
-using Ofichina.Domain.Common;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Queries;
 
@@ -11,8 +10,6 @@ namespace Ofichina.Application.UseCases.Agendamentos.Queries;
 public sealed class GetAgendamentosQuery : IQuery<Result<IReadOnlyCollection<AgendamentoUsuarioResponse>>>
 {
     public Guid PessoaId { get; init; }
-
-    public Pagination Pagination { get; init; } = new();
 
     public GetAgendamentosQuery(Guid pessoaId)
     {

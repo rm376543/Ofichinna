@@ -33,6 +33,7 @@ public sealed class GetOrdemServicoByIdQueryHandler
             var ordemServico = await _ordemServicoRepository.GetByIdAsync(
                 query.Id,
                 includeItens: true,
+                tracking: true,
                 cancellationToken);
 
             if (ordemServico is null || ordemServico.EstaExcluida())

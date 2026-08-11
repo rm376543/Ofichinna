@@ -59,6 +59,8 @@ public static class DatabaseSeeder
             // Agendamentos
             await SeedAgendamentos(context);
             await context.SaveChangesAsync();
+
+            await SeedViews(context);
         }
         catch (Exception ex)
         {
@@ -913,6 +915,14 @@ public static class DatabaseSeeder
             .Where(x => x.Usuario.Perfis.Any(p => p.Perfil.NomePerfil.Equals(PerfilEnum.Cliente, StringComparison.OrdinalIgnoreCase)))
             .ToList();
     }
+
+    /// <summary>
+    /// Cria ou atualiza as views utilizadas pela aplicação.
+    /// </summary>
+    private static async Task SeedViews(ApplicationDbContext context)
+    {
+        await SeedViewAgendamentoPessoa(context);
+    }
     #endregion
 
     #region Private Helper Methods
@@ -979,4 +989,51 @@ public static class DatabaseSeeder
     }
 
     #endregion
+
+    /// <summary>
+    /// Cria a view de agendamentos da pessoa apenas se ela ainda não existir.
+    /// </summary>
+    private static async Task SeedViewAgendamentoPessoa(ApplicationDbContext context)
+    {
+        const string sql = """
+        IF OBJECT_ID(N'dbo.vwAgendamentoPessoa', N'V') IS NULL
+        EXEC(N'
+            CREATE VIEW dbo.vwAgendamentoPessoa
+            AS
+            SELECT
+                a.AgendamentosId,
+                p.PessoaId,
+                p.Nome,
+                p.Documento,
+                p.Telefone,
+                v.Placa,
+                v.Marca,
+                v.Modelo,
+                v.AnoFabricacao,
+                v.Cor,
+                v.Hodometro,
+                consultor.Nome AS Consultor,
+                dd.Data AS DtAgendamento,
+                CONVERT(TIME(0), hd.Hora) AS HorarioAgendamento,
+                a.CreatedAt,
+                a.UpdatedAt,
+                a.DeletedAt
+            FROM Agendamentos AS a
+            INNER JOIN Pessoas AS p
+                ON p.PessoaId = a.ClientePessoaId
+            INNER JOIN Veiculos AS v
+                ON v.VeiculoId = a.VeiculoId
+            INNER JOIN AgendaConsultor AS ac
+                ON ac.AgendamentoConsultorId = a.AgendaConsultorId
+            INNER JOIN DiasDisponibilidade AS dd
+                ON dd.DiaDisponibilidadeId = ac.DiaDisponibilidadeId
+            INNER JOIN HorariosDisponibilidade AS hd
+                ON hd.HorarioDisponibilidadeId = ac.HorarioDisponibilidadeId
+            INNER JOIN Pessoas AS consultor
+                ON consultor.PessoaId = ac.ConsultorPessoaId
+        ');
+        """;
+
+        await context.Database.ExecuteSqlRawAsync(sql);
+    }
 }
