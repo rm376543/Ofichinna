@@ -168,10 +168,10 @@ public sealed class FinalizarChecklistCommandHandlerTests
 
         public Task<Agendamento?> BuscarAgendamentosPorPessoaId(Guid pessoaId, CancellationToken cancellationToken = default) => Task.FromResult<Agendamento?>(_agendamento);
 
-        public Task<IReadOnlyCollection<AgendamentoUsuarioView>> GetAgendamentosUsuarioViewByPessoaAsync(Guid pessoaId, CancellationToken cancellationToken = default)
-            => Task.FromResult<IReadOnlyCollection<AgendamentoUsuarioView>>([]);
+        public Task<IReadOnlyCollection<VwAgendamentoPessoa>> GetAgendamentosUsuarioViewByPessoaAsync(Guid pessoaId, CancellationToken cancellationToken = default)
+            => Task.FromResult<IReadOnlyCollection<VwAgendamentoPessoa>>([]);
 
-        public Task<AgendamentoUsuarioView?> GetAgendamentoUsuarioViewByIdAsync(Guid pessoaId, Guid agendamentosId, CancellationToken cancellationToken = default)
+        public Task<VwAgendamentoPessoa?> GetAgendamentoUsuarioViewByIdAsync(Guid pessoaId, Guid agendamentosId, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

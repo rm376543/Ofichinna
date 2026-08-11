@@ -51,6 +51,8 @@ public sealed class OrcamentoResponseMappingExtensionsTests
         Assert.Equal(orcamento.ConsultorId, response.ConsultorId);
         Assert.Equal(DateOnly.FromDateTime(orcamento.DataValidade), response.DataValidade);
         Assert.Equal(12m, response.Desconto);
+        Assert.False(response.DescontoEmDinheiro);
+        Assert.Equal(orcamento.ValorDesconto, response.ValorDesconto);
         Assert.Equal(orcamento.Observacoes, response.Observacoes);
         Assert.Equal("AGUARDANDO_ENVIO", response.Status);
         Assert.Equal(orcamento.DataCriacao, response.DataCriacao);

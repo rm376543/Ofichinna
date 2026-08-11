@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Ofichina.Api.Controllers.OrdensServico;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Enums;
 
 namespace Ofichina.IntegrationTests.Api.Controllers.OrdensServico;
 
@@ -28,7 +27,7 @@ public sealed class OrdemServicoControllerTests
         Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
         Assert.NotNull(mediator.CommandEnviado);
         Assert.Equal(id, mediator.CommandEnviado!.Id);
-        Assert.Equal(StatusOrdemServico.EmExecucao, mediator.CommandEnviado.StatusDestino);
+        Assert.Equal("EmExecucao", mediator.CommandEnviado.StatusDestino);
     }
 
     [Fact]
@@ -48,7 +47,7 @@ public sealed class OrdemServicoControllerTests
         Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
         Assert.NotNull(mediator.CommandEnviado);
         Assert.Equal(id, mediator.CommandEnviado!.Id);
-        Assert.Equal(StatusOrdemServico.Cancelada, mediator.CommandEnviado.StatusDestino);
+        Assert.Equal("Cancelada", mediator.CommandEnviado.StatusDestino);
     }
 
     private sealed class FakeMediator : IMediator

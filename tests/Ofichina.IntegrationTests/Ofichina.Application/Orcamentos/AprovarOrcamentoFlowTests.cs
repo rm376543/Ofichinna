@@ -29,7 +29,7 @@ public sealed class AprovarOrcamentoFlowTests : IClassFixture<CustomWebApplicati
 
         var dados = CriarCenario(context);
 
-        var result = await mediator.Send(new AprovarOrcamentoCommand(dados.Orcamento.Id, 78123));
+        var result = await mediator.Send(new AprovarOrcamentoCommand(dados.Orcamento.Id));
 
         Assert.True(result.IsSuccess);
 
@@ -39,7 +39,7 @@ public sealed class AprovarOrcamentoFlowTests : IClassFixture<CustomWebApplicati
             .SingleAsync(x => x.PessoaId == dados.Orcamento.PessoaId && x.VeiculoId == dados.Orcamento.VeiculoId);
 
         Assert.Equal(StatusOrdemServico.Criado, ordemServico.Status);
-        Assert.Equal(78123, ordemServico.Hodometro);
+        Assert.Equal(dados.HodometroAgendamento, ordemServico.Hodometro);
         Assert.Equal(dados.Orcamento.Observacoes, ordemServico.ProblemaRelatado);
         Assert.Equal(dados.Orcamento.PessoaId, ordemServico.PessoaId);
         Assert.Equal(dados.Orcamento.VeiculoId, ordemServico.VeiculoId);
@@ -59,38 +59,39 @@ public sealed class AprovarOrcamentoFlowTests : IClassFixture<CustomWebApplicati
     {
         var cliente = new Pessoa(
             "Cliente Integração",
-            new Cpf("39053344705"),
+            new Cpf("12345678909"),
             new Telefone("11999999999"),
             new Endereco("Rua Integração", "100", null, "Centro", "São Paulo", "SP", new Cep("01001000")),
             Guid.NewGuid());
 
         var consultor = new Pessoa(
             "Consultor Integração",
-            new Cpf("39053344706"),
+            new Cpf("52998224725"),
             new Telefone("11999999998"),
             new Endereco("Rua Integração", "200", null, "Centro", "São Paulo", "SP", new Cep("01001000")),
             Guid.NewGuid());
 
         var mecanico = new Pessoa(
             "Mecânico Integração",
-            new Cpf("39053344707"),
+            new Cpf("11144477735"),
             new Telefone("11999999997"),
             new Endereco("Rua Integração", "300", null, "Centro", "São Paulo", "SP", new Cep("01001000")),
             Guid.NewGuid());
 
         var veiculo = new Veiculo(
             cliente.Id,
-            new Placa("ABC1234"),
+            new Placa("QWE1R23"),
             "Volkswagen",
             "Gol",
             2020,
             "Prata",
             new Hodometro(100000));
 
-        var diaDisponibilidade = new DiaDisponibilidade(DateOnly.FromDateTime(DateTime.UtcNow.AddDays(1)));
-        var horarioDisponibilidade = new HorarioDisponibilidade(new TimeOnly(9, 0));
+        var diaDisponibilidade = new DiaDisponibilidade(DateOnly.FromDateTime(DateTime.UtcNow.AddDays(45)));
+        var horarioDisponibilidade = new HorarioDisponibilidade(new TimeOnly(13, 30));
         var agendaConsultor = new AgendaConsultor(diaDisponibilidade.Id, horarioDisponibilidade.Id, consultor.Id);
-        var agendamento = new Agendamento(cliente.Id, agendaConsultor.Id, veiculo.Id, 78123, "Visita técnica");
+        const int hodometroAgendamento = 78123;
+        var agendamento = new Agendamento(cliente.Id, agendaConsultor.Id, veiculo.Id, hodometroAgendamento, "Visita técnica");
 
         var servico = new Servico("Troca de óleo", null, 120m);
         var orcamento = new Orcamento(
@@ -112,8 +113,8 @@ public sealed class AprovarOrcamentoFlowTests : IClassFixture<CustomWebApplicati
         context.AddRange(cliente, consultor, mecanico, veiculo, diaDisponibilidade, horarioDisponibilidade, agendaConsultor, agendamento, servico, orcamento);
         context.SaveChanges();
 
-        return new Cenario(orcamento, servico);
+        return new Cenario(orcamento, servico, hodometroAgendamento);
     }
 
-    private sealed record Cenario(Orcamento Orcamento, Servico Servico);
+    private sealed record Cenario(Orcamento Orcamento, Servico Servico, int HodometroAgendamento);
 }

@@ -142,11 +142,11 @@ public sealed class CancelarAgendamentoCommandHandlerTests
         public Task<Agendamento?> BuscarAgendamentosPorPessoaId(Guid pessoaId, CancellationToken cancellationToken = default)
             => Task.FromResult<Agendamento?>(_agendamento);
 
-        public Task<AgendamentoUsuarioView?> GetAgendamentoUsuarioViewByIdAsync(Guid pessoaId, Guid agendamentosId, CancellationToken cancellationToken = default)
-            => Task.FromResult<AgendamentoUsuarioView?>(null);
+        public Task<VwAgendamentoPessoa?> GetAgendamentoUsuarioViewByIdAsync(Guid pessoaId, Guid agendamentosId, CancellationToken cancellationToken = default)
+            => Task.FromResult<VwAgendamentoPessoa?>(null);
 
-        public Task<IReadOnlyCollection<AgendamentoUsuarioView>> GetAgendamentosUsuarioViewByPessoaAsync(Guid pessoaId, CancellationToken cancellationToken = default)
-            => Task.FromResult<IReadOnlyCollection<AgendamentoUsuarioView>>([]);
+        public Task<IReadOnlyCollection<VwAgendamentoPessoa>> GetAgendamentosUsuarioViewByPessoaAsync(Guid pessoaId, CancellationToken cancellationToken = default)
+            => Task.FromResult<IReadOnlyCollection<VwAgendamentoPessoa>>([]);
     }
 
     private sealed class FakeUnitOfWork : IUnitOfWork

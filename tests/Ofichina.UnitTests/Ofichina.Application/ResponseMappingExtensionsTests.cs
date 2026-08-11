@@ -42,7 +42,7 @@ public sealed class ResponseMappingExtensionsTests
     [Fact]
     public void ToUsuarioResponse_Deve_Mapear_View_Sem_Expor_AgendamentosId_E_PessoaId()
     {
-        var view = new AgendamentoUsuarioView
+        var view = new VwAgendamentoPessoa
         {
             AgendamentosId = Guid.NewGuid(),
             PessoaId = Guid.NewGuid(),
@@ -56,10 +56,10 @@ public sealed class ResponseMappingExtensionsTests
             Cor = "Branco",
             Hodometro = 45000,
             Consultor = "Maria Souza",
-            DtAgendamento = "15/08/2026",
+            DtAgendamento = new DateTime(2026, 8, 15, 0, 0, 0, DateTimeKind.Utc),
             HorarioAgendamento = new TimeOnly(14, 30),
-            CreatedAt = "10/08/2026",
-            UpdatedAt = "10/08/2026",
+            CreatedAt = new DateTime(2026, 8, 10, 0, 0, 0, DateTimeKind.Utc),
+            UpdatedAt = new DateTime(2026, 8, 10, 0, 0, 0, DateTimeKind.Utc),
             DeletedAt = null
         };
 

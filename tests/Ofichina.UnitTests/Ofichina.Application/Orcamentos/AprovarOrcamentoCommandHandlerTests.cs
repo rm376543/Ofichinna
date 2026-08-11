@@ -15,7 +15,7 @@ namespace Ofichina.UnitTests.Application.Orcamentos;
 public sealed class AprovarOrcamentoCommandHandlerTests
 {
     [Fact]
-    public async Task Deve_Criar_Ordem_De_Servico_Com_Status_Criado_E_Hodometro_Da_Aprovacao()
+    public async Task Deve_Criar_Ordem_De_Servico_Com_Status_Criado_E_Hodometro_Do_Agendamento()
     {
         var orcamento = CriarOrcamentoAprovado();
         var orcamentoRepository = new FakeOrcamentoRepository(orcamento);
@@ -33,12 +33,12 @@ public sealed class AprovarOrcamentoCommandHandlerTests
             unitOfWork,
             NullLogger<AprovarOrcamentoCommandHandler>.Instance);
 
-        var result = await handler.HandleAsync(new AprovarOrcamentoCommand(orcamento.Id, 78123));
+        var result = await handler.HandleAsync(new AprovarOrcamentoCommand(orcamento.Id));
 
         Assert.True(result.IsSuccess, result.Error);
         Assert.NotNull(ordemServicoRepository.OrdemServicoAdicionada);
         Assert.Equal(StatusOrdemServico.Criado, ordemServicoRepository.OrdemServicoAdicionada!.Status);
-        Assert.Equal(78123, ordemServicoRepository.OrdemServicoAdicionada.Hodometro);
+        Assert.Equal(55220, ordemServicoRepository.OrdemServicoAdicionada.Hodometro);
         Assert.Equal(orcamento.PessoaId, ordemServicoRepository.OrdemServicoAdicionada.PessoaId);
         Assert.Equal(orcamento.VeiculoId, ordemServicoRepository.OrdemServicoAdicionada.VeiculoId);
         Assert.Equal(orcamento.ConsultorId, ordemServicoRepository.OrdemServicoAdicionada.ConsultorId);
