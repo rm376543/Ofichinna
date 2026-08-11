@@ -1,4 +1,4 @@
-namespace Ofichina.Contracts.Responses;
+namespace Ofichina.Contracts.Common;
 
 /// <summary>
 /// Resposta base para todas as APIs.

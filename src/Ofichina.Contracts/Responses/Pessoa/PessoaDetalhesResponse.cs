@@ -1,6 +1,6 @@
 ﻿namespace Ofichina.Contracts.Responses.Pessoa
 {
-    public class PessoaSimplesResponse
+    public class PessoaDetalhesResponse
     {
         public Guid PessoaId { get; set; }
         public string Nome { get; set; } = string.Empty;

@@ -3,9 +3,9 @@
     /// <summary>
     /// DTO com informações do dia disponível.
     /// </summary>
-    public sealed class DiaListaResponse
+    public sealed class DiaResponse
     {
-    public Guid DiaListaId { get; set; }
+        public Guid DiaId { get; set; }
         public string Data { get; set; } = string.Empty; // YYYY-MM-DD
     }
 

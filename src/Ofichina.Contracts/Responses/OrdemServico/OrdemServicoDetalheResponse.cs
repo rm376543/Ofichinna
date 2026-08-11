@@ -2,7 +2,7 @@
 
 namespace Ofichina.Contracts.Responses.OrdemServico
 {
-    public sealed class OrdemServicoSimplesResponse : BaseResponse
+    public sealed class OrdemServicoDetalheResponse : BaseResponse
     {
         public Guid OrdemServicoId { get; set; }
         public string Cliente { get; set; } = string.Empty;

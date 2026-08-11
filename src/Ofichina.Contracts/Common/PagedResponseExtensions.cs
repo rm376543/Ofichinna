@@ -1,6 +1,4 @@
-﻿using Ofichina.Contracts.Common;
-
-namespace Ofichina.Contracts;
+﻿namespace Ofichina.Contracts.Common;
 
 public static class PagedResponseExtensions
 {
