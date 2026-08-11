@@ -43,6 +43,8 @@ public sealed class Orcamento : Entity
 
     public decimal ValorTotal => CalcularValorTotal();
 
+    public decimal ValorDesconto => CalcularValorDesconto();
+
     public decimal ValorTotalDesconto => CalcularValorTotalDesconto();
 
     private Orcamento()
@@ -239,19 +241,24 @@ public sealed class Orcamento : Entity
 
     private decimal CalcularValorTotal()
     {
-        return CalcularValorTotalDesconto();
+        return ValorBruto;
+    }
+
+    private decimal CalcularValorDesconto()
+    {
+        if (Desconto == 0)
+            return 0m;
+
+        var valorDescontoAplicado = DescontoEmDinheiro
+            ? Desconto
+            : ValorBruto * (Desconto / 100m);
+
+        return Math.Min(ValorBruto, valorDescontoAplicado);
     }
 
     private decimal CalcularValorTotalDesconto()
     {
-        if (Desconto == 0)
-            return ValorBruto;
-
-        var valorDescontoAplicado = DescontoEmDinheiro
-            ? ValorBruto * (Desconto / 100m)
-            : Desconto;
-
-        return Math.Max(0m, ValorBruto - valorDescontoAplicado);
+        return Math.Max(0m, ValorBruto - ValorDesconto);
     }
 
     private void ValidarStatus(StatusOrcamento statusEsperado)
