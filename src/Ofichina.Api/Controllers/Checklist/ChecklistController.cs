@@ -73,4 +73,38 @@ public sealed class ChecklistController : ControllerBase
 
         return Ok(ApiResponse.SuccessResponse("Checklist finalizado com sucesso."));
     }
+
+
+    /// <summary>
+    /// Remove logicamente um checklist existente.
+    /// </summary>
+    /// <param name="request">Dados necessários para remoção de um checklist cadastrado errado.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Resultado da operação.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpDelete("remover")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> RemoverChecklist(
+        [FromBody] RemoveChecklistRequest request,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando a remoção do Checklist com Id: {Id}", request.ChecklistId);
+
+        var result = await _mediator.Send(new RemoveChecklistCommand(request), cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogError("Erro ao remover o Checklist com Id: {Id}. Erro: {Erro}", request.ChecklistId, result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível remover o Checklist."));
+        }
+
+        _logger.LogInformation("Checklist com Id: {Id} removido com sucesso.", request.ChecklistId);
+
+        return Ok(ApiResponse.SuccessResponse("Checklist removido com sucesso."));
+    }
+
 }
