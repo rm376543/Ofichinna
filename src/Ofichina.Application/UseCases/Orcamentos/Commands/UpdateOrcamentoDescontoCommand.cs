@@ -1,5 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Requests.Orcamento;
 
 namespace Ofichina.Application.UseCases.Orcamentos.Commands;
 
@@ -14,10 +15,10 @@ public sealed class UpdateOrcamentoDescontoCommand : ICommand<Result>
 
     public bool DescontoEmDinheiro { get; init; }
 
-    public UpdateOrcamentoDescontoCommand(Guid orcamentoId, decimal desconto, bool descontoEmDinheiro)
+    public UpdateOrcamentoDescontoCommand(UpdateOrcamentoDescontoRequest request)
     {
-        OrcamentoId = orcamentoId;
-        Desconto = desconto;
-        DescontoEmDinheiro = descontoEmDinheiro;
+        OrcamentoId = request.OrcamentoId;
+        Desconto = request.Desconto;
+        DescontoEmDinheiro = request.DescontoEmDinheiro;
     }
 }

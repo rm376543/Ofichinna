@@ -15,7 +15,7 @@ public sealed class UpdateOrcamentoDescontoRequestValidator : AbstractValidator<
 
         RuleFor(x => x.Desconto)
             .LessThanOrEqualTo(100)
-            .When(x => x.DescontoEmDinheiro)
+            .When(x => !x.DescontoEmDinheiro)
             .WithMessage("O desconto percentual não pode ser maior que 100.");
     }
 }

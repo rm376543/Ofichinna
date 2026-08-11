@@ -323,34 +323,27 @@ public sealed class OrcamentoController : ControllerBase
     /// <summary>
     /// Atualiza o desconto de um orçamento.
     /// </summary>
-    /// <param name="orcamentoId">Identificador do orçamento.</param>
     /// <param name="request">Dados do desconto.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPut("{orcamentoId:guid}/desconto")]
+    [HttpPut("aplicar-desconto")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse>> AtualizarDescontoOrcamento(
-        [FromRoute] Guid orcamentoId,
         [FromBody] UpdateOrcamentoDescontoRequest request,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a atualização do desconto do orçamento com Id: {Id}.", orcamentoId);
+        _logger.LogInformation("Iniciando a atualização do desconto do orçamento com Id: {Id}.", request.OrcamentoId);
 
         var validation = await _updateDescontoValidator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
 
-        var result = await _mediator.Send(
-            new UpdateOrcamentoDescontoCommand(
-                orcamentoId,
-                request.Desconto,
-                request.DescontoEmDinheiro),
-            cancellationToken);
+        var result = await _mediator.Send(new UpdateOrcamentoDescontoCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o desconto do orçamento."));
