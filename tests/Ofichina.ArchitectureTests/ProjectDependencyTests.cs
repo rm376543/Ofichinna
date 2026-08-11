@@ -4,7 +4,7 @@ using Ofichina.Api.Modules;
 using Ofichina.Application.DependencyInjection;
 using Ofichina.Authentication.DependencyInjection;
 using Ofichina.Bootstrap;
-using Ofichina.Contracts.Responses;
+using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.Infrastructure.DependencyInjection;
 

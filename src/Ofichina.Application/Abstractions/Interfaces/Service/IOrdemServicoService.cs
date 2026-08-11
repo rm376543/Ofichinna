@@ -1,4 +1,3 @@
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.OrdemServico;
 
@@ -12,5 +11,5 @@ public interface IOrdemServicoService
     /// <summary>
     /// Obtém ordens de serviço de forma paginada com dados simples para listagem.
     /// </summary>
-    Task<PagedResponse<OrdemServicoSimplesResponse>> GetAllPagedAsync(Pagination pagination, CancellationToken cancellationToken = default);
+    Task<PagedResponse<OrdemServicoDetalheResponse>> GetAllPagedAsync(Pagination pagination, CancellationToken cancellationToken = default);
 }

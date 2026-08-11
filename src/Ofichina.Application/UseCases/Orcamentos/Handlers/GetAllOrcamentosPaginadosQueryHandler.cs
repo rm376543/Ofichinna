@@ -1,7 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Interfaces.Service;
 using Ofichina.Application.UseCases.Orcamentos.Queries;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Orcamento;
 
@@ -10,7 +9,7 @@ namespace Ofichina.Application.UseCases.Orcamentos.Handlers;
 /// <summary>
 /// Handler para listar orçamentos.
 /// </summary>
-public sealed class GetAllOrcamentosPaginadosQueryHandler : IQueryHandler<GetAllOrcamentosPaginadosQuery, Result<PagedResponse<OrcamentoSimplesResponse>>>
+public sealed class GetAllOrcamentosPaginadosQueryHandler : IQueryHandler<GetAllOrcamentosPaginadosQuery, Result<PagedResponse<OrcamentoDetalheResponse>>>
 {
     private readonly IOrcamentoService _orcamentoService;
     private readonly ILogger<GetAllOrcamentosPaginadosQueryHandler> _logger;
@@ -23,7 +22,7 @@ public sealed class GetAllOrcamentosPaginadosQueryHandler : IQueryHandler<GetAll
         _logger = logger;
     }
 
-    public async Task<Result<PagedResponse<OrcamentoSimplesResponse>>> HandleAsync(GetAllOrcamentosPaginadosQuery query, CancellationToken cancellationToken = default)
+    public async Task<Result<PagedResponse<OrcamentoDetalheResponse>>> HandleAsync(GetAllOrcamentosPaginadosQuery query, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -33,7 +32,7 @@ public sealed class GetAllOrcamentosPaginadosQueryHandler : IQueryHandler<GetAll
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao listar orçamentos.");
-            return Result.Failure<PagedResponse<OrcamentoSimplesResponse>>("Não foi possível obter os orçamentos.");
+            return Result.Failure<PagedResponse<OrcamentoDetalheResponse>>("Não foi possível obter os orçamentos.");
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Ofichina.Application.UseCases.Agendamentos.Queries;
 /// <summary>
 /// Query para listar horários disponíveis de um dia.
 /// </summary>
-public sealed class ListarHorariosPorDiaQuery : IQuery<Result<IEnumerable<HorarioDisponivelResponse>>>
+public sealed class ListarHorariosPorDiaQuery : IQuery<Result<IEnumerable<HorarioResponse>>>
 {
     public Guid DiaDisponibilidadeId { get; init; }
 }

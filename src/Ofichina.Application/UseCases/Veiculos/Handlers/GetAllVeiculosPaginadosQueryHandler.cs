@@ -1,7 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Veiculos.Queries;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Veiculo;
@@ -12,7 +11,7 @@ namespace Ofichina.Application.UseCases.Veiculos.Handlers;
 /// Handler para listar veículos.
 /// </summary>
 public sealed class GetAllVeiculosPaginadosQueryHandler
-    : IQueryHandler<GetAllVeiculosPaginadosQuery, Result<Contracts.PagedResponse<VeiculoResponse>>>
+    : IQueryHandler<GetAllVeiculosPaginadosQuery, Result<PagedResponse<VeiculoResponse>>>
 {
     private readonly IVeiculoRepository _veiculoRepository;
     private readonly ILogger<GetAllVeiculosPaginadosQueryHandler> _logger;
@@ -25,7 +24,7 @@ public sealed class GetAllVeiculosPaginadosQueryHandler
         _logger = logger;
     }
 
-    public async Task<Result<Contracts.PagedResponse<VeiculoResponse>>> HandleAsync(
+    public async Task<Result<PagedResponse<VeiculoResponse>>> HandleAsync(
         GetAllVeiculosPaginadosQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -38,7 +37,7 @@ public sealed class GetAllVeiculosPaginadosQueryHandler
             if (veiculos is null)
             {
                 _logger.LogWarning("Nenhum veículo encontrado.");
-                return Result.Failure<Contracts.PagedResponse<VeiculoResponse>>("Nenhum veículo encontrado.");
+                return Result.Failure<PagedResponse<VeiculoResponse>>("Nenhum veículo encontrado.");
             }
 
             var response = veiculos.ToPagedResponse(v => new VeiculoResponse
@@ -62,7 +61,7 @@ public sealed class GetAllVeiculosPaginadosQueryHandler
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao obter veículos.");
-            return Result.Failure<Contracts.PagedResponse<VeiculoResponse>>("Não foi possível obter os veículos.");
+            return Result.Failure<PagedResponse<VeiculoResponse>>("Não foi possível obter os veículos.");
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Ofichina.Contracts;
+﻿namespace Ofichina.Contracts.Common;
 
 /// <summary>
 /// Representa uma resposta paginada contendo uma coleção de itens do tipo T.

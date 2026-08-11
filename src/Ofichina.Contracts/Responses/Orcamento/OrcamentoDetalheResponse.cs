@@ -5,9 +5,9 @@ namespace Ofichina.Contracts.Responses.Orcamento;
 /// <summary>
 /// Resposta simplificada para listagem de orçamentos.
 /// </summary>
-public sealed class OrcamentoSimplesResponse : BaseResponse
+public sealed class OrcamentoDetalheResponse : BaseResponse
 {
-    public Guid OrcamentoSimplesId { get; set; }
+    public Guid OrcamentoId { get; set; }
 
     public string Cliente { get; set; } = string.Empty;
 

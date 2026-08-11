@@ -5,7 +5,7 @@ namespace Ofichina.Contracts.Responses.Agendamento
     /// <summary>
     /// Representa a resposta para a consulta de horários disponíveis para agendamento.
     /// </summary>
-    public sealed class HorarioDisponivelResponse : BaseRequest
+    public sealed class HorarioResponse : BaseRequest
     {
         public Guid HorarioId { get; set; }
         public TimeOnly Horario { get; set; }

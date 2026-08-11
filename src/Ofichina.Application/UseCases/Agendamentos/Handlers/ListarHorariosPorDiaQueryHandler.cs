@@ -9,7 +9,7 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
 /// <summary>
 /// Handler para listar horários disponíveis de um dia.
 /// </summary>
-public sealed class ListarHorariosPorDiaQueryHandler : IQueryHandler<ListarHorariosPorDiaQuery, Result<IEnumerable<HorarioDisponivelResponse>>>
+public sealed class ListarHorariosPorDiaQueryHandler : IQueryHandler<ListarHorariosPorDiaQuery, Result<IEnumerable<HorarioResponse>>>
 {
     private readonly IHorarioDisponibilidadeRepository _horarioRepository;
     private readonly IAgendaConsultorRepository _slotRepository;
@@ -25,7 +25,7 @@ public sealed class ListarHorariosPorDiaQueryHandler : IQueryHandler<ListarHorar
         _logger = logger;
     }
 
-    public async Task<Result<IEnumerable<HorarioDisponivelResponse>>> HandleAsync(
+    public async Task<Result<IEnumerable<HorarioResponse>>> HandleAsync(
         ListarHorariosPorDiaQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -48,7 +48,7 @@ public sealed class ListarHorariosPorDiaQueryHandler : IQueryHandler<ListarHorar
 
             _logger.LogInformation("Encontrados {Count} horários para dia {DiaId}", horarios.Count, query.DiaDisponibilidadeId);
 
-            var resultado = horarios.Select(h => new HorarioDisponivelResponse
+            var resultado = horarios.Select(h => new HorarioResponse
             {
                 HorarioId = h.HorarioListaId,
                 Horario = TimeOnly.ParseExact(h.Hora, "HH:mm"),
@@ -60,7 +60,7 @@ public sealed class ListarHorariosPorDiaQueryHandler : IQueryHandler<ListarHorar
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao listar horários. DiaId: {DiaId}", query.DiaDisponibilidadeId);
-            return Result.Failure<IEnumerable<HorarioDisponivelResponse>>(ex.Message);
+            return Result.Failure<IEnumerable<HorarioResponse>>(ex.Message);
         }
     }
 }

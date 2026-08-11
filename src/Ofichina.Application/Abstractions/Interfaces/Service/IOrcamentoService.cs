@@ -1,4 +1,3 @@
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Orcamento;
 
@@ -9,5 +8,5 @@ namespace Ofichina.Application.Abstractions.Interfaces.Service;
 /// </summary>
 public interface IOrcamentoService
 {
-    Task<PagedResponse<OrcamentoSimplesResponse>> GetAllPagedAsync(Pagination pagination, CancellationToken cancellationToken = default);
+    Task<PagedResponse<OrcamentoDetalheResponse>> GetAllPagedAsync(Pagination pagination, CancellationToken cancellationToken = default);
 }

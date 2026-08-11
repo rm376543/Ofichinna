@@ -1,6 +1,5 @@
 using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.Abstractions.Interfaces.Service;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Orcamento;
@@ -24,7 +23,7 @@ public sealed class OrcamentoService : IOrcamentoService
         _pessoaRepository = pessoaRepository;
     }
 
-    public async Task<PagedResponse<OrcamentoSimplesResponse>> GetAllPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
+    public async Task<PagedResponse<OrcamentoDetalheResponse>> GetAllPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
     {
         var orcamentos = await _orcamentoRepository.GetPagedAsync(pagination, cancellationToken);
 
@@ -37,9 +36,9 @@ public sealed class OrcamentoService : IOrcamentoService
         var pessoas = await _pessoaRepository.GetByIdsAsync(pessoasIds, cancellationToken);
         var nomesPorId = pessoas.ToDictionary(pessoa => pessoa.Id, pessoa => pessoa.Nome);
 
-        return orcamentos.ToPagedResponse(orcamento => new OrcamentoSimplesResponse
+        return orcamentos.ToPagedResponse(orcamento => new OrcamentoDetalheResponse
         {
-            OrcamentoSimplesId = orcamento.Id,
+            OrcamentoId = orcamento.Id,
             Cliente = ObterNome(orcamento.PessoaId, nomesPorId),
             Consultor = ObterNome(orcamento.ConsultorId, nomesPorId),
             Mecanico = ObterNome(orcamento.MecanicoId, nomesPorId),

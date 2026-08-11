@@ -45,7 +45,7 @@ public sealed class OrdemServicoResponseTests
     {
         var createdAt = new DateTime(2026, 08, 16, 12, 00, 00, DateTimeKind.Utc);
 
-        var response = new OrdemServicoSimplesResponse
+        var response = new OrdemServicoDetalheResponse
         {
             OrdemServicoId = Guid.Parse("660e8400-e29b-41d4-a716-446655440000"),
             Cliente = "João da Silva",

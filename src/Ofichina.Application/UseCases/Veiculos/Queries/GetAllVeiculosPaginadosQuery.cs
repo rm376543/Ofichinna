@@ -1,11 +1,10 @@
 using Ofichina.Application.Abstractions;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Veiculo;
 
 namespace Ofichina.Application.UseCases.Veiculos.Queries;
 
-public sealed class GetAllVeiculosPaginadosQuery : IQuery<Result<Contracts.PagedResponse<VeiculoResponse>>>
+public sealed class GetAllVeiculosPaginadosQuery : IQuery<Result<PagedResponse<VeiculoResponse>>>
 {
     /// <summary>
     /// Consulta para listar veículos.

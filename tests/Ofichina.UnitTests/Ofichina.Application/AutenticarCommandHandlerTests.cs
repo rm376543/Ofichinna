@@ -134,12 +134,12 @@ public class AutenticarCommandHandlerTests
 
         public string? TokenGerado { get; private set; }
 
-        public Task<TokenJwtResponse> GerarTokenAsync(Usuario usuario, IReadOnlyCollection<string> perfis, CancellationToken cancellationToken = default)
+        public Task<JwtResponse> GerarTokenAsync(Usuario usuario, IReadOnlyCollection<string> perfis, CancellationToken cancellationToken = default)
         {
             FoiChamado = true;
             TokenGerado = "token-gerado";
 
-            return Task.FromResult(new TokenJwtResponse
+            return Task.FromResult(new JwtResponse
             {
                 AccessToken = TokenGerado,
                 ExpiraEm = new DateTime(2026, 07, 11, 12, 00, 00, DateTimeKind.Utc)

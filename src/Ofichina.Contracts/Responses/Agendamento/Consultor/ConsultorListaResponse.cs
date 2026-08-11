@@ -1,4 +1,4 @@
-﻿namespace Ofichina.Contracts.Responses.Agendamento
+﻿namespace Ofichina.Contracts.Responses.Agendamento.Consultor
 {
 
     /// <summary>

@@ -8,7 +8,7 @@ namespace Ofichina.Application.Abstractions.Authentication.Service
     /// </summary>
     public interface IJwtTokenService
     {
-        Task<TokenJwtResponse> GerarTokenAsync(
+        Task<JwtResponse> GerarTokenAsync(
             Usuario usuario,
             IReadOnlyCollection<string> perfis,
             CancellationToken cancellationToken = default);

@@ -1,6 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses.Agendamento;
+using Ofichina.Contracts.Responses.Agendamento.Consultor;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Queries;
 

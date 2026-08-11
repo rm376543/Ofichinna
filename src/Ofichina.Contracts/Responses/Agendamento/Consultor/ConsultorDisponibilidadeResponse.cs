@@ -1,6 +1,6 @@
 using Ofichina.Contracts.Common;
 
-namespace Ofichina.Contracts.Responses.Agendamento;
+namespace Ofichina.Contracts.Responses.Agendamento.Consultor;
 
 /// <summary>
 /// Response com informações do consultor disponível.

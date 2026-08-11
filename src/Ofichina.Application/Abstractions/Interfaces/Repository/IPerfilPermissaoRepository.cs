@@ -1,4 +1,3 @@
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
 

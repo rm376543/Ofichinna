@@ -1,7 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Interfaces.Service;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.OrdemServico;
 
@@ -10,7 +9,7 @@ namespace Ofichina.Application.UseCases.OrdensServico.Handlers;
 /// <summary>
 /// Handler para listar ordens de serviço.
 /// </summary>
-public sealed class GetAllOrdensServicoPaginadasQueryHandler : IQueryHandler<GetAllOrdensServicoPaginadasQuery, Result<PagedResponse<OrdemServicoSimplesResponse>>>
+public sealed class GetAllOrdensServicoPaginadasQueryHandler : IQueryHandler<GetAllOrdensServicoPaginadasQuery, Result<PagedResponse<OrdemServicoDetalheResponse>>>
 {
     private readonly IOrdemServicoService _ordemServicoReadService;
     private readonly ILogger<GetAllOrdensServicoPaginadasQueryHandler> _logger;
@@ -23,7 +22,7 @@ public sealed class GetAllOrdensServicoPaginadasQueryHandler : IQueryHandler<Get
         _logger = logger;
     }
 
-    public async Task<Result<PagedResponse<OrdemServicoSimplesResponse>>> HandleAsync(
+    public async Task<Result<PagedResponse<OrdemServicoDetalheResponse>>> HandleAsync(
         GetAllOrdensServicoPaginadasQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -38,7 +37,7 @@ public sealed class GetAllOrdensServicoPaginadasQueryHandler : IQueryHandler<Get
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao listar ordens de serviço.");
-            return Result.Failure<PagedResponse<OrdemServicoSimplesResponse>>("Não foi possível obter as ordens de serviço.");
+            return Result.Failure<PagedResponse<OrdemServicoDetalheResponse>>("Não foi possível obter as ordens de serviço.");
         }
     }
 }

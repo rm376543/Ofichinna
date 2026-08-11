@@ -1,6 +1,5 @@
 using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.Abstractions.Interfaces.Service;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.OrdemServico;
@@ -24,7 +23,7 @@ public sealed class OrdemServicoService : IOrdemServicoService
         _pessoaRepository = pessoaRepository;
     }
 
-    public async Task<PagedResponse<OrdemServicoSimplesResponse>> GetAllPagedAsync(
+    public async Task<PagedResponse<OrdemServicoDetalheResponse>> GetAllPagedAsync(
         Pagination pagination,
         CancellationToken cancellationToken = default)
     {
@@ -41,7 +40,7 @@ public sealed class OrdemServicoService : IOrdemServicoService
         var pessoas = await _pessoaRepository.GetByIdsAsync(pessoasIds, cancellationToken);
         var nomesPorId = pessoas.ToDictionary(pessoa => pessoa.Id, pessoa => pessoa.Nome);
 
-        return ordensServico.ToPagedResponse(ordem => new OrdemServicoSimplesResponse
+        return ordensServico.ToPagedResponse(ordem => new OrdemServicoDetalheResponse
         {
             OrdemServicoId = ordem.Id,
             Cliente = ObterNome(ordem.PessoaId, nomesPorId),

@@ -1,5 +1,5 @@
 using FluentValidation;
-using Ofichina.Contracts.Responses;
+using Ofichina.Contracts.Common;
 
 namespace Ofichina.Api.Middleware;
 

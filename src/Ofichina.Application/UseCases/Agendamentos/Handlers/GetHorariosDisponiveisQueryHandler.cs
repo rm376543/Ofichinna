@@ -1,13 +1,12 @@
 ﻿using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.Agendamento;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers
 {
-    public sealed class GetHorariosDisponiveisQueryHandler : IQueryHandler<GetHorariosDisponiveisQuery, Result<PagedResponse<HorarioDisponivelResponse>>>
+    public sealed class GetHorariosDisponiveisQueryHandler : IQueryHandler<GetHorariosDisponiveisQuery, Result<PagedResponse<HorarioResponse>>>
     {
         private readonly IHorarioDisponibilidadeRepository _horarioDisponibilidadeRepository;
         private readonly ILogger<GetHorariosDisponiveisQueryHandler> _logger;
@@ -20,7 +19,7 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers
             _logger = logger;
         }
 
-        public async Task<Result<PagedResponse<HorarioDisponivelResponse>>> HandleAsync(GetHorariosDisponiveisQuery query, CancellationToken cancellationToken = default)
+        public async Task<Result<PagedResponse<HorarioResponse>>> HandleAsync(GetHorariosDisponiveisQuery query, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -31,10 +30,10 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers
                 if (horariosDisponiveis is null)
                 {
                     _logger.LogWarning("Nenhum horario disponivel encontrado.");
-                    return Result.Failure<PagedResponse<HorarioDisponivelResponse>>("Nenhum horario disponivel encontrado.");
+                    return Result.Failure<PagedResponse<HorarioResponse>>("Nenhum horario disponivel encontrado.");
                 }
 
-                var response = horariosDisponiveis.ToPagedResponse(h => new HorarioDisponivelResponse
+                var response = horariosDisponiveis.ToPagedResponse(h => new HorarioResponse
                 {
                     HorarioId = h.Id,
                     Horario = h.Hora,
@@ -46,7 +45,7 @@ namespace Ofichina.Application.UseCases.Agendamentos.Handlers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ocorreu um erro inesperado ao tentar buscar horarios disponiveis.");
-                return Result.Failure<PagedResponse<HorarioDisponivelResponse>>("Ocorreu um erro inesperado ao tentar buscar horarios disponiveis.");
+                return Result.Failure<PagedResponse<HorarioResponse>>("Ocorreu um erro inesperado ao tentar buscar horarios disponiveis.");
             }
         }
     }

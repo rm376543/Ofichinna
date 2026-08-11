@@ -3,9 +3,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Autenticacao.Commands;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Autenticacao;
 using Ofichina.Contracts.Requests.Usuario;
-using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Authentication;
 
 namespace Ofichina.Api.Controllers.Autenticacao;
