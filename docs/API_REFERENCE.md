@@ -375,6 +375,16 @@ Cria item de serviço para o orçamento.
 
 **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
 
+### POST /api/item-servico/adicionar-servico/para-orcamento
+Cria item de serviço somente-serviço para o orçamento.
+
+#### Requisição
+```json
+{ "orcamentoId": "550e8400-e29b-41d4-a716-446655440000", "servicoId": "660e8400-e29b-41d4-a716-446655440000" }
+```
+
+**Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
+
 ### PUT /api/item-servico/atualizar
 Atualiza item de serviço da ordem.
 
@@ -391,6 +401,36 @@ Atualiza item de serviço do orçamento.
 #### Requisição
 ```json
 { "itemServicoId": "550e8400-e29b-41d4-a716-446655440000", "orcamentoId": "660e8400-e29b-41d4-a716-446655440000", "servicoId": "770e8400-e29b-41d4-a716-446655440000", "pecaId": null, "quantidade": 1 }
+```
+
+**Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`, `409`.
+
+### PUT /api/item-servico/atualizar-servico/para-orcamento
+Atualiza item de serviço somente-serviço do orçamento.
+
+#### Requisição
+```json
+{ "itemServicoId": "550e8400-e29b-41d4-a716-446655440000", "orcamentoId": "660e8400-e29b-41d4-a716-446655440000", "servicoId": "770e8400-e29b-41d4-a716-446655440000" }
+```
+
+**Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`, `409`.
+
+### POST /api/item-servico/adicionar-servico/para-ordem-servico
+Cria item de serviço somente-serviço para a ordem de serviço.
+
+#### Requisição
+```json
+{ "ordemServicoId": "550e8400-e29b-41d4-a716-446655440000", "servicoId": "660e8400-e29b-41d4-a716-446655440000" }
+```
+
+**Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`.
+
+### PUT /api/item-servico/atualizar-servico/para-ordem-servico
+Atualiza item de serviço somente-serviço da ordem de serviço.
+
+#### Requisição
+```json
+{ "itemServicoId": "550e8400-e29b-41d4-a716-446655440000", "ordemServicoId": "660e8400-e29b-41d4-a716-446655440000", "servicoId": "770e8400-e29b-41d4-a716-446655440000" }
 ```
 
 **Perfis permitidos:** `ADMIN` | **Respostas:** `200`, `400`, `401`, `403`, `404`, `409`.
