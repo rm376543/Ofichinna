@@ -5,6 +5,7 @@ namespace Ofichina.Contracts.Requests.Orcamento;
 /// </summary>
 public sealed class UpdateOrcamentoDescontoRequest
 {
+    public Guid OrcamentoId { get; set; }
     /// <summary>
     /// Valor do desconto.
     /// </summary>
@@ -14,4 +15,5 @@ public sealed class UpdateOrcamentoDescontoRequest
     /// Indica se o desconto é percentual.
     /// </summary>
     public bool DescontoEmDinheiro { get; init; }
+
 }
