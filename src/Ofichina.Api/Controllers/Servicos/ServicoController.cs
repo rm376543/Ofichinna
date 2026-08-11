@@ -4,10 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Servicos.Commands;
 using Ofichina.Application.UseCases.Servicos.Queries;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Servicos;
-using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Servicos;
 
 namespace Ofichina.Api.Controllers.Servicos;

@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.OrdensServico.Commands;
 using Ofichina.Application.UseCases.OrdensServico.Queries;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
-using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.OrdemServico;
 using Ofichina.Contracts.Responses.OrdensServico;
 
@@ -43,10 +41,10 @@ public sealed class OrdemServicoController : ControllerBase
     /// <returns>Lista de ordens de serviço.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet("listar")]
-    [ProducesResponseType(typeof(ApiResponse<PagedResponse<OrdemServicoSimplesResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResponse<OrdemServicoDetalheResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<PagedResponse<OrdemServicoSimplesResponse>>>> BuscarTodasOrdensServicoPaginadas(
+    public async Task<ActionResult<ApiResponse<PagedResponse<OrdemServicoDetalheResponse>>>> BuscarTodasOrdensServicoPaginadas(
         [FromQuery] Pagination pagination,
         CancellationToken cancellationToken)
     {
@@ -60,7 +58,7 @@ public sealed class OrdemServicoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter as ordens de serviço."));
         }
 
-        return Ok(ApiResponse<PagedResponse<OrdemServicoSimplesResponse>>.SuccessResponse(result.Value));
+        return Ok(ApiResponse<PagedResponse<OrdemServicoDetalheResponse>>.SuccessResponse(result.Value));
     }
 
     /// <summary>

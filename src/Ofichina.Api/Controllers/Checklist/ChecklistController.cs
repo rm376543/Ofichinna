@@ -2,8 +2,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Checklists.Commands;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Checklist;
-using Ofichina.Contracts.Responses;
 
 namespace Ofichina.Api.Controllers.Checklist;
 

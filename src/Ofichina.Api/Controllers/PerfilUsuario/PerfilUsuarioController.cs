@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.PerfilUsuario.Commands;
 using Ofichina.Application.UseCases.PerfilUsuario.Queries;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.PerfilUsuario;
-using Ofichina.Contracts.Responses;
 
 namespace Ofichina.Api.Controllers.PerfilUsuario;
 

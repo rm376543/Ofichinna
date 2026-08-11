@@ -4,11 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Agendamentos.Commands;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Agendamento;
-using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Agendamento;
+using Ofichina.Contracts.Responses.Agendamento.Consultor;
 
 namespace Ofichina.Api.Controllers.Agendamento;
 
@@ -39,10 +38,10 @@ public sealed class AgendamentoController : ControllerBase
     /// <returns>Lista de horários disponíveis para agendamento.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet("horarios-disponiveis")]
-    [ProducesResponseType(typeof(ApiResponse<PagedResponse<HorarioDisponivelResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResponse<HorarioResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<PagedResponse<HorarioDisponivelResponse>>>> BuscarHorarios([FromQuery] Pagination pagination)
+    public async Task<ActionResult<ApiResponse<PagedResponse<HorarioResponse>>>> BuscarHorarios([FromQuery] Pagination pagination)
     {
         _logger.LogInformation("Iniciando a busca de horários disponíveis para agendamento.");
 
@@ -54,7 +53,7 @@ public sealed class AgendamentoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os horários disponíveis."));
         }
 
-        return Ok(ApiResponse<PagedResponse<HorarioDisponivelResponse>>.SuccessResponse(result.Value));
+        return Ok(ApiResponse<PagedResponse<HorarioResponse>>.SuccessResponse(result.Value));
     }
 
     /// <summary>
@@ -142,9 +141,9 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Lista de horários disponíveis para o dia especificado.</returns>
     [HttpGet("listar/horarios-por-dia")]
-    [ProducesResponseType(typeof(ApiResponse<IEnumerable<HorarioDisponivelResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<HorarioResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<ApiResponse<IEnumerable<HorarioDisponivelResponse>>>> ListarHorariosPorDiaAsync(
+    public async Task<ActionResult<ApiResponse<IEnumerable<HorarioResponse>>>> ListarHorariosPorDiaAsync(
     [FromQuery] Guid diaId,
     CancellationToken cancellationToken)
     {
@@ -158,7 +157,7 @@ public sealed class AgendamentoController : ControllerBase
         if (!result.IsSuccess || result.Value is null)
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os horários disponíveis."));
 
-        return Ok(ApiResponse<IEnumerable<HorarioDisponivelResponse>>.SuccessResponse(result.Value));
+        return Ok(ApiResponse<IEnumerable<HorarioResponse>>.SuccessResponse(result.Value));
     }
 
     /// <summary>

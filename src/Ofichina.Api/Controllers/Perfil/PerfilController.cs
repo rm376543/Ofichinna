@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Perfis.Commands;
 using Ofichina.Application.UseCases.Perfis.Queries;
+using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Perfis;
-using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Perfis;
 
 namespace Ofichina.Api.Controllers.Perfis;

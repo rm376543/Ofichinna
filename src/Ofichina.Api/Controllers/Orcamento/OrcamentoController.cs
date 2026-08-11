@@ -4,10 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ofichina.Application.UseCases.Orcamentos.Commands;
 using Ofichina.Application.UseCases.Orcamentos.Queries;
-using Ofichina.Contracts;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Orcamento;
-using Ofichina.Contracts.Responses;
 using Ofichina.Contracts.Responses.Orcamento;
 
 namespace Ofichina.Api.Controllers.Orcamento;
@@ -50,10 +48,10 @@ public sealed class OrcamentoController : ControllerBase
     /// <returns>Lista paginada de orçamentos.</returns>
     [Authorize(Roles = "ADMIN")]
     [HttpGet("listar")]
-    [ProducesResponseType(typeof(ApiResponse<PagedResponse<OrcamentoSimplesResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<PagedResponse<OrcamentoDetalheResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<ApiResponse<PagedResponse<OrcamentoSimplesResponse>>>> BuscarTodosOrcamentosPaginados(
+    public async Task<ActionResult<ApiResponse<PagedResponse<OrcamentoDetalheResponse>>>> BuscarTodosOrcamentosPaginados(
         [FromQuery] Pagination pagination,
         CancellationToken cancellationToken)
     {
@@ -67,7 +65,7 @@ public sealed class OrcamentoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os orçamentos."));
         }
 
-        return Ok(ApiResponse<PagedResponse<OrcamentoSimplesResponse>>.SuccessResponse(result.Value));
+        return Ok(ApiResponse<PagedResponse<OrcamentoDetalheResponse>>.SuccessResponse(result.Value));
     }
 
     /// <summary>
