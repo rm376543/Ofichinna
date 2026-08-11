@@ -50,4 +50,14 @@ public class Checklist : Entity
         AgendamentoId = agendamentoId;
         AtualizarDataModificacao();
     }
+
+    public void Reabrir()
+    {
+        Finalizado = false;
+    }
+
+    public bool EstaFinalizado()
+    {
+        return Finalizado;
+    }
 }
