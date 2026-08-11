@@ -27,6 +27,19 @@ public interface IItemServicoRepository : IRepository<ItemServico>
         CancellationToken cancellationToken = default,
         bool tracking = false);
 
+    Task<ItemServico?> GetByOrdemServicoComPecaAsync(
+        Guid ordemServicoId,
+        Guid servicoId,
+        Guid pecaId,
+        CancellationToken cancellationToken = default,
+        bool tracking = false);
+
+    Task<ItemServico?> GetByOrdemServicoSemPecaAsync(
+        Guid ordemServicoId,
+        Guid servicoId,
+        CancellationToken cancellationToken = default,
+        bool tracking = false);
+
     /// <summary>
     /// Obtém todos os itens de serviço de uma ordem.
     /// </summary>
@@ -85,6 +98,19 @@ public interface IItemServicoRepository : IRepository<ItemServico>
         Guid orcamentoId,
         Guid servicoId,
         Guid? pecaId,
+        CancellationToken cancellationToken = default,
+        bool tracking = false);
+
+    Task<ItemServico?> GetByOrcamentoComPecaAsync(
+        Guid orcamentoId,
+        Guid servicoId,
+        Guid pecaId,
+        CancellationToken cancellationToken = default,
+        bool tracking = false);
+
+    Task<ItemServico?> GetByOrcamentoSemPecaAsync(
+        Guid orcamentoId,
+        Guid servicoId,
         CancellationToken cancellationToken = default,
         bool tracking = false);
 }

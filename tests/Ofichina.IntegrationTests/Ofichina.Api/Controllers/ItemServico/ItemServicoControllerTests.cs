@@ -23,8 +23,12 @@ public sealed class ItemServicoControllerTests
         var controller = new ItemServicoController(
             new InlineValidator<CreateItemServicoRequest>(),
             new InlineValidator<CreateItemOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrdemServicoRequest>(),
             new InlineValidator<UpdateItemOrcamentoRequest>(),
+            new InlineValidator<UpdateServicoOrcamentoRequest>(),
             new InlineValidator<UpdateItemServicoRequest>(),
+            new InlineValidator<UpdateServicoOrdemServicoRequest>(),
             mediator,
             NullLogger<ItemServicoController>.Instance);
 
@@ -93,8 +97,12 @@ public sealed class ItemServicoControllerTests
         var controller = new ItemServicoController(
             new InlineValidator<CreateItemServicoRequest>(),
             new InlineValidator<CreateItemOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrdemServicoRequest>(),
             new InlineValidator<UpdateItemOrcamentoRequest>(),
+            new InlineValidator<UpdateServicoOrcamentoRequest>(),
             new InlineValidator<UpdateItemServicoRequest>(),
+            new InlineValidator<UpdateServicoOrdemServicoRequest>(),
             mediator,
             NullLogger<ItemServicoController>.Instance);
 
@@ -127,8 +135,12 @@ public sealed class ItemServicoControllerTests
         var controller = new ItemServicoController(
             new InlineValidator<CreateItemServicoRequest>(),
             new InlineValidator<CreateItemOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrdemServicoRequest>(),
             new InlineValidator<UpdateItemOrcamentoRequest>(),
+            new InlineValidator<UpdateServicoOrcamentoRequest>(),
             new InlineValidator<UpdateItemServicoRequest>(),
+            new InlineValidator<UpdateServicoOrdemServicoRequest>(),
             mediator,
             NullLogger<ItemServicoController>.Instance);
 
@@ -150,8 +162,12 @@ public sealed class ItemServicoControllerTests
         var controller = new ItemServicoController(
             new InlineValidator<CreateItemServicoRequest>(),
             new InlineValidator<CreateItemOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrdemServicoRequest>(),
             new InlineValidator<UpdateItemOrcamentoRequest>(),
+            new InlineValidator<UpdateServicoOrcamentoRequest>(),
             new InlineValidator<UpdateItemServicoRequest>(),
+            new InlineValidator<UpdateServicoOrdemServicoRequest>(),
             mediator,
             NullLogger<ItemServicoController>.Instance);
 
@@ -177,11 +193,149 @@ public sealed class ItemServicoControllerTests
         Assert.Equal(3, mediator.UpdateItemOrcamentoCommandEnviado.Quantidade);
     }
 
+    [Fact]
+    public async Task CriarServicoOrcamento_Deve_Enviar_Comando_Com_Ids()
+    {
+        var mediator = new FakeMediator();
+        var controller = new ItemServicoController(
+            new InlineValidator<CreateItemServicoRequest>(),
+            new InlineValidator<CreateItemOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrdemServicoRequest>(),
+            new InlineValidator<UpdateItemOrcamentoRequest>(),
+            new InlineValidator<UpdateServicoOrcamentoRequest>(),
+            new InlineValidator<UpdateItemServicoRequest>(),
+            new InlineValidator<UpdateServicoOrdemServicoRequest>(),
+            mediator,
+            NullLogger<ItemServicoController>.Instance);
+
+        var orcamentoId = Guid.NewGuid();
+        var servicoId = Guid.NewGuid();
+
+        var result = await controller.CriarServicoOrcamento(new CreateServicoOrcamentoRequest
+        {
+            OrcamentoId = orcamentoId,
+            ServicoId = servicoId
+        }, CancellationToken.None);
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        Assert.NotNull(mediator.CreateServicoOrcamentoCommandEnviado);
+        Assert.Equal(orcamentoId, mediator.CreateServicoOrcamentoCommandEnviado!.OrcamentoId);
+        Assert.Equal(servicoId, mediator.CreateServicoOrcamentoCommandEnviado.ServicoId);
+    }
+
+    [Fact]
+    public async Task AtualizarServicoOrcamento_Deve_Enviar_Comando_Com_Ids()
+    {
+        var mediator = new FakeMediator();
+        var controller = new ItemServicoController(
+            new InlineValidator<CreateItemServicoRequest>(),
+            new InlineValidator<CreateItemOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrdemServicoRequest>(),
+            new InlineValidator<UpdateItemOrcamentoRequest>(),
+            new InlineValidator<UpdateServicoOrcamentoRequest>(),
+            new InlineValidator<UpdateItemServicoRequest>(),
+            new InlineValidator<UpdateServicoOrdemServicoRequest>(),
+            mediator,
+            NullLogger<ItemServicoController>.Instance);
+
+        var orcamentoId = Guid.NewGuid();
+        var itemServicoId = Guid.NewGuid();
+        var servicoId = Guid.NewGuid();
+
+        var result = await controller.AtualizarServicoOrcamento(new UpdateServicoOrcamentoRequest
+        {
+            ItemServicoId = itemServicoId,
+            OrcamentoId = orcamentoId,
+            ServicoId = servicoId
+        }, CancellationToken.None);
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        Assert.NotNull(mediator.UpdateServicoOrcamentoCommandEnviado);
+        Assert.Equal(orcamentoId, mediator.UpdateServicoOrcamentoCommandEnviado!.OrcamentoId);
+        Assert.Equal(itemServicoId, mediator.UpdateServicoOrcamentoCommandEnviado.ItemServicoId);
+        Assert.Equal(servicoId, mediator.UpdateServicoOrcamentoCommandEnviado.ServicoId);
+    }
+
+    [Fact]
+    public async Task CriarServicoOrdemServico_Deve_Enviar_Comando_Com_Ids()
+    {
+        var mediator = new FakeMediator();
+        var controller = new ItemServicoController(
+            new InlineValidator<CreateItemServicoRequest>(),
+            new InlineValidator<CreateItemOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrdemServicoRequest>(),
+            new InlineValidator<UpdateItemOrcamentoRequest>(),
+            new InlineValidator<UpdateServicoOrcamentoRequest>(),
+            new InlineValidator<UpdateItemServicoRequest>(),
+            new InlineValidator<UpdateServicoOrdemServicoRequest>(),
+            mediator,
+            NullLogger<ItemServicoController>.Instance);
+
+        var ordemServicoId = Guid.NewGuid();
+        var servicoId = Guid.NewGuid();
+
+        var result = await controller.CriarServicoOrdemServico(new CreateServicoOrdemServicoRequest
+        {
+            OrdemServicoId = ordemServicoId,
+            ServicoId = servicoId
+        }, CancellationToken.None);
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        Assert.NotNull(mediator.CreateServicoOrdemServicoCommandEnviado);
+        Assert.Equal(ordemServicoId, mediator.CreateServicoOrdemServicoCommandEnviado!.OrdemServicoId);
+        Assert.Equal(servicoId, mediator.CreateServicoOrdemServicoCommandEnviado.ServicoId);
+    }
+
+    [Fact]
+    public async Task AtualizarServicoOrdemServico_Deve_Enviar_Comando_Com_Ids()
+    {
+        var mediator = new FakeMediator();
+        var controller = new ItemServicoController(
+            new InlineValidator<CreateItemServicoRequest>(),
+            new InlineValidator<CreateItemOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrcamentoRequest>(),
+            new InlineValidator<CreateServicoOrdemServicoRequest>(),
+            new InlineValidator<UpdateItemOrcamentoRequest>(),
+            new InlineValidator<UpdateServicoOrcamentoRequest>(),
+            new InlineValidator<UpdateItemServicoRequest>(),
+            new InlineValidator<UpdateServicoOrdemServicoRequest>(),
+            mediator,
+            NullLogger<ItemServicoController>.Instance);
+
+        var ordemServicoId = Guid.NewGuid();
+        var itemServicoId = Guid.NewGuid();
+        var servicoId = Guid.NewGuid();
+
+        var result = await controller.AtualizarServicoOrdemServico(new UpdateServicoOrdemServicoRequest
+        {
+            ItemServicoId = itemServicoId,
+            OrdemServicoId = ordemServicoId,
+            ServicoId = servicoId
+        }, CancellationToken.None);
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
+        Assert.NotNull(mediator.UpdateServicoOrdemServicoCommandEnviado);
+        Assert.Equal(ordemServicoId, mediator.UpdateServicoOrdemServicoCommandEnviado!.OrdemServicoId);
+        Assert.Equal(itemServicoId, mediator.UpdateServicoOrdemServicoCommandEnviado.ItemServicoId);
+        Assert.Equal(servicoId, mediator.UpdateServicoOrdemServicoCommandEnviado.ServicoId);
+    }
+
     private sealed class FakeMediator : IMediator
     {
         public GetItemServicosByOrcamentoQuery? QueryEnviada { get; private set; }
         public GetItemServicoByOrcamentoIdQuery? QueryPorIdEnviada { get; private set; }
         public UpdateItemOrcamentoCommand? UpdateItemOrcamentoCommandEnviado { get; private set; }
+        public CreateServicoOrcamentoCommand? CreateServicoOrcamentoCommandEnviado { get; private set; }
+        public UpdateServicoOrcamentoCommand? UpdateServicoOrcamentoCommandEnviado { get; private set; }
+        public CreateServicoOrdemServicoCommand? CreateServicoOrdemServicoCommandEnviado { get; private set; }
+        public UpdateServicoOrdemServicoCommand? UpdateServicoOrdemServicoCommandEnviado { get; private set; }
         public IReadOnlyCollection<OrcamentoItemResponse>? ItensOrcamentoResponse { get; init; }
 
         public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
@@ -201,6 +355,30 @@ public sealed class ItemServicoControllerTests
             if (request is UpdateItemOrcamentoCommand command)
             {
                 UpdateItemOrcamentoCommandEnviado = command;
+                return Task.FromResult((TResponse)(object)Result.Success());
+            }
+
+            if (request is CreateServicoOrcamentoCommand createServicoOrcamentoCommand)
+            {
+                CreateServicoOrcamentoCommandEnviado = createServicoOrcamentoCommand;
+                return Task.FromResult((TResponse)(object)Result.Success());
+            }
+
+            if (request is UpdateServicoOrcamentoCommand updateServicoOrcamentoCommand)
+            {
+                UpdateServicoOrcamentoCommandEnviado = updateServicoOrcamentoCommand;
+                return Task.FromResult((TResponse)(object)Result.Success());
+            }
+
+            if (request is CreateServicoOrdemServicoCommand createServicoOrdemServicoCommand)
+            {
+                CreateServicoOrdemServicoCommandEnviado = createServicoOrdemServicoCommand;
+                return Task.FromResult((TResponse)(object)Result.Success());
+            }
+
+            if (request is UpdateServicoOrdemServicoCommand updateServicoOrdemServicoCommand)
+            {
+                UpdateServicoOrdemServicoCommandEnviado = updateServicoOrdemServicoCommand;
                 return Task.FromResult((TResponse)(object)Result.Success());
             }
 
@@ -228,6 +406,30 @@ public sealed class ItemServicoControllerTests
                 return Task.CompletedTask;
             }
 
+            if (request is CreateServicoOrcamentoCommand createServicoOrcamentoCommand)
+            {
+                CreateServicoOrcamentoCommandEnviado = createServicoOrcamentoCommand;
+                return Task.CompletedTask;
+            }
+
+            if (request is UpdateServicoOrcamentoCommand updateServicoOrcamentoCommand)
+            {
+                UpdateServicoOrcamentoCommandEnviado = updateServicoOrcamentoCommand;
+                return Task.CompletedTask;
+            }
+
+            if (request is CreateServicoOrdemServicoCommand createServicoOrdemServicoCommand)
+            {
+                CreateServicoOrdemServicoCommandEnviado = createServicoOrdemServicoCommand;
+                return Task.CompletedTask;
+            }
+
+            if (request is UpdateServicoOrdemServicoCommand updateServicoOrdemServicoCommand)
+            {
+                UpdateServicoOrdemServicoCommandEnviado = updateServicoOrdemServicoCommand;
+                return Task.CompletedTask;
+            }
+
             throw new NotSupportedException();
         }
 
@@ -248,6 +450,30 @@ public sealed class ItemServicoControllerTests
             if (request is UpdateItemOrcamentoCommand command)
             {
                 UpdateItemOrcamentoCommandEnviado = command;
+                return Task.CompletedTask;
+            }
+
+            if (request is CreateServicoOrcamentoCommand createServicoOrcamentoCommand)
+            {
+                CreateServicoOrcamentoCommandEnviado = createServicoOrcamentoCommand;
+                return Task.CompletedTask;
+            }
+
+            if (request is UpdateServicoOrcamentoCommand updateServicoOrcamentoCommand)
+            {
+                UpdateServicoOrcamentoCommandEnviado = updateServicoOrcamentoCommand;
+                return Task.CompletedTask;
+            }
+
+            if (request is CreateServicoOrdemServicoCommand createServicoOrdemServicoCommand)
+            {
+                CreateServicoOrdemServicoCommandEnviado = createServicoOrdemServicoCommand;
+                return Task.CompletedTask;
+            }
+
+            if (request is UpdateServicoOrdemServicoCommand updateServicoOrdemServicoCommand)
+            {
+                UpdateServicoOrdemServicoCommandEnviado = updateServicoOrdemServicoCommand;
                 return Task.CompletedTask;
             }
 

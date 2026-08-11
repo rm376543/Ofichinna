@@ -23,23 +23,37 @@ public sealed class ItemServicoController : ControllerBase
 {
     private readonly IValidator<CreateItemServicoRequest> _createValidator;
     private readonly IValidator<CreateItemOrcamentoRequest> _createOrcamentoItemValidator;
+    private readonly IValidator<CreateServicoOrcamentoRequest> _createServicoOrcamentoValidator;
+    private readonly IValidator<CreateServicoOrdemServicoRequest> _createServicoOrdemServicoValidator;
     private readonly IValidator<UpdateItemOrcamentoRequest> _updateOrcamentoValidator;
+    private readonly IValidator<UpdateServicoOrcamentoRequest> _updateServicoOrcamentoValidator;
     private readonly IValidator<UpdateItemServicoRequest> _updateValidator;
+    private readonly IValidator<UpdateServicoOrdemServicoRequest> _updateServicoOrdemServicoValidator;
     private readonly IMediator _mediator;
     private readonly ILogger<ItemServicoController> _logger;
 
+#pragma warning disable S107
     public ItemServicoController(
         IValidator<CreateItemServicoRequest> createValidator,
         IValidator<CreateItemOrcamentoRequest> createOrcamentoItemValidator,
+        IValidator<CreateServicoOrcamentoRequest> createServicoOrcamentoValidator,
+        IValidator<CreateServicoOrdemServicoRequest> createServicoOrdemServicoValidator,
         IValidator<UpdateItemOrcamentoRequest> updateOrcamentoValidator,
+        IValidator<UpdateServicoOrcamentoRequest> updateServicoOrcamentoValidator,
         IValidator<UpdateItemServicoRequest> updateValidator,
+        IValidator<UpdateServicoOrdemServicoRequest> updateServicoOrdemServicoValidator,
         IMediator mediator,
         ILogger<ItemServicoController> logger)
+#pragma warning restore S107
     {
         _createValidator = createValidator;
         _createOrcamentoItemValidator = createOrcamentoItemValidator;
+        _createServicoOrcamentoValidator = createServicoOrcamentoValidator;
+        _createServicoOrdemServicoValidator = createServicoOrdemServicoValidator;
         _updateOrcamentoValidator = updateOrcamentoValidator;
+        _updateServicoOrcamentoValidator = updateServicoOrcamentoValidator;
         _updateValidator = updateValidator;
+        _updateServicoOrdemServicoValidator = updateServicoOrdemServicoValidator;
         _mediator = mediator;
         _logger = logger;
     }
@@ -249,6 +263,80 @@ public sealed class ItemServicoController : ControllerBase
     }
 
     /// <summary>
+    /// Cria um novo item de serviço somente-serviço vinculado ao orçamento.
+    /// </summary>
+    /// <param name="request">Dados do item de serviço somente-serviço para o orçamento.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso ou erro de validação.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpPost("adicionar-servico/para-orcamento")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> CriarServicoOrcamento(
+        [FromBody] CreateServicoOrcamentoRequest request,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando a criação de item de serviço somente-serviço no orçamento. OrcamentoId: {OrcamentoId}.", request.OrcamentoId);
+
+        var validation = await _createServicoOrcamentoValidator.ValidateAsync(request, cancellationToken);
+        if (!validation.IsValid)
+        {
+            _logger.LogWarning("Falha na validação do item de serviço somente-serviço do orçamento. OrcamentoId: {OrcamentoId}. Erros: {Erros}", request.OrcamentoId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
+        }
+
+        var result = await _mediator.Send(new CreateServicoOrcamentoCommand(request), cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Falha ao criar item de serviço somente-serviço no orçamento. OrcamentoId: {OrcamentoId}. Erro: {Erro}", request.OrcamentoId, result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Falha ao tentar criar item de serviço vinculado ao orçamento."));
+        }
+
+        return Ok(ApiResponse.SuccessResponse("Item de serviço criado com sucesso no orçamento."));
+    }
+
+    /// <summary>
+    /// Cria um novo item de serviço somente-serviço vinculado à ordem de serviço.
+    /// </summary>
+    /// <param name="request">Dados do item de serviço somente-serviço.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso ou erro de validação.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpPost("adicionar-servico/para-ordem-servico")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> CriarServicoOrdemServico(
+        [FromBody] CreateServicoOrdemServicoRequest request,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando a criação de item de serviço somente-serviço na ordem de serviço. OrdemServicoId: {OrdemServicoId}.", request.OrdemServicoId);
+
+        var validation = await _createServicoOrdemServicoValidator.ValidateAsync(request, cancellationToken);
+        if (!validation.IsValid)
+        {
+            _logger.LogWarning("Falha na validação do item de serviço somente-serviço da ordem. OrdemServicoId: {OrdemServicoId}. Erros: {Erros}", request.OrdemServicoId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
+        }
+
+        var result = await _mediator.Send(new CreateServicoOrdemServicoCommand(request), cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Falha ao criar item de serviço somente-serviço na ordem de serviço. OrdemServicoId: {OrdemServicoId}. Erro: {Erro}", request.OrdemServicoId, result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o item de serviço."));
+        }
+
+        return Ok(ApiResponse.SuccessResponse("Item de serviço criado com sucesso."));
+    }
+
+    /// <summary>
     /// Atualiza um item de serviço vinculado ao orçamento.
     /// </summary>
     /// <param name="request">Dados atualizados do item de serviço para o orçamento.</param>
@@ -280,6 +368,44 @@ public sealed class ItemServicoController : ControllerBase
         if (!result.IsSuccess)
         {
             _logger.LogWarning("Falha ao atualizar item de serviço do orçamento. OrcamentoId: {OrcamentoId}, ItemServicoId: {ItemServicoId}. Erro: {Erro}", request.OrcamentoId, request.ItemServicoId, result.Error);
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o item de serviço do orçamento."));
+        }
+
+        return Ok(ApiResponse.SuccessResponse("Item de serviço do orçamento atualizado com sucesso."));
+    }
+
+    /// <summary>
+    /// Atualiza um item de serviço somente-serviço vinculado ao orçamento.
+    /// </summary>
+    /// <param name="request">Dados atualizados do item de serviço somente-serviço para o orçamento.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso, erro de validação ou item não encontrado.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpPut("atualizar-servico/para-orcamento")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<ApiResponse>> AtualizarServicoOrcamento(
+        [FromBody] UpdateServicoOrcamentoRequest request,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando a atualização do item de serviço somente-serviço do orçamento. OrcamentoId: {OrcamentoId}, ItemServicoId: {ItemServicoId}.", request.OrcamentoId, request.ItemServicoId);
+
+        var validation = await _updateServicoOrcamentoValidator.ValidateAsync(request, cancellationToken);
+        if (!validation.IsValid)
+        {
+            _logger.LogWarning("Falha na validação de atualização do item de serviço somente-serviço do orçamento. OrcamentoId: {OrcamentoId}, ItemServicoId: {ItemServicoId}. Erros: {Erros}", request.OrcamentoId, request.ItemServicoId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
+        }
+
+        var result = await _mediator.Send(new UpdateServicoOrcamentoCommand(request), cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Falha ao atualizar item de serviço somente-serviço do orçamento. OrcamentoId: {OrcamentoId}, ItemServicoId: {ItemServicoId}. Erro: {Erro}", request.OrcamentoId, request.ItemServicoId, result.Error);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o item de serviço do orçamento."));
         }
 
@@ -319,6 +445,44 @@ public sealed class ItemServicoController : ControllerBase
         {
             _logger.LogWarning("Falha ao atualizar item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erro: {Erro}", request.OrdemServicoId, request.ItemServicoId, result.Error);
 
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o item de serviço."));
+        }
+
+        return Ok(ApiResponse.SuccessResponse("Item de serviço atualizado com sucesso."));
+    }
+
+    /// <summary>
+    /// Atualiza um item de serviço somente-serviço vinculado à ordem de serviço.
+    /// </summary>
+    /// <param name="request">Dados atualizados do item de serviço somente-serviço.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso, erro de validação ou item não encontrado.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpPut("atualizar-servico/para-ordem-servico")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<ApiResponse>> AtualizarServicoOrdemServico(
+        [FromBody] UpdateServicoOrdemServicoRequest request,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando a atualização do item de serviço somente-serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", request.OrdemServicoId, request.ItemServicoId);
+
+        var validation = await _updateServicoOrdemServicoValidator.ValidateAsync(request, cancellationToken);
+        if (!validation.IsValid)
+        {
+            _logger.LogWarning("Falha na validação de atualização do item de serviço somente-serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erros: {Erros}", request.OrdemServicoId, request.ItemServicoId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
+            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
+        }
+
+        var result = await _mediator.Send(new UpdateServicoOrdemServicoCommand(request), cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Falha ao atualizar item de serviço somente-serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}. Erro: {Erro}", request.OrdemServicoId, request.ItemServicoId, result.Error);
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o item de serviço."));
         }
 

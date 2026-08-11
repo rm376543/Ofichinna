@@ -185,75 +185,6 @@ public sealed class OrcamentoController : ControllerBase
     }
 
     /// <summary>
-    /// Atualiza um orçamento existente.
-    /// </summary>
-    /// <param name="request">Dados do orçamento.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso ou erro de validação.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpPut("atualizar")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> AtualizarOrcamento(
-        [FromBody] UpdateOrcamentoRequest request,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando a atualização do orçamento com Id: {Id}", request.OrcamentoId);
-
-        var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
-        if (!validation.IsValid)
-            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
-
-        var result = await _mediator.Send(new UpdateOrcamentoCommand(request), cancellationToken);
-
-        if (!result.IsSuccess)
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o orçamento."));
-
-        return Ok(ApiResponse.SuccessResponse("Orçamento atualizado com sucesso."));
-    }
-
-    /// <summary>
-    /// Atualiza o desconto de um orçamento.
-    /// </summary>
-    /// <param name="orcamentoId">Identificador do orçamento.</param>
-    /// <param name="request">Dados do desconto.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso ou erro de validação.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpPut("{orcamentoId:guid}/desconto")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> AtualizarDescontoOrcamento(
-        [FromRoute] Guid orcamentoId,
-        [FromBody] UpdateOrcamentoDescontoRequest request,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando a atualização do desconto do orçamento com Id: {Id}.", orcamentoId);
-
-        var validation = await _updateDescontoValidator.ValidateAsync(request, cancellationToken);
-        if (!validation.IsValid)
-            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
-
-        var result = await _mediator.Send(
-            new UpdateOrcamentoDescontoCommand(
-                orcamentoId,
-                request.Desconto,
-                request.DescontoEmDinheiro),
-            cancellationToken);
-
-        if (!result.IsSuccess)
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o desconto do orçamento."));
-
-        return Ok(ApiResponse.SuccessResponse("Desconto do orçamento atualizado com sucesso."));
-    }
-
-    /// <summary>
     /// Envia o orçamento para o cliente.
     /// </summary>
     /// <param name="request">Identificador do orçamento.</param>
@@ -356,5 +287,74 @@ public sealed class OrcamentoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível reenviar o orçamento."));
 
         return Ok(ApiResponse.SuccessResponse("Orçamento reenviado com sucesso."));
+    }
+
+    /// <summary>
+    /// Atualiza um orçamento existente.
+    /// </summary>
+    /// <param name="request">Dados do orçamento.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso ou erro de validação.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpPut("atualizar")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> AtualizarOrcamento(
+        [FromBody] UpdateOrcamentoRequest request,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando a atualização do orçamento com Id: {Id}", request.OrcamentoId);
+
+        var validation = await _updateValidator.ValidateAsync(request, cancellationToken);
+        if (!validation.IsValid)
+            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
+
+        var result = await _mediator.Send(new UpdateOrcamentoCommand(request), cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o orçamento."));
+
+        return Ok(ApiResponse.SuccessResponse("Orçamento atualizado com sucesso."));
+    }
+
+    /// <summary>
+    /// Atualiza o desconto de um orçamento.
+    /// </summary>
+    /// <param name="orcamentoId">Identificador do orçamento.</param>
+    /// <param name="request">Dados do desconto.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Mensagem de sucesso ou erro de validação.</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpPut("{orcamentoId:guid}/desconto")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse>> AtualizarDescontoOrcamento(
+        [FromRoute] Guid orcamentoId,
+        [FromBody] UpdateOrcamentoDescontoRequest request,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando a atualização do desconto do orçamento com Id: {Id}.", orcamentoId);
+
+        var validation = await _updateDescontoValidator.ValidateAsync(request, cancellationToken);
+        if (!validation.IsValid)
+            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
+
+        var result = await _mediator.Send(
+            new UpdateOrcamentoDescontoCommand(
+                orcamentoId,
+                request.Desconto,
+                request.DescontoEmDinheiro),
+            cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível atualizar o desconto do orçamento."));
+
+        return Ok(ApiResponse.SuccessResponse("Desconto do orçamento atualizado com sucesso."));
     }
 }

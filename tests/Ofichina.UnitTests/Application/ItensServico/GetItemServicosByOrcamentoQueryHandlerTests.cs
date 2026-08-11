@@ -140,6 +140,12 @@ public sealed class GetItemServicosByOrcamentoQueryHandlerTests
         public Task<ItemServico?> GetByOrdemServicoIdAndServicoIdAndPecaIdAsync(Guid ordemServicoId, Guid servicoId, Guid pecaId, CancellationToken cancellationToken = default, bool tracking = false)
             => throw new NotImplementedException();
 
+        public Task<ItemServico?> GetByOrdemServicoComPecaAsync(Guid ordemServicoId, Guid servicoId, Guid pecaId, CancellationToken cancellationToken = default, bool tracking = false)
+            => throw new NotImplementedException();
+
+        public Task<ItemServico?> GetByOrdemServicoSemPecaAsync(Guid ordemServicoId, Guid servicoId, CancellationToken cancellationToken = default, bool tracking = false)
+            => throw new NotImplementedException();
+
         public Task<IReadOnlyCollection<ItemServico>> GetByOrdemServicoIdAsync(Guid ordemServicoId, CancellationToken cancellationToken = default, bool includeRelacionados = false, bool tracking = false)
             => throw new NotImplementedException();
 
@@ -153,6 +159,12 @@ public sealed class GetItemServicosByOrcamentoQueryHandlerTests
             => throw new NotImplementedException();
 
         public Task<ItemServico?> GetByOrcamentoServicoPecaIdAsync(Guid orcamentoId, Guid servicoId, Guid? pecaId, CancellationToken cancellationToken = default, bool tracking = false)
+            => throw new NotImplementedException();
+
+        public Task<ItemServico?> GetByOrcamentoComPecaAsync(Guid orcamentoId, Guid servicoId, Guid pecaId, CancellationToken cancellationToken = default, bool tracking = false)
+            => throw new NotImplementedException();
+
+        public Task<ItemServico?> GetByOrcamentoSemPecaAsync(Guid orcamentoId, Guid servicoId, CancellationToken cancellationToken = default, bool tracking = false)
             => throw new NotImplementedException();
 
         public Task<ItemServico?> GetByOrdemServicoIdAndItemServicoIdAsync(Guid ordemServicoId, Guid itemServicoId, CancellationToken cancellationToken = default, bool tracking = false, bool includeRelacionados = false)
