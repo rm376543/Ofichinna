@@ -18,7 +18,7 @@ public sealed class JwtTokenService : IJwtTokenService
         _configuration = configuration;
     }
 
-    public Task<TokenJwtResponse> GerarTokenAsync(Usuario usuario, IReadOnlyCollection<string> perfis, CancellationToken cancellationToken = default)
+    public Task<JwtResponse> GerarTokenAsync(Usuario usuario, IReadOnlyCollection<string> perfis, CancellationToken cancellationToken = default)
     {
         var issuer = _configuration["Jwt:Issuer"] ?? "ofichinna";
         var audience = _configuration["Jwt:Audience"] ?? "ofichinna";
@@ -51,7 +51,7 @@ public sealed class JwtTokenService : IJwtTokenService
 
         var tokenHandler = new JwtSecurityTokenHandler();
 
-        return Task.FromResult(new TokenJwtResponse
+        return Task.FromResult(new JwtResponse
         {
             AccessToken = tokenHandler.WriteToken(token),
             ExpiraEm = expires
