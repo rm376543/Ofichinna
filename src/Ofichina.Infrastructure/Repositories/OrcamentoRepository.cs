@@ -65,6 +65,10 @@ public sealed class OrcamentoRepository : Repository<Orcamento>, IOrcamentoRepos
 
         var query = _context.Set<Orcamento>()
             .AsNoTracking()
+            .Include(x => x.ItensServico)
+                .ThenInclude(x => x.Servico)
+            .Include(x => x.ItensServico)
+                .ThenInclude(x => x.Peca)
             .OrderBy(x => x.CreatedAt);
 
         var totalCount = await query.CountAsync(cancellationToken);

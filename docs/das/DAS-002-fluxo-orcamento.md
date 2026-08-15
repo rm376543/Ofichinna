@@ -10,14 +10,14 @@
 |---|---|
 | **ID** | `DAS-002` |
 | **Feature** | Fluxo de Checklist → Orçamento → OS com rastreabilidade |
-| **Autor** | Equipe de Arquitetura — exemplo |
-| **Revisores técnicos** | Application, Domain, Infrastructure e API — a confirmar |
+| **Autor** | Marcio Henrique |
+| **Revisores técnicos** | Application, Domain, Infrastructure e API — `a confirmar` |
 | **Aprovadores** | Product Owner e Arquiteto — a confirmar |
-| **Data de criação** | `2026-08-01` |
-| **Última revisão** | `2026-08-01` |
+| **Data de criação** | `01/08/2026` |
+| **Última revisão** | `01/08/2026` |
 | **Versão** | `1.0` |
-| **Status** | `APROVADO_COM_RESSALVAS` — exemplo didático |
-| **Branch/Issue/PR** | `[preencher na feature real]` |
+| **Status** | `APROVADO` |
+| **Branch/Issue/PR** | `a ser definida` |
 | **ADRs relacionados** | ADR-001, ADR-002, ADR-003, ADR-004, ADR-006 e ADR-007 |
 
 ### Ressalvas do exemplo
@@ -74,11 +74,11 @@ Separar o ciclo de vistoria do ciclo comercial e do ciclo operacional: primeiro 
 ### 4.1 Requisitos funcionais
 
 | ID | Requisito | Critério verificável |
-|---|---|---|---|
+|---|---|---|
 | RF-001 | Criar checklist com veículo e pessoa | Checklist válido é persistido e pode ser finalizado |
 | RF-002 | Atualizar orçamento existente | Campos e serviços previstos são persistidos corretamente |
 | RF-003 | Consultar orçamento detalhado | Retorna checklist de origem, serviços previstos e valor total líquido |
-| RF-004 | Enviar orçamento ao cliente | `EM_DIAGNOSTICO → AGUARDANDO_APROVACAO` |
+| RF-004 | Enviar orçamento ao cliente | `AGUARDANDO_ENVIO → AGUARDANDO_APROVACAO` |
 | RF-005 | Reprovar orçamento com motivo opcional | `AGUARDANDO_APROVACAO → REPROVADO` com motivo persistido |
 | RF-006 | Reenviar orçamento após reprovação | `REPROVADO → EM_DIAGNOSTICO` |
 | RF-007 | Aprovar orçamento | `AGUARDANDO_APROVACAO → APROVADO` e criação da OS |
@@ -148,7 +148,7 @@ stateDiagram-v2
 
 O contrato da ordem de serviço deve refletir o problema relatado e os dados operacionais do atendimento.
 
-- `OrdemServicoSimplesResponse` é a resposta da listagem e deve expor `ordemServicoId`, `cliente`, `consultor`, `problemaRelatado`, `status`, `dataAbetura`, `dataFinalizacao`, `observacao`, `valorTotal`, `createdAt`, `updatedAt` e `deletedAt`.
+- `OrdemServicoDetalhesResponse` é a resposta da listagem e deve expor `ordemServicoId`, `cliente`, `consultor`, `problemaRelatado`, `status`, `dataAbetura`, `dataFinalizacao`, `observacao`, `valorTotal`, `createdAt`, `updatedAt` e `deletedAt`.
 - `OrdemServicoResponse` é a resposta detalhada e deve expor `ordemServicoId`, `pessoaId`, `veiculoId`, `consultorId`, `mecanicoId`, `hodometro`, `problemaRelatado`, `status`, `dataAbertura`, `dataFinalizacao`, `observacao`, `valorTotal`, `servicos`, `createdAt`, `updatedAt` e `deletedAt`.
 - A criação da OS a partir da aprovação do orçamento deve preservar o `problemaRelatado` e vincular os itens do orçamento à nova OS.
 
@@ -188,6 +188,6 @@ O contrato da ordem de serviço deve refletir o problema relatado e os dados ope
 
 | Papel | Nome | Data | Assinatura |
 |---|---|---|---|
-| Product Owner | `[preencher]` | `[preencher]` | `[preencher]` |
-| Arquiteto | `[preencher]` | `[preencher]` | `[preencher]` |
-| Tech Lead | `[preencher]` | `[preencher]` | `[preencher]` |
+| Product Owner | `Marcio Henrique` | `01/08/2026` | `Marcio Henrique` |
+| Arquiteto | `Marcio Henrique` | `01/08/2026` | `Marcio Henrique` |
+| Tech Lead | `Marcio Henrique` | `01/08/2026` | `Marcio Henrique` |

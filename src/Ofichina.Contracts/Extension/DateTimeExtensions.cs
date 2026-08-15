@@ -15,4 +15,18 @@ public static class DateTimeExtensions
     {
         return date?.ToString(format);
     }
+
+    public static string ToDateString(
+        this DateOnly date,
+        string format = "dd/MM/yyyy")
+    {
+        return date.ToString(format);
+    }
+
+    public static string? ToDateString(
+        this DateOnly? date,
+        string format = "dd/MM/yyyy")
+    {
+        return date?.ToString(format);
+    }
 }

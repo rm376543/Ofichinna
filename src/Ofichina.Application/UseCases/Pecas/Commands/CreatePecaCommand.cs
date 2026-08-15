@@ -1,5 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Requests.Pecas;
 
 namespace Ofichina.Application.UseCases.Pecas.Commands;
 
@@ -11,7 +12,7 @@ public sealed class CreatePecaCommand : ICommand<Result>
     /// <summary>
     /// Nome da peça.
     /// </summary>
-    public string Nome { get; init; } = string.Empty;
+    public string Nome { get; init; }
 
     /// <summary>
     /// Descrição da peça.
@@ -21,7 +22,7 @@ public sealed class CreatePecaCommand : ICommand<Result>
     /// <summary>
     /// Código interno da peça.
     /// </summary>
-    public string Codigo { get; init; } = string.Empty;
+    public string Codigo { get; init; }
 
     /// <summary>
     /// Valor unitário da peça.
@@ -32,4 +33,13 @@ public sealed class CreatePecaCommand : ICommand<Result>
     /// Quantidade inicial em estoque.
     /// </summary>
     public int QuantidadeEstoque { get; init; }
+
+    public CreatePecaCommand(CreatePecaRequest request)
+    {
+        Nome = request.Nome;
+        Descricao = request.Descricao;
+        Codigo = request.Codigo;
+        Valor = request.Valor;
+        QuantidadeEstoque = request.QuantidadeEstoque;
+    }
 }

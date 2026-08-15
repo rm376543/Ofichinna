@@ -22,6 +22,10 @@ public class OrcamentoConfiguration : IEntityTypeConfiguration<Orcamento>
         builder.Property(x => x.ConsultorId).IsRequired();
         builder.Property(x => x.DataValidade).IsRequired();
         builder.Property(x => x.Desconto).HasPrecision(18, 2).IsRequired();
+        builder.Property(x => x.ValorBruto).HasPrecision(18, 2);
+        builder.Property(x => x.ValorTotal).HasPrecision(18, 2);
+        builder.Property(x => x.ValorDesconto).HasPrecision(18, 2);
+        builder.Property(x => x.ValorTotalDesconto).HasPrecision(18, 2);
         builder.Property(x => x.Observacoes).HasMaxLength(1000);
         builder.Property(x => x.Status)
             .HasConversion(new EnumParaTextoConverter<StatusOrcamento>())

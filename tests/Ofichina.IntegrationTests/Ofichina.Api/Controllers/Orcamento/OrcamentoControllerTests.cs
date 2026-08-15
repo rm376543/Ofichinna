@@ -24,8 +24,7 @@ public sealed class OrcamentoControllerTests
 
         var orcamentoId = Guid.NewGuid();
         var result = await controller.AtualizarDescontoOrcamento(
-            orcamentoId,
-            new UpdateOrcamentoDescontoRequest { Desconto = 18m, DescontoEmDinheiro = false },
+            new UpdateOrcamentoDescontoRequest { OrcamentoId = orcamentoId, Desconto = 18m, DescontoEmDinheiro = false },
             CancellationToken.None);
 
         var okResult = Assert.IsType<OkObjectResult>(result.Result);

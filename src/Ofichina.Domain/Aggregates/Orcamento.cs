@@ -10,6 +10,10 @@ namespace Ofichina.Domain.Aggregates;
 public sealed class Orcamento : Entity
 {
     private readonly List<ItemServico> _itensServico = [];
+    private decimal? _valorBruto;
+    private decimal? _valorTotal;
+    private decimal? _valorDesconto;
+    private decimal? _valorTotalDesconto;
 
     public Guid PessoaId { get; private set; }
 
@@ -39,13 +43,49 @@ public sealed class Orcamento : Entity
 
     public IReadOnlyCollection<ItemServico> ItensServico => _itensServico.AsReadOnly();
 
-    public decimal ValorBruto => CalcularValorBruto();
+    public decimal? ValorBruto
+    {
+        get => _valorBruto;
+        private set => _valorBruto = value;
+    }
 
-    public decimal ValorTotal => CalcularValorTotal();
+    public decimal? ValorTotal
+    {
+        get => _valorTotal;
+        private set => _valorTotal = value;
+    }
 
-    public decimal ValorDesconto => CalcularValorDesconto();
+    public decimal? ValorDesconto
+    {
+        get => _valorDesconto;
+        private set => _valorDesconto = value;
+    }
 
-    public decimal ValorTotalDesconto => CalcularValorTotalDesconto();
+    public decimal? ValorTotalDesconto
+    {
+        get => _valorTotalDesconto;
+        private set => _valorTotalDesconto = value;
+    }
+
+    public decimal ObterValorBruto()
+    {
+        return ValorBruto ?? CalcularValorBruto();
+    }
+
+    public decimal ObterValorTotal()
+    {
+        return ValorTotal ?? ObterValorBruto();
+    }
+
+    public decimal ObterValorDesconto()
+    {
+        return ValorDesconto ?? CalcularValorDesconto(ObterValorBruto());
+    }
+
+    public decimal ObterValorTotalDesconto()
+    {
+        return ValorTotalDesconto ?? CalcularValorTotalDesconto(ObterValorBruto(), ObterValorDesconto());
+    }
 
     private Orcamento()
     {
@@ -99,6 +139,8 @@ public sealed class Orcamento : Entity
     {
         ValidarStatus(StatusOrcamento.EmDiagnostico);
         ValidarItensCadastrados();
+
+        AtualizarValoresPersistidos();
 
         Status = StatusOrcamento.AguardandoEnvio;
         AtualizarDataModificacao();
@@ -174,6 +216,7 @@ public sealed class Orcamento : Entity
 
         Desconto = desconto;
         DescontoEmDinheiro = descontoEmDinheiro;
+        AtualizarValoresPersistidos();
         AtualizarDataModificacao();
     }
 
@@ -239,26 +282,39 @@ public sealed class Orcamento : Entity
             .Sum(item => item.ValorTotal);
     }
 
-    private decimal CalcularValorTotal()
+    private void AtualizarValoresPersistidos()
     {
-        return ValorBruto;
+        var valorBruto = CalcularValorBruto();
+        var valorTotal = CalcularValorTotal(valorBruto);
+        var valorDesconto = CalcularValorDesconto(valorBruto);
+        var valorTotalDesconto = CalcularValorTotalDesconto(valorBruto, valorDesconto);
+
+        ValorBruto = valorBruto;
+        ValorTotal = valorTotal;
+        ValorDesconto = valorDesconto;
+        ValorTotalDesconto = valorTotalDesconto;
     }
 
-    private decimal CalcularValorDesconto()
+    private decimal CalcularValorTotal(decimal valorBruto)
+    {
+        return valorBruto;
+    }
+
+    private decimal CalcularValorDesconto(decimal valorBruto)
     {
         if (Desconto == 0)
             return 0m;
 
         var valorDescontoAplicado = DescontoEmDinheiro
             ? Desconto
-            : ValorBruto * (Desconto / 100m);
+            : valorBruto * (Desconto / 100m);
 
-        return Math.Min(ValorBruto, valorDescontoAplicado);
+        return Math.Min(valorBruto, valorDescontoAplicado);
     }
 
-    private decimal CalcularValorTotalDesconto()
+    private static decimal CalcularValorTotalDesconto(decimal valorBruto, decimal valorDesconto)
     {
-        return Math.Max(0m, ValorBruto - ValorDesconto);
+        return Math.Max(0m, valorBruto - valorDesconto);
     }
 
     private void ValidarStatus(StatusOrcamento statusEsperado)

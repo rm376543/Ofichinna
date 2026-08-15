@@ -12,7 +12,7 @@ public sealed class CreateServicoCommand : ICommand<Result>
     /// <summary>
     /// Nome do serviço.
     /// </summary>
-    public string Nome { get; init; } = string.Empty;
+    public string Nome { get; init; }
 
     /// <summary>
     /// Descrição do serviço.
