@@ -36,21 +36,27 @@ public sealed class OrcamentoService : IOrcamentoService
         var pessoas = await _pessoaRepository.GetByIdsAsync(pessoasIds, cancellationToken);
         var nomesPorId = pessoas.ToDictionary(pessoa => pessoa.Id, pessoa => pessoa.Nome);
 
-        return orcamentos.ToPagedResponse(orcamento => new OrcamentoDetalheResponse
+        return orcamentos.ToPagedResponse(orcamento =>
         {
-            OrcamentoId = orcamento.Id,
-            Cliente = ObterNome(orcamento.PessoaId, nomesPorId),
-            Consultor = ObterNome(orcamento.ConsultorId, nomesPorId),
-            Mecanico = ObterNome(orcamento.MecanicoId, nomesPorId),
-            Status = orcamento.Status.ToUpperSnakeCase(),
-            DataCriacao = orcamento.DataCriacao.ToString("dd/MM/yyyy"),
-            DataValidade = orcamento.DataValidade.ToString("dd/MM/yyyy"),
-            Desconto = orcamento.Desconto,
-            ValorTotal = orcamento.ValorTotal,
-            ValorTotalDesconto = orcamento.ValorTotalDesconto,
-            CreatedAt = orcamento.CreatedAt.ToDateString(),
-            UpdatedAt = orcamento.UpdatedAt?.ToDateString(),
-            DeletedAt = orcamento.DeletedAt?.ToDateString()
+            var valorTotal = orcamento.ValorTotal ?? orcamento.ObterValorTotal();
+            var valorTotalDesconto = orcamento.ValorTotalDesconto ?? orcamento.ObterValorTotalDesconto();
+
+            return new OrcamentoDetalheResponse
+            {
+                OrcamentoId = orcamento.Id,
+                Cliente = ObterNome(orcamento.PessoaId, nomesPorId),
+                Consultor = ObterNome(orcamento.ConsultorId, nomesPorId),
+                Mecanico = ObterNome(orcamento.MecanicoId, nomesPorId),
+                Status = orcamento.Status.ToUpperSnakeCase(),
+                DataCriacao = orcamento.DataCriacao.ToString("dd/MM/yyyy"),
+                DataValidade = orcamento.DataValidade.ToString("dd/MM/yyyy"),
+                Desconto = orcamento.Desconto,
+                ValorTotal = valorTotal,
+                ValorTotalDesconto = valorTotalDesconto,
+                CreatedAt = orcamento.CreatedAt.ToDateString(),
+                UpdatedAt = orcamento.UpdatedAt?.ToDateString(),
+                DeletedAt = orcamento.DeletedAt?.ToDateString()
+            };
         });
     }
 

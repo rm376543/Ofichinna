@@ -11,11 +11,11 @@ public sealed class CreateVeiculoCommand : ICommand<Result>
 {
     public Guid PessoaId { get; init; }
 
-    public string Placa { get; init; } = string.Empty;
+    public string Placa { get; init; }
 
-    public string Marca { get; init; } = string.Empty;
+    public string Marca { get; init; }
 
-    public string Modelo { get; init; } = string.Empty;
+    public string Modelo { get; init; }
 
     public int AnoFabricacao { get; init; }
 

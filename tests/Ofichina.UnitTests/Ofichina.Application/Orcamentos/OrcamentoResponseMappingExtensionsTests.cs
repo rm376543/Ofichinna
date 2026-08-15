@@ -87,6 +87,33 @@ public sealed class OrcamentoResponseMappingExtensionsTests
         Assert.Equal(80m, alinhamento.ValorTotal);
     }
 
+    [Fact]
+    public void ToResponse_Deve_Calcular_Valores_Quando_Ainda_Nao_Foram_Persistidos()
+    {
+        var orcamento = new Orcamento(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            DateTime.UtcNow.AddDays(10),
+            10m,
+            "Avaliar ruído");
+
+        var servico = new Servico("Troca de óleo", null, 120m);
+        var peca = new Peca("Filtro de óleo", null, "FILTRO-001", 60m, 10);
+
+        var item = orcamento.AdicionarServico(servico.Id, peca.Id, 1, StatusOrcamento.Criado);
+        DefinirPropriedade(item, nameof(ItemServico.Servico), servico);
+        DefinirPropriedade(item, nameof(ItemServico.Peca), peca);
+
+        var response = orcamento.ToResponse();
+
+        Assert.Equal(180m, response.ValorTotal);
+        Assert.Equal(18m, response.ValorDesconto);
+        Assert.Equal(162m, response.ValorTotalDesconto);
+    }
+
     private static void DefinirPropriedade<T>(T instancia, string propriedade, object? valor)
         where T : class
     {

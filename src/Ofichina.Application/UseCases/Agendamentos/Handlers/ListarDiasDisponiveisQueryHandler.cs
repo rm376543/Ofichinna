@@ -2,6 +2,7 @@ using Ofichina.Application.Abstractions;
 using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Extension;
 using Ofichina.Contracts.Responses.Agendamento;
 
 namespace Ofichina.Application.UseCases.Agendamentos.Handlers;
@@ -38,7 +39,7 @@ public sealed class ListarDiasDisponiveisQueryHandler : IQueryHandler<ListarDias
                 .Select(d => new DiaResponse
                 {
                     DiaId = d.Id,
-                    Data = d.Data.ToString("yyyy-MM-dd")
+                    Data = d.Data.ToDateString()
                 })
                 .ToList();
 
@@ -47,7 +48,7 @@ public sealed class ListarDiasDisponiveisQueryHandler : IQueryHandler<ListarDias
             var resultado = diasFiltrados.Select(d => new DiaDisponibilidadeResponse
             {
                 DiaId = d.DiaId,
-                Dia = DateOnly.ParseExact(d.Data, "yyyy-MM-dd"),
+                Dia = d.Data
             });
 
             return Result.Success(resultado);

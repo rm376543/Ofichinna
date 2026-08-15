@@ -57,6 +57,10 @@ public sealed class OrcamentoTests
         orcamento.FinalizarDiagnostico();
 
         Assert.Equal(StatusOrcamento.AguardandoEnvio, orcamento.Status);
+        Assert.True(orcamento.ValorBruto.HasValue);
+        Assert.True(orcamento.ValorTotal.HasValue);
+        Assert.True(orcamento.ValorDesconto.HasValue);
+        Assert.True(orcamento.ValorTotalDesconto.HasValue);
 
         orcamento.EnviarParaCliente();
 
