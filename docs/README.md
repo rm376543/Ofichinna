@@ -1,5 +1,7 @@
 # 📚 OFICHINNA - Clean Architecture .NET 10
 
+![Ofichina Arquitetura Limpa e Pronta](./image/arquitetura.png)
+
 ## 🎯 Visão Geral
 
 Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, utilizando .NET 10, SQL Server, Entity Framework Core e MediatR.
