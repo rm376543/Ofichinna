@@ -1,3 +1,7 @@
+![Coverage](./image/coverage/badge_combined.svg)
+![Line Coverage](./image/coverage/badge_linecoverage.svg)
+![Branch Coverage](./image/coverage/badge_branchcoverage.svg)
+
 # 📚 OFICHINNA - Clean Architecture .NET 10
 
 ![Ofichina Arquitetura Limpa e Pronta](./image/arquitetura.png)
@@ -12,6 +16,168 @@ Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, ut
 - **Documentação**: ✅ Mantida em evolução contínua
 - **Pronto para**: Evolução de features e refinamentos de domínio
 
+---
+
+## 🚀 Como Iniciar o Projeto
+
+### 1. Clonar o repositório
+
+Clone o repositório para sua máquina:
+
+```bash
+git clone <URL_DO_REPOSITORIO>
+```
+
+Entre na pasta do projeto:
+
+```bash
+cd Ofichinna
+```
+
+---
+
+### 2. Subir o ambiente com Docker Compose
+
+Acesse a pasta `docker`:
+
+```bash
+cd docker
+```
+
+Inicie todos os containers necessários:
+
+```bash
+docker-compose up -d
+```
+
+Esse comando irá iniciar o ambiente configurado no `docker-compose.yml`, incluindo a API e os serviços de infraestrutura necessários para a aplicação.
+
+Para verificar se os containers estão em execução:
+
+```bash
+docker ps
+```
+
+---
+
+### 3. Iniciar a aplicação
+
+Após executar o Docker Compose, a API estará disponível na porta **8080**.
+
+Acesse:
+
+```text
+http://localhost:8080/swagger
+```
+
+### 3.1. Massa de testes
+
+```json
+{
+    "email": "admin@ofichina.com.br",
+    "senha": 111111
+}
+```
+
+> **Observação:** Durante a inicializacao do container, o script de seed executa a migration e cria toda estrutura necessária, incluindo usuários, perfis, permissoes, veiculos, etc. Utilize o usuario administrador com o email e senha acima. Use essas credenciais para autenticar e testar os endpoints da API.
+---
+
+### 4. Fluxo completo de inicialização
+
+Para uma instalação nova, execute os comandos abaixo:
+
+```bash
+# 1. Clonar o repositório
+git clone <URL_DO_REPOSITORIO>
+
+# 2. Entrar na pasta do projeto
+cd Ofichinna
+
+# 3. Acessar a pasta do Docker
+cd docker
+
+# 4. Subir o ambiente
+docker-compose up -d
+```
+
+Após a inicialização, a API estará disponível em:
+
+```text
+http://localhost:8080
+```
+
+Swagger:
+
+```text
+http://localhost:8080/swagger
+```
+
+---
+
+### 5. Verificar os containers
+
+Para verificar se todos os serviços foram iniciados corretamente:
+
+```bash
+docker ps
+```
+
+Para visualizar os logs da API:
+
+```bash
+docker logs ofichina-api
+```
+
+Para acompanhar os logs em tempo real:
+
+```bash
+docker logs -f ofichina-api
+```
+
+---
+
+### 6. Parar o ambiente
+
+Para interromper os containers:
+
+```bash
+docker-compose down
+```
+
+Para iniciar novamente o ambiente:
+
+```bash
+docker-compose up -d
+```
+
+---
+
+### 7. Reconstruir a aplicação
+
+Após alterações no código da API, reconstrua a imagem antes de iniciar os containers:
+
+```bash
+docker-compose up -d --build
+```
+
+---
+
+### 📌 Resumo
+
+| Etapa | Comando |
+|--------|---------|
+| Clonar projeto | `git clone <URL_DO_REPOSITORIO>` |
+| Entrar no projeto | `cd Ofichinna` |
+| Entrar no Docker | `cd docker` |
+| Subir ambiente | `docker-compose up -d` |
+| Reconstruir e subir | `docker-compose up -d --build` |
+| Ver containers | `docker ps` |
+| Ver logs da API | `docker logs ofichina-api` |
+| Parar ambiente | `docker-compose down` |
+| API | `http://localhost:8080` |
+| Swagger | `http://localhost:8080/swagger` |
+
+> **Observação:** o ambiente Docker é responsável por iniciar a API e os serviços de infraestrutura configurados no `docker-compose.yml`. Após a inicialização, a aplicação pode ser acessada pela porta `8080`.
 ---
 
 ## 📖 Documentação
@@ -416,7 +582,7 @@ Para dúvidas sobre a implementação:
 
 ```
 ┌─────────────────────────────────────────┐
-│ IMPLEMENTAÇÃO CONCLUÍDA COM SUCESSO ✅ │
+│ IMPLEMENTAÇÃO CONCLUÍDA COM SUCESSO ✅  │ 
 └─────────────────────────────────────────┘
 
 Build:           ✅ Validado

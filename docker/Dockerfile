@@ -1,31 +1,31 @@
-﻿# Dockerfile para SQL Server
-# Cria uma instância de SQL Server com configurações básicas para desenvolvimento
-# Imagem base: SQL Server 2022 (Enterprise Edition - Developer License)
+﻿FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
-FROM mcr.microsoft.com/mssql/server:2022-latest
+WORKDIR /src
 
-# Definir o ambiente como não-interativo
-ENV ACCEPT_EULA=Y
+COPY ["src/Ofichina.Api/Ofichina.Api.csproj", "src/Ofichina.Api/"]
+COPY ["src/Ofichina.Application/Ofichina.Application.csproj", "src/Ofichina.Application/"]
+COPY ["src/Ofichina.Authentication/Ofichina.Authentication.csproj", "src/Ofichina.Authentication/"]
+COPY ["src/Ofichina.Bootstrap/Ofichina.Bootstrap.csproj", "src/Ofichina.Bootstrap/"]
+COPY ["src/Ofichina.Contracts/Ofichina.Contracts.csproj", "src/Ofichina.Contracts/"]
+COPY ["src/Ofichina.Domain/Ofichina.Domain.csproj", "src/Ofichina.Domain/"]
+COPY ["src/Ofichina.Infrastructure/Ofichina.Infrastructure.csproj", "src/Ofichina.Infrastructure/"]
 
-# Senha do SA (System Administrator)
-# IMPORTANTE: Altere esta senha em produção e em variáveis de ambiente!
-ENV MSSQL_SA_PASSWORD=P@ssw0rd2024!Ofichina
+RUN dotnet restore "src/Ofichina.Api/Ofichina.Api.csproj"
 
-# Edição do SQL Server (Developer é gratuita e inclui todos os recursos)
-ENV MSSQL_PID=Developer
+COPY . .
 
-# Collation (agrupamento de caracteres)
-ENV MSSQL_COLLATION=SQL_Latin1_General_CP1_CI_AS
+WORKDIR "/src/src/Ofichina.Api"
 
-# Configurações de memória (opcional)
-ENV MSSQL_MEMORY_LIMIT_MB=2048
+RUN dotnet publish "Ofichina.Api.csproj" \
+    -c Release \
+    -o /app/publish
 
-# Expor a porta padrão do SQL Server
-EXPOSE 1433
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 
-# Healthcheck para verificar se o servidor está saudável
-HEALTHCHECK --interval=15s --timeout=3s --start-period=40s --retries=3 \
-    CMD /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "P@ssw0rd2024!Ofichina" -Q "SELECT 1" || exit 1
+WORKDIR /app
 
-# O container iniciará automaticamente o SQL Server
-CMD ["/opt/mssql/bin/sqlservr"]
+COPY --from=build /app/publish .
+
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "Ofichina.Api.dll"]

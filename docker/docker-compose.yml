@@ -81,6 +81,25 @@ services:
     networks:
       - ofichina-network
 
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+
+    container_name: ofichina-api
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=ofichinna;User Id=sa;Password=P@ssw0rd2024!Ofichina;TrustServerCertificate=True"
+
+    restart: unless-stopped
+
+    networks:
+      - ofichina-network
+
 volumes:
   sqlserver_data:
   postgres_data:

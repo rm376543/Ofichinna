@@ -13,6 +13,7 @@ docker-compose ps
 # Ver logs de um serviço específico
 docker-compose logs -f sqlserver
 docker-compose logs -f seq
+docker logs ofichina-api
 ```
 
 ---
@@ -20,7 +21,7 @@ docker-compose logs -f seq
 ## 🔑 Credenciais e Acessos
 
 ### SQL Server
-- **Server**: `localhost:1433`
+- **Server**: `sqlserver:1433`
 - **Usuario**: `sa`
 - **Senha**: `P@ssw0rd2024!Ofichina`
 - **Database**: `ofichinna`

@@ -14,9 +14,10 @@ Ofichinna/
 │   ├── Dockerfile                # Imagem Docker do SQL Server
 │   ├── docker-compose.yml        # Orquestração de containers
 │   ├── DOCKER_SQLSERVER.md       # Documentação detalhada (este arquivo)
-│   ├── QUICKSTART.md             # Guia rápido de inicialização
-│   ├── LOGGING.md                # Documentação de logging e Seq
-│   └── EXEMPLOS_CORRELATION_ID.md # Exemplos de uso do correlation id
+│   ├── DOCKER_QUICKSTART.md	  # Guia rápido de inicialização
+│   src/docs/
+│   ├── LOGGING.md					# Documentação de logging e Seq
+│   └── EXEMPLOS_CORRELATION_ID.md	# Exemplos de uso do correlation id
 └── src/Ofichina.Api/
 	├── appsettings.json              # String de conexão para produção
 	└── appsettings.Development.json  # String de conexão para desenvolvimento
@@ -39,12 +40,12 @@ Ofichinna/
 
 #### Iniciar o SQL Server
 ```bash
-docker-compose up -d
+docker-compose up -d (Inicia todos os serviços)
 ```
 
-#### Iniciar apenas o Seq
+#### Iniciar apenas um Servico
 ```bash
-docker-compose up -d seq
+docker-compose up -d <nome_servico> (Ex: sqlserver, seq, sonarqube)
 ```
 
 #### Verificar status
@@ -60,31 +61,6 @@ docker-compose down
 #### Parar e remover volumes (dados)
 ```bash
 docker-compose down -v
-```
-
----
-
-### Opção 2: Usando Apenas Docker
-
-#### Construir a imagem
-```bash
-docker build -f docker/Dockerfile -t ofichinna-sqlserver .
-```
-
-#### Executar o container
-```bash
-docker run -d `
-  --name ofichinna-sqlserver `
-  -e ACCEPT_EULA=Y `
-  -e MSSQL_SA_PASSWORD=P@ssw0rd2024!Ofichina `
-  -p 1433:1433 `
-  ofichinna-sqlserver
-```
-
-#### Parar o container
-```bash
-docker stop ofichinna-sqlserver
-docker rm ofichinna-sqlserver
 ```
 
 ---
@@ -195,9 +171,9 @@ O Docker Compose cria 2 volumes para persistência de dados:
 
 ## 🐛 Troubleshooting
 
-### Acessar o Seq
+### Acessar logs do <Servico>
 ```bash
-docker-compose logs -f seq
+docker-compose logs -f <nome_servico>
 ```
 
 Abra no navegador:
@@ -205,15 +181,12 @@ Abra no navegador:
 http://localhost:5341
 ```
 
-Se o Seq não carregar, verifique se a porta `5341` está livre e se o serviço foi iniciado com `docker-compose up -d seq`.
+Se o <Servico> não carregar, verifique se a porta está livre e se o serviço foi iniciado com `docker-compose up -d <nome_servico>`.
 
 ### Container não inicia
 ```bash
 # Visualizar logs
-docker-compose -f docker/docker-compose.yml logs sqlserver
-
-# Ou com Docker direto
-docker logs ofichinna-sqlserver
+docker-compose logs sqlserver
 ```
 
 ### Erro de conexão recusada
@@ -255,9 +228,7 @@ docker-compose -f docker/docker-compose.yml up -d
 ## 🎯 Próximos Passos
 
 1. **Iniciar o SQL Server**: `docker-compose up -d`
-2. **Executar migrations**: `dotnet ef database update`
-3. **Verificar conexão**: Usar SSMS ou Azure Data Studio
-4. **Iniciar a aplicação**: `dotnet run` ou via Visual Studio
+2. **Verificar conexão**: Usar SSMS ou Azure Data Studio
 
 ---
 
