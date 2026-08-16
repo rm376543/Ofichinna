@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Coverage](./image/coverage/badge_combined.svg)
+![Coverage](./image/coverage/badge_linecoverage.svg)
 ![Tests](https://img.shields.io/badge/tests-passing-success?logo=dotnet)
 ![Quality](https://img.shields.io/badge/code%20quality-A-success)
 ![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white)
