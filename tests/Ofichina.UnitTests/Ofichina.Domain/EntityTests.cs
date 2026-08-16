@@ -40,6 +40,38 @@ public class EntityTests
         Assert.False(entity1.Equals(entity2));
     }
 
+    [Fact]
+    public void Entity_DevePermitir_Excluir_E_Reativar_Logicamente()
+    {
+        var entity = new TestEntity(Guid.NewGuid());
+
+        entity.Excluir();
+
+        Assert.True(entity.EstaExcluida());
+        Assert.NotNull(entity.DeletedAt);
+        Assert.NotNull(entity.UpdatedAt);
+
+        var deletedAt = entity.DeletedAt;
+
+        entity.Reativar();
+
+        Assert.False(entity.EstaExcluida());
+        Assert.Null(entity.DeletedAt);
+        Assert.NotNull(entity.UpdatedAt);
+        Assert.NotEqual(deletedAt, entity.UpdatedAt);
+    }
+
+    [Fact]
+    public void Entity_Reativar_Deve_Ser_Ignorado_Quando_Nao_Estiver_Excluida()
+    {
+        var entity = new TestEntity(Guid.NewGuid());
+
+        entity.Reativar();
+
+        Assert.False(entity.EstaExcluida());
+        Assert.Null(entity.DeletedAt);
+    }
+
     private sealed class TestEntity : Entity
     {
         public TestEntity(Guid id) : base(id)

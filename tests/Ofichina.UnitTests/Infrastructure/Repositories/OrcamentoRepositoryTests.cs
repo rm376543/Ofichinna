@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
+using Ofichina.Domain.Enums;
 using Ofichina.Infrastructure.Persistence;
 using Ofichina.Infrastructure.Repositories;
 using System.Reflection;
@@ -31,9 +32,13 @@ public sealed class OrcamentoRepositoryTests
             10m,
             "Listagem de orçamento");
 
-        var itemServico = ItemServico.ParaOrcamento(orcamento.Id, servico.Id, peca.Id, 2);
+        var itemServico = orcamento.AdicionarServico(servico.Id, peca.Id, 2, StatusOrcamento.Criado);
         DefinirPropriedade(itemServico, nameof(ItemServico.Servico), servico);
         DefinirPropriedade(itemServico, nameof(ItemServico.Peca), peca);
+
+        orcamento.IniciarDiagnostico();
+        orcamento.FinalizarDiagnostico();
+        orcamento.AtualizarDesconto(10m);
 
         context.AddRange(servico, peca, orcamento, itemServico);
         await context.SaveChangesAsync();

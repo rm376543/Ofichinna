@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Ofichina.Application\Ofichina.Application.csproj" />
+    <ProjectReference Include="..\..\src\Ofichina.Api\Ofichina.Api.csproj" />
     <ProjectReference Include="..\..\src\Ofichina.Contracts\Ofichina.Contracts.csproj" />
     <ProjectReference Include="..\..\src\Ofichina.Domain\Ofichina.Domain.csproj" />
     <ProjectReference Include="..\..\src\Ofichina.Authentication\Ofichina.Authentication.csproj" />

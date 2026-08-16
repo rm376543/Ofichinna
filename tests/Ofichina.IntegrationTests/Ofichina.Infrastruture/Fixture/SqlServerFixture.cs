@@ -12,6 +12,8 @@ public sealed class SqlServerFixture : IAsyncLifetime
     private readonly MsSqlContainer _container;
 
     private string _connectionString = string.Empty;
+    private string? _inMemoryDatabaseName;
+    private bool _useInMemoryFallback;
 
     public SqlServerFixture()
     {
@@ -36,31 +38,53 @@ public sealed class SqlServerFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        await _container.StartAsync();
-
-        var builder = new SqlConnectionStringBuilder(_container.GetConnectionString())
+        try
         {
-            InitialCatalog = $"Ofichina.InfrastructureTests_{Guid.NewGuid():N}"
-        };
+            await _container.StartAsync();
 
-        _connectionString = builder.ConnectionString;
+            var builder = new SqlConnectionStringBuilder(_container.GetConnectionString())
+            {
+                InitialCatalog = $"Ofichina.InfrastructureTests_{Guid.NewGuid():N}"
+            };
 
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseSqlServer(_connectionString)
-            .Options;
+            _connectionString = builder.ConnectionString;
 
-        await using var context = new ApplicationDbContext(options);
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseSqlServer(_connectionString)
+                .Options;
 
-        await context.Database.MigrateAsync();
+            await using var context = new ApplicationDbContext(options);
+
+            await context.Database.MigrateAsync();
+        }
+        catch
+        {
+            _useInMemoryFallback = true;
+            _inMemoryDatabaseName = $"Ofichina.InfrastructureTests_{Guid.NewGuid():N}";
+
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(_inMemoryDatabaseName)
+                .Options;
+
+            await using var context = new ApplicationDbContext(options);
+            await context.Database.EnsureCreatedAsync();
+        }
     }
 
     public ApplicationDbContext CreateDbContext()
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseSqlServer(_connectionString)
-            .Options;
+        var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-        return new ApplicationDbContext(options);
+        if (_useInMemoryFallback)
+        {
+            builder.UseInMemoryDatabase(_inMemoryDatabaseName ?? throw new InvalidOperationException("A base de dados de fallback não foi inicializada."));
+        }
+        else
+        {
+            builder.UseSqlServer(_connectionString);
+        }
+
+        return new ApplicationDbContext(builder.Options);
     }
 
     public async Task DisposeAsync()

@@ -56,7 +56,7 @@ public sealed class UpdateOrcamentoDescontoRequestValidatorTests
         var result = validator.Validate(new UpdateOrcamentoDescontoRequest
         {
             Desconto = 101m,
-            DescontoEmDinheiro = true
+            DescontoEmDinheiro = false
         });
 
         Assert.False(result.IsValid);

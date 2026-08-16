@@ -119,14 +119,7 @@ public sealed class PecaController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
         }
 
-        var result = await _mediator.Send(new CreatePecaCommand
-        {
-            Nome = request.Nome,
-            Descricao = request.Descricao,
-            Codigo = request.Codigo,
-            Valor = request.Valor,
-            QuantidadeEstoque = request.QuantidadeEstoque
-        }, cancellationToken);
+        var result = await _mediator.Send(new CreatePecaCommand(request), cancellationToken);
 
         if (!result.IsSuccess)
         {
