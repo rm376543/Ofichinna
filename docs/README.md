@@ -1,12 +1,21 @@
+# 📚 OFICHINNA - Clean Architecture .NET 10
+
 <div align="center">
 
 ![Coverage](./image/coverage/badge_combined.svg)
-![Line Coverage](./image/coverage/badge_linecoverage.svg)
-![Branch Coverage](./image/coverage/badge_branchcoverage.svg)
+![Tests](https://img.shields.io/badge/tests-passing-success?logo=dotnet)
+![Quality](https://img.shields.io/badge/code%20quality-A-success)
+![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white)
+![C#](https://img.shields.io/badge/C%23-14-239120?logo=csharp&logoColor=white)
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-10.0-512BD4?logo=dotnet&logoColor=white)
+![Entity Framework Core](https://img.shields.io/badge/EF%20Core-10.0-512BD4?logo=dotnet&logoColor=white)
+![SQL Server](https://img.shields.io/badge/SQL%20Server-2022-CC2927?logo=microsoftsqlserver&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker&logoColor=white)
+![Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture-blueviolet)
+![Pattern](https://img.shields.io/badge/Pattern-CQRS-orange)
+![DDD](https://img.shields.io/badge/Design-DDD-blue)
 
 </div>
-
-# 📚 OFICHINNA - Clean Architecture .NET 10
 
 ![Ofichina Arquitetura Limpa e Pronta](./image/arquitetura.png)
 
@@ -29,7 +38,7 @@ Projeto Ofichinna implementado com **Clean Architecture** e **CQRS Pattern**, ut
 Clone o repositório para sua máquina:
 
 ```bash
-git clone <URL_DO_REPOSITORIO>
+git clone https://github.com/rm376543/Ofichinna.git
 ```
 
 Entre na pasta do projeto:
