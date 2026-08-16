@@ -1,6 +1,6 @@
 ﻿using Ofichina.Domain.Entities;
 
-namespace Ofichina.UnitTests.Domain;
+namespace Ofichina.UnitTests.Ofichina.Domain.Entities;
 
 public class EntityTests
 {

@@ -27,7 +27,7 @@ public sealed class DiaHorarioDisponibilidade : Entity
     /// </summary>
     public HorarioDisponibilidade HorarioDisponibilidade { get; private set; } = null!;
 
-    private DiaHorarioDisponibilidade()
+    public DiaHorarioDisponibilidade()
     {
     }
 
