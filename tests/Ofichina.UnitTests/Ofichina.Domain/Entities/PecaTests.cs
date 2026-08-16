@@ -1,7 +1,7 @@
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
 
-namespace Ofichina.UnitTests.Domain;
+namespace Ofichina.UnitTests.Ofichina.Domain.Entities;
 
 public sealed class PecaTests
 {

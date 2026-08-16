@@ -1,10 +1,10 @@
-using System.Reflection;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 using Ofichina.Domain.Exceptions;
+using System.Reflection;
 
-namespace Ofichina.UnitTests.Domain;
+namespace Ofichina.UnitTests.Ofichina.Domain.Aggregates;
 
 public sealed class OrcamentoTests
 {

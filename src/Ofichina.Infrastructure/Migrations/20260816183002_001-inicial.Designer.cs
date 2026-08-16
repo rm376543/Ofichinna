@@ -12,7 +12,7 @@ using Ofichina.Infrastructure.Persistence;
 namespace Ofichina.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260815201022_001-inicial")]
+    [Migration("20260816183002_001-inicial")]
     partial class _001inicial
     {
         /// <inheritdoc />
