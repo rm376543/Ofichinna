@@ -1,3 +1,7 @@
+![Coverage](./image/coverage/badge_combined.svg)
+![Line Coverage](./image/coverage/badge_linecoverage.svg)
+![Branch Coverage](./image/coverage/badge_branchcoverage.svg)
+
 # 📚 OFICHINNA - Clean Architecture .NET 10
 
 ![Ofichina Arquitetura Limpa e Pronta](./image/arquitetura.png)
@@ -63,15 +67,19 @@ Após executar o Docker Compose, a API estará disponível na porta **8080**.
 Acesse:
 
 ```text
-http://localhost:8080
-```
-
-Caso o projeto disponibilize o Swagger, acesse:
-
-```text
 http://localhost:8080/swagger
 ```
 
+### 3.1. Massa de testes
+
+```json
+{
+    "email": "admin@ofichina.com.br",
+    "senha": 111111
+}
+```
+
+> **Observação:** Durante a inicializacao do container, o script de seed executa a migration e cria toda estrutura necessária, incluindo usuários, perfis, permissoes, veiculos, etc. Utilize o usuario administrador com o email e senha acima. Use essas credenciais para autenticar e testar os endpoints da API.
 ---
 
 ### 4. Fluxo completo de inicialização
