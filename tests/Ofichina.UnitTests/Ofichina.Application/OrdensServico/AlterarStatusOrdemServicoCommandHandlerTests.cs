@@ -34,7 +34,7 @@ public sealed class AlterarStatusOrdemServicoCommandHandlerTests
 
         Assert.True(result.IsSuccess, result.Error);
         Assert.True(ordemServicoRepository.IncludeItensRecebido);
-        Assert.Equal(Ofichina.Domain.Enums.StatusOrdemServico.Finalizada, ordemServico.Status);
+        Assert.Equal(StatusOrdemServico.Finalizada, ordemServico.Status);
         Assert.NotNull(ordemServico.DataFinalizacao);
         Assert.Equal(1, historicoStatusRepository.Atualizacoes);
         Assert.Equal(1, unitOfWork.SaveChangesCalls);
@@ -164,7 +164,8 @@ public sealed class AlterarStatusOrdemServicoCommandHandlerTests
 
         public Task<OrdemServico?> GetByIdAsync(Guid id, bool includeItens = false, bool tracking = false, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            IncludeItensRecebido = includeItens;
+            return Task.FromResult(_ordemServico is not null && _ordemServico.Id == id ? _ordemServico : null);
         }
     }
 

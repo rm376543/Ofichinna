@@ -32,6 +32,34 @@ public sealed class ServicoTests
     }
 
     [Fact]
+    public void Deve_Tratar_Descricao_Como_Nula_Quando_Vazia_Ou_Com_Espacos()
+    {
+        var servico = new Servico("Balanceamento", "   ", 89.90m);
+
+        Assert.Null(servico.Descricao);
+
+        servico.AtualizarDados("Balanceamento", "   Revisão  ", 99.90m);
+
+        Assert.Equal("Revisão", servico.Descricao);
+    }
+
+    [Fact]
+    public void Deve_Desativar_E_Reativar_Servico()
+    {
+        var servico = new Servico("Balanceamento", null, 89.90m);
+
+        servico.Desativar();
+
+        Assert.True(servico.EstaExcluida());
+
+        servico.Desativar();
+        servico.Ativar();
+
+        Assert.False(servico.EstaExcluida());
+        Assert.NotNull(servico.UpdatedAt);
+    }
+
+    [Fact]
     public void Deve_Rejeitar_Servico_Com_Dados_Invalidos()
     {
         Assert.Throws<DomainException>(() => new Servico(string.Empty, null, 10m));
