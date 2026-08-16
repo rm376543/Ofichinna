@@ -1,6 +1,10 @@
+<div align="center">
+
 ![Coverage](./image/coverage/badge_combined.svg)
 ![Line Coverage](./image/coverage/badge_linecoverage.svg)
 ![Branch Coverage](./image/coverage/badge_branchcoverage.svg)
+
+</div>
 
 # 📚 OFICHINNA - Clean Architecture .NET 10
 
