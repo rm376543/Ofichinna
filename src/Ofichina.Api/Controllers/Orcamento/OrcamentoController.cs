@@ -129,67 +129,13 @@ public sealed class OrcamentoController : ControllerBase
     }
 
     /// <summary>
-    /// Inicia o diagnóstico de um orçamento.
-    /// </summary>
-    /// <param name="request">Identificador do orçamento.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso ou erro de validação.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpPost("iniciar-diagnostico")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> IniciarDiagnosticoOrcamento(
-        [FromBody] OrcamentoRequest request,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando o diagnóstico do orçamento com Id: {Id}.", request.OrcamentoId);
-
-        var result = await _mediator.Send(new IniciarDiagnosticoOrcamentoCommand(request.OrcamentoId), cancellationToken);
-
-        if (!result.IsSuccess)
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível iniciar o diagnóstico do orçamento."));
-
-        return Ok(ApiResponse.SuccessResponse("Diagnóstico do orçamento iniciado com sucesso."));
-    }
-
-    /// <summary>
-    /// Finaliza o orçamento após diagnóstico.
-    /// </summary>
-    /// <param name="request">Identificador do orçamento.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso ou erro de validação.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpPost("finalizar")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> FinalizarOrcamento(
-        [FromBody] OrcamentoRequest request,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Finalizando o orçamento com Id: {Id}.", request.OrcamentoId);
-
-        var result = await _mediator.Send(new FinalizarOrcamentoCommand(request.OrcamentoId), cancellationToken);
-
-        if (!result.IsSuccess)
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível finalizar o orçamento."));
-
-        return Ok(ApiResponse.SuccessResponse("Orçamento finalizado com sucesso."));
-    }
-
-    /// <summary>
     /// Envia o orçamento para o cliente.
     /// </summary>
     /// <param name="request">Identificador do orçamento.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost("enviar")]
+    [HttpPost("consultor/enviar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
@@ -215,7 +161,7 @@ public sealed class OrcamentoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro de validação.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost("aprovar")]
+    [HttpPost("cliente/aprovar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
@@ -242,7 +188,7 @@ public sealed class OrcamentoController : ControllerBase
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Mensagem de sucesso ou erro 404.</returns>
     [Authorize(Roles = "ADMIN")]
-    [HttpPost("reprovar")]
+    [HttpPost("cliente/reprovar")]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
