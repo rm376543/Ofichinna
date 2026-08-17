@@ -1,5 +1,6 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Requests.Pecas;
 
 namespace Ofichina.Application.UseCases.OrdensServico.Commands;
 
@@ -21,5 +22,12 @@ public sealed class UtilizarPecaCommand : ICommand<Result>
     /// <summary>
     /// Identificador da peça vinculada ao serviço.
     /// </summary>
-    public Guid Id { get; init; }
+    public Guid PecaId { get; init; }
+
+    public UtilizarPecaCommand(UtilizarPecaRequest request)
+    {
+        OrdemServicoId = request.OrdemServicoId;
+        ItemServicoId = request.ItemServicoId;
+        PecaId = request.PecaId;
+    }
 }
