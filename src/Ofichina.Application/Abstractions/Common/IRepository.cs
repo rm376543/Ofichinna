@@ -1,5 +1,4 @@
 using Ofichina.Contracts.Common;
-using Ofichina.Domain.Common;
 using Ofichina.Domain.Entities;
 
 namespace Ofichina.Application.Abstractions.Common;

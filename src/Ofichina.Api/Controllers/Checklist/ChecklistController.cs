@@ -76,7 +76,7 @@ public sealed class ChecklistController : ControllerBase
 
 
     /// <summary>
-    /// Remove logicamente um checklist existente.
+    /// Remove logicamente um checklist vinculado ao agendamento existente.
     /// </summary>
     /// <param name="request">Dados necessários para remoção de um checklist cadastrado errado.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>

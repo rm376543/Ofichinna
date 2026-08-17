@@ -1,18 +1,18 @@
 ﻿namespace Ofichina.Application.UseCases.Checklists.Handlers;
 
 using Ofichina.Application.Abstractions;
+using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Checklists.Commands;
 using Ofichina.Contracts.Common;
-using Ofichina.Domain.Entities;
 
 public sealed class RemoveChecklistCommandHandler : ICommandHandler<RemoveChecklistCommand, Result>
 {
-    private readonly IRepository<Checklist> _repository;
+    private readonly IChecklistRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<RemoveChecklistCommandHandler> _logger;
 
     public RemoveChecklistCommandHandler(
-        IRepository<Checklist> repository,
+        IChecklistRepository repository,
         IUnitOfWork unitOfWork,
         ILogger<RemoveChecklistCommandHandler> logger)
     {
@@ -29,7 +29,7 @@ public sealed class RemoveChecklistCommandHandler : ICommandHandler<RemoveCheckl
         {
             _logger.LogInformation("Iniciando processamento do comando.");
 
-            var checklist = await _repository.GetByIdAsync(command.Id, cancellationToken);
+            var checklist = await _repository.GetByAgendamentoChecklistIdAsync(command.AgendamentoId, command.ChecklistId, cancellationToken);
             if (checklist == null)
             {
                 _logger.LogWarning("Checklist não encontrado.");
