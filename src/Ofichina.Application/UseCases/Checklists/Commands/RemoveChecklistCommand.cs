@@ -9,11 +9,13 @@ using Ofichina.Contracts.Requests.Checklist;
 /// </summary>
 public sealed class RemoveChecklistCommand : ICommand<Result>
 {
-    public Guid Id { get; init; }
+    public Guid AgendamentoId { get; set; }
+    public Guid ChecklistId { get; init; }
 
     public RemoveChecklistCommand(RemoveChecklistRequest request)
     {
-        Id = request.ChecklistId;
+        AgendamentoId = request.AgendamentoId;
+        ChecklistId = request.ChecklistId;
     }
 }
 
