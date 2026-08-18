@@ -36,7 +36,7 @@ public sealed class UtilizarPecaCommandHandler : ICommandHandler<UtilizarPecaCom
     {
         try
         {
-            _logger.LogInformation("Iniciando utilização de peça na ordem de serviço. OrdemServicoId: {OrdemServicoId}, PecaId: {PecaId}.", command.OrdemServicoId, command.Id);
+            _logger.LogInformation("Iniciando utilização de peça na ordem de serviço. OrdemServicoId: {OrdemServicoId}, PecaId: {PecaId}.", command.OrdemServicoId, command.PecaId);
 
             var ordemServico = await _ordemServicoRepository.GetByIdAsync(command.OrdemServicoId, true, true, cancellationToken);
             if (ordemServico is null || ordemServico.EstaExcluida())
@@ -66,17 +66,17 @@ public sealed class UtilizarPecaCommandHandler : ICommandHandler<UtilizarPecaCom
 
             await _unitOfWork.SaveChangesAsync();
 
-            _logger.LogInformation("Peça utilizada com sucesso. OrdemServicoId: {OrdemServicoId}, PecaId: {PecaId}.", command.OrdemServicoId, command.Id);
+            _logger.LogInformation("Peça utilizada com sucesso. OrdemServicoId: {OrdemServicoId}, PecaId: {PecaId}.", command.OrdemServicoId, command.PecaId);
             return Result.Success();
         }
         catch (DomainException ex)
         {
-            _logger.LogWarning(ex, "Erro de domínio ao utilizar peça. OrdemServicoId: {OrdemServicoId}, PecaId: {PecaId}.", command.OrdemServicoId, command.Id);
+            _logger.LogWarning(ex, "Erro de domínio ao utilizar peça. OrdemServicoId: {OrdemServicoId}, PecaId: {PecaId}.", command.OrdemServicoId, command.PecaId);
             return Result.Failure(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado ao utilizar peça. OrdemServicoId: {OrdemServicoId}, PecaId: {PecaId}.", command.OrdemServicoId, command.Id);
+            _logger.LogError(ex, "Erro inesperado ao utilizar peça. OrdemServicoId: {OrdemServicoId}, PecaId: {PecaId}.", command.OrdemServicoId, command.PecaId);
             return Result.Failure("Não foi possível utilizar a peça.");
         }
     }

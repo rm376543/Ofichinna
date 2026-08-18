@@ -59,6 +59,8 @@ public static class RepositoryModule
 
         services.AddScoped<IPecaRepository, PecaRepository>();
 
+        services.AddScoped<IChecklistRepository, ChecklistRepository>();
+
         return services;
     }
 }

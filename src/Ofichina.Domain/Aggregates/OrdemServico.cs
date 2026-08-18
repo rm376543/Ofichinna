@@ -312,8 +312,7 @@ public sealed class OrdemServico : Entity
     {
         ValidarStatus(StatusOrdemServico.Finalizada);
 
-        Status = StatusOrdemServico.Entregue;
-        AtualizarDataModificacao();
+        AtualizaStatus(StatusOrdemServico.Entregue);
     }
 
     /// <summary>
@@ -327,8 +326,7 @@ public sealed class OrdemServico : Entity
             throw new DomainException("Não é possível cancelar uma OS finalizada ou entregue.");
         }
 
-        Status = StatusOrdemServico.Cancelada;
-        AtualizarDataModificacao();
+        AtualizaStatus(StatusOrdemServico.Cancelada);
     }
 
     /// <summary>
@@ -347,5 +345,11 @@ public sealed class OrdemServico : Entity
     {
         if (Status != statusEsperado)
             throw new DomainException($"A OS precisa estar no status {statusEsperado}.");
+    }
+
+    public void AtualizaStatus(StatusOrdemServico novoStatus)
+    {
+        Status = novoStatus;
+        AtualizarDataModificacao();
     }
 }
