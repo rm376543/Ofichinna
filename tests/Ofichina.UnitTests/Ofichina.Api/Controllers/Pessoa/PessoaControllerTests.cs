@@ -10,9 +10,9 @@ using Ofichina.Application.Validators.Pessoa;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Pessoa;
 using Ofichina.Contracts.Responses.Pessoa;
-using Ofichina.UnitTests.Ofichina.Api.TestDoubles;
+using Ofichina.UnitTests.Api.TestDoubles;
 
-namespace Ofichina.UnitTests.Ofichina.Api.Controllers.Pessoa;
+namespace Ofichina.UnitTests.Api.Controllers.Pessoa;
 
 public sealed class PessoaControllerTests
 {

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Ofichina.Infrastructure.Migrations;
 
-namespace Ofichina.UnitTests.Migrations;
+namespace Ofichina.UnitTests.Infrastructure.Migrations;
 
 public sealed class _001inicialTests
 {

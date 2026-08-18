@@ -1,7 +1,7 @@
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
 
-namespace Ofichina.UnitTests.Ofichina.Domain.Entities;
+namespace Ofichina.UnitTests.Domain.Entities;
 
 public sealed class PermissaoTests
 {

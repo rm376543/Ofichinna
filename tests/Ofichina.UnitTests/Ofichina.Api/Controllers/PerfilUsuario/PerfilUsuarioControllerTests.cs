@@ -10,9 +10,9 @@ using Ofichina.Application.Validators.PerfilUsuario;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.PerfilUsuario;
 using Ofichina.Contracts.Responses.PerfilUsuario;
-using Ofichina.UnitTests.Ofichina.Api.TestDoubles;
+using Ofichina.UnitTests.Api.TestDoubles;
 
-namespace Ofichina.UnitTests.Ofichina.Api.Controllers.PerfilUsuario;
+namespace Ofichina.UnitTests.Api.Controllers.PerfilUsuario;
 
 public sealed class PerfilUsuarioControllerTests
 {

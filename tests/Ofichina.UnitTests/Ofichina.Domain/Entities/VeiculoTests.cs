@@ -2,7 +2,7 @@
 using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.ValueObjects;
 
-namespace Ofichina.UnitTests.Ofichina.Domain.Entities;
+namespace Ofichina.UnitTests.Domain.Entities;
 
 public class VeiculoTests
 {

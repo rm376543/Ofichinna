@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Ofichina.Infrastructure.Persistence;
 
-namespace Ofichina.UnitTests;
+namespace Ofichina.UnitTests.Infrastructure.Persistence;
 
 public sealed class DatabaseSeederTests
 {

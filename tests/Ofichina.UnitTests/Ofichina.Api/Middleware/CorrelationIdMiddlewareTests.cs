@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging.Abstractions;
 using Ofichina.Api.Middleware;
 
-namespace Ofichina.UnitTests.Ofichina.Api.Middleware;
+namespace Ofichina.UnitTests.Api.Middleware;
 
 public sealed class CorrelationIdMiddlewareTests
 {

@@ -3,7 +3,7 @@ using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 using Ofichina.Domain.Exceptions;
 
-namespace Ofichina.UnitTests.Ofichina.Domain.Aggregates;
+namespace Ofichina.UnitTests.Domain.Aggregates;
 
 public sealed class AgendamentoTests
 {

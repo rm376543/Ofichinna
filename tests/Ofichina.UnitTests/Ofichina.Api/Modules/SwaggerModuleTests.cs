@@ -6,7 +6,7 @@ using Microsoft.OpenApi;
 using Ofichina.Api.Modules;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Ofichina.UnitTests.Ofichina.Api.Modules;
+namespace Ofichina.UnitTests.Api.Modules;
 
 public sealed class SwaggerModuleTests
 {

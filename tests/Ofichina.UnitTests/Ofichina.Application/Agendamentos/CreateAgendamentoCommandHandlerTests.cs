@@ -1,14 +1,13 @@
-using System.Reflection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Ofichina.Application.Abstractions.Authentication.Service;
-using Ofichina.Application.Abstractions.Common;
 using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Agendamentos.Commands;
 using Ofichina.Application.UseCases.Agendamentos.Handlers;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
+using System.Reflection;
 
 namespace Ofichina.UnitTests.Application.Agendamentos;
 

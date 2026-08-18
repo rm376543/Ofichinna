@@ -13,7 +13,7 @@ using Ofichina.Contracts.Requests.Usuario;
 using Ofichina.Contracts.Responses.Authentication;
 using System.Runtime.CompilerServices;
 
-namespace Ofichina.UnitTests.Ofichina.Api.Controllers.Autenticacao;
+namespace Ofichina.UnitTests.Api.Controllers.Autenticacao;
 
 public sealed class AuthControllerTests
 {

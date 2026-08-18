@@ -1,14 +1,12 @@
 using Microsoft.Extensions.Logging.Abstractions;
-using Ofichina.Application.Abstractions.Common;
 using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Application.UseCases.Agendamentos.Commands;
 using Ofichina.Application.UseCases.Agendamentos.Handlers;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Agendamento;
 using Ofichina.Domain.Aggregates;
-using Ofichina.Domain.Enums;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.Exceptions;
+using Ofichina.Domain.Enums;
 
 namespace Ofichina.UnitTests.Application.Agendamentos;
 

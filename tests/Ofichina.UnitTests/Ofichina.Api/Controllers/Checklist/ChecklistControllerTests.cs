@@ -8,7 +8,7 @@ using Ofichina.Application.UseCases.Checklists.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Checklist;
 
-namespace Ofichina.UnitTests.Ofichina.Api.Controllers.Checklist;
+namespace Ofichina.UnitTests.Api.Controllers.Checklist;
 
 public sealed class ChecklistControllerTests
 {
