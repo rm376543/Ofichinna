@@ -65,4 +65,4 @@ db/**/*
 .env
 
 coverage-report/**/*
-./tests/Ofichina.ArchitectureTests/TestResults/**/*
+./tests/**/TestResults/
