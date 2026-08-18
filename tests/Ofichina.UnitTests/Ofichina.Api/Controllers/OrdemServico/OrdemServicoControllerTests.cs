@@ -1,4 +1,3 @@
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -8,9 +7,9 @@ using Ofichina.Application.UseCases.OrdensServico.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Responses.OrdemServico;
 using Ofichina.Contracts.Responses.OrdensServico;
-using Ofichina.UnitTests.Ofichina.Api.TestDoubles;
+using Ofichina.UnitTests.Api.TestDoubles;
 
-namespace Ofichina.UnitTests.Ofichina.Api.Controllers.OrdemServico;
+namespace Ofichina.UnitTests.Api.Controllers.OrdemServico;
 
 public sealed class OrdemServicoControllerTests
 {

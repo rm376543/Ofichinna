@@ -2,7 +2,7 @@
 using Ofichina.Application.Abstractions;
 using Ofichina.Contracts.Common;
 
-namespace Ofichina.UnitTests.Ofichina.Application.Abstractions;
+namespace Ofichina.UnitTests.Application.Abstractions;
 
 public sealed class CommandQueryHandlerTests
 {

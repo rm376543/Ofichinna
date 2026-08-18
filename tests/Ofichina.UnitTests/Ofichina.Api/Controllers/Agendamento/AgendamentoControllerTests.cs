@@ -9,9 +9,9 @@ using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Agendamento;
 using Ofichina.Contracts.Responses.Agendamento;
 using Ofichina.Contracts.Responses.Agendamento.Consultor;
-using Ofichina.UnitTests.Ofichina.Api.TestDoubles;
+using Ofichina.UnitTests.Api.TestDoubles;
 
-namespace Ofichina.UnitTests.Ofichina.Api.Controllers.Agendamento;
+namespace Ofichina.UnitTests.Api.Controllers.Agendamento;
 
 public sealed class AgendamentoControllerTests
 {

@@ -4,7 +4,7 @@ using Ofichina.Domain.ValueObjects;
 using Ofichina.Infrastructure.Persistence;
 using Ofichina.Infrastructure.Repositories;
 
-namespace Ofichina.UnitTests;
+namespace Ofichina.UnitTests.Infrastructure.Repositories;
 
 public sealed class HorarioConsultorRepositoryTests
 {

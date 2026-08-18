@@ -7,7 +7,7 @@ using Moq;
 using Ofichina.Infrastructure.DependencyInjection;
 using Ofichina.Infrastructure.Persistence;
 
-namespace Ofichina.UnitTests.DependencyInjection;
+namespace Ofichina.UnitTests.Infrastructure.DependencyInjection;
 
 public sealed class DatabaseInitializationHostedServiceTests
 {

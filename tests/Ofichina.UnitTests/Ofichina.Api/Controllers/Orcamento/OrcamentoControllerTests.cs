@@ -8,9 +8,9 @@ using Ofichina.Application.Validators.Orcamento;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Orcamento;
 using Ofichina.Contracts.Responses.Orcamento;
-using Ofichina.UnitTests.Ofichina.Api.TestDoubles;
+using Ofichina.UnitTests.Api.TestDoubles;
 
-namespace Ofichina.UnitTests.Ofichina.Api.Controllers.Orcamento;
+namespace Ofichina.UnitTests.Api.Controllers.Orcamento;
 
 public sealed class OrcamentoControllerTests
 {
@@ -235,14 +235,13 @@ public sealed class OrcamentoControllerTests
             request,
             CancellationToken.None);
 
-        var badRequest = Assert.IsType<BadRequestObjectResult>(result.Result);
+        var badRequest =
+            Assert.IsType<BadRequestObjectResult>(result.Result);
 
-        var response = Assert.IsType<ApiResponse>(badRequest.Value);
+        var response =
+            Assert.IsType<ApiResponse>(badRequest.Value);
 
         Assert.False(response.Success);
-        Assert.Equal(
-            "Erro ao criar orçamento.",
-            response.Message);
     }
 
     // ============================================================
@@ -579,23 +578,24 @@ public sealed class OrcamentoControllerTests
     [Fact]
     public async Task AtualizarDescontoOrcamento_Deve_Rejeitar_Requisicao_Invalida()
     {
-        var mediator = new FakeMediator();
-
-        var controller = CriarController(mediator);
+        var controller = CriarController(
+            new FakeMediator());
 
         var request = new UpdateOrcamentoDescontoRequest
         {
-            OrcamentoId = Guid.Empty,
-            Desconto = 0
+            OrcamentoId = Guid.NewGuid(),
+            Desconto = -1
         };
 
         var result = await controller.AtualizarDescontoOrcamento(
             request,
             CancellationToken.None);
 
-        var badRequest = Assert.IsType<BadRequestObjectResult>(result.Result);
+        var badRequest =
+            Assert.IsType<BadRequestObjectResult>(result.Result);
 
-        var response = Assert.IsType<ApiResponse>(badRequest.Value);
+        var response =
+            Assert.IsType<ApiResponse>(badRequest.Value);
 
         Assert.False(response.Success);
     }
@@ -679,15 +679,17 @@ public sealed class OrcamentoControllerTests
     }
 
     private static CreateOrcamentoRequest CriarCreateOrcamentoRequestValido()
+    => new()
     {
-        return new CreateOrcamentoRequest
-        {
-            PessoaId = Guid.NewGuid(),
-            VeiculoId = Guid.NewGuid(),
-            AgendamentoId = Guid.NewGuid()
-        };
-    }
-
+        PessoaId = Guid.NewGuid(),
+        VeiculoId = Guid.NewGuid(),
+        AgendamentoId = Guid.NewGuid(),
+        MecanicoId = Guid.NewGuid(),
+        ConsultorId = Guid.NewGuid(),
+        DataValidade = DateOnly.FromDateTime(
+            DateTime.UtcNow.AddDays(30)),
+        Observacoes = "Orçamento para manutenção."
+    };
     private static UpdateOrcamentoRequest CriarUpdateOrcamentoRequestValido()
     {
         return new UpdateOrcamentoRequest

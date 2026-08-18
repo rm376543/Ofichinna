@@ -4,7 +4,7 @@ using Ofichina.Domain.Enums;
 using Ofichina.Domain.Exceptions;
 using System.Reflection;
 
-namespace Ofichina.UnitTests.Ofichina.Domain.Aggregates;
+namespace Ofichina.UnitTests.Domain.Aggregates;
 
 public sealed class OrdemServicoTests
 {

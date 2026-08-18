@@ -14,7 +14,7 @@ using Ofichina.Contracts.Responses.Orcamento;
 using Ofichina.Contracts.Responses.OrdemServico;
 using System.Runtime.CompilerServices;
 
-namespace Ofichina.UnitTests.Ofichina.Api.Controllers.ItensServico;
+namespace Ofichina.UnitTests.Api.Controllers.ItensServico;
 
 public sealed class ItemServicoControllerTests
 {

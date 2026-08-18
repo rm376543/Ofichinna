@@ -4,7 +4,7 @@ using Ofichina.Domain.Entities;
 using Ofichina.Infrastructure.Persistence;
 using Ofichina.Infrastructure.Repositories;
 
-namespace Ofichina.UnitTests.Repositories;
+namespace Ofichina.UnitTests.Infrastructure.Repositories;
 
 public sealed class PecaRepositoryTests
 {

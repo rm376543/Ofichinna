@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Ofichina.UnitTests.Ofichina.Api.TestDoubles;
+namespace Ofichina.UnitTests.Api.TestDoubles;
 
 public sealed class FakeMediator : IMediator
 {
@@ -64,6 +64,6 @@ public sealed class FakeMediator : IMediator
             return handler(request);
         }
 
-        throw new NotSupportedException($"Requisição não suportada: {request.GetType().FullName}");
+        throw new NotSupportedException($"[FakeMediator] Requisição não suportada: {request.GetType().FullName}");
     }
 }

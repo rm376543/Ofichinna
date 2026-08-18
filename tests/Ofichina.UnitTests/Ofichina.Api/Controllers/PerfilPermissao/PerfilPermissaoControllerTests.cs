@@ -1,5 +1,3 @@
-using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -10,9 +8,9 @@ using Ofichina.Application.Validators.PerfilPermissoes;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.PerfilPermissoes;
 using Ofichina.Contracts.Responses.PerfilPermissoes;
-using Ofichina.UnitTests.Ofichina.Api.TestDoubles;
+using Ofichina.UnitTests.Api.TestDoubles;
 
-namespace Ofichina.UnitTests.Ofichina.Api.Controllers.PerfilPermissoes;
+namespace Ofichina.UnitTests.Api.Controllers.PerfilPermissoes;
 
 public sealed class PerfilPermissaoControllerTests
 {
