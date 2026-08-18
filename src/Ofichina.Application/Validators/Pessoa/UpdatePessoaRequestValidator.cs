@@ -1,6 +1,6 @@
-﻿using System.Text.RegularExpressions;
-using FluentValidation;
+﻿using FluentValidation;
 using Ofichina.Contracts.Requests.Pessoa;
+using System.Text.RegularExpressions;
 
 namespace Ofichina.Application.Validators.Pessoa;
 
@@ -53,13 +53,25 @@ public sealed class UpdatePessoaRequestValidator : AbstractValidator<UpdatePesso
 
     private static bool TelefoneEhValido(string telefone)
     {
-        var numerico = Regex.Replace(telefone ?? string.Empty, @"\D", string.Empty);
+        var numerico = Regex.Replace(
+            telefone ?? string.Empty,
+            @"\D",
+            string.Empty,
+            RegexOptions.None,
+            TimeSpan.FromMilliseconds(100));
+
         return numerico.Length is 10 or 11;
     }
 
     private static bool CepEhValido(string cep)
     {
-        var numerico = Regex.Replace(cep ?? string.Empty, @"\D", string.Empty);
+        var numerico = Regex.Replace(
+            cep ?? string.Empty,
+            @"\D",
+            string.Empty,
+            RegexOptions.None,
+            TimeSpan.FromMilliseconds(100));
+
         return numerico.Length == 8;
     }
 }
