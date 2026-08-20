@@ -5,9 +5,9 @@ using Ofichina.Api.Controllers;
 using Ofichina.Application.UseCases.Orcamentos.Commands;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Orcamento;
-using Ofichina.UnitTests.Api.TestDoubles;
+using Ofichina.UnitTests.Ofichina.Api.TestDoubles;
 
-namespace Ofichina.UnitTests.Api.Controllers.Diagnostico;
+namespace Ofichina.UnitTests.Ofichina.Api.Controllers.Diagnostico;
 
 public sealed class DiagnosticoControllerTests
 {
