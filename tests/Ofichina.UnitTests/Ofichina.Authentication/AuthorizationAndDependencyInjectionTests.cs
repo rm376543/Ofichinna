@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using AuthenticationNamespace = global::Ofichina.Authentication;
+using AuthenticationNamespace = Ofichina.Authentication;
 using Ofichina.Authentication;
 using Ofichina.Authentication.DependencyInjection;
 using Ofichina.Authentication.Security;
@@ -15,7 +15,7 @@ using Ofichina.Authentication.Services;
 using Ofichina.Application.Abstractions.Authentication.Service;
 using Ofichina.Contracts.Common;
 
-namespace Ofichina.UnitTests.Autenticacao;
+namespace Ofichina.UnitTests.Authentication;
 
 public sealed class AuthorizationAndDependencyInjectionTests
 {

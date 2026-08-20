@@ -7,7 +7,7 @@ using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.Orcamento;
 using Ofichina.UnitTests.Api.TestDoubles;
 
-namespace Ofichina.UnitTests.Api.Controllers.Diagnostico;
+namespace Ofichina.UnitTests.Ofichina.Api.Controllers.Diagnostico;
 
 public sealed class DiagnosticoControllerTests
 {

@@ -5,7 +5,7 @@ using Ofichina.Domain.ValueObjects;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Ofichina.UnitTests.Autenticacao;
+namespace Ofichina.UnitTests.Authentication;
 
 public sealed class JwtTokenServiceTests
 {

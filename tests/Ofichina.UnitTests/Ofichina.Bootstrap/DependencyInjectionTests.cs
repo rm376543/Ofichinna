@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Ofichina.Bootstrap;
 
-namespace Ofichina.UnitTests.Bootstrap.DependencyInjection;
+namespace Ofichina.UnitTests.Bootstrap;
 
 public sealed class DependencyInjectionTests
 {

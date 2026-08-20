@@ -7,7 +7,7 @@ using Ofichina.Contracts.Responses.Authentication;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
 
-namespace Ofichina.UnitTests.Autenticacao;
+namespace Ofichina.UnitTests.Ofichina.Authentication;
 
 public sealed class AutenticacaoServiceTests
 {
@@ -127,9 +127,9 @@ public sealed class AutenticacaoServiceTests
 
         public Task UpdateAsync(Usuario entity, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-        public Task<global::Ofichina.Contracts.Common.PagedResponse<Usuario>> GetPagedAsync(global::Ofichina.Contracts.Common.Pagination pagination, CancellationToken cancellationToken = default)
+        public Task<PagedResponse<Usuario>> GetPagedAsync(Pagination pagination, CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(new global::Ofichina.Contracts.Common.PagedResponse<Usuario>());
+            return Task.FromResult(new PagedResponse<Usuario>());
         }
 
         public Task HardDeleteAsync(Usuario entity, CancellationToken cancellationToken = default) => Task.CompletedTask;

@@ -1,7 +1,7 @@
 using Ofichina.Contracts.Responses.Orcamento;
 using Ofichina.Contracts.Responses.OrdemServico;
 
-namespace Ofichina.UnitTests.Contracts;
+namespace Ofichina.UnitTests.Ofichina.Contracts;
 
 public sealed class OrcamentoResponseTests
 {

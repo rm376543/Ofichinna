@@ -1,6 +1,6 @@
 using Ofichina.Infrastructure.Persistence;
 
-namespace Ofichina.UnitTests.Infrastructure;
+namespace Ofichina.UnitTests.Ofichina.Infrastructure;
 
 public sealed class ApplicationDbContextFactoryTests
 {
