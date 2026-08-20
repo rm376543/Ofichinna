@@ -8,7 +8,7 @@ using Ofichina.Contracts.Responses.Authentication;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
 
-namespace Ofichina.UnitTests.Application.Autenticacao;
+namespace Ofichina.UnitTests.Ofichina.Application.Autenticacao.Handlers;
 
 public class AutenticarCommandHandlerTests
 {

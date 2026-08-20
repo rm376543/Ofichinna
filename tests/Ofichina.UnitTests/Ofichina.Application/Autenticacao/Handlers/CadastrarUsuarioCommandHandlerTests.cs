@@ -9,7 +9,7 @@ using Ofichina.Contracts.Responses.Authentication;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
 
-namespace Ofichina.UnitTests.Application.Autenticacao;
+namespace Ofichina.UnitTests.Application.Autenticacao.Handlers;
 
 public sealed class CadastrarUsuarioCommandHandlerTests
 {
