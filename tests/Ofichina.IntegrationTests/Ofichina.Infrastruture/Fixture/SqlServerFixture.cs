@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using DotNetEnv;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Ofichina.Infrastructure.Persistence;
@@ -17,12 +18,16 @@ public sealed class SqlServerFixture : IAsyncLifetime
 
     public SqlServerFixture()
     {
+        // Carrega o .env nas variáveis de ambiente do processo,  
+        // igual ao que o Program.cs faz na inicialização da API.  
+        Env.TraversePath().Load();
+
         var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
                           ?? "Development";
 
         _configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false)
+            .AddJsonFile("appsettings.json", optional: true)
             .AddJsonFile($"appsettings.{environment}.json", optional: true)
             .AddEnvironmentVariables()
             .Build();
