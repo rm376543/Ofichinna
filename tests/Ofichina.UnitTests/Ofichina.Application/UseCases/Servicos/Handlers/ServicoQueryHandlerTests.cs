@@ -3,7 +3,6 @@ using Ofichina.Application.UseCases.Servicos.Handlers;
 using Ofichina.Application.UseCases.Servicos.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
-using Ofichina.UnitTests.Application.Servicos;
 
 namespace Ofichina.UnitTests.Application.UseCases.Servicos.Handlers;
 
