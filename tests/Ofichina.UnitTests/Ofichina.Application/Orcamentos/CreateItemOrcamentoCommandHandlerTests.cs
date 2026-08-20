@@ -9,7 +9,7 @@ using Ofichina.Domain.Exceptions;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace Ofichina.UnitTests.Application.ItensServico.Handlers;
+namespace Ofichina.UnitTests.Application.Orcamentos;
 
 public sealed class CreateItemOrcamentoCommandHandlerTests
 {

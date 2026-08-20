@@ -8,7 +8,7 @@ using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 
-namespace Ofichina.UnitTests.Application.ItensServico;
+namespace Ofichina.UnitTests.Application.Orcamentos;
 
 public sealed class UpdateItemOrcamentoCommandHandlerTests
 {

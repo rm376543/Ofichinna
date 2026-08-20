@@ -8,7 +8,7 @@ using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.ValueObjects;
 
-namespace Ofichina.UnitTests.Application.Orcamentos.Services;
+namespace Ofichina.UnitTests.Application.Orcamentos;
 
 public sealed class CreateOrcamentoServiceTests
 {
