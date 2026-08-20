@@ -8,7 +8,7 @@ using Ofichina.Domain.ValueObjects;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Ofichina.UnitTests.Application.UseCases.Veiculo.Handlers;
+namespace Ofichina.UnitTests.Application.UseCases.Veiculos.Handlers;
 
 public sealed class CreateVeiculoCommandHandlerTests
 {
