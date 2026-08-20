@@ -6,7 +6,7 @@ using Ofichina.Application.UseCases.ItensServico.Queries;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 
-namespace Ofichina.UnitTests.Application.ItensServico;
+namespace Ofichina.UnitTests.Application.ItensServico.Handlers;
 
 public sealed class GetItemServicoByIdQueryHandlerTests
 {
