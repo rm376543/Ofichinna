@@ -6,7 +6,7 @@ using Ofichina.Application.UseCases.Pessoas.Handlers;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
 using System.Reflection;
-using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Ofichina.UnitTests.Application.UseCases.Pessoas.Handlers;
 
@@ -332,7 +332,7 @@ public sealed class CreatePessoaCommandHandlerTests
     {
         var command =
             (CreatePessoaCommand)
-                FormatterServices.GetUninitializedObject(
+                RuntimeHelpers.GetUninitializedObject(
                     typeof(CreatePessoaCommand));
 
         DefinirPropriedade(
@@ -400,7 +400,7 @@ public sealed class CreatePessoaCommandHandlerTests
     private static Usuario CriarUsuario()
     {
         return (Usuario)
-            FormatterServices.GetUninitializedObject(
+            RuntimeHelpers.GetUninitializedObject(
                 typeof(Usuario));
     }
 

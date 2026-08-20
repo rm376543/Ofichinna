@@ -7,7 +7,7 @@ using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 using Ofichina.Domain.Exceptions;
 using System.Reflection;
-using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Ofichina.UnitTests.Application.UseCases.ItensServico.Handlers;
 
@@ -716,7 +716,7 @@ public sealed class UpdateItemServicoCommandHandlerTests
     {
         var command =
             (UpdateItemServicoCommand)
-                FormatterServices.GetUninitializedObject(
+                RuntimeHelpers.GetUninitializedObject(
                     typeof(UpdateItemServicoCommand));
 
         DefinirPropriedade(
@@ -754,28 +754,28 @@ public sealed class UpdateItemServicoCommandHandlerTests
     private static OrdemServico CriarOrdemServico()
     {
         return (OrdemServico)
-            FormatterServices.GetUninitializedObject(
+            RuntimeHelpers.GetUninitializedObject(
                 typeof(OrdemServico));
     }
 
     private static ItemServico CriarItemServico()
     {
         return (ItemServico)
-            FormatterServices.GetUninitializedObject(
+            RuntimeHelpers.GetUninitializedObject(
                 typeof(ItemServico));
     }
 
     private static Servico CriarServico()
     {
         return (Servico)
-            FormatterServices.GetUninitializedObject(
+            RuntimeHelpers.GetUninitializedObject(
                 typeof(Servico));
     }
 
     private static Peca CriarPeca()
     {
         return (Peca)
-            FormatterServices.GetUninitializedObject(
+            RuntimeHelpers.GetUninitializedObject(
                 typeof(Peca));
     }
 
