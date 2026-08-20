@@ -7,7 +7,7 @@ using Ofichina.Contracts.Responses.Authentication;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
 
-namespace Ofichina.UnitTests.Autenticacao;
+namespace Ofichina.UnitTests.Authentication;
 
 public sealed class CadastrarUsuarioCommandHandlerTests
 {
