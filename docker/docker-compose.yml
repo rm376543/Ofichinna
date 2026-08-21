@@ -25,9 +25,9 @@ services:
     container_name: sonarqube-postgres  
   
     environment:  
-      POSTGRES_USER: sonarqube  
-      POSTGRES_PASSWORD: sonarqube  
-      POSTGRES_DB: sonarqube  
+      POSTGRES_USER: "${Sonar__Postgress_Username}"  
+      POSTGRES_PASSWORD: "${Sonar__Postgress_Password}"  
+      POSTGRES_DB: "${Sonar__Postgress_Database}"  
   
     volumes:  
       - postgres_data:/var/lib/postgresql/data  
@@ -45,9 +45,9 @@ services:
       - postgres  
   
     environment:  
-      SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonarqube  
-      SONAR_JDBC_USERNAME: sonarqube  
-      SONAR_JDBC_PASSWORD: sonarqube  
+      SONAR_JDBC_URL: "${Sonar__JDBC_URL}"  
+      SONAR_JDBC_USERNAME: "${Sonar__Username}"  
+      SONAR_JDBC_PASSWORD: "${Sonar__Password}"  
   
     ports:  
       - "9000:9000"  
@@ -98,8 +98,9 @@ services:
       - ../.env  
   
     environment:  
-      ASPNETCORE_ENVIRONMENT: Development  
-  
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=ofichinna;User Id=sa;Password=${Docker__SqlPassword};TrustServerCertificate=True"
+
     restart: unless-stopped  
   
     networks:  

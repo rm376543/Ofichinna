@@ -49,6 +49,17 @@ cd Ofichinna
 
 ---
 
+### 1.1. Alterar variáveis de ambiente
+Renomeie o arquivo `.env.example` na raiz do projeto para `.env` e configure as variáveis de ambiente conforme necessário:
+
+> Atenção: A propiedade Jwt__Key é uma chave secreta usada para assinar os tokens JWT. Ela deve ser mantida em segredo e não deve ser compartilhada publicamente. O algoritmo HS256 utilizado exige uma chave de no mínimo 256 bits = 32 bytes, como a string utilizada é UTF-8, cada caractere ASCII vale 1 byte, portanto a chave deve ter no mínimo 32 caracteres.
+
+> Observação: A variavel `ConnectionStrings__DefaultConnection` definida no arquivo .env.example refere-se ao ambiente de desenvolvimento, ela é sobrescrita no arquivo docker-compose.yml, apontando para a instancia sqlserver do container docker.
+
+> Atenção: O arquivo `.env` não deve ser versionado. Ele contém informações sensíveis como senhas e chaves de API.
+
+---
+
 ### 2. Subir o ambiente com Docker Compose
 
 Acesse a pasta `docker`:
@@ -60,7 +71,7 @@ cd docker
 Inicie todos os containers necessários:
 
 ```bash
-docker-compose up -d
+docker-compose --env-file ../.env up -d --build
 ```
 
 Esse comando irá iniciar o ambiente configurado no `docker-compose.yml`, incluindo a API e os serviços de infraestrutura necessários para a aplicação.
@@ -69,6 +80,13 @@ Para verificar se os containers estão em execução:
 
 ```bash
 docker ps
+```
+
+Ao final, você verá os containers listados, incluindo o container da API `ofichina-api` e o container do SQL Server `ofichina-sqlserver`.
+
+Para destruir os containers e limpar o ambiente, utilize:
+```bash
+docker-compose down -v --rmi local
 ```
 
 ---

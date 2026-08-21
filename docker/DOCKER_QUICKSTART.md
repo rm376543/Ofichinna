@@ -4,8 +4,8 @@
 
 ### Windows (PowerShell)
 ```bash
-# Iniciar todos os serviços
-docker-compose up -d
+# Iniciar todos os serviços (dentro da pasta docker)
+docker-compose --env-file ../.env up -d --build
 
 # Verificar status
 docker-compose ps
@@ -13,7 +13,7 @@ docker-compose ps
 # Ver logs de um serviço específico
 docker-compose logs -f sqlserver
 docker-compose logs -f seq
-docker logs ofichina-api
+docker logs -f ofichina-api
 ```
 
 ---
