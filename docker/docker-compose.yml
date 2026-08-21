@@ -68,7 +68,7 @@ services:
   
     environment:  
       ACCEPT_EULA: "Y"  
-      SEQ_FIRSTRUN_ADMINPASSWORD: "Admin123@"  
+      SEQ_FIRSTRUN_ADMINPASSWORD: "${Docker__Seq}"  
   
     ports:  
       - "5341:80"  
