@@ -6,7 +6,7 @@ using Ofichina.Contracts.Requests.Pecas;
 using Ofichina.Domain.Entities;
 using System.Reflection;
 
-namespace Ofichina.UnitTests.Application.UseCases.Pecas.Handlers;
+namespace Ofichina.UnitTests.Ofichina.Application.UseCases.Pecas.Handlers;
 
 public sealed class UpdatePecaCommandHandlerTests
 {
