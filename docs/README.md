@@ -121,14 +121,16 @@ Para uma instalação nova, execute os comandos abaixo:
 # 1. Clonar o repositório
 git clone <URL_DO_REPOSITORIO>
 
-# 2. Entrar na pasta do projeto
+# 2. Renomear o arquivo .env.example para .env e configurar as variáveis de ambiente
+
+# 3. Entrar na pasta do projeto
 cd Ofichinna
 
-# 3. Acessar a pasta do Docker
+# 4. Acessar a pasta do Docker
 cd docker
 
-# 4. Subir o ambiente
-docker-compose up -d
+# 5. Subir o ambiente
+docker-compose --env-file ../.env up -d --build
 ```
 
 Após a inicialização, a API estará disponível em:
@@ -188,8 +190,10 @@ docker-compose up -d
 Após alterações no código da API, reconstrua a imagem antes de iniciar os containers:
 
 ```bash
-docker-compose up -d --build
+docker-compose --env-file ../.env up -d --build 
 ```
+
+> **Observação:** O parâmetro `--env-file ../.env` especifica o arquivo de variáveis de ambiente a ser usado, e o comando `--build` força a reconstrução da imagem da API, garantindo que as alterações no código sejam refletidas na execução.
 
 ---
 
@@ -199,15 +203,19 @@ docker-compose up -d --build
 |--------|---------|
 | Clonar projeto | `git clone <URL_DO_REPOSITORIO>` |
 | Entrar no projeto | `cd Ofichinna` |
+| Renomear o arquivo .env.example para .env e configurar as variáveis de ambiente | `mv .env.example .env` |
 | Entrar no Docker | `cd docker` |
-| Subir ambiente | `docker-compose up -d` |
-| Reconstruir e subir | `docker-compose up -d --build` |
+| Subir ambiente | `docker-compose --env-file ../.env up -d --build` |
+| Remover ambiente | `docker-compose --env-file ../.env down -v --rmi local` |
+| Reconstruir e subir | `docker-compose --env-file ../.env up -d --build` |
 | Ver containers | `docker ps` |
 | Ver logs da API | `docker logs ofichina-api` |
-| Parar ambiente | `docker-compose down` |
+| Parar ambiente | `docker-compose --env-file ../.env down` |
 | API | `http://localhost:8080` |
 | Swagger | `http://localhost:8080/swagger` |
 
+> **Atenção:** O ambiente disponivel no docker-compose.yml demanda recursos da maquina, portanto se seu ambiente docker tiver menos de 8GB de RAM, considere aumentar a memória alocada para o Docker ou desativar alguns containers docker (sonarqube/sonarqube(postgress)) e tambem o analisdor de logs Seq.
+> **Atenção:** Certifique-se de que o Docker e o Docker Compose estejam instalados e configurados corretamente em sua máquina antes de executar os comandos acima. Certifique-se também de que a porta `8080` esteja disponível em sua máquina antes de iniciar o ambiente Docker. Caso contrário, altere a porta no arquivo `docker-compose.yml` e no arquivo `.env`.
 > **Observação:** o ambiente Docker é responsável por iniciar a API e os serviços de infraestrutura configurados no `docker-compose.yml`. Após a inicialização, a aplicação pode ser acessada pela porta `8080`.
 ---
 
@@ -348,18 +356,6 @@ Ofichinna/
 ## 🚀 Quick Start
 
 ### 1. Configurar Banco de Dados
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost,1433;Database=ofichinna;User Id=sa;Password=<SENHA>;TrustServerCertificate=True"
-  },
-  "Jwt": {
-    "Issuer": "ofichinna",
-    "Audience": "ofichinna",
-    "Key": "<CHAVE_JWT>"
-  }
-}
-```
 
 > O `ApplicationDbContextFactory` lê `ConnectionStrings__DefaultConnection` do ambiente ou do arquivo `.env`, o que permite usar `dotnet ef` em design-time sem acoplar a string de conexão ao código.
 

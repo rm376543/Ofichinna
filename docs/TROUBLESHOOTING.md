@@ -37,6 +37,7 @@
  - 11 Clique na opção "Create a Local Project"
  - 12 Informe aqui o nome do projeto (Project Display Name) - Tente deixar o mesmo nome do projeto c#
  - 13 Defina o nome da sua branch principal (no GitHub), clique em salvar 
+	- 13.1. Set up new code for project > Follows the instance’s default
  - 14 Na tela agora, procure pelo botão "Locally"
  - 15 Em "Provide a token" selecione Generate a project token
  - 16 Token name (eu coloquei o nome do projeto)
