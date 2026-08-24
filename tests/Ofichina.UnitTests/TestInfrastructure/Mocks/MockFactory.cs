@@ -3,7 +3,7 @@ using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 
-namespace Ofichina.UnitTests.TestInfrastructure.Mocks;
+namespace Ofichina.UnitTests.TestInfrastructure;
 
 public static class MockFactory
 {

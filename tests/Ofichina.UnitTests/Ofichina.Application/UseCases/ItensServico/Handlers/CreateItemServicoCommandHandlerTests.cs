@@ -8,7 +8,6 @@ using Ofichina.Domain.Enums;
 using Ofichina.Domain.Exceptions;
 using Ofichina.UnitTests.TestInfrastructure;
 using Ofichina.UnitTests.TestInfrastructure.Builders;
-using TestMocks = Ofichina.UnitTests.TestInfrastructure.Mocks;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -464,7 +463,7 @@ public sealed class CreateItemServicoCommandHandlerTests
             .Criada()
             .Build();
 
-        var repository = TestMocks.MockFactory.OrdemServicoRepository.ComGetById(ordemServico);
+        var repository = TestInfrastructure.MockFactory.OrdemServicoRepository.ComGetById(ordemServico);
 
         return repository;
     }
@@ -475,7 +474,7 @@ public sealed class CreateItemServicoCommandHandlerTests
     {
         var servico = TestDataFactory.Servicos.Criar();
         ReflectionHelpers.DefinirId(servico, command.ServicoId);
-        var repository = TestMocks.MockFactory.Repositorio<Servico>.ComGetById(servico);
+        var repository = TestInfrastructure.MockFactory.Repositorio<Servico>.ComGetById(servico);
         return repository;
     }
 
@@ -485,7 +484,7 @@ public sealed class CreateItemServicoCommandHandlerTests
     {
         var peca = TestDataFactory.Pecas.Criar();
         ReflectionHelpers.DefinirId(peca, command.PecaId);
-        var repository = TestMocks.MockFactory.Repositorio<Peca>.ComGetById(peca);
+        var repository = TestInfrastructure.MockFactory.Repositorio<Peca>.ComGetById(peca);
         return repository;
     }
 
