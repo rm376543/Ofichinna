@@ -7,6 +7,8 @@ using Ofichina.Contracts.Requests.ItensServico;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
+using Ofichina.UnitTests.TestInfrastructure;
+using Ofichina.UnitTests.TestInfrastructure;
 
 namespace Ofichina.UnitTests.Application.UseCases.Orcamentos.Handler;
 
@@ -30,9 +32,9 @@ public sealed class UpdateItemOrcamentoCommandHandlerTests
         return orcamento;
     }
 
-    private static Servico CriarServico() => new("Troca de óleo", "Descrição", 100m);
+    private static Servico CriarServico() => TestDataFactory.Servicos.Criar(s => s.AtualizarDados("Troca de óleo", "Descrição", 100m));
 
-    private static Peca CriarPeca() => new("Filtro de óleo", "Descrição", "COD-001", 50m, 10);
+    private static Peca CriarPeca() => TestDataFactory.Pecas.Criar(p => p.AtualizarDados("Filtro de óleo", "Descrição", "COD-001", 50m, 10));
 
     private static UpdateItemOrcamentoCommand CriarCommand(
         Guid orcamentoId,

@@ -5,6 +5,8 @@ using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Application.UseCases.Veiculos.Handlers;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
+using Ofichina.UnitTests.TestInfrastructure;
+using Ofichina.UnitTests.TestInfrastructure;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -653,19 +655,19 @@ public sealed class CreateVeiculoCommandHandlerTests
 
     private static Pessoa CriarPessoa()
     {
-        return new Pessoa(
-            "João da Silva",
-            new Cpf("12345678909"),
-            new Telefone("11999999999"),
-            new Endereco(
+        return TestDataFactory.Pessoas.Criar(p =>
+        {
+            p.AlterarNome("João da Silva");
+            p.AlterarTelefone(new Telefone("11999999999"));
+            p.AlterarEndereco(new Endereco(
                 "Rua das Flores",
                 "100",
                 null,
                 "Centro",
                 "São Paulo",
                 "SP",
-                new Cep("01001000")),
-            Guid.NewGuid());
+                new Cep("01001000")));
+        });
     }
 
     // ============================================================

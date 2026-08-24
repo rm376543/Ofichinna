@@ -7,6 +7,7 @@ using Ofichina.Contracts.Requests.Orcamento;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using System.Reflection;
+using Ofichina.UnitTests.TestInfrastructure;
 
 namespace Ofichina.UnitTests.Application.UseCases.Orcamentos.Handlers;
 
@@ -989,22 +990,10 @@ public sealed class UpdateOrcamentoCommandHandlerTests
             null);
 
     private static Pessoa CriarPessoa()
-        => (Pessoa)Activator.CreateInstance(
-            typeof(Pessoa),
-            BindingFlags.Instance |
-            BindingFlags.NonPublic,
-            binder: null,
-            args: null,
-            culture: null)!;
+        => TestDataFactory.Pessoas.Criar();
 
     private static Veiculo CriarVeiculo()
-        => (Veiculo)Activator.CreateInstance(
-            typeof(Veiculo),
-            BindingFlags.Instance |
-            BindingFlags.NonPublic,
-            binder: null,
-            args: null,
-            culture: null)!;
+        => TestDataFactory.Veiculos.Criar();
 
     private static UpdateOrcamentoCommandHandler CriarHandler(
         Mock<IOrcamentoRepository> orcamentoRepository,

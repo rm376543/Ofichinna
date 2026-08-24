@@ -6,6 +6,8 @@ using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 using Ofichina.Domain.Exceptions;
+using Ofichina.UnitTests.TestInfrastructure;
+using Ofichina.UnitTests.TestInfrastructure.Builders;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -456,19 +458,12 @@ public sealed class CreateItemServicoCommandHandlerTests
         CriarOrdemServicoRepositoryValido(
             CreateItemServicoCommand command)
     {
-        var repository = new Mock<IOrdemServicoRepository>();
+        var ordemServico = TestDataFactory.OrdensServico.Builder()
+            .ComId(command.OrdemServicoId)
+            .Criada()
+            .Build();
 
-        var ordemServico = CriarOrdemServico();
-
-        DefinirStatus(
-            ordemServico,
-            StatusOrdemServico.Recebida);
-
-        repository
-            .Setup(x => x.GetByIdAsync(
-                command.OrdemServicoId,
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(ordemServico);
+        var repository = TestInfrastructure.MockFactory.OrdemServicoRepository.ComGetById(ordemServico);
 
         return repository;
     }
@@ -477,15 +472,9 @@ public sealed class CreateItemServicoCommandHandlerTests
         CriarServicoRepositoryValido(
             CreateItemServicoCommand command)
     {
-        var repository = new Mock<IRepository<Servico>>();
-
-        repository
-            .Setup(x => x.GetByIdAsync(
-                command.ServicoId,
-                It.IsAny<CancellationToken>(),
-                tracking: true))
-            .ReturnsAsync(CriarServico());
-
+        var servico = TestDataFactory.Servicos.Criar();
+        ReflectionHelpers.DefinirId(servico, command.ServicoId);
+        var repository = TestInfrastructure.MockFactory.Repositorio<Servico>.ComGetById(servico);
         return repository;
     }
 
@@ -493,15 +482,9 @@ public sealed class CreateItemServicoCommandHandlerTests
         CriarPecaRepositoryValido(
             CreateItemServicoCommand command)
     {
-        var repository = new Mock<IRepository<Peca>>();
-
-        repository
-            .Setup(x => x.GetByIdAsync(
-                command.PecaId,
-                It.IsAny<CancellationToken>(),
-                tracking: true))
-            .ReturnsAsync(CriarPeca());
-
+        var peca = TestDataFactory.Pecas.Criar();
+        ReflectionHelpers.DefinirId(peca, command.PecaId);
+        var repository = TestInfrastructure.MockFactory.Repositorio<Peca>.ComGetById(peca);
         return repository;
     }
 

@@ -5,6 +5,8 @@ using Ofichina.Application.UseCases.Pecas.Handlers;
 using Ofichina.Application.UseCases.Pecas.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
+using Ofichina.UnitTests.TestInfrastructure;
+using Ofichina.UnitTests.TestInfrastructure;
 
 namespace Ofichina.UnitTests.Application.UseCases.Pecas.Handlers;
 
@@ -135,15 +137,9 @@ public sealed class GetAllPecasPaginadasQueryHandlerTests
 
     private static Peca CriarPeca()
     {
-        return new Peca(
-            "Pastilha de freio",
-            "Pastilha dianteira",
-            "PF-1234",
-            149.90m,
-            10)
-        {
-            CreatedAt = new DateTime(2026, 8, 10, 0, 0, 0, DateTimeKind.Utc),
-            UpdatedAt = new DateTime(2026, 8, 11, 0, 0, 0, DateTimeKind.Utc)
-        };
+        var peca = TestDataFactory.Pecas.Criar(p => p.AtualizarDados("Pastilha de freio", "Pastilha dianteira", "PF-1234", 149.90m, 10));
+        peca.CreatedAt = new DateTime(2026, 8, 10, 0, 0, 0, DateTimeKind.Utc);
+        peca.UpdatedAt = new DateTime(2026, 8, 11, 0, 0, 0, DateTimeKind.Utc);
+        return peca;
     }
 }

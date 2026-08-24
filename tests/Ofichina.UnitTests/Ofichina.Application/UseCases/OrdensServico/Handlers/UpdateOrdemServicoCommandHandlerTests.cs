@@ -7,6 +7,7 @@ using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.ValueObjects;
+using Ofichina.UnitTests.TestInfrastructure;
 
 namespace Ofichina.UnitTests.Application.UseCases.OrdensServico.Handlers;
 
@@ -925,33 +926,10 @@ public sealed class UpdateOrdemServicoCommandHandlerTests
     }
 
     private static Pessoa CriarPessoa()
-    {
-        return new Pessoa(
-            "João da Silva",
-            new Cpf("12345678909"),
-            new Telefone("16999999999"),
-            new Endereco(
-                "Rua das Flores",
-                "123",
-                "",
-                "Centro",
-                "São José do Rio Preto",
-                "SP",
-                new Cep("15000000")),
-            Guid.NewGuid());
-    }
+        => TestDataFactory.Pessoas.Criar();
 
     private static Veiculo CriarVeiculo(Guid pessoaId)
-    {
-        return new Veiculo(
-            pessoaId,
-            new Placa("ABC1D23"),
-            "Toyota",
-            "Corolla",
-            2022,
-            "Prata",
-            new Hodometro(50_000));
-    }
+        => TestDataFactory.Veiculos.Criar(pessoaId);
 
     private static UpdateOrdemServicoCommandHandler CriarHandler(
         Mock<IRepository<OrdemServico>> ordemServicoRepository,

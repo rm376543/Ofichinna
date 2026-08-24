@@ -5,6 +5,8 @@ using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Application.UseCases.Veiculos.Handlers;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
+using Ofichina.UnitTests.TestInfrastructure;
+using Ofichina.UnitTests.TestInfrastructure.Builders;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -85,14 +87,12 @@ public sealed class UpdateVeiculoCommandHandlerTests
             command.PessoaId,
             "ABC1D23");
 
-        var pessoaRepository =
-            new Mock<IRepository<Pessoa>>();
+        DefinirId(
+            veiculo,
+            command.VeiculoId);
 
-        pessoaRepository
-            .Setup(x => x.GetByIdAsync(
-                command.PessoaId,
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Pessoa?)null);
+        var pessoaRepository =
+            CriarPessoaRepository(null);
 
         var veiculoRepository =
             CriarVeiculoRepository(veiculo);
@@ -125,6 +125,10 @@ public sealed class UpdateVeiculoCommandHandlerTests
         var veiculo = CriarVeiculo(
             command.PessoaId,
             "ABC1D23");
+
+        DefinirId(
+            veiculo,
+            command.VeiculoId);
 
         var pessoaRepository =
             CriarPessoaRepository(pessoa);
@@ -618,7 +622,7 @@ public sealed class UpdateVeiculoCommandHandlerTests
             command.VeiculoId);
 
         var pessoaRepository =
-            new Mock<IRepository<Pessoa>>();
+            new Mock<IPessoaRepository>();
 
         pessoaRepository
             .Setup(x => x.GetByIdAsync(
@@ -783,7 +787,7 @@ public sealed class UpdateVeiculoCommandHandlerTests
 
     private static UpdateVeiculoCommandHandler CriarHandler(
         Mock<IVeiculoRepository>? veiculoRepository = null,
-        Mock<IRepository<Pessoa>>? pessoaRepository = null,
+        Mock<IPessoaRepository>? pessoaRepository = null,
         Mock<IUnitOfWork>? unitOfWork = null)
     {
         return new UpdateVeiculoCommandHandler(
@@ -794,7 +798,7 @@ public sealed class UpdateVeiculoCommandHandlerTests
 
             (
                 pessoaRepository ??
-                new Mock<IRepository<Pessoa>>()
+                new Mock<IPessoaRepository>()
             ).Object,
 
             (
@@ -809,20 +813,18 @@ public sealed class UpdateVeiculoCommandHandlerTests
     // FACTORY - PESSOA REPOSITORY
     // ============================================================
 
-    private static Mock<IRepository<Pessoa>>
+    private static Mock<IPessoaRepository>
         CriarPessoaRepository(
-            Pessoa pessoa)
+            Pessoa? pessoa)
     {
-        var repository =
-            new Mock<IRepository<Pessoa>>();
+        var mock = new Mock<IPessoaRepository>();
 
-        repository
-            .Setup(x => x.GetByIdAsync(
-                It.IsAny<Guid>(),
-                It.IsAny<CancellationToken>()))
+        mock.Setup(x => x.GetByIdAsync(
+            It.IsAny<Guid>(),
+            It.IsAny<CancellationToken>()))
             .ReturnsAsync(pessoa);
 
-        return repository;
+        return mock;
     }
 
     // ============================================================
@@ -831,34 +833,31 @@ public sealed class UpdateVeiculoCommandHandlerTests
 
     private static Mock<IVeiculoRepository>
         CriarVeiculoRepository(
-            Veiculo veiculo)
+            Veiculo? veiculo)
     {
-        var repository =
-            new Mock<IVeiculoRepository>();
+        var mock = new Mock<IVeiculoRepository>();
 
-        repository
-            .Setup(x => x.GetByIdAsync(
+        if (veiculo != null)
+        {
+            mock.Setup(x => x.GetByIdAsync(
                 It.IsAny<Guid>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(veiculo);
+                .ReturnsAsync(veiculo);
 
-        repository
-            .Setup(x => x.GetAllAsync(
+            mock.Setup(x => x.GetAllAsync(
                 includePessoa: true,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(
-                new[]
-                {
-                    veiculo
-                });
+                .ReturnsAsync(new[] { veiculo });
+        }
 
-        return repository;
+        return mock;
     }
 
     // ============================================================
     // FACTORY - COMMAND
     // ============================================================
 
+#pragma warning disable S107
     private static UpdateVeiculoCommand CriarCommand(
         Guid? veiculoId = null,
         Guid? pessoaId = null,
@@ -868,6 +867,7 @@ public sealed class UpdateVeiculoCommandHandlerTests
         int anoFabricacao = 2025,
         string? cor = "Prata",
         int hodometro = 25000)
+#pragma warning restore S107
     {
         var command =
             (UpdateVeiculoCommand)
@@ -924,27 +924,22 @@ public sealed class UpdateVeiculoCommandHandlerTests
     private static Pessoa CriarPessoa(
     Guid? id = null)
     {
-        var pessoa =
-            new Pessoa(
-                "João da Silva",
-                new Cpf("52998224725"),
-                new Telefone("11999999999"),
-                new Endereco(
-                    "Rua das Flores",
-                    "100",
-                    null,
-                    "Centro",
-                    "São Paulo",
-                    "SP",
-                    new Cep("01001000")),
-                Guid.NewGuid());
+        var pessoa = TestDataFactory.Pessoas.Criar(p =>
+        {
+            p.AlterarNome("João da Silva");
+            p.AlterarTelefone(new Telefone("11999999999"));
+            p.AlterarEndereco(new Endereco(
+                "Rua das Flores",
+                "100",
+                null,
+                "Centro",
+                "São Paulo",
+                "SP",
+                new Cep("01001000")));
+        });
 
         if (id.HasValue)
-        {
-            DefinirId(
-                pessoa,
-                id.Value);
-        }
+            ReflectionHelpers.DefinirId(pessoa, id.Value);
 
         return pessoa;
     }

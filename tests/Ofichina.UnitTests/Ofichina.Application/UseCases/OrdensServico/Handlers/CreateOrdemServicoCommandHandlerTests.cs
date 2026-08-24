@@ -5,7 +5,7 @@ using Ofichina.Application.UseCases.OrdensServico.Handlers;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.OrdensServico;
 using Ofichina.Domain.Entities;
-using Ofichina.Domain.ValueObjects;
+using Ofichina.UnitTests.TestInfrastructure;
 
 namespace Ofichina.UnitTests.Application.UseCases.OrdensServico.Handlers;
 
@@ -47,24 +47,12 @@ public sealed class CreateOrdemServicoCommandHandlerTests
 
     private static Pessoa CriarPessoa()
     {
-        return new Pessoa(
-            "Cliente Teste",
-            new Cpf("39053344705"),
-            new Telefone("11999999999"),
-            new Endereco("Rua Teste", "100", null, "Centro", "São Paulo", "SP", new Cep("01001000")),
-            Guid.NewGuid());
+        return TestDataFactory.Pessoas.Criar();
     }
 
     private static Veiculo CriarVeiculo(Guid pessoaId)
     {
-        return new Veiculo(
-            pessoaId,
-            new Placa("ABC1234"),
-            "Volkswagen",
-            "Gol",
-            2020,
-            "Prata",
-            new Hodometro(100000));
+        return TestDataFactory.Veiculos.Criar(pessoaId);
     }
 
     private sealed class FakeCreateOrdemServicoService : ICreateOrdemServicoService
