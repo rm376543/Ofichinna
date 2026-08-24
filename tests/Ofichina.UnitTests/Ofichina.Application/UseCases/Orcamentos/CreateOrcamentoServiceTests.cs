@@ -6,7 +6,7 @@ using Ofichina.Contracts.Requests.Orcamento;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
-using Ofichina.Domain.ValueObjects;
+using Ofichina.UnitTests.TestInfrastructure;
 
 namespace Ofichina.UnitTests.Application.UseCases.Orcamentos;
 
@@ -772,48 +772,25 @@ public sealed class CreateOrcamentoServiceTests
 
     private static Pessoa CriarPessoa()
     {
-        return new Pessoa(
-            "João da Silva",
-            new Cpf("12345678909"),
-            new Telefone("11999999999"),
-            new Endereco(
-                "Rua Exemplo",
-                "123",
-                "",
-                "Bairro Exemplo",
-                "Cidade Exemplo",
-                "Estado Exemplo",
-                new Cep("12345-678")),
-            Guid.NewGuid());
+        return TestDataFactory.Pessoas.Criar(p => { });
     }
 
     private static Pessoa CriarPessoaExcluida()
     {
         var pessoa = CriarPessoa();
-
         pessoa.DeletedAt = DateTime.UtcNow;
-
         return pessoa;
     }
 
     private static Veiculo CriarVeiculo()
     {
-        return new Veiculo(
-            Guid.NewGuid(),
-            new Placa("ABC1D23"),
-            "Ford",
-            "Ka",
-            2022,
-            "Prata",
-            new Hodometro(10000));
+        return TestDataFactory.Veiculos.Criar();
     }
 
     private static Veiculo CriarVeiculoExcluido()
     {
         var veiculo = CriarVeiculo();
-
         veiculo.DeletedAt = DateTime.UtcNow;
-
         return veiculo;
     }
 

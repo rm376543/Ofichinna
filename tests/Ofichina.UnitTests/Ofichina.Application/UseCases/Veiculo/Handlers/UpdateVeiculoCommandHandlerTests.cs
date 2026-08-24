@@ -5,6 +5,9 @@ using Ofichina.Application.UseCases.Veiculos.Commands;
 using Ofichina.Application.UseCases.Veiculos.Handlers;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
+using Ofichina.UnitTests.TestInfrastructure;
+using Ofichina.UnitTests.TestInfrastructure.Builders;
+using TestMocks = Ofichina.UnitTests.TestInfrastructure.Mocks;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -86,13 +89,7 @@ public sealed class UpdateVeiculoCommandHandlerTests
             "ABC1D23");
 
         var pessoaRepository =
-            new Mock<IRepository<Pessoa>>();
-
-        pessoaRepository
-            .Setup(x => x.GetByIdAsync(
-                command.PessoaId,
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Pessoa?)null);
+            TestMocks.MockFactory.PessoaRepository.ComGetById((Pessoa?)null);
 
         var veiculoRepository =
             CriarVeiculoRepository(veiculo);
@@ -127,7 +124,7 @@ public sealed class UpdateVeiculoCommandHandlerTests
             "ABC1D23");
 
         var pessoaRepository =
-            CriarPessoaRepository(pessoa);
+            TestMocks.MockFactory.PessoaRepository.ComGetById(pessoa);
 
         var veiculoRepository =
             CriarVeiculoRepository(veiculo);
@@ -557,7 +554,7 @@ public sealed class UpdateVeiculoCommandHandlerTests
 
         var handler = CriarHandler(
             veiculoRepository: CriarVeiculoRepository(veiculo),
-            pessoaRepository: CriarPessoaRepository(pessoa));
+            pessoaRepository: TestMocks.MockFactory.PessoaRepository.ComGetById(pessoa));
 
         var result = await handler.HandleAsync(
             command,
@@ -618,7 +615,7 @@ public sealed class UpdateVeiculoCommandHandlerTests
             command.VeiculoId);
 
         var pessoaRepository =
-            new Mock<IRepository<Pessoa>>();
+            new Mock<IPessoaRepository>();
 
         pessoaRepository
             .Setup(x => x.GetByIdAsync(
@@ -783,7 +780,7 @@ public sealed class UpdateVeiculoCommandHandlerTests
 
     private static UpdateVeiculoCommandHandler CriarHandler(
         Mock<IVeiculoRepository>? veiculoRepository = null,
-        Mock<IRepository<Pessoa>>? pessoaRepository = null,
+        Mock<IPessoaRepository>? pessoaRepository = null,
         Mock<IUnitOfWork>? unitOfWork = null)
     {
         return new UpdateVeiculoCommandHandler(
@@ -794,7 +791,7 @@ public sealed class UpdateVeiculoCommandHandlerTests
 
             (
                 pessoaRepository ??
-                new Mock<IRepository<Pessoa>>()
+                new Mock<IPessoaRepository>()
             ).Object,
 
             (
@@ -809,20 +806,11 @@ public sealed class UpdateVeiculoCommandHandlerTests
     // FACTORY - PESSOA REPOSITORY
     // ============================================================
 
-    private static Mock<IRepository<Pessoa>>
+    private static Mock<IPessoaRepository>
         CriarPessoaRepository(
             Pessoa pessoa)
     {
-        var repository =
-            new Mock<IRepository<Pessoa>>();
-
-        repository
-            .Setup(x => x.GetByIdAsync(
-                It.IsAny<Guid>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(pessoa);
-
-        return repository;
+        return TestMocks.MockFactory.PessoaRepository.ComGetById(pessoa);
     }
 
     // ============================================================
@@ -833,26 +821,7 @@ public sealed class UpdateVeiculoCommandHandlerTests
         CriarVeiculoRepository(
             Veiculo veiculo)
     {
-        var repository =
-            new Mock<IVeiculoRepository>();
-
-        repository
-            .Setup(x => x.GetByIdAsync(
-                It.IsAny<Guid>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(veiculo);
-
-        repository
-            .Setup(x => x.GetAllAsync(
-                includePessoa: true,
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(
-                new[]
-                {
-                    veiculo
-                });
-
-        return repository;
+        return TestMocks.MockFactory.VeiculoRepository.ComGetByIdAndGetAll(veiculo, new[] { veiculo }, includePessoa: true);
     }
 
     // ============================================================
@@ -924,27 +893,22 @@ public sealed class UpdateVeiculoCommandHandlerTests
     private static Pessoa CriarPessoa(
     Guid? id = null)
     {
-        var pessoa =
-            new Pessoa(
-                "João da Silva",
-                new Cpf("52998224725"),
-                new Telefone("11999999999"),
-                new Endereco(
-                    "Rua das Flores",
-                    "100",
-                    null,
-                    "Centro",
-                    "São Paulo",
-                    "SP",
-                    new Cep("01001000")),
-                Guid.NewGuid());
+        var pessoa = TestDataFactory.Pessoas.Criar(p =>
+        {
+            p.AlterarNome("João da Silva");
+            p.AlterarTelefone(new Telefone("11999999999"));
+            p.AlterarEndereco(new Endereco(
+                "Rua das Flores",
+                "100",
+                null,
+                "Centro",
+                "São Paulo",
+                "SP",
+                new Cep("01001000")));
+        });
 
         if (id.HasValue)
-        {
-            DefinirId(
-                pessoa,
-                id.Value);
-        }
+            ReflectionHelpers.DefinirId(pessoa, id.Value);
 
         return pessoa;
     }

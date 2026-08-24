@@ -6,6 +6,8 @@ using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.ValueObjects;
+using Ofichina.UnitTests.TestInfrastructure;
+using Ofichina.UnitTests.TestInfrastructure;
 
 namespace Ofichina.UnitTests.Application.UseCases.OrdensServico;
 
@@ -333,19 +335,19 @@ public sealed class CreateOrdemServicoServiceTests
 
     private static Pessoa CriarPessoa()
     {
-        return new Pessoa(
-            "João da Silva",
-            new Cpf("12345678909"),
-            new Telefone("11999999999"),
-            new Endereco(
+        return TestDataFactory.Pessoas.Criar(p =>
+        {
+            p.AlterarNome("João da Silva");
+            p.AlterarTelefone(new Telefone("11999999999"));
+            p.AlterarEndereco(new Endereco(
                 "Rua Exemplo",
                 "123",
                 "",
                 "Bairro Exemplo",
                 "Cidade Exemplo",
                 "Estado Exemplo",
-                new Cep("12345-678")),
-            Guid.NewGuid());
+                new Cep("12345-678")));
+        });
     }
 
     private static Pessoa CriarPessoaExcluida()
