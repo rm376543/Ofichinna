@@ -87,13 +87,13 @@ public sealed class AgendamentoController : ControllerBase
     /// <param name="agendamentoId">Identificador do agendamento.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
     /// <returns>Detalhes do agendamento específico da pessoa.</returns>
-    [HttpGet("pessoa/{pessoaId:guid}/agendamento/{agendamentoId:guid}/detalhar")]
+    [HttpGet("{agendamentoId:guid}/pessoa/{pessoaId:guid}/detalhar")]
     [ProducesResponseType(typeof(ApiResponse<AgendamentoUsuarioDetalheResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<AgendamentoUsuarioDetalheResponse>>> ObterPorIdAsync(
-        [FromRoute] Guid pessoaId, [FromRoute] Guid agendamentoId, CancellationToken cancellationToken)
+        [FromRoute] Guid agendamentoId, [FromRoute] Guid pessoaId, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando a obtenção do agendamento {Id} da pessoa {PessoaId}.", agendamentoId, pessoaId);
 
@@ -190,7 +190,7 @@ public sealed class AgendamentoController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna todos agendamentos cadastrados - paginados.
+    /// Retorna todos agendamentos agendados de forma paginada.
     /// </summary>
     /// <param name="pagination">Parâmetros de paginação.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
@@ -204,7 +204,7 @@ public sealed class AgendamentoController : ControllerBase
         [FromQuery] Pagination pagination,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Iniciando a obtenção de todas os agendamentos.");
+        _logger.LogInformation("Iniciando a obtenção de todos agendamentos do dia.");
 
         var result = await _mediator.Send(
             new GetAllAgendamentosPaginadosQuery(pagination),

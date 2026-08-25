@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Ofichina.Application.Abstractions.Interfaces.Repository;
 using Ofichina.Contracts.Common;
+using Ofichina.Contracts.Enums;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Infrastructure.Persistence;
@@ -193,6 +194,7 @@ public sealed class AgendamentoRepository : Repository<Agendamento>, IAgendament
         var pageSize = pagination.PageSize > 0 ? pagination.PageSize : 10;
 
         var query = _context.AgendamentosUsuarioView
+            .Where(x => x.DeletedAt == null && x.StatusAgendamento == AgendamentoStatus.Agendado)
             .AsNoTracking();
 
         var totalCount = await query.CountAsync(cancellationToken);

@@ -18,6 +18,8 @@ public sealed class AgendamentoUsuarioViewConfiguration : IEntityTypeConfigurati
 
         builder.Property(x => x.AgendamentosId).HasColumnName("AgendamentosId");
         builder.Property(x => x.PessoaId).HasColumnName("PessoaId");
+        builder.Property(x => x.VeiculoId).HasColumnName("VeiculoId");
+        builder.Property(x => x.StatusAgendamento).HasColumnName("StatusAgendamento");
         builder.Property(x => x.Nome).HasColumnName("Nome");
         builder.Property(x => x.Documento).HasColumnName("Documento");
         builder.Property(x => x.Telefone).HasColumnName("Telefone");
