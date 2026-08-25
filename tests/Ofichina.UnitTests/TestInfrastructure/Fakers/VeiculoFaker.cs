@@ -10,7 +10,7 @@ public class VeiculoFaker
 
     public Veiculo Criar(Guid? pessoaId = null, Action<Veiculo>? customizar = null)
     {
-        var pid = pessoaId ?? Guid.NewGuid();
+        var pid = pessoaId ?? _faker.Random.Guid();
         var placa = new Placa(FakerHelpers.GerarPlaca());
         var marca = _faker.Vehicle.Manufacturer();
         var modelo = _faker.Vehicle.Model();
