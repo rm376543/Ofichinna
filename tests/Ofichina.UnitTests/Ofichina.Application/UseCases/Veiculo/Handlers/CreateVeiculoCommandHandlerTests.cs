@@ -6,7 +6,6 @@ using Ofichina.Application.UseCases.Veiculos.Handlers;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.ValueObjects;
 using Ofichina.UnitTests.TestInfrastructure;
-using Ofichina.UnitTests.TestInfrastructure;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 

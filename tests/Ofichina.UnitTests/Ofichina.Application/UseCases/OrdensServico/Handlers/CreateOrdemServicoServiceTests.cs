@@ -7,7 +7,6 @@ using Ofichina.Domain.Entities;
 using Ofichina.Domain.Exceptions;
 using Ofichina.Domain.ValueObjects;
 using Ofichina.UnitTests.TestInfrastructure;
-using Ofichina.UnitTests.TestInfrastructure;
 
 namespace Ofichina.UnitTests.Application.UseCases.OrdensServico;
 

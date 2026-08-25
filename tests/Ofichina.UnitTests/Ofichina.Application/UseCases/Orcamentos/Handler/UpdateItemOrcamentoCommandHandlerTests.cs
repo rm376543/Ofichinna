@@ -8,7 +8,6 @@ using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
 using Ofichina.UnitTests.TestInfrastructure;
-using Ofichina.UnitTests.TestInfrastructure;
 
 namespace Ofichina.UnitTests.Application.UseCases.Orcamentos.Handler;
 

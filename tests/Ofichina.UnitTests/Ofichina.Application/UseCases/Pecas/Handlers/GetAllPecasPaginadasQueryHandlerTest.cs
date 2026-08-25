@@ -6,7 +6,6 @@ using Ofichina.Application.UseCases.Pecas.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Domain.Entities;
 using Ofichina.UnitTests.TestInfrastructure;
-using Ofichina.UnitTests.TestInfrastructure;
 
 namespace Ofichina.UnitTests.Application.UseCases.Pecas.Handlers;
 
