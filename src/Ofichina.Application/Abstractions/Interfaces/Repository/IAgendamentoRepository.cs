@@ -21,4 +21,8 @@ public interface IAgendamentoRepository : IRepository<Agendamento>
     Task<IReadOnlyCollection<VwAgendamentoPessoa>> GetAgendamentosUsuarioViewByPessoaAsync(Guid pessoaId, CancellationToken cancellationToken = default);
 
     Task<VwAgendamentoPessoa?> GetAgendamentoUsuarioViewByIdAsync(Guid pessoaId, Guid agendamentosId, CancellationToken cancellationToken = default);
+
+    Task<PagedResponse<VwAgendamentoPessoa>> GetAllAgendamentosPaginadosAsync(
+    Pagination pagination,
+    CancellationToken cancellationToken = default);
 }
