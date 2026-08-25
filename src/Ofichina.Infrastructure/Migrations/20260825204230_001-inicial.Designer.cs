@@ -12,7 +12,7 @@ using Ofichina.Infrastructure.Persistence;
 namespace Ofichina.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260816183002_001-inicial")]
+    [Migration("20260825204230_001-inicial")]
     partial class _001inicial
     {
         /// <inheritdoc />
@@ -951,6 +951,11 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Placa");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Status");
+
                     b.Property<string>("Telefone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -959,6 +964,10 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("UpdatedAt");
+
+                    b.Property<Guid>("VeiculoId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("VeiculoId");
 
                     b.ToTable((string)null);
 

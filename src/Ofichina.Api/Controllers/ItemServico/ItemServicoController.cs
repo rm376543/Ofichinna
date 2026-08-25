@@ -7,7 +7,6 @@ using Ofichina.Application.UseCases.ItensServico.Queries;
 using Ofichina.Contracts.Common;
 using Ofichina.Contracts.Requests.ItensServico;
 using Ofichina.Contracts.Responses.Orcamento;
-using Ofichina.Contracts.Responses.OrdemServico;
 
 namespace Ofichina.Api.Controllers.ItensServico;
 
@@ -59,38 +58,6 @@ public sealed class ItemServicoController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna todos os itens de serviço de uma ordem de serviço.
-    /// </summary>
-    /// <param name="ordemServicoId">Identificador da ordem de serviço.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Lista de itens de serviço da ordem.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpGet("buscar-por-ordem-servico/{ordemServicoId}")]
-    [ProducesResponseType(typeof(ApiResponse<IReadOnlyCollection<OrdemServicoItensResponse>>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<IReadOnlyCollection<OrdemServicoItensResponse>>>> BuscarItensServico(
-        [FromRoute] Guid ordemServicoId,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando a obtenção dos itens de serviço da ordem. OrdemServicoId: {OrdemServicoId}.", ordemServicoId);
-
-        var result = await _mediator.Send(new GetItemServicosByOrdemServicoQuery
-        {
-            OrdemServicoId = ordemServicoId
-        }, cancellationToken);
-
-        if (!result.IsSuccess)
-        {
-            _logger.LogWarning("Falha ao obter itens de serviço da ordem. OrdemServicoId: {OrdemServicoId}. Erro: {Erro}", ordemServicoId, result.Error);
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os itens de serviço."));
-        }
-
-        return Ok(ApiResponse<IReadOnlyCollection<OrdemServicoItensResponse>>.SuccessResponse(result.Value ?? []));
-    }
-
-    /// <summary>
     /// Retorna todos os itens de serviço de um orçamento.
     /// </summary>
     /// <param name="orcamentoId">Identificador do orçamento.</param>
@@ -120,39 +87,6 @@ public sealed class ItemServicoController : ControllerBase
         }
 
         return Ok(ApiResponse<IReadOnlyCollection<OrcamentoItemResponse>>.SuccessResponse(result.Value ?? []));
-    }
-
-    /// <summary>
-    /// Retorna um item de serviço específico de uma ordem de serviço.
-    /// </summary>
-    /// <param name="ordemServicoId">Identificador da ordem de serviço.</param>
-    /// <param name="itemServicoId">Identificador do item de serviço.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Item de serviço encontrado ou erro 404.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpGet("buscar-por-ordem-servico/{ordemServicoId}/{itemServicoId}")]
-    [ProducesResponseType(typeof(ApiResponse<OrdemServicoItensResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<OrdemServicoItensResponse>>> BuscarItemServicoPorId(
-        [FromRoute] Guid ordemServicoId,
-        [FromRoute] Guid itemServicoId,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando a obtenção do item de serviço. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", ordemServicoId, itemServicoId);
-
-        var result = await _mediator.Send(new GetItemServicoByIdQuery(
-            ordemServicoId, itemServicoId
-        ), cancellationToken);
-
-        if (!result.IsSuccess || result.Value is null)
-        {
-            _logger.LogWarning("Item de serviço não encontrado. OrdemServicoId: {OrdemServicoId}, ItemServicoId: {ItemServicoId}.", ordemServicoId, itemServicoId);
-            return NotFound(ApiResponse.FailureResponse(result.Error ?? "Item de serviço não encontrado."));
-        }
-
-        return Ok(ApiResponse<OrdemServicoItensResponse>.SuccessResponse(result.Value));
     }
 
     /// <summary>
@@ -189,44 +123,7 @@ public sealed class ItemServicoController : ControllerBase
     }
 
     /// <summary>
-    /// Cria um novo item de serviço vinculado à ordem de serviço.
-    /// </summary>
-    /// <param name="request">Dados do item de serviço.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Identificador do item criado ou erro de validação.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpPost("adicionar/para-ordem-servico")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> CriarItemServico(
-        [FromBody] CreateItemServicoRequest request,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando a criação de item de serviço. OrdemServicoId: {OrdemServicoId}.", request.OrdemServicoId);
-
-        var validation = await _createValidator.ValidateAsync(request, cancellationToken);
-        if (!validation.IsValid)
-        {
-            _logger.LogWarning("Falha na validação do item de serviço. OrdemServicoId: {OrdemServicoId}. Erros: {Erros}", request.OrdemServicoId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
-            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
-        }
-
-        var result = await _mediator.Send(new CreateItemServicoCommand(request), cancellationToken);
-
-        if (!result.IsSuccess)
-        {
-            _logger.LogWarning("Falha ao criar item de serviço. OrdemServicoId: {OrdemServicoId}. Erro: {Erro}", request.OrdemServicoId, result.Error);
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o item de serviço."));
-        }
-
-        return Ok(ApiResponse.SuccessResponse("Item de serviço criado com sucesso."));
-    }
-
-    /// <summary>
-    /// Cria um novo item de serviço vinculado ao orçamento.
+    /// Cria um novo item de serviço com peças vinculado ao orçamento.
     /// </summary>
     /// <param name="request">Dados do item de serviço para o orçamento.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
@@ -297,43 +194,6 @@ public sealed class ItemServicoController : ControllerBase
         }
 
         return Ok(ApiResponse.SuccessResponse("Item de serviço criado com sucesso no orçamento."));
-    }
-
-    /// <summary>
-    /// Cria um novo item de serviço somente-serviço vinculado à ordem de serviço.
-    /// </summary>
-    /// <param name="request">Dados do item de serviço somente-serviço.</param>
-    /// <param name="cancellationToken">Token de cancelamento.</param>
-    /// <returns>Mensagem de sucesso ou erro de validação.</returns>
-    [Authorize(Roles = "ADMIN")]
-    [HttpPost("adicionar-servico/para-ordem-servico")]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> CriarServicoOrdemServico(
-        [FromBody] CreateServicoOrdemServicoRequest request,
-        CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Iniciando a criação de item de serviço somente-serviço na ordem de serviço. OrdemServicoId: {OrdemServicoId}.", request.OrdemServicoId);
-
-        var validation = await _createServicoOrdemServicoValidator.ValidateAsync(request, cancellationToken);
-        if (!validation.IsValid)
-        {
-            _logger.LogWarning("Falha na validação do item de serviço somente-serviço da ordem. OrdemServicoId: {OrdemServicoId}. Erros: {Erros}", request.OrdemServicoId, string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
-            return BadRequest(ApiResponse.FailureResponse(validation.Errors.Select(x => x.ErrorMessage)));
-        }
-
-        var result = await _mediator.Send(new CreateServicoOrdemServicoCommand(request), cancellationToken);
-
-        if (!result.IsSuccess)
-        {
-            _logger.LogWarning("Falha ao criar item de serviço somente-serviço na ordem de serviço. OrdemServicoId: {OrdemServicoId}. Erro: {Erro}", request.OrdemServicoId, result.Error);
-            return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível criar o item de serviço."));
-        }
-
-        return Ok(ApiResponse.SuccessResponse("Item de serviço criado com sucesso."));
     }
 
     /// <summary>

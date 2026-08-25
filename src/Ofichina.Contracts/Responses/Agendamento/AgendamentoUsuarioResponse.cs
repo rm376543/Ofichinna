@@ -6,6 +6,12 @@ namespace Ofichina.Contracts.Responses.Agendamento;
 /// </summary>
 public sealed class AgendamentoUsuarioResponse
 {
+    public string? AgendamentoId { get; set; } = string.Empty;
+
+    public string PessoaId { get; set; } = string.Empty;
+
+    public string VeiculoId { get; set; } = string.Empty;
+
     public string Nome { get; set; } = string.Empty;
 
     public string Documento { get; set; } = string.Empty;

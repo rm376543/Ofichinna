@@ -76,7 +76,7 @@ public sealed class CreateAgendamentoCommandHandler : ICommandHandler<CreateAgen
                 return Result.Failure("A pessoa informada não possui perfil de consultor.");
 
             // Validar conflito: verificar se já existe agendamento neste slot
-            var agendamentosSlot = await _agendamentoRepository.GetAllAsync(cancellationToken);
+            var agendamentosSlot = await _agendamentoRepository.GetAllWithIncludesAsync(cancellationToken);
             var jaTemAgendamentoNoSlot = agendamentosSlot
                 .Any(a => a.AgendaConsultorId == command.AgendaConsultorId && a.DeletedAt == null);
 

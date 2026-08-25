@@ -49,6 +49,9 @@ public static class AgendamentoResponseMappingExtensions
 
         return new AgendamentoUsuarioResponse
         {
+            AgendamentoId = view.AgendamentosId.ToString(),
+            PessoaId = view.PessoaId.ToString(),
+            VeiculoId = view.VeiculoId.ToString(),
             Nome = view.Nome,
             Documento = view.Documento,
             Telefone = view.Telefone,

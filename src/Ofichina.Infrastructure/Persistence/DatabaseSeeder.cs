@@ -1003,6 +1003,8 @@ public static class DatabaseSeeder
             SELECT
                 a.AgendamentosId,
                 p.PessoaId,
+                v.VeiculoId,
+                a.Status as StatusAgendamento,
                 p.Nome,
                 p.Documento,
                 p.Telefone,

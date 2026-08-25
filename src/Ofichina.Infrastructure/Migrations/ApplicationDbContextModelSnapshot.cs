@@ -948,6 +948,11 @@ namespace Ofichina.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Placa");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Status");
+
                     b.Property<string>("Telefone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -956,6 +961,10 @@ namespace Ofichina.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("UpdatedAt");
+
+                    b.Property<Guid>("VeiculoId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("VeiculoId");
 
                     b.ToTable((string)null);
 

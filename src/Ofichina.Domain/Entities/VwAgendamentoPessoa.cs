@@ -11,6 +11,10 @@ public class VwAgendamentoPessoa : Entity
 
     public Guid PessoaId { get; set; }
 
+    public Guid VeiculoId { get; set; }
+
+    public string StatusAgendamento { get; set; } = string.Empty;
+
     public string Nome { get; set; } = string.Empty;
 
     public string Documento { get; set; } = string.Empty;
