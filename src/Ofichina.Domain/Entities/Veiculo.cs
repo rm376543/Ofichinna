@@ -52,7 +52,6 @@ public sealed class Veiculo : Entity
     {
     }
 
-#pragma warning disable S107
     /// <summary>
     /// Cria um novo veículo para uma pessoa.
     /// </summary>
@@ -63,8 +62,6 @@ public sealed class Veiculo : Entity
     /// <param name="anoFabricacao">Ano de fabricação.</param>
     /// <param name="cor">Cor do veículo.</param>
     /// <param name="quilometragem">Hodômetro do veículo.</param>
-#pragma warning restore S107
-#pragma warning disable S107
     public Veiculo(
         Guid pessoaId,
         Placa placa,
@@ -73,7 +70,6 @@ public sealed class Veiculo : Entity
         int anoFabricacao,
         string cor,
         Hodometro quilometragem)
-#pragma warning restore S107
     {
         if (pessoaId == Guid.Empty)
             throw new DomainException("A pessoa deve ser informada.");

@@ -2,6 +2,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Ofichina.Application;
 using Ofichina.Application.UseCases.Agendamentos.Commands;
 using Ofichina.Application.UseCases.Agendamentos.Queries;
 using Ofichina.Contracts.Common;
@@ -29,7 +30,6 @@ public sealed class AgendamentoController : ControllerBase
         _mediator = mediator;
         _logger = logger;
     }
-
 
     /// <summary>
     /// Busca horários disponíveis para agendamento.
@@ -187,6 +187,43 @@ public sealed class AgendamentoController : ControllerBase
             return BadRequest(ApiResponse.FailureResponse(result.Error ?? "Não foi possível obter os consultores disponíveis."));
 
         return Ok(ApiResponse<IEnumerable<ConsultorDisponibilidadeResponse>>.SuccessResponse(result.Value));
+    }
+
+    /// <summary>
+    /// Retorna todos agendamentos cadastrados - paginados.
+    /// </summary>
+    /// <param name="pagination">Parâmetros de paginação.</param>
+    /// <param name="cancellationToken">Token de cancelamento.</param>
+    /// <returns>Lista de .</returns>
+    [Authorize(Roles = "ADMIN")]
+    [HttpGet("consultor/listar")]
+    [ProducesResponseType(typeof(ApiResponse<PagedResponse<AgendamentoUsuarioResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<ApiResponse<PagedResponse<AgendamentoUsuarioResponse>>>> BuscarTodosAgendamentosPaginados(
+        [FromQuery] Pagination pagination,
+        CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Iniciando a obtenção de todas os agendamentos.");
+
+        var result = await _mediator.Send(
+            new GetAllAgendamentosPaginadosQuery(pagination),
+            cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogError(
+                "Erro ao tentar buscar os agendamentos. Erro: {Erro}",
+                result.Error);
+
+            return BadRequest(
+                ApiResponse.FailureResponse(
+                    result.Error ?? "Não foi possível obter os agendamentos."));
+        }
+
+        return Ok(
+            ApiResponse<PagedResponse<AgendamentoUsuarioResponse>>.SuccessResponse(
+                result.Value));
     }
 
     /// <summary>

@@ -142,6 +142,214 @@ public static class MockFactory
         }
     }
 
+    public static class AgendamentoRepository
+    {
+        public static Mock<IAgendamentoRepository> ComGetById(Agendamento? agendamento)
+        {
+            var mock = new Mock<IAgendamentoRepository>();
+            if (agendamento != null)
+            {
+                mock.Setup(m => m.GetByIdAsync(agendamento.Id, It.IsAny<CancellationToken>(), It.IsAny<bool>()))
+                    .ReturnsAsync(agendamento);
+            }
+
+            return mock;
+        }
+
+        public static Mock<IAgendamentoRepository> ComGetAllWithIncludes(IEnumerable<Agendamento>? all = null)
+        {
+            var mock = new Mock<IAgendamentoRepository>();
+            if (all != null)
+            {
+                mock.Setup(m => m.GetAllWithIncludesAsync(It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(all.ToList().AsReadOnly());
+            }
+
+            return mock;
+        }
+
+        public static Mock<IAgendamentoRepository> ComGetByIdAndPessoa(Agendamento? agendamento, Guid? pessoaId = null)
+        {
+            var mock = new Mock<IAgendamentoRepository>();
+            if (agendamento != null)
+            {
+                mock.Setup(m => m.GetByIdAndPessoaAsync(agendamento.Id, It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(agendamento);
+            }
+
+            return mock;
+        }
+
+        public static Mock<IAgendamentoRepository> ComExisteConflitoConsultor(bool existe)
+        {
+            var mock = new Mock<IAgendamentoRepository>();
+            mock.Setup(m => m.ExisteConflitoConsultorAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(existe);
+            return mock;
+        }
+
+        public static Mock<IAgendamentoRepository> ComExisteConflitoVeiculo(bool existe)
+        {
+            var mock = new Mock<IAgendamentoRepository>();
+            mock.Setup(m => m.ExisteConflitoVeiculoAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(existe);
+            return mock;
+        }
+    }
+
+    public static class ChecklistRepository
+    {
+        public static Mock<IChecklistRepository> ComGetByAgendamentoChecklistId(Checklist? checklist)
+        {
+            var mock = new Mock<IChecklistRepository>();
+            if (checklist != null)
+            {
+                mock.Setup(m => m.GetByAgendamentoChecklistIdAsync(It.IsAny<Guid>(), checklist.Id, It.IsAny<CancellationToken>(), It.IsAny<bool>()))
+                    .ReturnsAsync(checklist);
+            }
+
+            return mock;
+        }
+    }
+
+    public static class HorarioConsultorRepository
+    {
+        public static Mock<IHorarioConsultorRepository> ComGetConsultoresPorHorario(IEnumerable<HorarioConsultor>? consultores = null)
+        {
+            var mock = new Mock<IHorarioConsultorRepository>();
+            if (consultores != null)
+            {
+                mock.Setup(m => m.GetConsultoresPorHorarioAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(consultores.ToList().AsReadOnly());
+            }
+
+            return mock;
+        }
+    }
+
+    public static class HorarioDisponibilidadeRepository
+    {
+        public static Mock<IHorarioDisponibilidadeRepository> ComGetHorariosPorDia(IEnumerable<HorarioDisponibilidade>? horarios = null)
+        {
+            var mock = new Mock<IHorarioDisponibilidadeRepository>();
+            if (horarios != null)
+            {
+                mock.Setup(m => m.GetHorariosPorDiaAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(horarios.ToList().AsReadOnly());
+            }
+
+            return mock;
+        }
+
+        public static Mock<IHorarioDisponibilidadeRepository> ComBuscarPorHorario(HorarioDisponibilidade? horario)
+        {
+            var mock = new Mock<IHorarioDisponibilidadeRepository>();
+            if (horario != null)
+            {
+                mock.Setup(m => m.BuscarPorHorarioAsync(It.IsAny<TimeOnly>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(horario);
+            }
+
+            return mock;
+        }
+    }
+
+    public static class DiaDisponibilidadeRepository
+    {
+        public static Mock<IDiaDisponibilidadeRepository> ComGetDiasDisponiveis(IEnumerable<DiaDisponibilidade>? dias = null)
+        {
+            var mock = new Mock<IDiaDisponibilidadeRepository>();
+            if (dias != null)
+            {
+                mock.Setup(m => m.GetDiasDisponiveisAsync(It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(dias.ToList().AsReadOnly());
+            }
+
+            return mock;
+        }
+    }
+
+    public static class PerfilRepository
+    {
+        public static Mock<IPerfilRepository> ComGetById(Perfil? perfil)
+        {
+            var mock = new Mock<IPerfilRepository>();
+            if (perfil != null)
+            {
+                mock.Setup(m => m.GetByIdAsync(perfil.Id, It.IsAny<CancellationToken>(), It.IsAny<bool>()))
+                    .ReturnsAsync(perfil);
+            }
+
+            return mock;
+        }
+
+        public static Mock<IPerfilRepository> ComGetByNome(Perfil? perfil)
+        {
+            var mock = new Mock<IPerfilRepository>();
+            if (perfil != null)
+            {
+                mock.Setup(m => m.GetByNomeAsync(perfil.NomePerfil, It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(perfil);
+            }
+
+            return mock;
+        }
+
+        public static Mock<IPerfilRepository> ComGetAllAtivos(IEnumerable<Perfil>? perfis = null)
+        {
+            var mock = new Mock<IPerfilRepository>();
+            if (perfis != null)
+            {
+                mock.Setup(m => m.GetAllAtivosAsync(It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(perfis);
+            }
+
+            return mock;
+        }
+    }
+
+    public static class PermissaoRepository
+    {
+        public static Mock<IPermissaoRepository> ComGetByCodigo(Permissao? permissao)
+        {
+            var mock = new Mock<IPermissaoRepository>();
+            if (permissao != null)
+            {
+                mock.Setup(m => m.GetByCodigoAsync(permissao.Codigo, It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(permissao);
+            }
+
+            return mock;
+        }
+    }
+
+    public static class PerfilPermissaoRepository
+    {
+        public static Mock<IPerfilPermissaoRepository> ComGetByPerfilIdPermissaoId(PerfilPermissao? perfilPermissao)
+        {
+            var mock = new Mock<IPerfilPermissaoRepository>();
+            if (perfilPermissao != null)
+            {
+                mock.Setup(m => m.GetByPerfilIdPermissaoIdAsync(perfilPermissao.PerfilId, perfilPermissao.PermissaoId, It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(perfilPermissao);
+            }
+
+            return mock;
+        }
+
+        public static Mock<IPerfilPermissaoRepository> ComGetByPerfilId(IEnumerable<PerfilPermissao>? perfis = null)
+        {
+            var mock = new Mock<IPerfilPermissaoRepository>();
+            if (perfis != null)
+            {
+                mock.Setup(m => m.GetByPerfilIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                    .ReturnsAsync(perfis.ToList().AsReadOnly());
+            }
+
+            return mock;
+        }
+    }
+
     public static class UnitOfWork
     {
         public static Mock<IUnitOfWork> Default()
