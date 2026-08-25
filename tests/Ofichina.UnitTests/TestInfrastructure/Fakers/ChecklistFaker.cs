@@ -9,7 +9,7 @@ public class ChecklistFaker
 
     public Checklist Criar(Guid? agendamentoId = null, Action<Checklist>? customizar = null)
     {
-        var agId = agendamentoId ?? Guid.NewGuid();
+        var agId = agendamentoId ?? _faker.Random.Guid();
         var itens = _faker.Lorem.Sentence();
         var obs = _faker.Lorem.Sentence();
 

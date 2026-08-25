@@ -1,3 +1,4 @@
+using Bogus;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
@@ -7,15 +8,16 @@ namespace Ofichina.UnitTests.TestInfrastructure.Builders;
 public class OrcamentoBuilder
 {
     private readonly Orcamento _orcamento;
+    private readonly Faker _faker = new();
 
     public OrcamentoBuilder()
     {
-        var pessoaId = Guid.NewGuid();
-        var veiculoId = Guid.NewGuid();
-        var agendamentoId = Guid.NewGuid();
-        var mecanicoId = Guid.NewGuid();
-        var consultorId = Guid.NewGuid();
-        var dataValidade = DateTime.UtcNow.AddDays(30);
+        var pessoaId = _faker.Random.Guid();
+        var veiculoId = _faker.Random.Guid();
+        var agendamentoId = _faker.Random.Guid();
+        var mecanicoId = _faker.Random.Guid();
+        var consultorId = _faker.Random.Guid();
+        var dataValidade = DateTime.UtcNow.AddDays(_faker.Random.Int(1, 30));
 
         _orcamento = new Orcamento(pessoaId, veiculoId, agendamentoId, mecanicoId, consultorId, dataValidade, 0m, null);
     }

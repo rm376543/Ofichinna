@@ -14,7 +14,7 @@ public class PessoaFaker
         var cpf = new Cpf(FakerHelpers.GerarCpfValido());
         var telefone = new Telefone(FakerHelpers.GerarTelefoneValido());
         var endereco = new Endereco(_faker.Address.StreetName(), _faker.Address.BuildingNumber(), _faker.Address.SecondaryAddress(), _faker.Address.County(), _faker.Address.City(), _faker.Address.StateAbbr(), new Cep(FakerHelpers.GerarCep()));
-        var usuarioId = Guid.NewGuid();
+        var usuarioId = _faker.Random.Guid();
 
         var pessoa = new Pessoa(nome, cpf, telefone, endereco, usuarioId);
 

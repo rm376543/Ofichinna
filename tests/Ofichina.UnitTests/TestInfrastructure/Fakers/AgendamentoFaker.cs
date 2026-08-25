@@ -9,9 +9,9 @@ public class AgendamentoFaker
 
     public Agendamento Criar(Guid? clientePessoaId = null, Guid? agendaConsultorId = null, Guid? veiculoId = null, Action<Agendamento>? customizar = null)
     {
-        var clienteId = clientePessoaId ?? Guid.NewGuid();
-        var agendaId = agendaConsultorId ?? Guid.NewGuid();
-        var veiculo = veiculoId ?? Guid.NewGuid();
+        var clienteId = clientePessoaId ?? _faker.Random.Guid();
+        var agendaId = agendaConsultorId ?? _faker.Random.Guid();
+        var veiculo = veiculoId ?? _faker.Random.Guid();
         var hodometro = FakerHelpers.GerarHodometro();
         var descricao = _faker.Lorem.Sentence();
 

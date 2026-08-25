@@ -9,8 +9,8 @@ public class PerfilPermissaoFaker
 
     public PerfilPermissao Criar(Guid? perfilId = null, Guid? permissaoId = null, Action<PerfilPermissao>? customizar = null)
     {
-        var pid = perfilId ?? Guid.NewGuid();
-        var perId = permissaoId ?? Guid.NewGuid();
+        var pid = perfilId ?? _faker.Random.Guid();
+        var perId = permissaoId ?? _faker.Random.Guid();
 
         var pp = new PerfilPermissao(pid, perId);
 

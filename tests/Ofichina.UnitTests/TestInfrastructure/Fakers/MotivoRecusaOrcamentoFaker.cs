@@ -9,7 +9,7 @@ public class MotivoRecusaOrcamentoFaker
 
     public MotivoRecusaOrcamento Criar(Guid? orcamentoId = null, Action<MotivoRecusaOrcamento>? customizar = null)
     {
-        var oid = orcamentoId ?? Guid.NewGuid();
+        var oid = orcamentoId ?? _faker.Random.Guid();
         var descricao = _faker.Lorem.Sentence();
 
         var motivo = new MotivoRecusaOrcamento(oid, descricao);

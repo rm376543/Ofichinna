@@ -9,8 +9,8 @@ public class DiaHorarioDisponibilidadeFaker
 
     public DiaHorarioDisponibilidade Criar(Guid? diaDisponibilidadeId = null, Guid? horarioDisponibilidadeId = null, Action<DiaHorarioDisponibilidade>? customizar = null)
     {
-        var diaId = diaDisponibilidadeId ?? Guid.NewGuid();
-        var horarioId = horarioDisponibilidadeId ?? Guid.NewGuid();
+        var diaId = diaDisponibilidadeId ?? _faker.Random.Guid();
+        var horarioId = horarioDisponibilidadeId ?? _faker.Random.Guid();
 
         var dh = new DiaHorarioDisponibilidade(diaId, horarioId);
 

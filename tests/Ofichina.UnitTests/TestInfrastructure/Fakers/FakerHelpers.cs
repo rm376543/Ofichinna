@@ -1,16 +1,16 @@
 using System.Text;
+using Bogus;
 
 namespace Ofichina.UnitTests.TestInfrastructure.Fakers;
 
 internal static class FakerHelpers
 {
+    private static readonly Faker Faker = new();
+
     public static string GerarCpfValido()
     {
         // Gera 9 primeiros dígitos aleatórios
-        var rnd = new Random();
-        var nums = new int[9];
-        for (int i = 0; i < 9; i++)
-            nums[i] = rnd.Next(0, 10);
+        var nums = Faker.Random.Digits(9);
 
         int soma = 0;
         for (int i = 0; i < 9; i++)
@@ -37,65 +37,39 @@ internal static class FakerHelpers
 
     public static string GerarPlaca()
     {
-        var rnd = new Random();
         // Gerar placa no formato antigo AAA9999 (válida) para simplicidade
-        string letras()
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            var sb = new StringBuilder(3);
-            for (int i = 0; i < 3; i++) sb.Append(chars[rnd.Next(chars.Length)]);
-            return sb.ToString();
-        }
-
-        string numeros()
-        {
-            var sb = new StringBuilder(4);
-            for (int i = 0; i < 4; i++) sb.Append(rnd.Next(0, 10));
-            return sb.ToString();
-        }
-
-        return letras() + numeros();
+        var letras = new string(Faker.Random.Chars('A', 'Z', 3));
+        var numeros = string.Concat(Faker.Random.Digits(4));
+        return letras + numeros;
     }
 
     public static string GerarTelefoneValido(bool celular = true)
     {
-        var rnd = new Random();
-        int ddd = rnd.Next(11, 100);
+        int ddd = Faker.Random.Int(11, 99);
+        var sb = new StringBuilder();
+        sb.Append(ddd.ToString("D2"));
         if (celular)
         {
             // 11 dígitos: DDD + 9 + 8 dígitos
-            var sb = new StringBuilder();
-            sb.Append(ddd.ToString("D2"));
             sb.Append('9');
-            for (int i = 0; i < 8; i++) sb.Append(rnd.Next(0, 10));
-            return sb.ToString();
         }
-        else
-        {
-            // 10 dígitos: DDD + 8 dígitos
-            var sb = new StringBuilder();
-            sb.Append(ddd.ToString("D2"));
-            for (int i = 0; i < 8; i++) sb.Append(rnd.Next(0, 10));
-            return sb.ToString();
-        }
+        // 10 dígitos: DDD + 8 dígitos
+        foreach (var d in Faker.Random.Digits(8)) sb.Append(d);
+        return sb.ToString();
     }
 
     public static string GerarCep()
     {
-        var rnd = new Random();
-        var sb = new StringBuilder(8);
-        for (int i = 0; i < 8; i++) sb.Append(rnd.Next(0, 10));
-        return sb.ToString();
+        return string.Concat(Faker.Random.Digits(8));
     }
 
     public static int GerarHodometro()
     {
-        var rnd = new Random();
-        return rnd.Next(0, 200_000);
+        return Faker.Random.Int(0, 200_000);
     }
 
     public static string GerarCodigoPeca()
     {
-        return $"PC-{Guid.NewGuid():N}";
+        return $"PC-{Faker.Random.Guid():N}";
     }
 }

@@ -9,8 +9,8 @@ public class HorarioConsultorFaker
 
     public HorarioConsultor Criar(Guid? horarioDisponibilidadeId = null, Guid? pessoaId = null, Action<HorarioConsultor>? customizar = null)
     {
-        var hid = horarioDisponibilidadeId ?? Guid.NewGuid();
-        var pid = pessoaId ?? Guid.NewGuid();
+        var hid = horarioDisponibilidadeId ?? _faker.Random.Guid();
+        var pid = pessoaId ?? _faker.Random.Guid();
 
         var hc = new HorarioConsultor(hid, pid);
 

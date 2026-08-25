@@ -9,8 +9,8 @@ public class UsuarioPerfilFaker
 
     public UsuarioPerfil Criar(Guid? usuarioId = null, Guid? perfilId = null, Action<UsuarioPerfil>? customizar = null)
     {
-        var uid = usuarioId ?? Guid.NewGuid();
-        var pid = perfilId ?? Guid.NewGuid();
+        var uid = usuarioId ?? _faker.Random.Guid();
+        var pid = perfilId ?? _faker.Random.Guid();
 
         var up = new UsuarioPerfil(uid, pid);
 

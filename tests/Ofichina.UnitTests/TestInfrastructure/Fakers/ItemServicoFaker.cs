@@ -9,7 +9,7 @@ public static class ItemServicoFaker
 
     public static ItemServico ParaOrcamento(Guid orcamentoId)
     {
-        var servicoId = Guid.NewGuid();
+        var servicoId = Faker.Random.Guid();
         Guid? pecaId = null;
         var quantidade = Faker.Random.Int(1, 5);
         return ItemServico.ParaOrcamento(orcamentoId, servicoId, pecaId, quantidade);
@@ -17,7 +17,7 @@ public static class ItemServicoFaker
 
     public static ItemServico ParaOrdemServico(Guid ordemServicoId)
     {
-        var servicoId = Guid.NewGuid();
+        var servicoId = Faker.Random.Guid();
         Guid? pecaId = null;
         var quantidade = Faker.Random.Int(1, 5);
         return ItemServico.ParaOrdemServico(ordemServicoId, servicoId, pecaId, quantidade);
