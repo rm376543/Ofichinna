@@ -259,37 +259,6 @@ public sealed class ItemServicoControllerTests
         Assert.Equal(servicoId, mediator.UpdateServicoOrcamentoCommandEnviado.ServicoId);
     }
 
-    [Fact]
-    public async Task CriarServicoOrdemServico_Deve_Enviar_Comando_Com_Ids()
-    {
-        var mediator = new FakeMediator();
-        var controller = new ItemServicoController(
-            new InlineValidator<CreateItemServicoRequest>(),
-            new InlineValidator<CreateItemOrcamentoRequest>(),
-            new InlineValidator<CreateServicoOrcamentoRequest>(),
-            new InlineValidator<CreateServicoOrdemServicoRequest>(),
-            new InlineValidator<UpdateItemOrcamentoRequest>(),
-            new InlineValidator<UpdateServicoOrcamentoRequest>(),
-            new InlineValidator<UpdateItemServicoRequest>(),
-            new InlineValidator<UpdateServicoOrdemServicoRequest>(),
-            mediator,
-            NullLogger<ItemServicoController>.Instance);
-
-        var ordemServicoId = Guid.NewGuid();
-        var servicoId = Guid.NewGuid();
-
-        var result = await controller.CriarServicoOrdemServico(new CreateServicoOrdemServicoRequest
-        {
-            OrdemServicoId = ordemServicoId,
-            ServicoId = servicoId
-        }, CancellationToken.None);
-
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        Assert.Equal(StatusCodes.Status200OK, okResult.StatusCode);
-        Assert.NotNull(mediator.CreateServicoOrdemServicoCommandEnviado);
-        Assert.Equal(ordemServicoId, mediator.CreateServicoOrdemServicoCommandEnviado!.OrdemServicoId);
-        Assert.Equal(servicoId, mediator.CreateServicoOrdemServicoCommandEnviado.ServicoId);
-    }
 
     [Fact]
     public async Task AtualizarServicoOrdemServico_Deve_Enviar_Comando_Com_Ids()

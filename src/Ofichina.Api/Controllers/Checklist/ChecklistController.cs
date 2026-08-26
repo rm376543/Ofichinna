@@ -49,7 +49,7 @@ public sealed class ChecklistController : ControllerBase
     }
 
     /// <summary>
-    /// Finaliza um checklist existente.
+    /// Finaliza todos checklists de um agendamnto existente.
     /// </summary>
     /// <param name="request">Dados necessários para finalizar o checklist.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>

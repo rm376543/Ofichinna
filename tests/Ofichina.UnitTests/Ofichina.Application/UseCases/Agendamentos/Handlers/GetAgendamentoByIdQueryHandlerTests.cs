@@ -166,5 +166,10 @@ public sealed class GetAgendamentoByIdQueryHandlerTests
 
         public Task<VwAgendamentoPessoa?> GetAgendamentoUsuarioViewByIdAsync(Guid pessoaId, Guid agendamentosId, CancellationToken cancellationToken = default)
             => Task.FromResult(_view is not null && _view.PessoaId == pessoaId && _view.AgendamentosId == agendamentosId ? _view : null);
+
+        public Task<PagedResponse<VwAgendamentoPessoa>> GetAllAgendamentosPaginadosAsync(Pagination pagination, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

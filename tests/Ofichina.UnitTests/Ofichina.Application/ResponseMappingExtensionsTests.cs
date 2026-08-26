@@ -40,12 +40,17 @@ public sealed class ResponseMappingExtensionsTests
     }
 
     [Fact]
-    public void ToUsuarioResponse_Deve_Mapear_View_Sem_Expor_AgendamentosId_E_PessoaId()
+    public void ToUsuarioResponse_Deve_Mapear_View_Expondo_AgendamentosId_VeiculoId_E_PessoaId()
     {
+        var agendamentoGuid = Guid.NewGuid();
+        var pessoaGuid = Guid.NewGuid();
+        var veiculoGuid = Guid.NewGuid();
+
         var view = new VwAgendamentoPessoa
         {
-            AgendamentosId = Guid.NewGuid(),
-            PessoaId = Guid.NewGuid(),
+            AgendamentosId = agendamentoGuid,
+            PessoaId = pessoaGuid,
+            VeiculoId = veiculoGuid,
             Nome = "João Silva",
             Documento = "12345678909",
             Telefone = "11987654321",
@@ -65,6 +70,9 @@ public sealed class ResponseMappingExtensionsTests
 
         var response = view.ToUsuarioResponse();
 
+        Assert.Equal(agendamentoGuid.ToString(), response.AgendamentoId);
+        Assert.Equal(pessoaGuid.ToString(), response.PessoaId);
+        Assert.Equal(veiculoGuid.ToString(), response.VeiculoId);
         Assert.Equal("João Silva", response.Nome);
         Assert.Equal("12345678909", response.Documento);
         Assert.Equal("11987654321", response.Telefone);
@@ -79,8 +87,6 @@ public sealed class ResponseMappingExtensionsTests
         Assert.Equal(new TimeOnly(14, 30), response.HorarioAgendamento);
 
         var responseType = response.GetType();
-        Assert.Null(responseType.GetProperty("AgendamentosId"));
-        Assert.Null(responseType.GetProperty("PessoaId"));
         Assert.Null(responseType.GetProperty("UpdatedAt"));
         Assert.Null(responseType.GetProperty("DeletedAt"));
     }
