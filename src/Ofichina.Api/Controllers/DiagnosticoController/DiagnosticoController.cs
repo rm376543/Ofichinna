@@ -87,7 +87,7 @@ public sealed class DiagnosticoController : ControllerBase
     }
 
     /// <summary>
-    /// Finaliza o orçamento após diagnóstico.
+    /// Finaliza o diagnóstico do orçamento.
     /// </summary>
     /// <param name="request">Identificador do orçamento.</param>
     /// <param name="cancellationToken">Token de cancelamento.</param>
