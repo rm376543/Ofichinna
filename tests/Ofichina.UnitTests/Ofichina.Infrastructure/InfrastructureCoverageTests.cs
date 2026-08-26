@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Ofichina.Contracts.Common;
 using Ofichina.Domain.Aggregates;
 using Ofichina.Domain.Entities;
 using Ofichina.Domain.Enums;
@@ -90,6 +91,36 @@ public sealed class AgendamentoRepositoryCoverageTests
         Assert.True(conflitoVeiculo);
         Assert.Single(all);
         Assert.NotNull(byPessoa);
+    }
+
+    [Fact]
+    public async Task GetAllAgendamentosPaginadosAsync_Deve_Lancar_Excecao_Quando_Pagination_For_Nula()
+    {
+        var dbName = Guid.NewGuid().ToString();
+
+        await using var context = InfrastructureCoverageHelpers.CreateContext(dbName);
+        var repository = new AgendamentoRepository(context);
+
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            repository.GetAllAgendamentosPaginadosAsync(null!));
+    }
+
+    [Fact(Skip = "AgendamentosUsuarioView é uma view relacional e o provider InMemory não suporta este cenário adequadamente.")]
+    public async Task GetAllAgendamentosPaginadosAsync_Deve_Retornar_Apenas_Agendamentos_Agendados_Com_Paginacao()
+    {
+        var dbName = Guid.NewGuid().ToString();
+
+        await using var context = InfrastructureCoverageHelpers.CreateContext(dbName);
+
+        var repository = new AgendamentoRepository(context);
+
+        var pagination = new Pagination(1, 10);
+
+        var result = await repository.GetAllAgendamentosPaginadosAsync(
+            pagination);
+
+        Assert.NotNull(result);
+        Assert.NotNull(result.Items);
     }
 }
 

@@ -144,6 +144,11 @@ public sealed class CancelarAgendamentoCommandHandlerTests
 
         public Task<IReadOnlyCollection<VwAgendamentoPessoa>> GetAgendamentosUsuarioViewByPessoaAsync(Guid pessoaId, CancellationToken cancellationToken = default)
             => Task.FromResult<IReadOnlyCollection<VwAgendamentoPessoa>>([]);
+
+        public Task<PagedResponse<VwAgendamentoPessoa>> GetAllAgendamentosPaginadosAsync(Pagination pagination, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     private sealed class FakeUnitOfWork : IUnitOfWork

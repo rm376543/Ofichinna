@@ -174,6 +174,11 @@ public sealed class FinalizarChecklistCommandHandlerTests
         {
             throw new NotImplementedException();
         }
+
+        public Task<PagedResponse<VwAgendamentoPessoa>> GetAllAgendamentosPaginadosAsync(Pagination pagination, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     private sealed class FakeUnitOfWork : IUnitOfWork
