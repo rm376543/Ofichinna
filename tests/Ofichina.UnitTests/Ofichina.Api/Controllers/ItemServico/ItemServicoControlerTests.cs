@@ -18,14 +18,10 @@ namespace Ofichina.UnitTests.Api.Controllers.ItemServico;
 
 public sealed class ItemServicoControllerTests
 {
-    private readonly Mock<IValidator<CreateItemServicoRequest>> _createValidatorMock;
-    private readonly Mock<IValidator<CreateItemOrcamentoRequest>> _createOrcamentoValidatorMock;
+    private readonly Mock<IValidator<CreateItemOrcamentoRequest>> _createItemOrcamentoValidatorMock;
     private readonly Mock<IValidator<CreateServicoOrcamentoRequest>> _createServicoOrcamentoValidatorMock;
-    private readonly Mock<IValidator<CreateServicoOrdemServicoRequest>> _createServicoOrdemServicoValidatorMock;
     private readonly Mock<IValidator<UpdateItemOrcamentoRequest>> _updateOrcamentoValidatorMock;
     private readonly Mock<IValidator<UpdateServicoOrcamentoRequest>> _updateServicoOrcamentoValidatorMock;
-    private readonly Mock<IValidator<UpdateItemServicoRequest>> _updateValidatorMock;
-    private readonly Mock<IValidator<UpdateServicoOrdemServicoRequest>> _updateServicoOrdemServicoValidatorMock;
     private readonly Mock<IMediator> _mediatorMock;
     private readonly Mock<ILogger<ItemServicoController>> _loggerMock;
 
@@ -33,17 +29,11 @@ public sealed class ItemServicoControllerTests
 
     public ItemServicoControllerTests()
     {
-        _createValidatorMock =
-            new Mock<IValidator<CreateItemServicoRequest>>();
-
-        _createOrcamentoValidatorMock =
+        _createItemOrcamentoValidatorMock =
             new Mock<IValidator<CreateItemOrcamentoRequest>>();
 
         _createServicoOrcamentoValidatorMock =
             new Mock<IValidator<CreateServicoOrcamentoRequest>>();
-
-        _createServicoOrdemServicoValidatorMock =
-            new Mock<IValidator<CreateServicoOrdemServicoRequest>>();
 
         _updateOrcamentoValidatorMock =
             new Mock<IValidator<UpdateItemOrcamentoRequest>>();
@@ -51,24 +41,15 @@ public sealed class ItemServicoControllerTests
         _updateServicoOrcamentoValidatorMock =
             new Mock<IValidator<UpdateServicoOrcamentoRequest>>();
 
-        _updateValidatorMock =
-            new Mock<IValidator<UpdateItemServicoRequest>>();
-
-        _updateServicoOrdemServicoValidatorMock =
-            new Mock<IValidator<UpdateServicoOrdemServicoRequest>>();
-
         _mediatorMock = new Mock<IMediator>();
+
         _loggerMock = new Mock<ILogger<ItemServicoController>>();
 
         _controller = new ItemServicoController(
-            _createValidatorMock.Object,
-            _createOrcamentoValidatorMock.Object,
+            _createItemOrcamentoValidatorMock.Object,
             _createServicoOrcamentoValidatorMock.Object,
-            _createServicoOrdemServicoValidatorMock.Object,
             _updateOrcamentoValidatorMock.Object,
             _updateServicoOrcamentoValidatorMock.Object,
-            _updateValidatorMock.Object,
-            _updateServicoOrdemServicoValidatorMock.Object,
             _mediatorMock.Object,
             _loggerMock.Object);
     }
@@ -80,17 +61,11 @@ public sealed class ItemServicoControllerTests
         var mediator = new Mock<IMediator>();
         var logger = new Mock<ILogger<ItemServicoController>>();
 
-        var createValidator =
-            new Mock<IValidator<CreateItemServicoRequest>>();
-
-        var createOrcamentoValidator =
+        var createItemOrcamentoValidator =
             new Mock<IValidator<CreateItemOrcamentoRequest>>();
 
         var createServicoOrcamentoValidator =
             new Mock<IValidator<CreateServicoOrcamentoRequest>>();
-
-        var createServicoOrdemServicoValidator =
-            new Mock<IValidator<CreateServicoOrdemServicoRequest>>();
 
         var updateOrcamentoValidator =
             new Mock<IValidator<UpdateItemOrcamentoRequest>>();
@@ -98,22 +73,12 @@ public sealed class ItemServicoControllerTests
         var updateServicoOrcamentoValidator =
             new Mock<IValidator<UpdateServicoOrcamentoRequest>>();
 
-        var updateValidator =
-            new Mock<IValidator<UpdateItemServicoRequest>>();
-
-        var updateServicoOrdemServicoValidator =
-            new Mock<IValidator<UpdateServicoOrdemServicoRequest>>();
-
         // Act
         var controller = new ItemServicoController(
-            createValidator.Object,
-            createOrcamentoValidator.Object,
+            createItemOrcamentoValidator.Object,
             createServicoOrcamentoValidator.Object,
-            createServicoOrdemServicoValidator.Object,
             updateOrcamentoValidator.Object,
             updateServicoOrcamentoValidator.Object,
-            updateValidator.Object,
-            updateServicoOrdemServicoValidator.Object,
             mediator.Object,
             logger.Object);
 
@@ -401,7 +366,7 @@ public sealed class ItemServicoControllerTests
         var cancellationToken = CancellationToken.None;
 
         ConfigurarValidacao(
-            _createOrcamentoValidatorMock,
+            _createItemOrcamentoValidatorMock,
             request,
             false);
 
@@ -428,7 +393,7 @@ public sealed class ItemServicoControllerTests
         var cancellationToken = CancellationToken.None;
 
         ConfigurarValidacao(
-            _createOrcamentoValidatorMock,
+            _createItemOrcamentoValidatorMock,
             request,
             true);
 
@@ -456,7 +421,7 @@ public sealed class ItemServicoControllerTests
         var cancellationToken = CancellationToken.None;
 
         ConfigurarValidacao(
-            _createOrcamentoValidatorMock,
+            _createItemOrcamentoValidatorMock,
             request,
             true);
 
@@ -484,7 +449,7 @@ public sealed class ItemServicoControllerTests
         var cancellationToken = CancellationToken.None;
 
         ConfigurarValidacao(
-            _createOrcamentoValidatorMock,
+            _createItemOrcamentoValidatorMock,
             request,
             true);
 
@@ -829,308 +794,6 @@ public sealed class ItemServicoControllerTests
 
         // Assert
         Assert.IsType<OkObjectResult>(resultado.Result);
-    }
-
-    // ============================================================
-    // ATUALIZAR ITEM SERVIÇO
-    // ============================================================
-
-    [Fact]
-    public async Task AtualizarItemServico_ValidacaoInvalida_Deve_RetornarBadRequest()
-    {
-        // Arrange
-        var request = CriarRequest<UpdateItemServicoRequest>();
-        var cancellationToken = CancellationToken.None;
-
-        ConfigurarValidacao(
-            _updateValidatorMock,
-            request,
-            false);
-
-        // Act
-        var resultado = await _controller.AtualizarItemServico(
-            request,
-            cancellationToken);
-
-        // Assert
-        Assert.IsType<BadRequestObjectResult>(resultado.Result);
-    }
-
-    [Fact]
-    public async Task AtualizarItemServico_ComFalhaDoMediator_Deve_RetornarBadRequest()
-    {
-        // Arrange
-        var request = CriarRequest<UpdateItemServicoRequest>();
-        var cancellationToken = CancellationToken.None;
-
-        ConfigurarValidacao(
-            _updateValidatorMock,
-            request,
-            true);
-
-        _mediatorMock
-            .Setup(x => x.Send(
-                It.IsAny<UpdateItemServicoCommand>(),
-                cancellationToken))
-            .ReturnsAsync(
-                Result.Failure("Erro ao atualizar item."));
-
-        // Act
-        var resultado = await _controller.AtualizarItemServico(
-            request,
-            cancellationToken);
-
-        // Assert
-        Assert.IsType<BadRequestObjectResult>(resultado.Result);
-    }
-
-    [Fact]
-    public async Task AtualizarItemServico_ComFalhaDoMediatorSemError_Deve_RetornarBadRequest()
-    {
-        // Arrange
-        var request = CriarRequest<UpdateItemServicoRequest>();
-        var cancellationToken = CancellationToken.None;
-
-        ConfigurarValidacao(
-            _updateValidatorMock,
-            request,
-            true);
-
-        _mediatorMock
-            .Setup(x => x.Send(
-                It.IsAny<UpdateItemServicoCommand>(),
-                cancellationToken))
-            .ReturnsAsync(
-                Result.Failure(new[] { "Erro." }));
-
-        // Act
-        var resultado = await _controller.AtualizarItemServico(
-            request,
-            cancellationToken);
-
-        // Assert
-        Assert.IsType<BadRequestObjectResult>(resultado.Result);
-    }
-
-    [Fact]
-    public async Task AtualizarItemServico_ComSucesso_Deve_RetornarOk()
-    {
-        // Arrange
-        var request = CriarRequest<UpdateItemServicoRequest>();
-        var cancellationToken = CancellationToken.None;
-
-        ConfigurarValidacao(
-            _updateValidatorMock,
-            request,
-            true);
-
-        _mediatorMock
-            .Setup(x => x.Send(
-                It.IsAny<UpdateItemServicoCommand>(),
-                cancellationToken))
-            .ReturnsAsync(Result.Success());
-
-        // Act
-        var resultado = await _controller.AtualizarItemServico(
-            request,
-            cancellationToken);
-
-        // Assert
-        Assert.IsType<OkObjectResult>(resultado.Result);
-    }
-
-    // ============================================================
-    // ATUALIZAR SERVIÇO ORDEM DE SERVIÇO
-    // ============================================================
-
-    [Fact]
-    public async Task AtualizarServicoOrdemServico_ValidacaoInvalida_Deve_RetornarBadRequest()
-    {
-        // Arrange
-        var request = CriarRequest<UpdateServicoOrdemServicoRequest>();
-        var cancellationToken = CancellationToken.None;
-
-        ConfigurarValidacao(
-            _updateServicoOrdemServicoValidatorMock,
-            request,
-            false);
-
-        // Act
-        var resultado = await _controller.AtualizarServicoOrdemServico(
-            request,
-            cancellationToken);
-
-        // Assert
-        Assert.IsType<BadRequestObjectResult>(resultado.Result);
-    }
-
-    [Fact]
-    public async Task AtualizarServicoOrdemServico_ComFalhaDoMediator_Deve_RetornarBadRequest()
-    {
-        // Arrange
-        var request = CriarRequest<UpdateServicoOrdemServicoRequest>();
-        var cancellationToken = CancellationToken.None;
-
-        ConfigurarValidacao(
-            _updateServicoOrdemServicoValidatorMock,
-            request,
-            true);
-
-        _mediatorMock
-            .Setup(x => x.Send(
-                It.IsAny<UpdateServicoOrdemServicoCommand>(),
-                cancellationToken))
-            .ReturnsAsync(
-                Result.Failure("Erro ao atualizar serviço."));
-
-        // Act
-        var resultado = await _controller.AtualizarServicoOrdemServico(
-            request,
-            cancellationToken);
-
-        // Assert
-        Assert.IsType<BadRequestObjectResult>(resultado.Result);
-    }
-
-    [Fact]
-    public async Task AtualizarServicoOrdemServico_ComFalhaDoMediatorSemError_Deve_RetornarBadRequest()
-    {
-        // Arrange
-        var request = CriarRequest<UpdateServicoOrdemServicoRequest>();
-        var cancellationToken = CancellationToken.None;
-
-        ConfigurarValidacao(
-            _updateServicoOrdemServicoValidatorMock,
-            request,
-            true);
-
-        _mediatorMock
-            .Setup(x => x.Send(
-                It.IsAny<UpdateServicoOrdemServicoCommand>(),
-                cancellationToken))
-            .ReturnsAsync(
-                Result.Failure(new[] { "Erro." }));
-
-        // Act
-        var resultado = await _controller.AtualizarServicoOrdemServico(
-            request,
-            cancellationToken);
-
-        // Assert
-        Assert.IsType<BadRequestObjectResult>(resultado.Result);
-    }
-
-    [Fact]
-    public async Task AtualizarServicoOrdemServico_ComSucesso_Deve_RetornarOk()
-    {
-        // Arrange
-        var request = CriarRequest<UpdateServicoOrdemServicoRequest>();
-        var cancellationToken = CancellationToken.None;
-
-        ConfigurarValidacao(
-            _updateServicoOrdemServicoValidatorMock,
-            request,
-            true);
-
-        _mediatorMock
-            .Setup(x => x.Send(
-                It.IsAny<UpdateServicoOrdemServicoCommand>(),
-                cancellationToken))
-            .ReturnsAsync(Result.Success());
-
-        // Act
-        var resultado = await _controller.AtualizarServicoOrdemServico(
-            request,
-            cancellationToken);
-
-        // Assert
-        Assert.IsType<OkObjectResult>(resultado.Result);
-    }
-
-    // ============================================================
-    // REMOVER ITEM SERVIÇO
-    // ============================================================
-
-    [Fact]
-    public async Task RemoverItemServico_ComSucesso_Deve_RetornarOk()
-    {
-        // Arrange
-        var request = CriarRequest<DeleteItemServicoRequest>();
-        var cancellationToken = CancellationToken.None;
-
-        _mediatorMock
-            .Setup(x => x.Send(
-                It.IsAny<DeleteItemServicoCommand>(),
-                cancellationToken))
-            .ReturnsAsync(Result.Success());
-
-        // Act
-        var resultado = await _controller.RemoverItemServico(
-            request,
-            cancellationToken);
-
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(resultado.Result);
-
-        Assert.Equal(
-            StatusCodes.Status200OK,
-            okResult.StatusCode);
-    }
-
-    [Fact]
-    public async Task RemoverItemServico_ComFalhaEErrorInformado_Deve_RetornarBadRequest()
-    {
-        // Arrange
-        var request = CriarRequest<DeleteItemServicoRequest>();
-        var cancellationToken = CancellationToken.None;
-
-        _mediatorMock
-            .Setup(x => x.Send(
-                It.IsAny<DeleteItemServicoCommand>(),
-                cancellationToken))
-            .ReturnsAsync(
-                Result.Failure("Não foi possível remover o item."));
-
-        // Act
-        var resultado = await _controller.RemoverItemServico(
-            request,
-            cancellationToken);
-
-        // Assert
-        var badRequest =
-            Assert.IsType<BadRequestObjectResult>(resultado.Result);
-
-        Assert.Equal(
-            StatusCodes.Status400BadRequest,
-            badRequest.StatusCode);
-    }
-
-    [Fact]
-    public async Task RemoverItemServico_ComFalhaESemError_Deve_RetornarBadRequest()
-    {
-        // Arrange
-        var request = CriarRequest<DeleteItemServicoRequest>();
-        var cancellationToken = CancellationToken.None;
-
-        _mediatorMock
-            .Setup(x => x.Send(
-                It.IsAny<DeleteItemServicoCommand>(),
-                cancellationToken))
-            .ReturnsAsync(
-                Result.Failure(new[] { "Erro." }));
-
-        // Act
-        var resultado = await _controller.RemoverItemServico(
-            request,
-            cancellationToken);
-
-        // Assert
-        var badRequest =
-            Assert.IsType<BadRequestObjectResult>(resultado.Result);
-
-        Assert.Equal(
-            StatusCodes.Status400BadRequest,
-            badRequest.StatusCode);
     }
 
     // ============================================================
