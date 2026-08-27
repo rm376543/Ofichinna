@@ -23,7 +23,6 @@ public static class PessoaResponseMappingExtensions
             Cidade = pessoa.Endereco.Cidade,
             Estado = pessoa.Endereco.Estado,
             Cep = pessoa.Endereco.Cep.ToString(),
-            UsuarioId = pessoa.UsuarioId,
             CreatedAt = pessoa.CreatedAt.ToDateString(),
             UpdatedAt = pessoa.UpdatedAt?.ToDateString(),
             DeletedAt = pessoa.DeletedAt?.ToDateString()

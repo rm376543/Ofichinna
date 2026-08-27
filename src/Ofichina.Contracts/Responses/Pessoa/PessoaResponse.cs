@@ -58,9 +58,4 @@ public class PessoaResponse : BaseResponse
     /// CEP do endereço.
     /// </summary>
     public string Cep { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Identificador do usuário vinculado à pessoa.
-    /// </summary>
-    public Guid UsuarioId { get; set; }
 }
