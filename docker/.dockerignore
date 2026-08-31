@@ -1,0 +1,28 @@
+# build artifacts
+**/bin/
+**/obj/
+**/out/
+
+# testes e cobertura
+tests/
+coverage-report/
+coverage.xml
+**/TestResults/
+
+# VCS e IDE
+.git/
+.gitignore
+.vs/
+.vscode/
+.sonarqube/
+.sonarlint/
+
+# docs e arquivos de ambiente
+docs/
+postman/
+*.md
+.env
+.env.*
+
+# docker
+docker/
